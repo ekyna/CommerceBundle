@@ -7,15 +7,18 @@
 </div>
 <div class="show show-with-tabs">
     <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
+        {% block tabs -%}
         <li class="active">
             <a href="#customer-group-general" id="toggle-general" data-toggle="tab">
                 {{- 'ekyna_core.field.general'|trans -}}
             </a>
         </li>
+        {%- endblock tabs %}
     </ul>
     <div class="show-body">
         <div class="tab-content">
             <div class="tab-pane active" id="customer-group-general">
+                {% block general_pane -%}
                 {{ show_row(customerGroup.name, 'text', {
                     'label': 'ekyna_core.field.name',
                     'id': 'customerGroup_name'
@@ -73,6 +76,8 @@
                         }) }}
                     </div>
                 </div>
+                {%- endblock general_pane %}
+                {% block extra_panes %}{% endblock extra_panes %}
             </div>
         </div>
     </div>

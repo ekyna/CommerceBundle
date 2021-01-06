@@ -41,6 +41,7 @@
 </div>
 <div class="show show-with-tabs" data-tab-key="{{ resource_id }}">
     <ul class="nav nav-tabs">
+        {% block tabs -%}
         <li class="active">
             <a href="#customer-general" id="toggle-general" data-toggle="tab">
                 {{ 'ekyna_core.field.general'|trans }}
@@ -118,10 +119,12 @@
             </a>
         </li>
         {%- endif %}
+        {%- endblock tabs %}
     </ul>
     <div class="show-body">
         <div class="tab-content">
             <div class="tab-pane active" id="customer-general">
+                {% block general_pane -%}
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(customer.number, 'text', {
@@ -193,8 +196,10 @@
                 }) }}
                 {{ show_row(customer, 'notifications') }}
                 {{ _cms.show_tags(customer) }}
+                {%- endblock general_pane %}
             </div>
             <div class="tab-pane" id="customer-config">
+                {% block config_pane -%}
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(customer.user, 'entity', {
@@ -333,8 +338,10 @@
                     'label': 'ekyna_commerce.customer.field.payment_methods',
                     'id': 'customer_payment_methods'
                 }) }}
+                {%- endblock config_pane %}
             </div>
             <div class="tab-pane" id="customer-addresses">
+                {% block addresses_pane -%}
                 <div class="sub-header">
                     <div class="actions pull-right">
                         {{- ui_button('ekyna_commerce.customer_address.button.import', {
@@ -418,9 +425,11 @@
                 {% else %}
                     <p>{{ 'ekyna_commerce.customer_address.alert.no_item'|trans }}</p>
                 {% endfor %}
+                {%- endblock addresses_pane %}
             </div>
             {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_CONTACT')) -%}
             <div class="tab-pane" id="customer-contacts">
+                {% block contacts_pane -%}
                 <div class="sub-header">
                     {{- ui_button('ekyna_commerce.customer_contact.button.new', {
                         'type': 'link',
@@ -449,10 +458,12 @@
                 {%- else -%}
                     <p>{{ 'ekyna_commerce.customer_contact.alert.no_item'|trans }}</p>
                 {%- endfor %}
+                {%- endblock contacts_pane %}
             </div>
             {%- endif %}
             {% if customer.children|length > 0 %}
             <div class="tab-pane" id="customer-children">
+                {% block children_pane -%}
                 <div class="sub-header">
                     {{ admin_resource_btn('ekyna_commerce.customer', 'new', {
                         'label': 'ekyna_commerce.customer.button.new',
@@ -463,9 +474,11 @@
                     <h2>{{ 'ekyna_commerce.customer.header.children'|trans|raw }}</h2>
                 </div>
                 {{ ekyna_table_render(customer_children) }}
+                {%- endblock children_pane %}
             </div>
             {% endif %}
             <div class="tab-pane" id="customer-quotes">
+                {% block quotes_pane -%}
                 <div class="sub-header">
                     {{ admin_resource_btn('ekyna_commerce.quote', 'new', {
                         'label': 'ekyna_commerce.quote.button.new',
@@ -476,8 +489,10 @@
                     <h2>{{ 'ekyna_commerce.customer.header.quotes'|trans|raw }}</h2>
                 </div>
                 {{ ekyna_table_render(customer_quotes) }}
+                {%- endblock quotes_pane %}
             </div>
             <div class="tab-pane" id="customer-orders">
+                {% block orders_pane -%}
                 <div class="sub-header">
                     {{ admin_resource_btn('ekyna_commerce.order', 'new', {
                         'label': 'ekyna_commerce.order.button.new',
@@ -488,21 +503,27 @@
                     <h2>{{ 'ekyna_commerce.customer.header.orders'|trans|raw }}</h2>
                 </div>
                 {{ ekyna_table_render(customer_orders) }}
+                {%- endblock orders_pane %}
             </div>
             <div class="tab-pane" id="customer-invoices">
+                {% block invoices_pane -%}
                 <div class="sub-header">
                     <h2>{{ 'ekyna_commerce.customer.header.invoices'|trans|raw }}</h2>
                 </div>
                 {{ ekyna_table_render(customer_invoices) }}
+                {%- endblock invoices_pane %}
             </div>
             <div class="tab-pane" id="customer-shipments">
+                {% block shipments_pane -%}
                 <div class="sub-header">
                     <h2>{{ 'ekyna_commerce.customer.header.shipments'|trans|raw }}</h2>
                 </div>
                 {{ ekyna_table_render(customer_shipments) }}
+                {%- endblock shipments_pane %}
             </div>
             {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_GRAPHIC')) -%}
             <div class="tab-pane" id="customer-graphics">
+                {% block graphics_pane -%}
                 <div class="row">
                     <div class="col-md-6">
                         <div class="row show-row">
@@ -546,10 +567,12 @@
                     'multiple': true,
                     'id': 'customer_documentTypes'
                 }) }}
+                {%- endblock graphics_pane %}
             </div>
             {%- endif %}
             {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::LOYALTY')) -%}
             <div class="tab-pane" id="customer-loyalty">
+                {% block loyalty_pane -%}
                 <div class="row">
                     <div class="col-md-6">
                         {{ show_row(customer.loyaltyPoints, 'number', {
@@ -580,21 +603,27 @@
                     </div>
                 </div>
                 {# TODO Customer's coupons table (use table type) #}
+                {%- endblock loyalty_pane %}
             </div>
             {%- endif %}
             {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::NEWSLETTER')) -%}
             <div class="tab-pane" id="customer-newsletter">
+                {% block newsletter_pane -%}
                 {{ newsletter_customer_subscription({'customer': customer, 'public': false}) }}
+                {%- endblock newsletter_pane %}
             </div>
             {%- endif %}
             {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
             <div class="tab-pane" id="customer-tickets">
+                {% block tickets_pane -%}
                 {{- support_tickets(customer, {
                     'admin': true,
                     'new': path('ekyna_commerce_ticket_admin_new', {'customer': customer.number})
                 }) -}}
+                {%- endblock tickets_pane %}
             </div>
             {%- endif %}
+            {% block extra_panes %}{% endblock extra_panes %}
         </div>
     </div>
 </div>

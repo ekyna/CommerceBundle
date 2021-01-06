@@ -1,5 +1,6 @@
 {% apply spaceless %}
 <ul class="nav nav-tabs" data-tab-key="{{ resource_id }}">
+    {% block tabs -%}
     <li class="active">
         <a href="#customer-general" id="toggle-general" data-toggle="tab">
             {{ 'ekyna_core.field.general'|trans }}
@@ -17,6 +18,7 @@
         </a>
     </li>
     {%- endif %}
+    {%- endblock tabs %}
 </ul>
 <div class="panel-body form-body">
     {{ bootstrap_set_style('horizontal') }}
@@ -24,6 +26,7 @@
     {{ form_errors(form, {'global_errors': true}) }}
     <div class="tab-content">
         <div class="tab-pane active" id="customer-general">
+            {% block general_pane -%}
             {{ form_row(form.email) }}
             {{ form_row(form.company) }}
             {{ form_row(form.identity) }}
@@ -45,8 +48,10 @@
             {{ form_row(form.description) }}
             {{ form_row(form.notifications) }}
             {{ form_row(form.tags) }}
+            {%- endblock general_pane %}
         </div>
         <div class="tab-pane" id="customer-config">
+            {% block config_pane -%}
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.user, {'label_col': 4, 'widget_col': 8}) }}
@@ -105,9 +110,11 @@
                 </div>
             </div>
             {{ form_row(form.paymentMethods) }}
+            {%- endblock general_pane %}
         </div>
         {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_GRAPHIC')) -%}
         <div class="tab-pane" id="customer-graphics">
+            {% block graphics_pane -%}
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.brandLogo, {'label_col': 4, 'widget_col': 8}) }}
@@ -119,8 +126,10 @@
             {{ form_row(form.brandUrl) }}
             {{ form_row(form.documentFooter) }}
             {{ form_row(form.documentTypes) }}
+            {%- endblock graphics_pane %}
         </div>
         {%- endif %}
+        {% block extra_panes %}{% endblock extra_panes %}
     </div>
     {{ form_rest(form) }}
 </div>
