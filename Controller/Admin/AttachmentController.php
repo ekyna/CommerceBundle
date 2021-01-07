@@ -4,7 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator;
-use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
+use Ekyna\Component\Commerce\Document\Util\DocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\PdfException;
 use Symfony\Component\HttpFoundation\Request;
@@ -103,7 +103,7 @@ class AttachmentController extends ResourceController
 
         $type = $resource->getType();
 
-        if (!SaleDocumentUtil::isSaleSupportsDocumentType($sale, $type)) {
+        if (!DocumentUtil::isSaleSupportsDocumentType($sale, $type)) {
             return $this->redirect($redirect);
         }
 

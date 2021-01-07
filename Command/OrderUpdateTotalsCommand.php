@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Throwable;
 
 /**
  * Class OrderUpdateTotalsCommand
@@ -80,6 +81,11 @@ class OrderUpdateTotalsCommand extends Command
     private $margin;
 
     /**
+     * @var bool
+     */
+    private $dryRun;
+
+    /**
      * @var int
      */
     private $totalCount = 0;
@@ -127,7 +133,8 @@ class OrderUpdateTotalsCommand extends Command
             ->addOption('amount', 'a', InputOption::VALUE_NONE, 'To update only amount totals')
             ->addOption('payment', 'p', InputOption::VALUE_NONE, 'To update only payment totals')
             ->addOption('invoice', 'i', InputOption::VALUE_NONE, 'To update only invoice totals')
-            ->addOption('margin', 'm', InputOption::VALUE_NONE, 'To update only margin totals');
+            ->addOption('margin', 'm', InputOption::VALUE_NONE, 'To update only margin totals')
+            ->addOption('dry-run', 'd', InputOption::VALUE_NONE, 'To not persist');
     }
 
     /**
@@ -139,6 +146,7 @@ class OrderUpdateTotalsCommand extends Command
         $this->payment = (bool)$input->getOption('payment');
         $this->invoice = (bool)$input->getOption('invoice');
         $this->margin = (bool)$input->getOption('margin');
+        $this->dryRun = (bool)$input->getOption('dry-run');
 
         if (!($this->amount || $this->payment || $this->invoice || $this->margin)) {
             $this->amount = true;
@@ -159,6 +167,9 @@ class OrderUpdateTotalsCommand extends Command
         }
         if ($this->margin) {
             $operations[] = 'margin';
+        }
+        if ($this->dryRun) {
+            $operations[] = '(dry run)';
         }
 
         $output->writeln("Updating " . implode(", ", $operations) . ".");
@@ -229,12 +240,14 @@ class OrderUpdateTotalsCommand extends Command
             }
 
             if ($changed) {
-                $order->setUpdatedAt(new DateTime());
+                if (!$this->dryRun) {
+                    $order->setUpdatedAt(new DateTime());
 
-                $this->manager->persist($order);
-                $this->manager->flush();
+                    $this->manager->persist($order);
+                    $this->manager->flush();
+                }
 
-                $output->writeln('<info>done</info>');
+                $output->writeln('<info>updated</info>');
                 $this->updatedCount++;
             } else {
                 $output->writeln('<comment>skipped</comment>');
@@ -243,9 +256,7 @@ class OrderUpdateTotalsCommand extends Command
             if ($this->totalCount % 20 === 0) {
                 $this->manager->clear();
             }
-        } catch (\Exception $e) {
-            $output->writeln('<error>error</error>');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $output->writeln('<error>error</error>');
         }
 

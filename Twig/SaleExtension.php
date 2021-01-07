@@ -10,7 +10,7 @@ use Ekyna\Component\Commerce\Common\Context\ContextProviderInterface;
 use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Common\View\SaleView;
 use Ekyna\Component\Commerce\Common\View\ViewBuilder;
-use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
+use Ekyna\Component\Commerce\Document\Util\DocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model as Invoice;
 use Ekyna\Component\Commerce\Order\Model as Order;
@@ -166,11 +166,11 @@ class SaleExtension extends AbstractExtension
             ),
             new TwigFilter(
                 'sale_editable_document_types',
-                [SaleDocumentUtil::class, 'getSaleEditableDocumentTypes']
+                [DocumentUtil::class, 'getSaleEditableDocumentTypes']
             ),
             new TwigFilter(
                 'sale_support_document_type',
-                [SaleDocumentUtil::class, 'isSaleSupportsDocumentType']
+                [DocumentUtil::class, 'isSaleSupportsDocumentType']
             ),
         ];
     }

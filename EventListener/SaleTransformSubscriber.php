@@ -9,7 +9,7 @@ use Ekyna\Component\Commerce\Common\Event\SaleTransformEvent;
 use Ekyna\Component\Commerce\Common\Event\SaleTransformEvents;
 use Ekyna\Component\Commerce\Common\Generator\GeneratorInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
-use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
+use Ekyna\Component\Commerce\Document\Util\DocumentUtil;
 use Ekyna\Component\Commerce\Exception\PdfException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
@@ -140,7 +140,7 @@ class SaleTransformSubscriber implements EventSubscriberInterface
      */
     protected function generateOrderConfirmation(OrderInterface $order)
     {
-        $available = SaleDocumentUtil::getSaleEditableDocumentTypes($order);
+        $available = DocumentUtil::getSaleEditableDocumentTypes($order);
         if (!in_array(DocumentTypes::TYPE_CONFIRMATION, $available, true)) {
             return;
         }
@@ -161,7 +161,7 @@ class SaleTransformSubscriber implements EventSubscriberInterface
      */
     protected function generateQuoteForm(QuoteInterface $quote)
     {
-        $available = SaleDocumentUtil::getSaleEditableDocumentTypes($quote);
+        $available = DocumentUtil::getSaleEditableDocumentTypes($quote);
         if (!in_array(DocumentTypes::TYPE_QUOTE, $available, true)) {
             return;
         }

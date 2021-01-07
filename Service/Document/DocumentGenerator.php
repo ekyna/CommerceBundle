@@ -7,7 +7,7 @@ use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Document\Builder\DocumentBuilderInterface;
 use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculatorInterface;
 use Ekyna\Component\Commerce\Document\Model\Document;
-use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
+use Ekyna\Component\Commerce\Document\Util\DocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -80,7 +80,7 @@ class DocumentGenerator
      */
     public function generate(SaleInterface $sale, $type)
     {
-        $available = SaleDocumentUtil::getSaleEditableDocumentTypes($sale);
+        $available = DocumentUtil::getSaleEditableDocumentTypes($sale);
         if (!in_array($type, $available, true)) {
             throw new InvalidArgumentException("Unexpected document type.");
         }

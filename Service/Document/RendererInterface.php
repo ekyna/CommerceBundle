@@ -11,9 +11,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 interface RendererInterface
 {
-    const FORMAT_HTML = 'html';
-    const FORMAT_PDF  = 'pdf';
-    const FORMAT_JPG  = 'jpg';
+    public const FORMAT_HTML = 'html';
+    public const FORMAT_PDF  = 'pdf';
+    public const FORMAT_JPG  = 'jpg';
 
 
     /**

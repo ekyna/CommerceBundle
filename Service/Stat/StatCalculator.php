@@ -262,7 +262,7 @@ class StatCalculator implements StatCalculatorInterface
             'average'  => 0,
         ];
 
-        if ($this->skipMode) {
+        if (!$this->skipMode) {
             $amountCalculator = $this->amountCalculatorFactory->create($this->defaultCurrency, true, $filter);
             $marginCalculator = $this->marginCalculatorFactory->create($this->defaultCurrency, true, $filter);
         } else {
@@ -279,6 +279,8 @@ class StatCalculator implements StatCalculatorInterface
                 $manager->clear();
                 continue;
             }
+
+            $amountCalculator->clear();
 
             // TODO calculate revenue based on sold quantities (assignments)
             $result = $amountCalculator->calculateSale($order, true);

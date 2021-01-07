@@ -83,7 +83,8 @@ class InvoiceType extends ResourceFormType
                         'required' => false,
                         'attr' => [
                             'align_with_widget' => true,
-                        ]
+                            'help_text'         => 'ekyna_commerce.invoice.help.ignore_stock',
+                        ],
                     ]);
                 }
 

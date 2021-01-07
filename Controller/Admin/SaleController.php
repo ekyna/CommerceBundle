@@ -26,7 +26,7 @@ use Ekyna\Component\Commerce\Common\Util\AddressUtil;
 use Ekyna\Component\Commerce\Document\Builder\DocumentBuilder;
 use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator;
 use Ekyna\Component\Commerce\Document\Model\Document;
-use Ekyna\Component\Commerce\Document\Util\SaleDocumentUtil;
+use Ekyna\Component\Commerce\Document\Util\DocumentUtil;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\PdfException;
@@ -796,7 +796,7 @@ class SaleController extends AbstractSaleController
         $sale = $context->getResource($resourceName);
 
         $type      = $request->attributes->get('type');
-        $available = SaleDocumentUtil::getSaleEditableDocumentTypes($sale);
+        $available = DocumentUtil::getSaleEditableDocumentTypes($sale);
         if (!in_array($type, $available, true)) {
             throw $this->createNotFoundException('Unsuppoerted type');
         }

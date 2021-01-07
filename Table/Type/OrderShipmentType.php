@@ -138,8 +138,8 @@ class OrderShipmentType extends AbstractOrderListType
                 'label'    => 'ekyna_core.field.created_at',
                 'position' => 70,
             ])
-            ->addFilter('completedAt', CType\Filter\DateTimeType::class, [
-                'label'    => 'ekyna_core.field.completed_at',
+            ->addFilter('shippedAt', CType\Filter\DateTimeType::class, [
+                'label'    => 'ekyna_commerce.shipment.field.shipped_at',
                 'position' => 80,
             ]);
 

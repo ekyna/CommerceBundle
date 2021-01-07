@@ -6,6 +6,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Document\Model as Document;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
+use Ekyna\Component\Commerce\Document\Util\DocumentUtil;
 use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentSubjectCalculatorInterface;
 use Ekyna\Component\Commerce\Shipment\Model as Shipment;
 
@@ -84,7 +85,7 @@ class DocumentPageBuilder
 
         foreach ($lines as $line) {
             $item = $line->getSaleItem();
-            if ($item->isPrivate()) {
+            if ($item->isPrivate() && DocumentUtil::hasPublicParent($document, $item)) {
                 continue;
             }
 

@@ -18,7 +18,7 @@ class SaleViewPrivacyType extends AbstractViewType
     /**
      * @inheritDoc
      */
-    public function buildItemView(Model\SaleItemInterface $item, View\LineView $view, array $options)
+    public function buildItemView(Model\SaleItemInterface $item, View\LineView $view, array $options): void
     {
         if (!$options['private']) {
             return;
@@ -39,25 +39,25 @@ class SaleViewPrivacyType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function supportsSale(Model\SaleInterface $sale)
+    public function supportsSale(Model\SaleInterface $sale): bool
     {
         return $sale instanceof OrderInterface
             || $sale instanceof QuoteInterface;
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
-    public function getPriority()
+    public function getName(): string
     {
-        return 1024;
+        return 'ekyna_commerce_sale_privacy';
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getName()
+    public function getPriority(): int
     {
-        return 'ekyna_commerce_sale_privacy';
+        return 1024;
     }
 }

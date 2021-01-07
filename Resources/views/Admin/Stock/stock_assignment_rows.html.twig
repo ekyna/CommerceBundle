@@ -20,7 +20,7 @@
             &nbsp;<strong{% if not assignment.ready %} class="text-danger"{% endif %}>[{{ assignment.shipped }}]</strong>
             {%- if 0 < assignment.locked %}&nbsp;<strong class="text-purple">(<i class="fa fa-lock"></i>&nbsp;{{ assignment.locked }})</strong>{% endif -%}
         </td>
-        <td id="{{ assignment_id ~ '_estimatedDateOfArrival' }}">{{ assignment.unit.eda|raw }}</td>
+        <td id="{{ assignment_id ~ '_estimatedDateOfArrival' }}" class="text-right">{{ assignment.unit.eda|raw }}</td>
         <td id="{{ assignment_id ~ '_netPrice' }}" class="text-right">{{ assignment.unit.net_price|raw }}</td>
         {% if actions -%}
         <td class="actions">

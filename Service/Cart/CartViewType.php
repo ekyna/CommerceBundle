@@ -34,7 +34,7 @@ class CartViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildSaleView(Common\SaleInterface $sale, View\SaleView $view, array $options)
+    public function buildSaleView(Common\SaleInterface $sale, View\SaleView $view, array $options): void
     {
         if (!$options['editable'] || !$options['private']) {
             return;
@@ -89,7 +89,7 @@ class CartViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildItemView(Common\SaleItemInterface $item, View\LineView $view, array $options)
+    public function buildItemView(Common\SaleItemInterface $item, View\LineView $view, array $options): void
     {
         if ($item->isImmutable() || $item->getParent() || !$options['editable']) {
             return;
@@ -175,7 +175,7 @@ class CartViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildShipmentView(Common\SaleInterface $sale, View\LineView $view, array $options)
+    public function buildShipmentView(Common\SaleInterface $sale, View\LineView $view, array $options): void
     {
         if (!$options['editable'] || !$options['private']) {
             return;
@@ -219,7 +219,7 @@ class CartViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function supportsSale(Common\SaleInterface $sale)
+    public function supportsSale(Common\SaleInterface $sale): bool
     {
         return $sale instanceof Cart\CartInterface;
     }
@@ -227,7 +227,7 @@ class CartViewType extends AbstractViewType
     /**
      * @inheritDoc
      */
-    public function getName()
+    public function getName(): string
     {
         return 'ekyna_commerce_cart';
     }

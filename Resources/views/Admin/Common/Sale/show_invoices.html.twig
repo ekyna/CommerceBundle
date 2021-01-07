@@ -28,7 +28,12 @@
                     'orderInvoiceId': invoice.id
                 }
             }|json_encode }}'>
-                <td id="{{ invoiceId }}_number">{{ invoice.number }}</td>
+                <td id="{{ invoiceId }}_number">
+                    {{ invoice.number }}
+                    {% if invoice.credit and invoice.ignoreStock %}
+                        <span class="fa fa-warning text-warning" title="{{ 'ekyna_commerce.invoice.field.ignore_stock'|trans }}"></span>
+                    {% endif %}
+                </td>
                 <td id="{{ invoiceId }}_goodsBase">{{ invoice.goodsBase|localizedcurrency(currency) }}</td>
                 <td id="{{ invoiceId }}_shipmentBase">{{ invoice.shipmentBase|localizedcurrency(currency) }}</td>
                 <td id="{{ invoiceId }}_taxesTotal">{{ invoice.taxesTotal|localizedcurrency(currency) }}</td>

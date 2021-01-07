@@ -52,7 +52,7 @@ class OrderViewType extends AbstractViewType
      *
      * @param StockPrioritizerInterface $prioritizer
      */
-    public function setStockPrioritizer(StockPrioritizerInterface $prioritizer)
+    public function setStockPrioritizer(StockPrioritizerInterface $prioritizer): void
     {
         $this->stockPrioritizer = $prioritizer;
     }
@@ -62,7 +62,7 @@ class OrderViewType extends AbstractViewType
      *
      * @param StockRenderer $renderer
      */
-    public function setStockRenderer(StockRenderer $renderer)
+    public function setStockRenderer(StockRenderer $renderer): void
     {
         $this->stockRenderer = $renderer;
     }
@@ -72,7 +72,7 @@ class OrderViewType extends AbstractViewType
      *
      * @param InvoiceSubjectCalculatorInterface $calculator
      */
-    public function setInvoiceCalculator(InvoiceSubjectCalculatorInterface $calculator)
+    public function setInvoiceCalculator(InvoiceSubjectCalculatorInterface $calculator): void
     {
         $this->invoiceCalculator = $calculator;
     }
@@ -82,7 +82,7 @@ class OrderViewType extends AbstractViewType
      *
      * @param ShipmentSubjectCalculatorInterface $calculator
      */
-    public function setShipmentCalculator(ShipmentSubjectCalculatorInterface $calculator)
+    public function setShipmentCalculator(ShipmentSubjectCalculatorInterface $calculator): void
     {
         $this->shipmentCalculator = $calculator;
     }
@@ -92,7 +92,7 @@ class OrderViewType extends AbstractViewType
      *
      * @param ShipmentPriceResolverInterface $resolver
      */
-    public function setShipmentPriceResolver(ShipmentPriceResolverInterface $resolver)
+    public function setShipmentPriceResolver(ShipmentPriceResolverInterface $resolver): void
     {
         $this->shipmentPriceResolver = $resolver;
     }
@@ -100,7 +100,7 @@ class OrderViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildSaleView(Common\SaleInterface $sale, View\SaleView $view, array $options)
+    public function buildSaleView(Common\SaleInterface $sale, View\SaleView $view, array $options): void
     {
         if (!$options['editable'] || !$options['private']) {
             return;
@@ -187,7 +187,7 @@ class OrderViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildItemView(Common\SaleItemInterface $item, View\LineView $view, array $options)
+    public function buildItemView(Common\SaleItemInterface $item, View\LineView $view, array $options): void
     {
         if (!$options['editable'] || !$options['private']) {
             return;
@@ -220,8 +220,11 @@ class OrderViewType extends AbstractViewType
                 $credited = $this->invoiceCalculator->calculateCreditedQuantity($item);
 
                 if (0 < $credited) {
-                    $invoiced = sprintf('%s (-%s)', $this->formatter->number($invoiced),
-                        $this->formatter->number($credited));
+                    $invoiced = sprintf(
+                        '%s (-%s)',
+                        $this->formatter->number($invoiced),
+                        $this->formatter->number($credited)
+                    );
                 } else {
                     $invoiced = $this->formatter->number($invoiced);
                 }
@@ -421,7 +424,7 @@ class OrderViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildAdjustmentView(Common\AdjustmentInterface $adjustment, View\LineView $view, array $options)
+    public function buildAdjustmentView(Common\AdjustmentInterface $adjustment, View\LineView $view, array $options): void
     {
         if ($adjustment->isImmutable() || (!$options['editable']) || (!$options['private'])) {
             return;
@@ -465,7 +468,7 @@ class OrderViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildShipmentView(Common\SaleInterface $sale, View\LineView $view, array $options)
+    public function buildShipmentView(Common\SaleInterface $sale, View\LineView $view, array $options): void
     {
         if (!$options['editable'] || !$options['private']) {
             return;
@@ -509,7 +512,7 @@ class OrderViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function supportsSale(Common\SaleInterface $sale)
+    public function supportsSale(Common\SaleInterface $sale): bool
     {
         return $sale instanceof Order\OrderInterface;
     }
@@ -517,7 +520,7 @@ class OrderViewType extends AbstractViewType
     /**
      * @inheritDoc
      */
-    public function getName()
+    public function getName(): string
     {
         return 'ekyna_commerce_order';
     }

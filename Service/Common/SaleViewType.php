@@ -67,7 +67,7 @@ class SaleViewType extends AbstractViewType
     /**
      * @inheritDoc
      */
-    public function configureOptions(Model\SaleInterface $sale, SaleView $view, array &$options)
+    public function configureOptions(Model\SaleInterface $sale, SaleView $view, array &$options): void
     {
         if (!isset($options['locale'])) {
             $options['locale'] = $sale->getLocale() ?? $this->localeProvider->getCurrentLocale();
@@ -95,7 +95,7 @@ class SaleViewType extends AbstractViewType
     /**
      * @inheritDoc
      */
-    public function buildSaleView(Model\SaleInterface $sale, View\SaleView $view, array $options)
+    public function buildSaleView(Model\SaleInterface $sale, View\SaleView $view, array $options): void
     {
         $view->setTranslations([
             'designation'    => $this->trans('ekyna_core.field.designation'),
@@ -124,7 +124,7 @@ class SaleViewType extends AbstractViewType
     /**
      * @inheritDoc
      */
-    public function buildItemView(Model\SaleItemInterface $item, LineView $view, array $options)
+    public function buildItemView(Model\SaleItemInterface $item, LineView $view, array $options): void
     {
         if (!$item->hasSubjectIdentity()) {
             return;
@@ -149,7 +149,7 @@ class SaleViewType extends AbstractViewType
     /**
      * @inheritDoc
      */
-    public function buildAdjustmentView(Model\AdjustmentInterface $adjustment, View\LineView $view, array $options)
+    public function buildAdjustmentView(Model\AdjustmentInterface $adjustment, View\LineView $view, array $options): void
     {
         if (!empty($adjustment->getDesignation())) {
             return;
@@ -166,7 +166,7 @@ class SaleViewType extends AbstractViewType
     /**
      * @inheritDoc
      */
-    public function buildShipmentView(Model\SaleInterface $sale, View\LineView $view, array $options)
+    public function buildShipmentView(Model\SaleInterface $sale, View\LineView $view, array $options): void
     {
         $result = $this->amountCalculatorFactory->create($options['currency'])->calculateSaleShipment($sale);
 
@@ -191,7 +191,7 @@ class SaleViewType extends AbstractViewType
     /**
      * @inheritDoc
      */
-    public function supportsSale(Model\SaleInterface $sale)
+    public function supportsSale(Model\SaleInterface $sale): bool
     {
         return true;
     }
@@ -199,7 +199,7 @@ class SaleViewType extends AbstractViewType
     /**
      * @inheritDoc
      */
-    public function getName()
+    public function getName(): string
     {
         return 'ekyna_commerce_sale';
     }

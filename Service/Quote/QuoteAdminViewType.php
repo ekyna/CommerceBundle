@@ -35,7 +35,7 @@ class QuoteAdminViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildSaleView(Common\SaleInterface $sale, View\SaleView $view, array $options)
+    public function buildSaleView(Common\SaleInterface $sale, View\SaleView $view, array $options): void
     {
         if (!$options['editable'] || !$options['private']) {
             return;
@@ -105,7 +105,7 @@ class QuoteAdminViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildItemView(Common\SaleItemInterface $item, View\LineView $view, array $options)
+    public function buildItemView(Common\SaleItemInterface $item, View\LineView $view, array $options): void
     {
         if (!$options['editable'] || !$options['private']) {
             return;
@@ -232,7 +232,7 @@ class QuoteAdminViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildAdjustmentView(Common\AdjustmentInterface $adjustment, View\LineView $view, array $options)
+    public function buildAdjustmentView(Common\AdjustmentInterface $adjustment, View\LineView $view, array $options): void
     {
         if ($adjustment->isImmutable() || !$options['editable'] || !$options['private']) {
             return;
@@ -268,7 +268,7 @@ class QuoteAdminViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function buildShipmentView(Common\SaleInterface $sale, View\LineView $view, array $options)
+    public function buildShipmentView(Common\SaleInterface $sale, View\LineView $view, array $options): void
     {
         if (!$options['editable'] || !$options['private']) {
             return;
@@ -312,7 +312,7 @@ class QuoteAdminViewType extends AbstractViewType
     /**
      * @inheritdoc
      */
-    public function supportsSale(Common\SaleInterface $sale)
+    public function supportsSale(Common\SaleInterface $sale): bool
     {
         return $sale instanceof Quote\QuoteInterface;
     }
@@ -321,7 +321,7 @@ class QuoteAdminViewType extends AbstractViewType
     /**
      * @inheritDoc
      */
-    public function getName()
+    public function getName(): string
     {
         return 'ekyna_commerce_quote_admin';
     }

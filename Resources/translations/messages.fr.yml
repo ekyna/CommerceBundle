@@ -622,7 +622,9 @@ ekyna_commerce:
             invoiced_at: Date de facturation
             sale_total: Total Cde
             sale_paid: Réglé
-            ignore_stock: Ne pas créditer les stock
+            ignore_stock: Avoir d'ajustement
+        help:
+            ignore_stock: Les avoirs d'ajustement doivent être refacturés.
         message:
             remove_confirm: Souhaitez-vous réellement supprimer cet facture ?
             recalculate_confirm: Êtes-vous sûr de vouloir recalculer cette facture ? (Opération non réversible).
