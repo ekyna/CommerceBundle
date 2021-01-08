@@ -267,6 +267,14 @@
                             'label_col': 6
                         }) }}
                     </div>
+                    <div class="col-md-4">
+                        {{ show_row(supplierOrder|supplier_order_weight_total, 'number', {
+                            'label': 'ekyna_commerce.sale.field.weight_total',
+                            'class': 'sale-weight-total',
+                            'append': 'kg',
+                            'label_col': 6
+                        }) }}
+                    </div>
                 </div>
                 {% set urls = [] %}
                 {% if supplierOrder.trackingUrls is not empty -%}

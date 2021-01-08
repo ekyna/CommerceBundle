@@ -29,7 +29,7 @@ class SupplierOrderItemType extends ResourceFormType
      * @param string $dataClass
      * @param string $supplierProductClass
      */
-    public function __construct($dataClass, $supplierProductClass)
+    public function __construct(string $dataClass, string $supplierProductClass)
     {
         parent::__construct($dataClass);
 
@@ -59,9 +59,18 @@ class SupplierOrderItemType extends ResourceFormType
             ->add('netPrice', MoneyType::class, [
                 'label'          => 'ekyna_core.field.designation',
                 'currency'       => $options['currency'],
+                'scale'          => 5,
                 'error_bubbling' => true,
                 'attr'           => [
                     'class' => 'order-item-net-price',
+                ],
+            ])
+            ->add('weight', Symfony\NumberType::class, [
+                'label' => 'ekyna_core.field.weight',
+                'scale' => 3,
+                'attr'  => [
+                    'class'       => 'order-item-weight',
+                    'input_group' => ['append' => 'Kg'],
                 ],
             ])
             ->add('taxGroup', TaxGroupChoiceType::class, [

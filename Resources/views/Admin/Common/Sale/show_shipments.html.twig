@@ -131,7 +131,7 @@
                             {% for parcel in shipment.parcels %}
                             {% set parcelId = shipmentId ~ '_parcel_' ~ loop.index0 %}
                             <tr>
-                                <td id="{{ parcelId ~ '_weight' }}">{{ parcel.weight|localizednumber }} kg</td>
+                                <td id="{{ parcelId ~ '_weight' }}">{{ parcel.weight|localizednumber }}&nbsp;kg</td>
                                 <td id="{{ parcelId ~ '_weight' }}">
                                     {%- if 0 < parcel.valorization -%}
                                         {{ parcel.valorization|localizedcurrency(commerce_default_currency) }}

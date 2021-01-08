@@ -7,6 +7,7 @@
         <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
         <th>{{ 'ekyna_commerce.stock_unit.field.received_quantity'|trans }}</th>
         <th>{{ 'ekyna_commerce.field.buy_net_price'|trans }}</th>
+        <th>{{ 'ekyna_core.field.weight'|trans }}</th>
         <th>{{ 'ekyna_commerce.tax_group.label.singular'|trans }}</th>
         <th>{{ 'ekyna_commerce.supplier_order_item.field.supplier_data'|trans }}</th>
         <th>{{ 'ekyna_commerce.supplier_order_item.field.subject'|trans }}</th>
@@ -45,6 +46,9 @@
         </td>
         <td id="{{ itemId ~ 'netPrice' }}" class="text-right">
             {{ item.netPrice|localizedcurrency(supplierOrder.currency.code) }}
+        </td>
+        <td id="{{ itemId ~ 'weight' }}" class="text-right">
+            {{ item.weight|localizednumber }}&nbsp;kg
         </td>
         <td id="{{ itemId ~ 'taxGroup' }}" class="text-right">
             {{ item.taxGroup.name }}
@@ -94,11 +98,14 @@
         <td class="text-right">
             <strong>{{ supplierOrder|supplier_order_items_total|localizedcurrency(supplierOrder.currency.code) }}</strong>
         </td>
+        <td class="text-right">
+            <strong>{{ supplierOrder|supplier_order_weight_total|localizednumber }}&nbsp;kg</strong>
+        </td>
         <td colspan="4">&nbsp;</td>
     </tr>
     {%- else %}
     <tr>
-        <td colspan="9" class="text-center">
+        <td colspan="10" class="text-center">
             <em>{{ 'ekyna_commerce.supplier_order.alert.empty'|trans }}</em>
         </td>
     </tr>

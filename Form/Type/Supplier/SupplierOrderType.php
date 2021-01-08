@@ -224,6 +224,7 @@ class SupplierOrderType extends ResourceFormType
                 'data-designation' => $value->getDesignation(),
                 'data-reference'   => $value->getReference(),
                 'data-net-price'   => $value->getNetPrice(),
+                'data-weight'      => $value->getWeight(),
                 'data-tax-group'   => $value->getTaxGroup()->getId(),
             ];
         };

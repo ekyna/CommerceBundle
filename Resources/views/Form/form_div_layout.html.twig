@@ -1207,10 +1207,11 @@
             <thead>
                 <tr>
                     <th>{{ 'ekyna_core.field.designation'|trans }}</th>
-                    <th style="width:14%">{{ 'ekyna_core.field.reference'|trans }}</th>
-                    <th style="width:11%">{{ 'ekyna_core.field.quantity'|trans }}</th>
-                    <th style="width:11%">{{ 'ekyna_commerce.field.buy_net_price'|trans }}</th>
-                    <th style="width:15%">{{ 'ekyna_commerce.tax_group.label.singular'|trans }}</th>
+                    <th style="width:13%">{{ 'ekyna_core.field.reference'|trans }}</th>
+                    <th style="width:10%">{{ 'ekyna_core.field.quantity'|trans }}</th>
+                    <th style="width:10%">{{ 'ekyna_commerce.field.buy_net_price'|trans }}</th>
+                    <th style="width:10%">{{ 'ekyna_core.field.weight'|trans }}</th>
+                    <th style="width:14%">{{ 'ekyna_commerce.tax_group.label.singular'|trans }}</th>
                     <th></th>
                 </tr>
             </thead>
@@ -1261,6 +1262,7 @@
             <td>{{ form_widget(form.reference) }}</td>
             <td>{{ form_widget(form.quantity) }}</td>
             <td>{{- form_widget(form.netPrice) -}}</td>
+            <td>{{- form_widget(form.weight) -}}</td>
             <td>{{- form_widget(form.taxGroup) -}}</td>
             <td class="ekyna-collection-controls">
                 {{- form_widget(form.product) -}}

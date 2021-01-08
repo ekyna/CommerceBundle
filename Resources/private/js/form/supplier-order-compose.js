@@ -8,7 +8,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
         this.each(function() {
             var $this = $(this),
                 $product = $this.find('input.order-item-product'),
-                $netPrice = $this.find('input.order-item-net-price');
+                $priceAndWeight = $this.find('input.order-item-net-price, input.order-item-weight');
 
             $product.on('change', function() {
                 var productValue = String($product.val()),
@@ -19,10 +19,10 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                     .prop('readonly', readyOnly);
             }).trigger('change');
 
-            $netPrice.on('change keyup', function() {
-                var $group = $netPrice.closest('.input-group'),
-                    price = parseFloat(String($netPrice.val()).replace(',', '.')) || 0;
-                if (0 >= price) {
+            $priceAndWeight.on('change keyup', function() {
+                var $group = $(this).parent(),
+                    value = parseFloat(String($(this).val()).replace(',', '.')) || 0;
+                if (0 >= value) {
                     $group.addClass('has-warning');
                 } else {
                     $group.removeClass('has-warning');
@@ -43,7 +43,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                 $collection = $this.find('.order-compose-items').eq(0),
                 $selector = $this.find('.order-compose-quick-add-select').eq(0),
                 $button = $this.find('.order-compose-quick-add-button').eq(0),
-                keys = ['designation', 'reference', 'net-price', 'tax-group'];
+                keys = ['designation', 'reference', 'net-price', 'weight', 'tax-group'];
 
             // Init order item widgets
             $collection
