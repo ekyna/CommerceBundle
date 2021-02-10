@@ -20,6 +20,7 @@
         <tbody>
         {% for invoice in invoices %}
             {% set currency = invoice.currency %}
+            {% set locked = invoice is commerce_locked %}
             {% set invoiceId = prefix ~ '_' ~ loop.index0 %}
             <tr data-id="{{ invoice.id }}" data-summary='{{ {
                 'route': 'ekyna_commerce_order_invoice_admin_summary',
@@ -30,9 +31,12 @@
             }|json_encode }}'>
                 <td id="{{ invoiceId }}_number">
                     {{ invoice.number }}
-                    {% if invoice.credit and invoice.ignoreStock %}
+                    {% if locked -%}
+                        <span class="fa fa-lock text-danger" title="{{ 'ekyna_core.field.locked'|trans }}"></span>
+                    {%- endif %}
+                    {% if invoice.credit and invoice.ignoreStock -%}
                         <span class="fa fa-warning text-warning" title="{{ 'ekyna_commerce.invoice.field.ignore_stock'|trans }}"></span>
-                    {% endif %}
+                    {%- endif %}
                 </td>
                 <td id="{{ invoiceId }}_goodsBase">{{ invoice.goodsBase|localizedcurrency(currency) }}</td>
                 <td id="{{ invoiceId }}_shipmentBase">{{ invoice.shipmentBase|localizedcurrency(currency) }}</td>
@@ -56,8 +60,9 @@
                 {%- endif %}
                 <td id="{{ invoiceId }}_createdAt">{{ invoice.createdAt|localizeddate('short', 'none') }}</td>
                 <td id="{{ invoiceId }}_shipment">
-                    {%- if invoice.shipment is not null %}
+                    {%- if invoice.shipment is not null -%}
                         {{ invoice.shipment.number }}
+                        {% if not locked -%}
                         <a href="{{ admin_resource_path(invoice, 'unlink') }}"
                            id="{{ invoiceId }}_recalculate"
                            class="btn btn-link btn-xs"
@@ -67,7 +72,8 @@
                            })|escape('js') }}');">
                             <span class="fa fa-unlink"></span>
                         </a>
-                    {% endif -%}
+                        {%- endif %}
+                    {%- endif -%}
                 </td>
                 <td class="actions">
                     <a href="{{ admin_resource_path(invoice, 'render') }}"
@@ -77,15 +83,15 @@
                        target="_blank">
                         <span class="fa fa-download"></span>
                     </a>
-                    <a href="{{ admin_resource_path(invoice, 'archive') }}"
+                    <a href="{{ locked ? 'javascript:void(0)' : admin_resource_path(invoice, 'archive') }}"
                        id="{{ invoiceId }}_archive"
-                       class="btn btn-default btn-xs"
+                       class="btn btn-default btn-xs{% if locked %} disabled{% endif %}"
                        title="{{ 'ekyna_core.button.archive'|trans }}">
                         <span class="fa fa-archive"></span>
                     </a>
-                    <a href="{{ admin_resource_path(invoice, 'recalculate') }}"
+                    <a href="{{ locked ? 'javascript:void(0)' : admin_resource_path(invoice, 'recalculate') }}"
                        id="{{ invoiceId }}_recalculate"
-                       class="btn btn-warning btn-xs"
+                       class="btn btn-warning btn-xs{% if locked %} disabled{% endif %}"
                        {% if invoice.shipment -%}
                        title="{{ 'ekyna_commerce.invoice.button.synchronize'|trans }}"
                        onclick="return confirm('{{ 'ekyna_commerce.invoice.message.synchronize_confirm'|trans|escape('js') }}');"
@@ -95,18 +101,16 @@
                        {%- endif %}>
                         <span class="fa fa-refresh"></span>
                     </a>
-                    {% if invoice.shipment is null -%}
                     <a href="{{ admin_resource_path(invoice, 'edit') }}"
                        id="{{ invoiceId }}_edit"
                        class="btn btn-warning btn-xs"
                        title="{{ 'ekyna_core.button.edit'|trans }}">
                         <span class="fa fa-pencil"></span>
                     </a>
-                    {%- endif %}
                     {% if is_granted('ROLE_SUPER_ADMIN') -%}
-                    <a href="{{ admin_resource_path(invoice, 'remove') }}"
+                    <a href="{{ locked ? 'javascript:void(0)' : admin_resource_path(invoice, 'remove') }}"
                        id="{{ invoiceId }}_remove"
-                       class="btn btn-danger btn-xs"
+                       class="btn btn-danger btn-xs{% if locked %} disabled{% endif %}"
                        title="{{ 'ekyna_core.button.remove'|trans }}">
                         <span class="fa fa-trash"></span>
                     </a>

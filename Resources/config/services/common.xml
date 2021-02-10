@@ -222,6 +222,23 @@
             <argument type="service" id="Symfony\Component\Translation\TranslatorInterface"/>
         </service>
 
+        <!-- Locking helper -->
+        <service id="Ekyna\Component\Commerce\Common\Locking\LockChecker">
+            <argument type="collection">
+                <argument type="service">
+                    <service class="Ekyna\Component\Commerce\Invoice\Resolver\InvoiceLockResolver"/>
+                </argument>
+                <argument type="service">
+                    <service class="Ekyna\Component\Commerce\Order\Resolver\OrderPaymentLockResolver"/>
+                </argument>
+            </argument>
+            <!-- Replaced by DI extension -->
+            <argument type="string"/>
+            <argument type="string"/>
+            <argument type="string"/>
+            <tag name="twig.runtime"/>
+        </service>
+
     </services>
 
 </container>

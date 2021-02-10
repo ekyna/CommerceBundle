@@ -2,15 +2,17 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Bundle\CommerceBundle\Service\Common\CommonRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\ButtonRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Common\CommonRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyRenderer;
+use Ekyna\Component\Commerce\Common\Locking\LockChecker;
 use Ekyna\Component\Commerce\Features;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
+use Twig\TwigTest;
 
 /**
  * Class CommonExtension
@@ -128,6 +130,19 @@ class CommonExtension extends AbstractExtension
             new TwigFunction(
                 'commerce_feature',
                 [Features::class, 'getConfig']
+            ),
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getTests(): array
+    {
+        return [
+            new TwigTest(
+                'commerce_locked',
+                [LockChecker::class, 'isLocked']
             ),
         ];
     }

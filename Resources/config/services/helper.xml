@@ -107,7 +107,8 @@
         <service id="ekyna_commerce.payment_helper"
                  class="Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper"
                  lazy="true">
-            <argument type="service" id="payum"/>
+            <argument type="service" id="Payum\Core\Payum"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Locking\LockChecker"/>
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface"/>
             <argument type="service" id="ekyna_commerce.cache"/>
             <argument>%kernel.debug%</argument>

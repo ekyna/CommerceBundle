@@ -99,6 +99,9 @@
             <argument type="service" id="ekyna_commerce.invoice.builder"/>
             <argument type="service" id="Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator"/>
             <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+            <call method="setLockingHelper">
+                <argument type="service" id="Ekyna\Component\Commerce\Common\Locking\LockChecker"/>
+            </call>
         </service>
 
         <!-- Shipment price renderer -->

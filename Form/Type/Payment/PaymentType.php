@@ -46,8 +46,10 @@ class PaymentType extends ResourceFormType
                 throw new LogicException("Payment method must be set.");
             }
 
-            $methodDisabled = !$method->isManual() || PaymentStates::isPaidState($payment, true);
-            $amountDisabled = !($method->isManual() || $method->isOutstanding() || $method->isCredit());
+            $locked = $this->isLocked($payment);
+
+            $methodDisabled = $locked || !$method->isManual() || PaymentStates::isPaidState($payment, true);
+            $amountDisabled = $locked || !($method->isManual() || $method->isOutstanding() || $method->isCredit());
 
             $form
                 ->add('amount', MoneyType::class, [
@@ -57,14 +59,17 @@ class PaymentType extends ResourceFormType
                 ])
                 ->add('number', Type\TextType::class, [
                     'label'    => 'ekyna_core.field.number',
+                    'required' => false,
                     'disabled' => true,
                 ])
                 ->add('currency', CurrencyChoiceType::class, [
+                    'required' => false,
                     'disabled' => true,
                 ])
                 ->add('state', ConstantChoiceType::class, [
                     'label'    => 'ekyna_core.field.status',
                     'class'    => BStates::class,
+                    'required' => false,
                     'disabled' => true,
                 ])
                 ->add('method', PaymentMethodChoiceType::class, [
@@ -85,5 +90,17 @@ class PaymentType extends ResourceFormType
                     'required' => false,
                 ]);
         });
+    }
+
+    /**
+     * Returns whether the payment is locked.
+     *
+     * @param PaymentInterface $payment
+     *
+     * @return bool
+     */
+    protected function isLocked(PaymentInterface $payment): bool
+    {
+        return false;
     }
 }

@@ -3,7 +3,9 @@
 namespace Ekyna\Bundle\CommerceBundle\DependencyInjection;
 
 use Ekyna\Bundle\CommerceBundle\Model\DocumentDesign;
+use Ekyna\Component\Commerce\Common\Locking\LockChecker;
 use Ekyna\Component\Commerce\Common\Model\AdjustmentModes;
+use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Features;
 use Ekyna\Component\Commerce\Pricing\Model\VatDisplayModes;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
@@ -128,6 +130,53 @@ class Configuration implements ConfigurationInterface
                             ->children()
                                 ->booleanNode('administrators')
                                     ->defaultTrue()
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('locking')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('start')
+                                    ->defaultValue('first day of last month')
+                                    ->validate()
+                                        ->ifTrue(function (string $input) {
+                                            try {
+                                                LockChecker::createDate($input, 'lock start');
+                                            } catch (LogicException $e) {
+                                                return true;
+                                            }
+                                            return false;
+                                        })
+                                        ->thenInvalid("Invalid 'lock start' date '%s'.")
+                                    ->end()
+                                ->end()
+                                ->scalarNode('end')
+                                    ->defaultValue('last day of last month')
+                                    ->validate()
+                                        ->ifTrue(function (string $input) {
+                                            try {
+                                                LockChecker::createDate($input, 'lock end');
+                                            } catch (LogicException $e) {
+                                                return true;
+                                            }
+                                            return false;
+                                        })
+                                        ->thenInvalid("Invalid 'lock end' date '%s'.")
+                                    ->end()
+                                ->end()
+                                ->scalarNode('since')
+                                    ->defaultValue('first day of this month')
+                                    ->validate()
+                                        ->ifTrue(function (string $input) {
+                                            try {
+                                                LockChecker::createDate($input, 'lock since');
+                                            } catch (LogicException $e) {
+                                                return true;
+                                            }
+                                            return false;
+                                        })
+                                        ->thenInvalid("Invalid 'lock since' date '%s'.")
+                                    ->end()
                                 ->end()
                             ->end()
                         ->end()

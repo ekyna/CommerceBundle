@@ -147,6 +147,12 @@
             <argument>%ekyna_commerce.order.class%</argument>
             <tag name="form.type"/>
         </service>
+        <service id="ekyna_commerce.order_payment.form_type"
+                 class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderPaymentType">
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Locking\LockChecker"/>
+            <argument>%ekyna_commerce.order_payment.class%</argument>
+            <tag name="form.type"/>
+        </service>
         <service id="ekyna_commerce.order_shipment.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentType">
             <argument type="service" id="ekyna_commerce.shipment.builder"/>
@@ -165,6 +171,7 @@
         <service id="ekyna_commerce.order_invoice.form_type"
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceType">
             <argument type="service" id="ekyna_commerce.invoice.builder"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Locking\LockChecker"/>
             <argument>%ekyna_commerce.order_invoice.class%</argument>
             <tag name="form.type"/>
             <tag name="form.js" selector=".invoice" path="ekyna-commerce/form/invoice"/>

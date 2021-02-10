@@ -143,14 +143,6 @@ class SaleInvoiceController extends AbstractSaleController
         /** @var InvoiceInterface $invoice */
         $invoice = $context->getResource($resourceName);
 
-        if ($invoice->getShipment()) {
-            $message = 'ekyna_commerce.invoice.alert.' . $invoice->getType() . '_edit_prevented';
-
-            $this->addFlash($message, 'warning');
-
-            return $this->redirect($this->generateResourcePath($invoice->getSale()));
-        }
-
         $this->isGranted('EDIT', $invoice);
 
         $isXhr = $request->isXmlHttpRequest();

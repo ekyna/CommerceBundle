@@ -15,9 +15,9 @@
         </tr>
         </thead>
         <tbody>
-        {% for shipment in shipments %}
-            {% set shipmentId = prefix ~ '_' ~ loop.index0 %}
-            {% set details = 0 < shipment.parcels|length %}
+        {% for shipment in shipments -%}
+            {% set shipmentId = prefix ~ '_' ~ loop.index0 -%}
+            {% set details = 0 < shipment.parcels|length -%}
             <tr data-id="{{ shipment.id }}" data-summary='{{ {
                 'route': 'ekyna_commerce_order_shipment_admin_summary',
                 'parameters': {
@@ -53,21 +53,21 @@
                 </td>
                 <td class="actions">
                     {# Gateway actions #}
-                    {% if not shipment.sale.released %}
+                    {% if not shipment.sale.released -%}
                     {%- for button in shipment_gateway_buttons(shipment) -%}
                     <a href="{{ path(button.route, button.parameters) }}"
                        class="btn btn-xs btn-{{ button.theme }}"
                        title="{{ button.label|trans }}"
-                       {%- if button.target is not empty %} target="{{ button.target }}"{% endif %}
+                       {%- if button.target is not empty %} target="{{ button.target }}"{% endif -%}
                        {%- if button.confirm is not empty %} onclick="return confirm('{{ button.confirm|trans|escape('js') }}')"{% endif %}>
-                        {% if button.icon -%}
+                        {%- if button.icon -%}
                             <span class="glyphicon glyphicon-{{ button.icon }}"></span>
                         {%- else -%}
                             {{ button.label|trans }}
                         {%- endif -%}
                     </a>
-                    {%- endfor %}
-                    {% endif %}
+                    {%- endfor -%}
+                    {%- endif -%}
                     {# Toggle details #}
                     {% if details -%}
                     <a href="javascript:void(0)"

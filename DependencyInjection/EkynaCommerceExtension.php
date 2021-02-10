@@ -16,6 +16,7 @@ use Ekyna\Component\Commerce\Bridge\Mailchimp;
 use Ekyna\Component\Commerce\Bridge\SendInBlue;
 use Ekyna\Component\Commerce\Cart;
 use Ekyna\Component\Commerce\Customer;
+use Ekyna\Component\Commerce\Common\Locking\LockChecker;
 use Ekyna\Component\Commerce\Features;
 use Ekyna\Component\Commerce\Order;
 use Ekyna\Component\Commerce\Pricing\Api;
@@ -88,6 +89,13 @@ class EkynaCommerceExtension extends AbstractExtension
         $container->setParameter('ekyna_commerce.default.expiration.cart', $config['expiration']['cart']);
         $container->setParameter('ekyna_commerce.default.expiration.quote', $config['expiration']['quote']);
         $container->setParameter('ekyna_commerce.default.notify', $config['notify']);
+
+        // Configure the locking helper
+        $container
+            ->getDefinition(LockChecker::class)
+            ->replaceArgument(1, $config['locking']['start'])
+            ->replaceArgument(2, $config['locking']['end'])
+            ->replaceArgument(3, $config['locking']['since']);
     }
 
     /**

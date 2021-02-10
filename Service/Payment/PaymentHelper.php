@@ -3,12 +3,14 @@
 namespace Ekyna\Bundle\CommerceBundle\Service\Payment;
 
 use Ekyna\Component\Commerce\Bridge\Payum\Request\Status;
+use Ekyna\Component\Commerce\Common\Locking\LockChecker;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Payment\Event\PaymentEvent;
 use Ekyna\Component\Commerce\Payment\Event\PaymentEvents;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions;
 use Payum\Core\Action\ExecuteSameRequestWithModelDetailsAction;
+use Payum\Core\GatewayInterface;
 use Payum\Core\Payum;
 use Payum\Core\Request\Notify;
 use Payum\Core\Security\TokenInterface;
@@ -32,6 +34,11 @@ class PaymentHelper
     private $payum;
 
     /**
+     * @var LockChecker
+     */
+    private $lockChecker;
+
+    /**
      * @var EventDispatcherInterface
      */
     private $dispatcher;
@@ -51,20 +58,23 @@ class PaymentHelper
      * Constructor.
      *
      * @param Payum                    $payum
+     * @param LockChecker              $lockChecker
      * @param EventDispatcherInterface $dispatcher
      * @param AdapterInterface         $cache
      * @param bool                     $debug
      */
     public function __construct(
         Payum $payum,
+        LockChecker $lockChecker,
         EventDispatcherInterface $dispatcher,
         AdapterInterface $cache,
         bool $debug = false
     ) {
-        $this->payum      = $payum;
+        $this->payum = $payum;
+        $this->lockChecker = $lockChecker;
         $this->dispatcher = $dispatcher;
-        $this->cache      = $cache;
-        $this->debug      = $debug;
+        $this->cache = $cache;
+        $this->debug = $debug;
     }
 
     /**
@@ -96,11 +106,14 @@ class PaymentHelper
         /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface $method */
         $method = $payment->getMethod();
 
+        $locked = $this->lockChecker->isLocked($payment);
+
         $key = sprintf(
-            'gateway_%s_%s_%s_transitions',
+            'gateway_%s_%s_%s_%s_transitions',
             $method->getGatewayName(),
             $payment->getState(),
-            $admin ? 'admin' : 'customer'
+            $admin ? 'admin' : 'customer',
+            $locked ? 'locked' : 'opened'
         );
 
         if (!$this->debug && $this->cache->hasItem($key)) {
@@ -359,16 +372,12 @@ class PaymentHelper
     {
         /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface $method */
         $method = $payment->getMethod();
+        $locked = $this->lockChecker->isLocked($payment);
 
         $gateway = $this->payum->getGateway($method->getGatewayName());
+        $actions = $this->getGatewayActions($gateway);
 
-        $rc = new \ReflectionClass(get_class($gateway));
-        $rp = $rc->getProperty('actions');
-        $rp->setAccessible(true);
-        /** @var \Payum\Core\Action\ActionInterface[] $actions */
-        $actions = $rp->getValue($gateway);
-
-        $available   = PaymentTransitions::getAvailableTransitions($payment, $admin);
+        $available = PaymentTransitions::getAvailableTransitions($payment, $admin, $locked);
         $transitions = [];
 
         foreach ($available as $transition) {
@@ -402,6 +411,25 @@ class PaymentHelper
         }
 
         return $transitions;
+    }
+
+    /**
+     * Returns the gateway actions.
+     *
+     * @param GatewayInterface $gateway
+     *
+     * @return \Payum\Core\Action\ActionInterface[]
+     * @throws \ReflectionException
+     */
+    protected function getGatewayActions(GatewayInterface $gateway): array
+    {
+        $rc = new \ReflectionClass(get_class($gateway));
+        $rp = $rc->getProperty('actions');
+        $rp->setAccessible(true);
+        /** @var \Payum\Core\Action\ActionInterface[] $actions */
+        $actions = $rp->getValue($gateway);
+
+        return $actions;
     }
 
     /**

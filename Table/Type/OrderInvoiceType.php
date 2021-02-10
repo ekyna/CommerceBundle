@@ -5,7 +5,9 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 use Ekyna\Bundle\CommerceBundle\Table\Action\InvoiceDocumentActionType;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Component\Commerce\Common\Locking\LockChecker;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
+use Ekyna\Component\Table\Source\Row;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -23,16 +25,24 @@ class OrderInvoiceType extends AbstractOrderListType
     private $authorization;
 
     /**
+     * @var LockChecker
+     */
+    private $locking;
+
+
+    /**
      * Constructor.
      *
      * @param AuthorizationCheckerInterface $authorization
+     * @param LockChecker                   $locking
      * @param string                        $class
      */
-    public function __construct(AuthorizationCheckerInterface $authorization, string $class)
+    public function __construct(AuthorizationCheckerInterface $authorization, LockChecker $locking, string $class)
     {
         parent::__construct($class);
 
         $this->authorization = $authorization;
+        $this->locking = $locking;
     }
 
     /**
@@ -84,6 +94,10 @@ class OrderInvoiceType extends AbstractOrderListType
                 'position'    => 90,
             ]);
 
+        $isLocked = function (Row $row) {
+            return $this->locking->isLocked($row->getData());
+        };
+
         $buttons = [
             [
                 'label'                => 'ekyna_core.button.download',
@@ -106,6 +120,7 @@ class OrderInvoiceType extends AbstractOrderListType
                     'orderId'        => 'order.id',
                     'orderInvoiceId' => 'id',
                 ],
+                'disable'              => $isLocked,
                 //'permission' => 'EDIT', // TODO see admin actions type extension
             ],
         ];
@@ -120,6 +135,7 @@ class OrderInvoiceType extends AbstractOrderListType
                     'orderId'        => 'order.id',
                     'orderInvoiceId' => 'id',
                 ],
+                'disable'              => $isLocked,
                 //'permission' => 'EDIT', // TODO see admin actions type extension
             ];
         }

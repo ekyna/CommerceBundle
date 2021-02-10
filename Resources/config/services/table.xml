@@ -26,6 +26,7 @@
         <service id="ekyna_commerce.order_invoice.table_type"
                  class="Ekyna\Bundle\CommerceBundle\Table\Type\OrderInvoiceType"><!-- TODO use parameter defined by config builder -->
             <argument type="service" id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Common\Locking\LockChecker"/>
             <argument>%ekyna_commerce.order_invoice.class%</argument>
             <tag name="table.type"/>
         </service>

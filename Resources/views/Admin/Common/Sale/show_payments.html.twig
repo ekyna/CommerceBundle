@@ -15,10 +15,16 @@
         </thead>
         <tbody>
         {% for payment in payments %}
+            {% set locked = payment is commerce_locked %}
             {% do currency_configure(payment) %}{# Configure currency renderer #}
             {% set paymentId = prefix ~ '_' ~ loop.index0 %}
             <tr data-id="{{ payment.id }}">
-                <td id="{{ paymentId }}_number">{{ payment.getNumber() }}</td>
+                <td id="{{ paymentId }}_number">
+                    {{ payment.getNumber() }}
+                    {% if locked -%}
+                        <span class="fa fa-lock text-danger" title="{{ 'ekyna_core.field.locked'|trans }}"></span>
+                    {%- endif %}
+                </td>
                 <td id="{{ paymentId }}_method">{{ payment.getMethod() }}</td>
                 <td id="{{ paymentId }}_amount">{{ payment.getRealAmount()|currency_quote(null, true) }}</td>
                 <td id="{{ paymentId }}_currency">

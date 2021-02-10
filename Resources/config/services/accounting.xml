@@ -17,6 +17,11 @@
             <argument type="service" id="ekyna_commerce.invoice.payment_resolver"/>
             <argument type="service" id="ekyna_commerce.pricing.tax_resolver"/>
             <argument type="collection"/><!-- Replace by DI extension -->
+            <call method="addFilter">
+                <argument type="service">
+                    <service class="Ekyna\Bundle\CommerceBundle\Service\Accounting\FactorAccountingFilter"/>
+                </argument>
+            </call>
         </service>
 
         <!-- Accounting event listener -->

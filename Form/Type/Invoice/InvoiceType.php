@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Ekyna\Bundle\CoreBundle\Form\Util\FormUtil;
+use Ekyna\Component\Commerce\Common\Locking\LockChecker;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilderInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
@@ -27,18 +28,25 @@ class InvoiceType extends ResourceFormType
      */
     private $builder;
 
+    /**
+     * @var LockChecker
+     */
+    private $lockChecker;
+
 
     /**
      * Constructor.
      *
      * @param InvoiceBuilderInterface $builder
+     * @param LockChecker             $lockChecker
      * @param string                  $dataClass
      */
-    public function __construct(InvoiceBuilderInterface $builder, $dataClass)
+    public function __construct(InvoiceBuilderInterface $builder, LockChecker $lockChecker, string $dataClass)
     {
         parent::__construct($dataClass);
 
         $this->builder = $builder;
+        $this->lockChecker = $lockChecker;
     }
 
     /**
@@ -51,11 +59,6 @@ class InvoiceType extends ResourceFormType
                 'label'    => 'ekyna_core.field.number',
                 'required' => false,
                 'disabled' => true,
-            ])
-            ->add('createdAt', Type\DateTimeType::class, [
-                'label'      => 'ekyna_core.field.date',
-                'required'   => false,
-                'empty_data' => (new \DateTime())->format('d/m/Y H:i') // TODO Use the proper format !
             ])
             ->add('comment', Type\TextareaType::class, [
                 'label'    => 'ekyna_core.field.comment',
@@ -75,13 +78,23 @@ class InvoiceType extends ResourceFormType
                 }
                 if (!$sale instanceof OrderInterface) {
                     throw new RuntimeException("Not yet supported.");
-                };
+                }
+
+                $locked = $this->lockChecker->isLocked($invoice);
+
+                $form->add('createdAt', Type\DateTimeType::class, [
+                    'label'      => 'ekyna_core.field.date',
+                    'required'   => false,
+                    'disabled'   => $locked,
+                    'empty_data' => (new \DateTime())->format('d/m/Y H:i') // TODO Use the proper format !
+                ]);
 
                 if ($invoice->isCredit()) {
                     $form->add('ignoreStock', Type\CheckboxType::class, [
-                        'label' => 'ekyna_commerce.invoice.field.ignore_stock',
+                        'label'    => 'ekyna_commerce.invoice.field.ignore_stock',
                         'required' => false,
-                        'attr' => [
+                        'disabled' => $locked,
+                        'attr'     => [
                             'align_with_widget' => true,
                             'help_text'         => 'ekyna_commerce.invoice.help.ignore_stock',
                         ],
@@ -93,7 +106,7 @@ class InvoiceType extends ResourceFormType
                     $form->add('items', InvoiceItemsType::class, [
                         'entry_type'    => $options['item_type'],
                         'entry_options' => [
-                            'invoice'    => $invoice,
+                            'invoice' => $invoice,
                         ],
                     ]);
 
@@ -105,7 +118,7 @@ class InvoiceType extends ResourceFormType
                 $form->add('lines', InvoiceTreeType::class, [
                     'invoice'    => $invoice,
                     'entry_type' => $options['line_type'],
-                    'disabled'   => $disabledLines,
+                    'disabled'   => $locked || $disabledLines,
                 ]);
             });
     }

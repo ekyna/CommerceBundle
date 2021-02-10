@@ -17,7 +17,7 @@ class OrderPaymentEventSubscriber extends BaseSubscriber
     /**
      * @inheritdoc
      */
-    public function onPreDelete(ResourceEventInterface $event)
+    public function onPreDelete(ResourceEventInterface $event): void
     {
         try {
             parent::onPreDelete($event);
