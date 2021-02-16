@@ -55,6 +55,8 @@ class SupplierDeliveryItemsTransformer implements DataTransformerInterface
             throw new TransformationFailedException("Supplier delivery's order must be set.");
         }
 
+        $create = null === $delivery->getId();
+
         // For each order items
         foreach ($order->getItems() as $orderItem) {
             // If not deliveryItem not exists
@@ -77,10 +79,13 @@ class SupplierDeliveryItemsTransformer implements DataTransformerInterface
 
                 /** @var \Ekyna\Component\Commerce\Supplier\Model\SupplierDeliveryItemInterface $deliveryItem */
                 $deliveryItem = $this->deliveryItemRepository->createNew();
-                $deliveryItem
-                    ->setOrderItem($orderItem)
-                    ->setQuantity($remainingQuantity)
-                    ->setGeocode($geocode);
+                $deliveryItem->setOrderItem($orderItem);
+
+                if ($create) {
+                    $deliveryItem
+                        ->setQuantity($remainingQuantity)
+                        ->setGeocode($geocode);
+                }
 
                 $delivery->addItem($deliveryItem);
             }

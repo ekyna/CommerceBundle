@@ -26,6 +26,7 @@ class SupplierDeliveryItemType extends ResourceFormType
         $builder
             ->add('quantity', NumberType::class, [
                 'label'          => 'ekyna_core.field.quantity',
+                'required'       => false,
                 'attr'           => [
                     'class' => 'text-right',
                 ],
@@ -34,6 +35,7 @@ class SupplierDeliveryItemType extends ResourceFormType
             ])
             ->add('geocode', TextType::class, [
                 'label'          => 'ekyna_commerce.field.geocode',
+                'required'       => false,
                 'error_bubbling' => true,
                 'attr' => [
                     'class' => 'geocode',
@@ -50,6 +52,7 @@ class SupplierDeliveryItemType extends ResourceFormType
         $deliveryItem = $form->getData();
 
         $view->vars['order_item'] = $deliveryItem->getOrderItem();
+        // TODO min attribute (aka sold/shipped to customers quantity)
         $view->vars['remaining_quantity'] = SupplierUtil::calculateDeliveryRemainingQuantity($deliveryItem);
     }
 
