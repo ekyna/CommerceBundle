@@ -134,4 +134,12 @@ class PaymentMethod extends BaseMethod implements PaymentMethodInterface
     {
         return $this->getFactoryName() === Outstanding::FACTORY_NAME;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function isFactor(): bool
+    {
+        return $this->isManual() && isset($this->config['factor']) && $this->config['factor'];
+    }
 }
