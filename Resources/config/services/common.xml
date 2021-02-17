@@ -229,7 +229,9 @@
                     <service class="Ekyna\Component\Commerce\Invoice\Resolver\InvoiceLockResolver"/>
                 </argument>
                 <argument type="service">
-                    <service class="Ekyna\Component\Commerce\Order\Resolver\OrderPaymentLockResolver"/>
+                    <service class="Ekyna\Component\Commerce\Order\Resolver\OrderPaymentLockResolver">
+                        <argument type="service" id="ekyna_resource.doctrine.orm.persistence_helper"/>
+                    </service>
                 </argument>
             </argument>
             <!-- Replaced by DI extension -->
