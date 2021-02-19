@@ -10,6 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
  * Class InvoicePaidTotalUpdateCommand
@@ -61,8 +62,8 @@ class InvoicePaidTotalUpdateCommand extends Command
         parent::__construct();
 
         $this->repository = $repository;
-        $this->resolver   = $resolver;
-        $this->manager    = $manager;
+        $this->resolver = $resolver;
+        $this->manager = $manager;
     }
 
     /**
@@ -83,6 +84,19 @@ class InvoicePaidTotalUpdateCommand extends Command
         $output->writeln('Updating invoices due dates');
         $output->writeln('');
 
+        $orderId = (int)$input->getArgument('id');
+
+        // Confirmation
+        $output->writeln('<error>This is a dangerous operation.</error>');
+        $orders = $orderId ? "order#$orderId" : "all orders";
+        $question = new ConfirmationQuestion("Update $orders invoices totals ?", false);
+        $helper = $this->getHelper('question');
+        if (!$helper->ask($input, $output, $question)) {
+            return 0;
+        }
+
+        $this->manager->getConnection()->getConfiguration()->setSQLLogger(null);
+
         $metadata = $this->manager->getClassMetadata($this->repository->getClassName());
         $metadata->getTableName();
 
@@ -98,7 +112,7 @@ class InvoicePaidTotalUpdateCommand extends Command
         $qb = $this->repository->createQueryBuilder('i');
 
         // Single order invoices case
-        if (0 < $orderId = (int)$input->getArgument('id')) {
+        if (0 < $orderId) {
             $invoices = $qb
                 ->andWhere($qb->expr()->eq('IDENTITY(i.order)', ':order_id'))
                 ->addOrderBy('i.id', 'ASC')
@@ -115,7 +129,7 @@ class InvoicePaidTotalUpdateCommand extends Command
 
         // All invoices case
         $limit = 30;
-        $page  = 0;
+        $page = 0;
 
         $select = $qb
             ->addOrderBy('i.id', 'ASC')
@@ -154,9 +168,11 @@ class InvoicePaidTotalUpdateCommand extends Command
             ));
 
             $done = false;
+            $data = [];
 
             $total = $this->resolver->getPaidTotal($invoice);
             if (0 !== Money::compare($total, $invoice->getPaidTotal(), $invoice->getCurrency())) {
+                $data['Paid total'] = [$invoice->getPaidTotal(), $total];
                 if (!$this->updateTotal->execute(['total' => $total, 'id' => $invoice->getId()])) {
                     $output->writeln('<error>failure</error>');
                     continue;
@@ -166,6 +182,7 @@ class InvoicePaidTotalUpdateCommand extends Command
 
             $total = $this->resolver->getRealPaidTotal($invoice);
             if (0 !== Money::compare($total, $invoice->getRealPaidTotal(), $invoice->getCurrency())) {
+                $data['Real paid total'] = [$invoice->getRealPaidTotal(), $total];
                 if (!$this->updateRealTotal->execute(['total' => $total, 'id' => $invoice->getId()])) {
                     $output->writeln('<error>failure</error>');
                     continue;
@@ -175,6 +192,11 @@ class InvoicePaidTotalUpdateCommand extends Command
 
             if ($done) {
                 $output->writeln('<info>done</info>');
+
+                foreach ($data as $property => [$old, $new]) {
+                    $output->writeln("   - $property : $old => $new");
+                }
+
                 continue;
             }
 
