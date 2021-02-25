@@ -8,6 +8,7 @@ use Ekyna\Component\Commerce\Bridge\Payum\OutstandingBalance\Constants as Outsta
 use Ekyna\Component\Commerce\Bridge\Payum\Offline\Constants as Offline;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Payment\Factory\PaymentFactoryInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
@@ -129,7 +130,13 @@ class CheckoutManager
      */
     protected function getMethods(SaleInterface $sale, bool $refund = false , bool $admin = false)
     {
+        $customer = $sale->getCustomer();
+
         if ($refund) {
+            if (!$admin) {
+                throw new LogicException("Only administrators can create refunds.");
+            }
+
             // TODO Methods that support payum refund action
             $methods = $this->methodRepository->findByFactoryName(Offline::FACTORY_NAME, !$admin);
 
@@ -139,13 +146,17 @@ class CheckoutManager
                 }
             }
 
-            if ($customer = $sale->getCustomer()) {
+            if ($customer) {
                 foreach ($this->methodRepository->findByFactoryName(Credit::FACTORY_NAME, !$admin) as $method) {
                     $methods[] = $method;
                 }
             }
 
             return $methods;
+        }
+
+        if ($customer && ($default = $customer->getDefaultPaymentMethod())) {
+            return [$default];
         }
 
         if ($default = $sale->getPaymentMethod()) {
@@ -157,7 +168,7 @@ class CheckoutManager
                 }
             }
 
-            if (($customer = $sale->getCustomer()) && (0 < $customer->getCreditBalance())) {
+            if ($customer && (0 < $customer->getCreditBalance())) {
                 foreach ($this->methodRepository->findByFactoryName(Credit::FACTORY_NAME, !$admin) as $method) {
                     $methods[] = $method;
                 }
