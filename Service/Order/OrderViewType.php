@@ -217,7 +217,7 @@ class OrderViewType extends AbstractViewType
 
             if (!$sale->isSample()) {
                 $invoiced = $this->invoiceCalculator->calculateInvoicedQuantity($item);
-                $credited = $this->invoiceCalculator->calculateCreditedQuantity($item);
+                $credited = $this->invoiceCalculator->calculateCreditedQuantity($item, null, false);
 
                 if (0 < $credited) {
                     $invoiced = sprintf(
