@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Order\Entity\OrderShipmentLabel;
@@ -21,15 +22,22 @@ class ShipmentLabelPurgeCommand extends Command
      */
     private $manager;
 
+    /**
+     * @var string
+     */
+    private $retention;
+
 
     /**
      * Constructor.
      *
      * @param EntityManagerInterface $manager
+     * @param string                 $retention
      */
-    public function __construct(EntityManagerInterface $manager)
+    public function __construct(EntityManagerInterface $manager, string $retention = '6 months')
     {
         $this->manager = $manager;
+        $this->retention = $retention;
 
         parent::__construct();
     }
@@ -53,7 +61,8 @@ class ShipmentLabelPurgeCommand extends Command
 
         $qb = $this->manager->createQueryBuilder();
 
-        $date = (new \DateTime('-1 month'))->setTime(0, 0, 0, 0);
+        $date = new DateTime('-' . $this->retention);
+        $date = $date->setTime(0, 0);
 
         $count = $qb
             ->update(OrderShipmentLabel::class, 'l')

@@ -123,6 +123,7 @@
         <!-- Shipment label purge command -->
         <service id="Ekyna\Bundle\CommerceBundle\Command\ShipmentLabelPurgeCommand">
             <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
+            <argument>6 month</argument>
             <tag name="console.command"/>
         </service>
 

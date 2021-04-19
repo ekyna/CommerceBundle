@@ -2,6 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\DependencyInjection;
 
+use Ekyna\Bundle\CommerceBundle\Command\ShipmentLabelPurgeCommand;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
 use Ekyna\Bundle\CommerceBundle\Service\Document\PdfGenerator;
@@ -96,6 +97,10 @@ class EkynaCommerceExtension extends AbstractExtension
             ->replaceArgument(1, $config['locking']['start'])
             ->replaceArgument(2, $config['locking']['end'])
             ->replaceArgument(3, $config['locking']['since']);
+
+        $container
+            ->getDefinition(ShipmentLabelPurgeCommand::class)
+            ->replaceArgument(1, $config['shipment']['label_retention']);
     }
 
     /**
