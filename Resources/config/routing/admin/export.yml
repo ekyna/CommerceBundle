@@ -3,6 +3,11 @@ ekyna_commerce_export_admin_accounting:
     methods: [POST]
     defaults: { _controller: EkynaCommerceBundle:Admin\Export:accounting }
 
+ekyna_commerce_export_admin_invoice_costs:
+    path: /invoice-cost
+    methods: [ POST ]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\ExportController::invoiceCost
+
 ekyna_commerce_export_admin_due_invoices:
     path: /due-invoices
     methods: [GET]

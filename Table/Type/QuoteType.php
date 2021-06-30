@@ -206,6 +206,9 @@ class QuoteType extends ResourceTableType
                 'label'    => 'ekyna_cms.tag.label.plural',
                 'position' => 100,
             ])
+            ->addFilter('inCharge', Type\Filter\InChargeType::class, [
+                'position' => 110,
+            ])
             ->addFilter('subject', Type\Filter\SaleSubjectType::class, [
                 'label'    => 'Article',
                 'position' => 150,

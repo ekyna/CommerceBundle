@@ -4,16 +4,26 @@
         <div class="commerce-export">
             <div class="commerce-panel">
                 <h3>{{ 'ekyna_commerce.dashboard.export.title'|trans }}</h3>
-                {{ form_start(form) }}
+                {{ form_start(accounting_form) }}
                 <table style="width:100%">
                     <tr>
-                        <td>{{ form_label(form.year) }}</td>
-                        <td>{{ form_widget(form.year) }}</td>
-                        <td>{{ form_widget(form.month) }}</td>
-                        <td>{{ form_widget(form.submit) }}</td>
+                        <td style="width:20%">{{ 'ekyna_commerce.accounting.label.plural'|trans }}</td>
+                        <td>{{ form_widget(accounting_form.year) }}</td>
+                        <td>{{ form_widget(accounting_form.month) }}</td>
+                        <td>{{ form_widget(accounting_form.submit) }}</td>
                     </tr>
                 </table>
-                {{ form_end(form) }}
+                {{ form_end(accounting_form) }}
+                {{ form_start(costs_form) }}
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:20%">Coûts</td>
+                        <td>{{ form_widget(costs_form.year) }}</td>
+                        <td>{{ form_widget(costs_form.month) }}</td>
+                        <td>{{ form_widget(costs_form.submit) }}</td>
+                    </tr>
+                </table>
+                {{ form_end(costs_form) }}
                 <hr>
                 <p>
                     <a href="{{ path('ekyna_commerce_export_admin_due_orders') }}"

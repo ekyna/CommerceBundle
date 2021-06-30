@@ -82,7 +82,7 @@ class PaymentType extends ResourceFormType
                 ])
                 ->add('completedAt', Type\DateTimeType::class, [
                     'label'    => 'ekyna_core.field.completed_at',
-                    'required' => PaymentStates::isPaidState($payment->getState()),
+                    'required' => PaymentStates::isCompletedState($payment->getState()),
                     'disabled' => $methodDisabled,
                 ])
                 ->add('description', Type\TextareaType::class, [

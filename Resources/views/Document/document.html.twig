@@ -204,6 +204,7 @@
             <td class="text-right">{{ baseTotal|localizedcurrency(currency, locale) }}</td>
         </tr>
     </tbody>
+    <tbody class="spacer"><tr><td colspan="{{ columns_count }}">&nbsp;</td></tr></tbody>
     {%- endif %}
 
 
@@ -212,14 +213,13 @@
     <tbody class="totals">
     {% for line in discountLines -%}
         <tr>
-            <td colspan="{{ columns_count - 2 }}">&nbsp;</td>
-            <th>
+            <td colspan="{{ columns_count - 1 }}">
                 {%- if line.designation is empty -%}
                     {{- 'ekyna_commerce.adjustment.type.discount'|trans }}
                 {%- else -%}
                     {{- line.designation -}}
                 {%- endif -%}
-            </th>
+            </td>
             <td class="total text-right">-{{ line.base(subject.ati)|localizedcurrency(currency, locale) }}</td>
         </tr>
     {%- endfor %}

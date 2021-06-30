@@ -1461,6 +1461,7 @@ class Configuration implements ConfigurationInterface
                 ->children()
                     ->scalarNode('entity')->defaultValue('Ekyna\Component\Commerce\Stock\Entity\StockAdjustment')->end()
                     ->scalarNode('form')->defaultValue('Ekyna\Bundle\CommerceBundle\Form\Type\Stock\StockAdjustmentType')->end()
+                    ->scalarNode('repository')->defaultValue('Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\StockAdjustmentRepository')->end()
                 ->end()
             ->end();
     }

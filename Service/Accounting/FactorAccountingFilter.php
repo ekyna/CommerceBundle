@@ -11,13 +11,15 @@ use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
  * Class FactorAccountingFilter
  * @package Ekyna\Bundle\CommerceBundle\Service\Accounting
  * @author  Étienne Dauvergne <contact@ekyna.com>
+ *
+ * @TODO Remove. Authorized payments are not exported anymore.
  */
 class FactorAccountingFilter extends AbstractAccountingFilter
 {
     /**
      * @inheritDoc
      *
-     * Prevents export of factor payments with CAPTURED state.
+     * Prevents export of factor payments with AUTHORIZED state.
      */
     public function filterPayment(PaymentInterface $payment): bool
     {

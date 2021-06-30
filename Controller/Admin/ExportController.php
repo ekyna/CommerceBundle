@@ -64,6 +64,42 @@ class ExportController extends Controller
         return $this->doRespond($path, $filename);
     }
 
+    public function invoiceCost(Request $request): Response
+    {
+        $form = $this->createForm(ExportType::class);
+
+        $form->handleRequest($request);
+
+        if (!($form->isSubmitted() && $form->isValid())) {
+            return $this->redirectToReferer($this->generateUrl('ekyna_admin_dashboard'));
+        }
+
+        $year = $form->get('year')->getData();
+        $month = $form->get('month')->getData();
+
+        if (is_null($month)) {
+            // TODO if month is null, schedule background task
+        }
+
+        try {
+            $path = $this
+                ->get('ekyna_commerce.exporter.cost')
+                ->export($year, $month);
+        } catch (CommerceExceptionInterface $e) {
+            if ($this->getParameter('kernel.debug')) {
+                throw $e;
+            }
+
+            $this->addFlash($e->getMessage(), 'danger');
+
+            return $this->doRedirect();
+        }
+
+        $filename = sprintf('costs_%s.zip', $year . ($month ? '-' : '') . $month);
+
+        return $this->doRespond($path, $filename);
+    }
+
     /**
      * Due invoices export.
      *

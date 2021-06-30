@@ -32,6 +32,10 @@
             </call>
         </service>
 
+        <!-- Invoice purchase cost calculator -->
+        <service id="ekyna_commerce.calculator.invoice_cost"
+                 class="Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCostCalculator"/>
+
         <!-- Invoice abstract listener -->
         <service id="ekyna_commerce.invoice.abstract_listener"
                  class="Ekyna\Component\Commerce\Invoice\EventListener\AbstractInvoiceListener"

@@ -45,13 +45,19 @@ class ExportWidget extends AbstractWidgetType
      */
     public function render(WidgetInterface $widget, Environment $twig)
     {
-        $form = $this->factory->create(ExportType::class, null, [
+        $accountingForm = $this->factory->create(ExportType::class, null, [
             'action' => $this->urlGenerator->generate('ekyna_commerce_export_admin_accounting'),
             'method' => 'POST',
         ]);
 
+        $costsForm = $this->factory->create(ExportType::class, null, [
+            'action' => $this->urlGenerator->generate('ekyna_commerce_export_admin_invoice_costs'),
+            'method' => 'POST',
+        ]);
+
         return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_export.html.twig', [
-            'form' => $form->createView(),
+            'accounting_form' => $accountingForm->createView(),
+            'costs_form'      => $costsForm->createView(),
         ]);
     }
 

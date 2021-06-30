@@ -72,7 +72,7 @@ class PaymentType extends AbstractType
                     $form
                         ->add('completedAt', Type\DateTimeType::class, [
                             'label'    => 'ekyna_core.field.completed_at',
-                            'required' => PaymentStates::isPaidState($payment->getState()),
+                            'required' => PaymentStates::isCompletedState($payment->getState()),
                         ])
                         ->add('description', Type\TextareaType::class, [
                             'label'    => 'ekyna_commerce.field.description',

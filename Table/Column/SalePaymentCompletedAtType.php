@@ -27,7 +27,7 @@ class SalePaymentCompletedAtType extends AbstractColumnType
      */
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options)
     {
-        /** @var PaymentInterface|null $p */
+        /** @var PaymentInterface|null $payment */
         $payment = null;
 
         /** @var Collection $payments */
@@ -37,7 +37,7 @@ class SalePaymentCompletedAtType extends AbstractColumnType
             if ($p->isRefund()) {
                 continue;
             }
-            if (PaymentStates::isPaidState($p)) {
+            if (PaymentStates::isCompletedState($p)) {
                 $payment = $p;
                 break;
             }
@@ -72,7 +72,7 @@ class SalePaymentCompletedAtType extends AbstractColumnType
             ->andWhere($ex->in('p.state', ':states'))
             ->orderBy('p.completedAt', $activeSort->getDirection())
             ->setParameter('refund', false)
-            ->setParameter('states', PaymentStates::getPaidStates());
+            ->setParameter('states', PaymentStates::getCompletedStates());
 
         return true;
     }

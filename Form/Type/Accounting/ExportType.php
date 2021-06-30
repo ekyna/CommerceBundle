@@ -69,7 +69,7 @@ class ExportType extends AbstractType
 
         $builder
             ->add('year', ChoiceType::class, [
-                'label'                     => 'ekyna_commerce.accounting.label.plural',
+                'label'                     => false,
                 'choices'                   => $this->getYearChoices(),
                 'select2'                   => false,
                 'choice_translation_domain' => false,
