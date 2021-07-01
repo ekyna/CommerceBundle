@@ -31,7 +31,7 @@
             <argument type="service" id="ekyna_commerce.order_invoice.repository"/>
             <argument type="service" id="ekyna_commerce.stock_adjustment.repository"/>
             <argument type="service" id="Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface"/>
-            <argument type="service" id="Ekyna\Component\Commerce\Document\Calculator\DocumentCalculatorInterface"/>
+            <argument type="service" id="Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator"/>
             <argument type="service" id="ekyna_commerce.calculator.invoice_cost"/>
             <argument>%kernel.debug%</argument>
         </service>
