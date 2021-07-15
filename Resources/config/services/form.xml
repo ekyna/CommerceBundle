@@ -172,6 +172,7 @@
                  class="Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceType">
             <argument type="service" id="ekyna_commerce.invoice.builder"/>
             <argument type="service" id="Ekyna\Component\Commerce\Common\Locking\LockChecker"/>
+            <argument type="service" id="security.authorization_checker"/>
             <argument>%ekyna_commerce.order_invoice.class%</argument>
             <tag name="form.type"/>
             <tag name="form.js" selector=".invoice" path="ekyna-commerce/form/invoice"/>

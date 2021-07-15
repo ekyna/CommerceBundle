@@ -15,6 +15,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Class InvoiceType
@@ -33,20 +34,31 @@ class InvoiceType extends ResourceFormType
      */
     private $lockChecker;
 
+    /**
+     * @var AuthorizationCheckerInterface
+     */
+    private $authorizationChecker;
+
 
     /**
      * Constructor.
      *
-     * @param InvoiceBuilderInterface $builder
-     * @param LockChecker             $lockChecker
-     * @param string                  $dataClass
+     * @param InvoiceBuilderInterface       $builder
+     * @param LockChecker                   $lockChecker
+     * @param AuthorizationCheckerInterface $authorizationChecker
+     * @param string                        $dataClass
      */
-    public function __construct(InvoiceBuilderInterface $builder, LockChecker $lockChecker, string $dataClass)
-    {
+    public function __construct(
+        InvoiceBuilderInterface $builder,
+        LockChecker $lockChecker,
+        AuthorizationCheckerInterface $authorizationChecker,
+        string $dataClass
+    ) {
         parent::__construct($dataClass);
 
         $this->builder = $builder;
         $this->lockChecker = $lockChecker;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -80,7 +92,8 @@ class InvoiceType extends ResourceFormType
                     throw new RuntimeException("Not yet supported.");
                 }
 
-                $locked = $this->lockChecker->isLocked($invoice);
+                $locked = $this->lockChecker->isLocked($invoice)
+                    || !$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
 
                 $form->add('createdAt', Type\DateTimeType::class, [
                     'label'      => 'ekyna_core.field.date',
