@@ -92,13 +92,12 @@ class InvoiceType extends ResourceFormType
                     throw new RuntimeException("Not yet supported.");
                 }
 
-                $locked = $this->lockChecker->isLocked($invoice)
-                    || !$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
+                $locked = $this->lockChecker->isLocked($invoice);
 
                 $form->add('createdAt', Type\DateTimeType::class, [
                     'label'      => 'ekyna_core.field.date',
                     'required'   => false,
-                    'disabled'   => $locked,
+                    'disabled'   => $locked || !$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN'),
                     'empty_data' => (new \DateTime())->format('d/m/Y H:i') // TODO Use the proper format !
                 ]);
 
