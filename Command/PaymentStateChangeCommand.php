@@ -3,12 +3,14 @@
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use Ekyna\Bundle\CommerceBundle\Model\PaymentStates;
+use Ekyna\Component\Commerce\Common\Locking\LockChecker;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Payment\Repository\PaymentRepositoryInterface;
 use Ekyna\Component\Resource\Operator\ResourceOperatorInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -30,7 +32,8 @@ class PaymentStateChangeCommand extends ContainerAwareCommand
             ->setName('ekyna:commerce:payment:change-state')
             ->setDescription('Change the payment state.')
             ->addArgument('number', InputArgument::REQUIRED, 'The payment number')
-            ->addArgument('state', InputArgument::REQUIRED, 'The payment new state');
+            ->addArgument('state', InputArgument::REQUIRED, 'The payment new state')
+            ->addOption('unlock', null, InputOption::VALUE_NONE, 'Whether to bypass locking');
     }
 
     /**
@@ -123,6 +126,10 @@ class PaymentStateChangeCommand extends ContainerAwareCommand
         );
         if (!$helper->ask($input, $output, $question)) {
             return;
+        }
+
+        if ($input->getOption('unlock')) {
+            $this->getContainer()->get(LockChecker::class)->setEnabled(false);
         }
 
         $payment->setState($state);
