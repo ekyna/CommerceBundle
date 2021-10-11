@@ -137,7 +137,8 @@
         </service>
 
         <!-- Stock prioritizer -->
-        <service id="Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizer"
+        <service id="ekyna_commerce.stock_prioritizer"
+                 class="Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizer"
                  lazy="true">
             <argument type="service" id="ekyna_commerce.stock_unit.resolver"/>
             <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
@@ -149,10 +150,9 @@
             <tag name="twig.runtime"/>
         </service>
         <service id="Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizerInterface"
-                 alias="Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizer"/>
-        <!-- TODO Remove -->
-        <service id="ekyna_commerce.stock_prioritizer"
-                 alias="Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizer"/>
+                 alias="ekyna_commerce.stock_prioritizer"/>
+        <service id="Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizer"
+                 alias="ekyna_commerce.stock_prioritizer"/>
 
         <!-- Stock renderer -->
         <service id="ekyna_commerce.stock.stock_renderer"

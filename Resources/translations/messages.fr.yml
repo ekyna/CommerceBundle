@@ -1091,7 +1091,9 @@ ekyna_commerce:
             no_item: Aucune commande configuré
         message:
             already_paid: Cette commande est déjà réglée en totalité
-            can_be_released: >
+            order_can_be_released: >
+                Cette commande peut être clôturée si aucune autre expédition n'est prévu.
+            sample_can_be_released: >
                 Cette commande d'échantillons peut être clôturée si aucun autre retour n'est prévu ou attendu.
             cant_be_deleted: >
                 Cette commande a des paiement(s) valide(s), des livraison(s)

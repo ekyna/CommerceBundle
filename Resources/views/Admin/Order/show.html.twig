@@ -63,7 +63,7 @@
                 'path': admin_resource_path(order, 'abort')
             }) }}
         {% endif %}
-        {% if order.sample %}
+        {% if order.canBeReleased %}
             {{ ui_button('ekyna_commerce.order.button.' ~ (order.released ? 'un' : '') ~ 'release', {
                 'theme': 'warning',
                 'type': 'link',
@@ -241,6 +241,7 @@
                 {# --------------- INVOICES --------------- #}
                 <div class="actions">
                     {# TODO Permission #}
+                    {% if not order.released %}
                     <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'new', {
                         'orderId': order.id
                     }) }}"
@@ -248,6 +249,7 @@
                        style="margin-left:16px">
                         {{- 'ekyna_commerce.invoice.button.new'|trans -}}
                     </a>
+                    {% endif %}
                 </div>
                 <h4 class="sub-header">
                     {{- 'ekyna_commerce.invoice.label.plural'|trans -}}
@@ -260,6 +262,7 @@
                 {# --------------- CREDITS --------------- #}
                 <div class="actions">
                     {# TODO Permission #}
+                    {% if not order.released %}
                     <a href="{{ admin_resource_path('ekyna_commerce.order_invoice', 'new', {
                         'orderId': order.id, 'credit': 1
                     }) }}"
@@ -267,6 +270,7 @@
                        style="margin-left:16px">
                         {{- 'ekyna_commerce.credit.button.new'|trans -}}
                     </a>
+                    {% endif %}
                 </div>
                 <h4 class="sub-header">
                     {{- 'ekyna_commerce.credit.label.plural'|trans -}}

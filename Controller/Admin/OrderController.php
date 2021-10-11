@@ -155,9 +155,7 @@ class OrderController extends SaleController
         /** @var SaleInterface $sale */
         $sale = $context->getResource($resourceName);
 
-        if ($sale instanceof OrderInterface && $sale->isSample()) {
-            $sale->setReleased(!$sale->isReleased());
-
+        if ($this->toggleReleased($sale)) {
             $event = $this->getOperator()->update($sale);
             $event->toFlashes($this->getFlashBag());
         }
@@ -171,6 +169,27 @@ class OrderController extends SaleController
         }
 
         return $this->redirect($redirect);
+    }
+
+    private function toggleReleased(SaleInterface $sale): bool
+    {
+        if (!$sale instanceof OrderInterface) {
+            return false;
+        }
+
+        if ($sale->isReleased()) {
+            $sale->setReleased(false);
+
+            return true;
+        }
+
+        if (!$sale->canBeReleased()) {
+            return false;
+        }
+
+        $sale->setReleased(true);
+
+        return true;
     }
 
     /**
