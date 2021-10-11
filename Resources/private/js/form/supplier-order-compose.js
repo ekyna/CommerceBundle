@@ -7,17 +7,17 @@ define(['jquery', 'ekyna-form/collection'], function($) {
     $.fn.supplierOrderItemWidget = function() {
         this.each(function() {
             var $this = $(this),
-                $product = $this.find('input.order-item-product'),
+                //$product = $this.find('input.order-item-product'),
                 $priceAndWeight = $this.find('input.order-item-net-price, input.order-item-weight');
 
-            $product.on('change', function() {
+            /*$product.on('change', function() {
                 var productValue = String($product.val()),
                     readyOnly = 0 < productValue.length;
 
                 $this
                     .find('.order-item-designation, .order-item-reference')
                     .prop('readonly', readyOnly);
-            }).trigger('change');
+            }).trigger('change');*/
 
             $priceAndWeight.on('change keyup', function() {
                 var $group = $(this).parent(),
