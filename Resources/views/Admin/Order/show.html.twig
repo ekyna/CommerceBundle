@@ -63,7 +63,7 @@
                 'path': admin_resource_path(order, 'abort')
             }) }}
         {% endif %}
-        {% if order.canBeReleased %}
+        {% if order.sample %}
             {{ ui_button('ekyna_commerce.order.button.' ~ (order.released ? 'un' : '') ~ 'release', {
                 'theme': 'warning',
                 'type': 'link',

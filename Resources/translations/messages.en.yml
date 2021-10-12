@@ -1059,9 +1059,7 @@ ekyna_commerce:
             no_item: Not order configured
         message:
             already_paid: This order has already been paid.
-            order_can_be_released: >
-                This order can be closed if no other shipment is planned.
-            sample_can_be_released: >
+            can_be_released: >
                 This sample order can be closed if no other return is planned.
             cant_be_deleted: >
                 This order has valid payment(s), shipment(s) or invoice(s) and therefore cannot be deleted.

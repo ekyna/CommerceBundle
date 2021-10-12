@@ -102,8 +102,7 @@ class SaleController extends AbstractSaleController
         } elseif ($sale instanceof QuoteInterface && $sale->getState() === QuoteStates::STATE_ACCEPTED) {
             $this->addFlash('ekyna_commerce.quote.message.transformation_to_order_is_ready');
         } elseif ($sale->canBeReleased()) {
-            $message = 'ekyna_commerce.order.message.' . ($sale->isSample() ? 'sample' : 'order') . '_can_be_released';
-            $this->addFlash($message, 'warning');
+            $this->addFlash('ekyna_commerce.order.message.can_be_released', 'warning');
         }
         $data['sale_view'] = $this->buildSaleView($sale);
 

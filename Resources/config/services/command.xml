@@ -84,6 +84,14 @@
             <tag name="console.command"/>
         </service>
 
+        <!-- Order detach command -->
+        <service id="Ekyna\Bundle\CommerceBundle\Command\OrderDetachCommand">
+            <argument type="service" id="ekyna_commerce.order.repository"/>
+            <argument type="service" id="ekyna_commerce.order.manager"/>
+            <argument type="service" id="ekyna_commerce.stock_unit.assigner"/>
+            <tag name="console.command"/>
+        </service>
+
         <!-- Order state update command -->
         <service id="Ekyna\Bundle\CommerceBundle\Command\OrderStateUpdateCommand">
             <argument type="service" id="ekyna_commerce.order.repository"/>
