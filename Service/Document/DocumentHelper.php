@@ -19,6 +19,8 @@ use League\Flysystem\Filesystem;
 use OzdemirBurak\Iris\Color\Hex;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+use function array_merge;
+
 /**
  * Class DocumentHelper
  * @package Ekyna\Bundle\CommerceBundle\Service\Document
@@ -133,7 +135,17 @@ class DocumentHelper
      */
     public function getDocumentMentions(DocumentInterface $document): array
     {
-        $mentions = [];
+        $sale = $document->getSale();
+        $type = $document->getType();
+        $locale = $document->getLocale();
+
+        $mentions = $this->getSaleMentions(
+            $document->getSale(), $document->getType(), $document->getLocale()
+        );
+
+        if ($rule = $document->getTaxRule() ?: $this->taxResolver->resolveSaleTaxRule($sale)) {
+            $mentions = array_merge($mentions, $this->getMentions($rule, $type, $locale));
+        }
 
         foreach ($document->getLinesByType(DocumentLineTypes::TYPE_GOOD) as $line) {
             $list = $this->getSaleItemMentions($line->getSaleItem(), $document->getType(), $document->getLocale());
@@ -149,9 +161,7 @@ class DocumentHelper
             $mentions[] = sprintf('<p><strong>%s</strong> : %s</p>', $line->getDesignation(), implode(' ', $list));
         }
 
-        return array_merge($mentions, $this->getSaleMentions(
-            $document->getSale(), $document->getType(), $document->getLocale())
-        );
+        return $mentions;
     }
 
     /**
@@ -165,8 +175,14 @@ class DocumentHelper
     {
         $type = DocumentTypes::TYPE_SHIPMENT_BILL;
         $locale = $shipment->getSale()->getLocale();
+        $sale = $shipment->getSale();
 
-        $mentions = [];
+        $mentions = $this->getSaleMentions($shipment->getSale(), $type, $locale);
+
+        if ($rule = $this->taxResolver->resolveSaleTaxRule($sale)) {
+            $mentions = array_merge($mentions, $this->getMentions($rule, $type, $locale));
+        }
+
         foreach ($shipment->getItems() as $item) {
             $list = $this->getSaleItemMentions($item->getSaleItem(), $type, $locale);
 
@@ -181,7 +197,7 @@ class DocumentHelper
             );
         }
 
-        return array_merge($mentions, $this->getSaleMentions($shipment->getSale(), $type, $locale));
+        return $mentions;
     }
 
     /**
@@ -195,17 +211,11 @@ class DocumentHelper
      */
     public function getSaleMentions(SaleInterface $sale, string $type, string $locale = null): array
     {
-        $mentions = [];
-
-        if ($rule = $this->taxResolver->resolveSaleTaxRule($sale)) {
-            $mentions = $this->getMentions($rule, $type, $locale);
-        }
-
         if (!$method = $sale->getPaymentMethod()) {
-            return $mentions;
+            return [];
         }
 
-        return array_merge($mentions, $this->getMentions($method, $type, $locale));
+        return $this->getMentions($method, $type, $locale);
     }
 
     /**
