@@ -22,6 +22,7 @@
         "ekyna/commerce": "0.8.x-dev",
         "payum/payum-bundle": "^2.4",
         "php-http/guzzle6-adapter": "^2.0",
+        "symfony/monolog-bundle": "^3.0",
         "symfony/psr-http-message-bridge": "^2.0",
         "laminas/laminas-diactoros": "^2.5",
         "behat/transliterator": "^1.3",
