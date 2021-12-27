@@ -51,7 +51,7 @@ return static function (ContainerConfigurator $container) {
 
         // Shipment subject calculator
         ->set('ekyna_commerce.calculator.shipment_subject', ShipmentSubjectCalculator::class)
-            // TODO ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.helper.subject'),
             ])
@@ -142,7 +142,7 @@ return static function (ContainerConfigurator $container) {
 
         // Shipment gateway registry
         ->set('ekyna_commerce.registry.shipment_gateway', GatewayRegistry::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->call('setAddressResolver', [service('ekyna_commerce.resolver.shipment_address')])
             ->call('setWeightCalculator', [service('ekyna_commerce.calculator.shipment_weight')])
             ->call('setPersister', [service('ekyna_commerce.persister.shipment')])

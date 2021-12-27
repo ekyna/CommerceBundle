@@ -18,7 +18,7 @@ return static function (ContainerConfigurator $container) {
 
         // Subject purchase cost
         ->set('ekyna_commerce.guesser.subject_purchase_cost', PurchaseCostGuesser::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_resource.repository.factory'),
                 service('ekyna_commerce.converter.currency'),

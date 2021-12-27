@@ -25,7 +25,7 @@ return static function (ContainerConfigurator $container) {
 
         // View builder
         ->set('ekyna_commerce.builder.view', ViewBuilder::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.registry.view_type'),
                 service('ekyna_commerce.factory.amount_calculator'),

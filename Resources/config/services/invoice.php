@@ -50,7 +50,7 @@ return static function (ContainerConfigurator $container) {
         // Invoice abstract listener
         ->set('ekyna_commerce.listener.abstract_invoice', AbstractInvoiceListener::class)
             ->abstract()
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
             ->call('setInvoiceNumberGenerator', [service('ekyna_commerce.generator.invoice_number')])
             ->call('setCreditNumberGenerator', [service('ekyna_commerce.generator.credit_number')])
@@ -60,21 +60,21 @@ return static function (ContainerConfigurator $container) {
         // Invoice line abstract listener
         ->set('ekyna_commerce.listener.abstract_invoice_line', AbstractInvoiceLineListener::class)
             ->abstract()
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
             ->call('setStockUnitAssigner', [service('ekyna_commerce.assigner.stock_unit')])
 
         // Invoice item abstract listener
         ->set('ekyna_commerce.listener.abstract_invoice_item', AbstractInvoiceItemListener::class)
             ->abstract()
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
             ->call('setContextProvider', [service('ekyna_commerce.provider.context')])
             ->call('setTaxResolver', [service('ekyna_commerce.resolver.tax')])
 
         // Invoice builder
         ->set('ekyna_commerce.builder.invoice', InvoiceBuilder::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.factory.sale'),
                 service('ekyna_commerce.calculator.invoice_subject'),
@@ -95,18 +95,14 @@ return static function (ContainerConfigurator $container) {
 
         // Invoice payment resolver
         ->set('ekyna_commerce.resolver.invoice_payment', InvoicePaymentResolver::class)
-            // TODO ? ->lazy(true)
             ->args([
                 service('ekyna_commerce.converter.currency'),
             ])
 
         // Invoice subject state resolver
         ->set('ekyna_commerce.resolver.state.invoice_subject', InvoiceSubjectStateResolver::class)
-            // TODO ? ->lazy(true)
             ->args([
                 service('ekyna_commerce.calculator.invoice_subject'),
             ])
-
-
     ;
 };

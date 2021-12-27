@@ -62,7 +62,7 @@ return static function (ContainerConfigurator $container) {
 
         // Sale transformer
         ->set('ekyna_commerce.transformer.sale', SaleTransformer::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.factory.sale_copier'),
                 service('ekyna_resource.manager.factory'),
@@ -76,7 +76,7 @@ return static function (ContainerConfigurator $container) {
 
         // Sale transform event listener
         ->set('ekyna_commerce.listener.sale_transform', SaleTransformListener::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.generator.order_number'),
                 service('ekyna_commerce.generator.quote_number'),
@@ -87,7 +87,7 @@ return static function (ContainerConfigurator $container) {
 
         // Sale Updater
         ->set('ekyna_commerce.updater.sale', SaleUpdater::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.builder.address'),
                 service('ekyna_commerce.builder.adjustment'),
@@ -103,7 +103,7 @@ return static function (ContainerConfigurator $container) {
 
         // Sale preparer
         ->set('ekyna_commerce.preparer.sale', SalePreparer::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_resource.event_dispatcher'),
                 service('ekyna_commerce.prioritizer.stock'),
@@ -119,7 +119,7 @@ return static function (ContainerConfigurator $container) {
 
         // Address builder
         ->set('ekyna_commerce.builder.address', AddressBuilder::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.factory.sale'),
                 service('ekyna_resource.orm.persistence_helper'),
@@ -127,7 +127,7 @@ return static function (ContainerConfigurator $container) {
 
         // Adjustment builder
         ->set('ekyna_commerce.builder.adjustment', AdjustmentBuilder::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.factory.sale'),
                 service('ekyna_commerce.resolver.tax'),
@@ -147,7 +147,7 @@ return static function (ContainerConfigurator $container) {
 
         // Margin calculator factory
         ->set('ekyna_commerce.factory.margin_calculator', MarginCalculatorFactory::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.factory.amount_calculator'),
                 service('ekyna_commerce.calculator.invoice_subject'),
@@ -182,7 +182,6 @@ return static function (ContainerConfigurator $container) {
         // Sale abstract listener
         ->set('ekyna_commerce.listener.abstract_sale', AbstractSaleListener::class)
             ->abstract(true)
-            // TODO ? ->lazy(true)
             ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
             ->call('setKeyGenerator', [service('ekyna_commerce.generator.key')])
             ->call('setPricingUpdater', [service('ekyna_commerce.updater.pricing')])
@@ -197,20 +196,17 @@ return static function (ContainerConfigurator $container) {
         // Sale address abstract listener
         ->set('ekyna_commerce.listener.abstract_sale_address', AbstractSaleAddressListener::class)
             ->abstract(true)
-            // TODO ? ->lazy(true)
             ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
 
         // Sale item abstract listener
         ->set('ekyna_commerce.listener.abstract_sale_item', AbstractSaleItemListener::class)
             ->abstract(true)
-            // TODO ? ->lazy(true)
             ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
             ->call('setAdjustmentBuilder', [service('ekyna_commerce.builder.adjustment')])
 
         // Sale adjustment abstract listener
         ->set('ekyna_commerce.listener.abstract_sale_adjustment', AbstractAdjustmentListener::class)
             ->abstract(true)
-            // TODO ? ->lazy(true)
             ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
     ;
 };

@@ -105,7 +105,7 @@ return static function (ContainerConfigurator $container) {
 
         // Stock assignment dispatcher
         ->set('ekyna_commerce.dispatcher.stock_assignment', StockAssignmentDispatcher::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.manager.stock_assignment'),
                 service('ekyna_commerce.manager.stock_unit'),
@@ -151,7 +151,7 @@ return static function (ContainerConfigurator $container) {
 
         // Stock prioritizer
         ->set('ekyna_commerce.prioritizer.stock', StockPrioritizer::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.resolver.stock_unit'),
                 service('ekyna_commerce.assigner.stock_unit'),
@@ -161,11 +161,11 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.dispatcher.stock_assignment'),
                 service('ekyna_commerce.logger.stock'),
             ])
-            ->tag('twig.runtime')
+            ->tag('twig.runtime') // TODO Too much deps : split twig functions
 
         // Stock renderer
         ->set('ekyna_commerce.renderer.stock', StockRenderer::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('serializer'),
                 service('twig'),

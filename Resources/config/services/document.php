@@ -17,7 +17,7 @@ return static function (ContainerConfigurator $container) {
 
         // Document builder
         ->set('ekyna_commerce.builder.document', DocumentBuilder::class)
-            // TODO (?) ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_resource.provider.locale'),
                 service('libphonenumber\PhoneNumberUtil'),
@@ -25,7 +25,7 @@ return static function (ContainerConfigurator $container) {
 
         // Document calculator
         ->set('ekyna_commerce.calculator.document', DocumentCalculator::class)
-            // TODO (?) ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.factory.amount_calculator'),
                 service('ekyna_commerce.converter.currency'),
@@ -33,7 +33,7 @@ return static function (ContainerConfigurator $container) {
 
         // Document renderer factory
         ->set('ekyna_commerce.factory.document_renderer', RendererFactory::class)
-            // TODO (?) ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('twig'),
                 service('ekyna_resource.generator.pdf'),
@@ -65,7 +65,7 @@ return static function (ContainerConfigurator $container) {
 
         // Document generator
         ->set('ekyna_commerce.generator.document', DocumentGenerator::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.builder.document'),
                 service('ekyna_commerce.calculator.document'),

@@ -97,7 +97,7 @@ return static function (ContainerConfigurator $container) {
 
         // Sale helper and renderer
         ->set('ekyna_commerce.helper.sale', SaleHelper::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.helper.subject'),
                 service('ekyna_commerce.factory.sale'),
@@ -129,7 +129,7 @@ return static function (ContainerConfigurator $container) {
 
         // Cart helper
         ->set('ekyna_commerce.helper.cart', CartHelper::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.helper.sale'),
                 service('ekyna_commerce.provider.cart'),
@@ -156,7 +156,7 @@ return static function (ContainerConfigurator $container) {
 
         // Payment helper and renderer
         ->set('ekyna_commerce.helper.payment', PaymentHelper::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('payum'),
                 service('ekyna_commerce.checker.locking'),
@@ -175,7 +175,7 @@ return static function (ContainerConfigurator $container) {
 
         // Shipment helper and renderer
         ->set('ekyna_commerce.helper.shipment', ShipmentHelper::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('ekyna_commerce.registry.shipment_gateway'),
             ])
@@ -193,7 +193,7 @@ return static function (ContainerConfigurator $container) {
 
         // Shipment label renderer
         ->set('ekyna_commerce.renderer.shipment_label', LabelRenderer::class)
-            // TODO ? ->lazy(true)
+            ->lazy(true)
             ->args([
                 service('twig'),
                 service('ekyna_resource.generator.pdf'),

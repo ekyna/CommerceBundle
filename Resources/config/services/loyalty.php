@@ -6,8 +6,8 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Ekyna\Bundle\CommerceBundle\Command\LoyaltyCouponsCommand;
 use Ekyna\Bundle\CommerceBundle\Service\Customer\LoyaltyRenderer;
-use Ekyna\Bundle\VerifiedReviewsBundle\EventListener\LoyaltyEventSubscriber;
 use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\LoyaltyLogRepository;
+use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\LoyaltyEventSubscriber;
 use Ekyna\Component\Commerce\Customer\Loyalty\CouponGenerator;
 use Ekyna\Component\Commerce\Customer\Loyalty\LoyaltyLogger;
 use Ekyna\Component\Commerce\Customer\Loyalty\LoyaltyUpdater;
@@ -73,7 +73,5 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.mailer'),
             ])
             ->tag('console.command')
-
-
     ;
 };
