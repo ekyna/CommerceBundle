@@ -39,7 +39,7 @@ class PhoneNumberTypeExtension extends AbstractTypeExtension
     /**
      * @inheritDoc
      */
-    public static function getExtendedTypes(): array
+    public static function getExtendedTypes(): iterable
     {
         return [PhoneNumberType::class];
     }

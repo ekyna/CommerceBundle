@@ -4,6 +4,3 @@ config:
             name: 'ekyna-commerce'
             location: 'bundles/ekynacommerce/js'
             main: 'commerce'
-#build:
-#    include:
-#        - 'ekyna-commerce'

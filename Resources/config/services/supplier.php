@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Doctrine\ORM\Events;
 use Ekyna\Bundle\CommerceBundle\EventListener\SupplierDeliveryEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\EventListener\SupplierDeliveryItemEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderEventSubscriber;
@@ -41,7 +42,7 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.resolver.tax'),
             ])
             ->tag('doctrine.event_listener', [
-                'event'      => 'onClear',
+                'event'      => Events::onClear,
                 'connection' => 'default',
             ])
 

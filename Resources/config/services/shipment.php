@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Doctrine\ORM\Events;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\PriceListBuilder;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentAddressResolver;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentPersister;
@@ -117,7 +118,7 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.provider.context'),
             ])
             ->tag('doctrine.event_listener', [
-                'event'      => 'onClear',
+                'event'      => Events::onClear,
                 'connection' => 'default',
             ])
 

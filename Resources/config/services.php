@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Doctrine\ORM\Events;
 use Ekyna\Bundle\CommerceBundle\EventListener\LogoutEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\EventListener\SecurityEventListener;
 use Ekyna\Bundle\CommerceBundle\Install\CommerceInstaller;
@@ -91,7 +92,7 @@ return static function (ContainerConfigurator $container) {
         // Load metadata event listener
         ->set('ekyna_commerce.listener.orm.load_metadata', LoadMetadataListener::class)
             ->tag('doctrine.event_listener', [
-                'event'      => 'loadClassMetadata',
+                'event'      => Events::loadClassMetadata,
                 'connection' => 'default',
                 'priority'   => 99,
             ])
@@ -114,6 +115,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.loader.routing', RoutingLoader::class)
             ->args([
                 service('ekyna_commerce.features'),
+                param('ekyna_user.account_routing_prefix'),
                 param('kernel.environment'),
             ])
             ->tag('routing.loader')

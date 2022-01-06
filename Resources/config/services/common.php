@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Doctrine\ORM\Events;
 use Ekyna\Bundle\CommerceBundle\EventListener\ContextEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\EventListener\SaleItemEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\Service\Common\ButtonRenderer;
@@ -53,7 +54,7 @@ return static function (ContainerConfigurator $container) {
             ->call('setDefaultCode', [param('ekyna_commerce.default.country')])
             ->call('setCachedCodes', [param('ekyna_commerce.cache.countries')])
             ->tag('doctrine.event_listener', [
-                'event'      => 'onClear',
+                'event'      => Events::onClear,
                 'connection' => 'default',
             ])
 
@@ -61,14 +62,14 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.repository.currency', CurrencyRepository::class)
             ->call('setDefaultCode', [param('ekyna_commerce.default.currency')])
             ->tag('doctrine.event_listener', [
-                'event'      => 'onClear',
+                'event'      => Events::onClear,
                 'connection' => 'default',
             ])
 
         // Customer group repository
         ->set('ekyna_commerce.repository.customer_group', CustomerGroupRepository::class)
             ->tag('doctrine.event_listener', [
-                'event'      => 'onClear',
+                'event'      => Events::onClear,
                 'connection' => 'default',
             ])
 
@@ -106,7 +107,7 @@ return static function (ContainerConfigurator $container) {
                 param('ekyna_commerce.class.context'),
             ])
             ->tag('doctrine.event_listener', [
-                'event'      => 'onClear',
+                'event'      => Events::onClear,
                 'connection' => 'default',
             ])
 

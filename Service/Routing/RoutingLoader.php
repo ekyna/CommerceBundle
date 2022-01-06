@@ -22,14 +22,16 @@ class RoutingLoader extends Loader
     private const DIRECTORY = '@EkynaCommerceBundle/Resources/config/routing/front';
 
     private Features $features;
+    private array    $routingPrefix;
     private bool     $loaded = false;
 
 
-    public function __construct(Features $feature, string $env = null)
+    public function __construct(Features $feature, array $routingPrefix, string $env = null)
     {
         parent::__construct($env);
 
         $this->features = $feature;
+        $this->routingPrefix = $routingPrefix;
     }
 
     /**
@@ -38,13 +40,17 @@ class RoutingLoader extends Loader
     public function load($resource, string $type = null)
     {
         if (true === $this->loaded) {
-            throw new RuntimeException('Do not add the "commerce account" routes loader twice.');
+            throw new RuntimeException('Do not add the "commerce_routing" routes loader twice.');
         }
 
         $this->loaded = true;
 
         $collection = new RouteCollection();
         $accountCollection = new RouteCollection();
+
+        $accountCollection->addCollection(
+            $this->import(self::DIRECTORY . '/account.yaml', 'yaml')
+        );
 
         if ($this->features->isEnabled(Features::LOYALTY)) {
             $routes = $this->import(self::DIRECTORY . '/account/loyalty.yaml', 'yaml');
@@ -81,16 +87,9 @@ class RoutingLoader extends Loader
             $accountCollection->addCollection($routes);
         }
 
-        if (0 < $accountCollection->count()) {
-            // Should be configurable (sync with CMS)
-            $this->addPrefixes($accountCollection, [
-                'en' => '/my-account',
-                'fr' => '/mon-compte',
-                'es' => '/mi-cuenta',
-            ]);
+        $this->addPrefixes($accountCollection, $this->routingPrefix);
 
-            $collection->addCollection($accountCollection);
-        }
+        $collection->addCollection($accountCollection);
 
         return $collection;
     }

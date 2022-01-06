@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Doctrine\ORM\Events;
 use Ekyna\Bundle\CommerceBundle\Command\NewsletterSynchronizeCommand;
 use Ekyna\Bundle\CommerceBundle\Controller\Api\Newsletter\SubscriptionController;
 use Ekyna\Bundle\CommerceBundle\Controller\Api\Newsletter\WebhookController;
@@ -46,7 +47,7 @@ return static function (ContainerConfigurator $container) {
         // Audience repository
         ->set('ekyna_commerce.repository.audience', AudienceRepository::class)
             ->tag('doctrine.event_listener', [
-                'event'      => 'onClear',
+                'event'      => Events::onClear,
                 'connection' => 'default',
             ])
 

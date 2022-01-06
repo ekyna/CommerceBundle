@@ -9,7 +9,3 @@ ekyna_commerce_admin:
 
 ekyna_commerce_front:
     resource: 'routing/front.yaml'
-
-ekyna_commerce_loader:
-    resource: .
-    type: commerce_routing
