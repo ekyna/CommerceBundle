@@ -79,7 +79,7 @@ class ResupplyAlertHelper extends BaseHelper
     {
         $this->subject = $this->helper->find(
             $request->attributes->get('provider'),
-            $request->attributes->get('identifier')
+            $request->attributes->getInt('identifier')
         );
     }
 

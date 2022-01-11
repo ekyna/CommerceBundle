@@ -286,7 +286,7 @@ class QuoteItemController implements ControllerInterface
      */
     private function findItem(Request $request, QuoteInterface $quote): QuoteItemInterface
     {
-        $itemId = intval($request->attributes->get('id'));
+        $itemId = $request->attributes->getInt('id');
         if (0 >= $itemId) {
             throw new NotFoundHttpException('Unexpected item identifier.');
         }

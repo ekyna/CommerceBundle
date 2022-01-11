@@ -17,7 +17,6 @@ use Symfony\Component\Routing\Route;
 
 use function array_filter;
 use function array_map;
-use function intval;
 
 /**
  * Class LabelAction
@@ -39,15 +38,10 @@ class LabelAction extends AbstractAction implements AdminActionInterface, Routin
     public function __invoke(): Response
     {
         $format = $this->request->attributes->get('format');
+
         $ids = (array)$this->request->query->get('id', []);
-
-        $ids = array_map(function ($id) {
-            return intval($id);
-        }, $ids);
-
-        $ids = array_filter($ids, function ($id) {
-            return 0 < $id;
-        });
+        $ids = array_map(fn($v) => (int)$v, $ids);
+        $ids = array_filter($ids, fn($id) => 0 < $id);
 
         if (empty($ids)) {
             return $this->redirectToReferer(
@@ -72,9 +66,9 @@ class LabelAction extends AbstractAction implements AdminActionInterface, Routin
             'name'       => 'commerce_subject_label',
             'permission' => Permission::READ,
             'route'      => [
-                'name'     => 'admin_%s_label',
-                'path'     => '/label/{format}.pdf',
-                'methods'  => ['GET'],
+                'name'    => 'admin_%s_label',
+                'path'    => '/label/{format}.pdf',
+                'methods' => ['GET'],
             ],
             'button'     => [
                 'label'        => 'button.print_label',
@@ -88,8 +82,7 @@ class LabelAction extends AbstractAction implements AdminActionInterface, Routin
     public static function buildRoute(Route $route, array $options): void
     {
         $route
-            ->setDefault('format', 'large')
-            // TODO ->addRequirements()
+            ->setDefault('format', 'large')// TODO ->addRequirements()
         ;
     }
 }

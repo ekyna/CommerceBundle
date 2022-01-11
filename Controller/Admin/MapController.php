@@ -74,7 +74,7 @@ class MapController
     {
         /** @var CustomerInterface $customer */
         $customer = null;
-        if ($customerId = $request->query->get('customerId')) {
+        if ($customerId = $request->query->getInt('customerId')) {
             $customer = $this->customerRepository->find($customerId);
         }
 

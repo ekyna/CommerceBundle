@@ -158,13 +158,13 @@ abstract class AbstractRenderer implements RendererInterface
     /**
      * @inheritDoc
      */
-    public function respond(Request $request)
+    public function respond(Request $request): Response
     {
         $format = $request->attributes->get('_format', RendererInterface::FORMAT_HTML);
 
         $this->validateFormat($format);
 
-        $download = !!$request->query->get('_download', false);
+        $download = $request->query->getBoolean('_download', false);
 
         $response = new Response();
 

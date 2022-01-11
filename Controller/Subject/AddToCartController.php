@@ -53,8 +53,8 @@ class AddToCartController
         }
 
         $form = $this->cartHelper->createAddSubjectToCartForm($subject, [
-            'extended'      => (bool)$request->query->get('ex', 1),
-            'submit_button' => (bool)$request->query->get('sb', 0),
+            'extended'      => $request->query->getBoolean('ex', true),
+            'submit_button' => $request->query->getBoolean('sb'),
         ]);
 
         if (null !== $event = $this->cartHelper->handleAddSubjectToCartForm($form, $request, $modal)) {

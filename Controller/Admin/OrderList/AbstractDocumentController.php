@@ -55,9 +55,7 @@ abstract class AbstractDocumentController
 
         $repository = $this->repositoryFactory->getRepository(static::$resource);
 
-        $ids = array_map(function ($id) {
-            return (int)$id;
-        }, (array)$request->query->get('id'));
+        $ids = array_map(fn($v) => (int)$v, (array)$request->query->get('id'));
 
         $invoices = [];
         foreach ($ids as $id) {

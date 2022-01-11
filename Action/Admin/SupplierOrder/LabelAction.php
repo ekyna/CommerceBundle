@@ -46,12 +46,11 @@ class LabelAction extends AbstractAction implements AdminActionInterface
 
         // Read request id parameter as array of positive integers
         $ids = array_filter(
-            array_map(function ($id) {
-                return intval($id);
-            }, (array)$this->request->query->get('id', [])),
-            function ($id) {
-                return 0 < $id;
-            }
+            array_map(
+                fn($id) => intval($id),
+                (array)$this->request->query->get('id', [])
+            ),
+            fn($id) => 0 < $id
         );
 
         // Load subjects from ids

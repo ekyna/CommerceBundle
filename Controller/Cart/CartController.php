@@ -133,7 +133,7 @@ class CartController extends AbstractController
             throw new AccessDeniedHttpException('Cart is locked for payment.');
         }
 
-        $itemId = intval($request->attributes->get('itemId'));
+        $itemId = $request->attributes->getInt('itemId');
         if (0 >= $itemId) {
             throw new NotFoundHttpException('Unexpected item identifier.');
         }
@@ -195,7 +195,7 @@ class CartController extends AbstractController
             throw new AccessDeniedHttpException('Cart is locked for payment.');
         }
 
-        $itemId = intval($request->attributes->get('itemId'));
+        $itemId = $request->attributes->getInt('itemId');
         if (0 < $itemId) {
             // TODO use operator to delete item (cart will be automatically saved)
             if ($this->getSaleHelper()->removeItemById($cart, $itemId)) {
@@ -295,7 +295,7 @@ class CartController extends AbstractController
             throw new AccessDeniedHttpException('Cart is locked for payment.');
         }
 
-        $attachmentId = intval($request->attributes->get('attachmentId'));
+        $attachmentId = $request->attributes->getInt('attachmentId');
         if (0 < $attachmentId) {
             // TODO use operator to delete attachment (cart will be automatically saved)
             if ($this->getSaleHelper()->removeAttachmentById($cart, $attachmentId)) {
@@ -337,7 +337,7 @@ class CartController extends AbstractController
         }
 
         $attachment = null;
-        $attachmentId = intval($request->attributes->get('attachmentId'));
+        $attachmentId = $request->attributes->getInt('attachmentId');
         if (0 < $attachmentId) {
             $attachment = $this->getSaleHelper()->findAttachmentById($cart, $attachmentId);
         }
