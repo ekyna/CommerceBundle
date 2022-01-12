@@ -68,7 +68,8 @@ class InvoicePaidTotalUpdateCommand extends Command
 
         $this->manager->getConnection()->getConfiguration()->setSQLLogger(null);
 
-        $table = $this->metadata->getTableName();
+        $metadata = $this->manager->getClassMetadata($this->invoiceClass);
+        $table = $metadata->getTableName();
 
         /** @noinspection SqlResolve */
         $this->updateTotal = $this->manager->getConnection()->prepare(
@@ -142,7 +143,7 @@ class InvoicePaidTotalUpdateCommand extends Command
             $total = $this->resolver->getPaidTotal($invoice);
             if (!$invoice->getPaidTotal()->equals($total)) {
                 $data['Paid total'] = [$invoice->getPaidTotal(), $total];
-                if (!$this->updateTotal->execute(['total' => $total, 'id' => $invoice->getId()])) {
+                if (0 === $this->updateTotal->executeStatement(['total' => $total, 'id' => $invoice->getId()])) {
                     $output->writeln('<error>failure</error>');
                     continue;
                 }
@@ -152,7 +153,7 @@ class InvoicePaidTotalUpdateCommand extends Command
             $total = $this->resolver->getRealPaidTotal($invoice);
             if (!$invoice->getRealPaidTotal()->equals($total)) {
                 $data['Real paid total'] = [$invoice->getRealPaidTotal(), $total];
-                if (!$this->updateRealTotal->execute(['total' => $total, 'id' => $invoice->getId()])) {
+                if (0 === $this->updateRealTotal->executeStatement(['total' => $total, 'id' => $invoice->getId()])) {
                     $output->writeln('<error>failure</error>');
                     continue;
                 }

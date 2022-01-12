@@ -26,12 +26,6 @@ class CreateAction extends BaseAction
             throw new UnexpectedTypeException($shipment, ShipmentInterface::class);
         }
 
-        $shipment->setReturn($this->request->query->getBoolean('return'));
-
-        if ($shipment->isReturn()) {
-            $shipment->setAutoInvoice(false);
-        }
-
         return parent::onInit();
     }
 

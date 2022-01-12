@@ -9,10 +9,11 @@ use Ekyna\Bundle\CommerceBundle\EventListener\OrderEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\EventListener\OrderItemAdjustmentEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\EventListener\OrderItemEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\EventListener\OrderPaymentEventSubscriber;
+use Ekyna\Bundle\CommerceBundle\Factory\InvoiceFactory;
 use Ekyna\Bundle\CommerceBundle\Factory\OrderFactory;
+use Ekyna\Bundle\CommerceBundle\Factory\ShipmentFactory;
 use Ekyna\Bundle\CommerceBundle\Service\Order\OrderInvoiceExporter;
 use Ekyna\Bundle\CommerceBundle\Service\Order\OrderListExporter;
-use Ekyna\Bundle\CommerceBundle\Service\Search\OrderRepository;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderAddressEventSubscriber;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderInvoiceEventSubscriber;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderInvoiceItemEventSubscriber;
@@ -34,6 +35,18 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.factory.order', OrderFactory::class)
             ->parent('ekyna_commerce.factory.abstract_sale')
             ->call('setInChargeResolver', [service('ekyna_commerce.resolver.in_charge')])
+
+        // Order invoice factory
+        ->set('ekyna_commerce.factory.order_invoice', InvoiceFactory::class)
+            ->args([
+                service('request_stack'),
+            ])
+
+        // Order shipment factory
+        ->set('ekyna_commerce.factory.order_shipment', ShipmentFactory::class)
+            ->args([
+                service('request_stack'),
+            ])
 
         // Order state resolver
         ->set('ekyna_commerce.resolver.state.order', OrderStateResolver::class)

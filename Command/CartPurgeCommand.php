@@ -38,10 +38,11 @@ class CartPurgeCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $debug = !$input->getOption('no-debug');
         $expiredCarts = $this->repository->findExpired();
 
         if (empty($expiredCarts)) {
-            $output->writeln('No expired cart found.');
+            $debug && $output->writeln('No expired cart found.');
 
             return Command::SUCCESS;
         }
@@ -49,7 +50,7 @@ class CartPurgeCommand extends Command
         foreach ($expiredCarts as $cart) {
             $number = $cart->getNumber();
 
-            $output->write(sprintf(
+            $debug && $output->write(sprintf(
                 '- <comment>%s</comment> %s ',
                 $number,
                 str_pad('.', 44 - mb_strlen($number), '.', STR_PAD_LEFT)
@@ -58,9 +59,9 @@ class CartPurgeCommand extends Command
             $event = $this->manager->delete($cart);
 
             if ($event->isPropagationStopped()) {
-                $output->writeln('<error>failed</error>');
+                $debug && $output->writeln('<error>failed</error>');
             } else {
-                $output->writeln('<info>done</info>');
+                $debug && $output->writeln('<info>done</info>');
             }
         }
 

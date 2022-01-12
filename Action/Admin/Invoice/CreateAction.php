@@ -26,8 +26,6 @@ class CreateAction extends BaseAction
             throw new UnexpectedTypeException($invoice, InvoiceInterface::class);
         }
 
-        $invoice->setCredit($this->request->query->getBoolean('credit'));
-
         return parent::onInit();
     }
 

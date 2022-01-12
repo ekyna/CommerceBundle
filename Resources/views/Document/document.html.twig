@@ -114,9 +114,9 @@
 
     {% for row in page %}
         {% set linesCount = linesCount + 1 %}
-        {% set grossTotal = grossTotal + row.gross %}
-        {% set discountTotal = discountTotal + row.discount %}
-        {% set baseTotal = baseTotal + row.base %}
+        {% set grossTotal = grossTotal + row.gross ?? 0 %}
+        {% set discountTotal = discountTotal + row.discount ?? 0 %}
+        {% set baseTotal = baseTotal + row.base ?? 0 %}
         <tr{% if row.virtual %} class="virtual"{% endif %}>
             <td class="designation" style="padding-left:{{ 8 + (16 * row.level) }}px">
                 {%- if design.addLinks and row.url is not empty -%}

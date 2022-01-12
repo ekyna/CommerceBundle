@@ -48,15 +48,9 @@ class GatewayFormAction extends AbstractAction implements AdminActionInterface, 
             if (!$shipment) {
                 return new Response('Shipment not found.', Response::HTTP_NOT_FOUND);
             }
-        } elseif (null === $isReturn = $this->request->query->get('return')) {
-            return new Response("Expected 'shipmentId' or 'return' parameter.", Response::HTTP_NOT_FOUND);
         } else {
             /** @var ShipmentInterface $shipment */
             $shipment = $this->createResource();
-            $shipment->setReturn((bool) $isReturn);
-            if ($shipment->isReturn()) {
-                $shipment->setAutoInvoice(false);
-            }
         }
 
         $shipment->setMethod($method);

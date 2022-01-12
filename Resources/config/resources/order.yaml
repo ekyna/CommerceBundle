@@ -101,6 +101,7 @@ resources:
             repository:
                 interface : Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface
                 class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderInvoiceRepository
+            factory: Ekyna\Bundle\CommerceBundle\Factory\InvoiceFactory
             normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceNormalizer
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceType
             table: Ekyna\Bundle\CommerceBundle\Table\Type\OrderInvoiceType
@@ -220,6 +221,7 @@ resources:
             # TODO repository:
             #    interface : Ekyna\Component\Commerce\Order\Repository\OrderShipmentRepositoryInterface
             #    class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderShipmentRepository
+            factory: Ekyna\Bundle\CommerceBundle\Factory\ShipmentFactory
             normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ShipmentNormalizer
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentType
             table: Ekyna\Bundle\CommerceBundle\Table\Type\OrderShipmentType

@@ -132,7 +132,7 @@ class Mailer
             'balance'  => $balance,
         ]);
 
-        $to = [$customer->getEmail() => $customer->getFirstName() . ' ' . $customer->getLastName()];
+        $to = new Address($customer->getEmail(), $customer->getFirstName() . ' ' . $customer->getLastName());
 
         $message = $this->createMessage($subject, $body, $to);
 
@@ -218,7 +218,7 @@ class Mailer
             'locale'  => $locale,
         ]);
 
-        $to = [$customer->getEmail() => $customer->getFirstName() . ' ' . $customer->getLastName()];
+        $to = new Address($customer->getEmail(), $customer->getFirstName() . ' ' . $customer->getLastName());
 
         return $this->mailer->send($this->createMessage($subject, $body, $to, false));
     }
@@ -247,7 +247,7 @@ class Mailer
             'messages' => $messages,
         ]);
 
-        $to = [$admin->getEmail() => $admin->hasFullName() ? $admin->getFullName() : null];
+        $to = new Address($admin->getEmail(), $admin->hasFullName() ? $admin->getFullName() : null);
 
         return $this->mailer->send($this->createMessage($subject, $body, $to, false));
     }
@@ -280,7 +280,7 @@ class Mailer
             'locale'  => $locale,
         ]);
 
-        $to = [$customer->getEmail() => $customer->getFirstName() . ' ' . $customer->getLastName()];
+        $to = new Address($customer->getEmail(), $customer->getFirstName() . ' ' . $customer->getLastName());
 
         return $this->mailer->send($this->createMessage($subject, $body, $to, false));
     }

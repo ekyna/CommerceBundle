@@ -33,6 +33,7 @@ class StatUpdateCommand extends Command
 
     private bool $force;
     private bool $flush;
+    private bool $debug;
 
     public function __construct(
         StatUpdaterInterface     $statUpdater,
@@ -59,6 +60,7 @@ class StatUpdateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->debug = !$input->getOption('no-debug');
         $this->force = (bool)$input->getOption('force');
         $this->flush = false;
 
@@ -83,21 +85,21 @@ class StatUpdateCommand extends Command
     private function updateStockStat(OutputInterface $output): void
     {
         $name = 'Stock';
-        $output->write(sprintf(
+        $this->debug && $output->write(sprintf(
             '- %s %s ',
             $name,
             str_pad('.', 32 - mb_strlen($name), '.', STR_PAD_LEFT)
         ));
 
         if ($this->statUpdater->updateStockStat()) {
-            $output->writeln("<info>created</info>\n");
+            $this->debug && $output->writeln("<info>created</info>\n");
 
             $this->flush = true;
 
             return;
         }
 
-        $output->writeln("<comment>up-to-date</comment>\n");
+        $this->debug && $output->writeln("<comment>up-to-date</comment>\n");
     }
 
     /**
@@ -105,10 +107,10 @@ class StatUpdateCommand extends Command
      */
     private function updateOrders(OutputInterface $output): void
     {
-        $output->writeln('Updating orders margin total');
+        $this->debug && $output->writeln('Updating orders margin total');
 
         if (empty($ids = $this->orderRepository->findWithNullRevenueOrMargin())) {
-            $output->writeln("<comment>all up-to-date</comment>\n");
+            $this->debug && $output->writeln("<comment>all up-to-date</comment>\n");
 
             return;
         }
@@ -130,14 +132,14 @@ class StatUpdateCommand extends Command
             }
 
             $name = $order->getNumber();
-            $output->write(sprintf(
+            $this->debug && $output->write(sprintf(
                 '- %s %s ',
                 $name,
                 str_pad('.', 32 - mb_strlen($name), '.', STR_PAD_LEFT)
             ));
 
             if (!$this->orderUpdater->updateMarginTotals($order)) {
-                $output->writeln('<comment>up-to-date</comment>');
+                $this->debug && $output->writeln('<comment>up-to-date</comment>');
                 continue;
             }
 
@@ -150,7 +152,7 @@ class StatUpdateCommand extends Command
 
             $this->manager->clear();
 
-            $output->writeln('<info>updated</info>');
+            $this->debug && $output->writeln('<info>updated</info>');
         }
     }
 
@@ -183,20 +185,20 @@ class StatUpdateCommand extends Command
 
         foreach ($orderDates as $date => $updated) {
             $name = $date;
-            $output->write(sprintf(
+            $this->debug && $output->write(sprintf(
                 '- %s %s ',
                 $name,
                 str_pad('.', 32 - mb_strlen($name), '.', STR_PAD_LEFT)
             ));
 
             if (!$this->force && isset($statDates[$date]) && $statDates[$date] > $updated) {
-                $output->writeln('<comment>skipped</comment>');
+                $this->debug && $output->writeln('<comment>skipped</comment>');
                 continue;
             }
 
             $d = new DateTime($date);
             if ($this->statUpdater->updateDayOrderStat($d, $this->force)) {
-                $output->writeln('<info>updated</info>');
+                $this->debug && $output->writeln('<info>updated</info>');
 
                 $month = $d->format('Y-m');
                 if (!in_array($month, $updatedMonths, true)) {
@@ -207,13 +209,13 @@ class StatUpdateCommand extends Command
                 continue;
             }
 
-            $output->writeln('<comment>up-to-date</comment>');
+            $this->debug && $output->writeln('<comment>up-to-date</comment>');
         }
 
         /** ---------------------------- Month stats ---------------------------- */
 
         foreach ($updatedMonths as $month) {
-            $output->write(sprintf(
+            $this->debug && $output->write(sprintf(
                 '- %s %s ',
                 $month,
                 str_pad('.', 32 - mb_strlen($month), '.', STR_PAD_LEFT)
@@ -221,7 +223,7 @@ class StatUpdateCommand extends Command
 
             $d = new DateTime($month . '-01');
             if ($this->statUpdater->updateMonthOrderStat($d, $this->force)) {
-                $output->writeln('<info>updated</info>');
+                $this->debug && $output->writeln('<info>updated</info>');
 
                 $year = $d->format('Y');
                 if (!in_array($year, $updatedYears, true)) {
@@ -232,13 +234,13 @@ class StatUpdateCommand extends Command
                 continue;
             }
 
-            $output->writeln('<comment>up to date</comment>');
+            $this->debug && $output->writeln('<comment>up to date</comment>');
         }
 
         /** ---------------------------- Year stats ---------------------------- */
 
         foreach ($updatedYears as $year) {
-            $output->write(sprintf(
+            $this->debug && $output->write(sprintf(
                 '- %s %s ',
                 $year,
                 str_pad('.', 32 - mb_strlen($year), '.', STR_PAD_LEFT)
@@ -246,13 +248,13 @@ class StatUpdateCommand extends Command
 
             $d = new DateTime($year . '-01-01');
             if ($this->statUpdater->updateYearOrderStat($d, $this->force)) {
-                $output->writeln('<info>updated</info>');
+                $this->debug && $output->writeln('<info>updated</info>');
 
                 $this->flush = true;
                 continue;
             }
 
-            $output->writeln('<comment>up to date</comment>');
+            $this->debug && $output->writeln('<comment>up to date</comment>');
         }
     }
 }

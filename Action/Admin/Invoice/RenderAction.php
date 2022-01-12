@@ -8,6 +8,7 @@ use Ekyna\Bundle\AdminBundle\Action\AdminActionInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\ResourceBundle\Action\AbstractAction;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
+use Ekyna\Bundle\ResourceBundle\Action\RoutingActionInterface;
 use Ekyna\Bundle\UiBundle\Action\FlashTrait;
 use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculatorInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
@@ -15,6 +16,8 @@ use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Resource\Action\Permission;
 use Ekyna\Component\Resource\Exception\PdfException;
 use Symfony\Component\HttpFoundation\Response;
+
+use Symfony\Component\Routing\Route;
 
 use function strtolower;
 use function strtoupper;
@@ -25,7 +28,7 @@ use function Symfony\Component\Translation\t;
  * @package Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class RenderAction extends AbstractAction implements AdminActionInterface
+class RenderAction extends AbstractAction implements AdminActionInterface, RoutingActionInterface
 {
     use HelperTrait;
     use FlashTrait;
@@ -51,7 +54,7 @@ class RenderAction extends AbstractAction implements AdminActionInterface
             throw new UnexpectedTypeException($invoice, InvoiceInterface::class);
         }
 
-        // Pre-generate the uid used in InvoicePaymentResolver
+        // Pre-generate the uid used by InvoicePaymentResolver
         $invoice->getRuntimeUid();
         $invoice = clone $invoice;
 
@@ -91,7 +94,7 @@ class RenderAction extends AbstractAction implements AdminActionInterface
             'permission' => Permission::READ,
             'route'      => [
                 'name'     => 'admin_%s_render',
-                'path'     => '/render',
+                'path'     => '/render.{_format}',
                 'resource' => true,
                 'methods'  => ['GET'],
             ],
@@ -102,5 +105,16 @@ class RenderAction extends AbstractAction implements AdminActionInterface
                 'icon'         => 'download',
             ],
         ];
+    }
+
+    public static function buildRoute(Route $route, array $options): void
+    {
+        $route
+            ->addDefaults([
+                '_format' => 'pdf',
+            ])
+            ->addRequirements([
+                '_format' => 'html|pdf|jpg',
+            ]);
     }
 }
