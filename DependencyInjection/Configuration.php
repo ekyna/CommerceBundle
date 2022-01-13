@@ -47,27 +47,6 @@ class Configuration implements ConfigurationInterface
         $this->addTemplateSection($root);
         $this->addWidgetSection($root);
 
-        /*// Resources
-        $resourceNode = $rootNode
-            ->children()
-                ->arrayNode('pools')
-                    ->addDefaultsIfNotSet()
-                    ->children();
-
-        $this->addCartResourcesSection($resourceNode);
-        $this->addCommonResourcesSection($resourceNode);
-        $this->addCustomerResourcesSection($resourceNode);
-        $this->addNewsletterResourcesSection($resourceNode);
-        $this->addNotifyResourcesSection($resourceNode);
-        $this->addOrderResourcesSection($resourceNode);
-        $this->addPaymentResourcesSection($resourceNode);
-        $this->addPricingResourcesSection($resourceNode);
-        $this->addQuoteResourcesSection($resourceNode);
-        $this->addShipmentResourcesSection($resourceNode);
-        $this->addStockResourcesSection($resourceNode);
-        $this->addSupplierResourcesSection($resourceNode);
-        $this->addSupportResourcesSection($resourceNode);*/
-
         return $builder;
     }
 

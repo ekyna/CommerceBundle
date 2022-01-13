@@ -59,6 +59,7 @@ class InChargeResolver
         $this->userProvider->reset();
 
         /** @var UserInterface $user */
+        # TODO Inconsistency with Ekyna\Bundle\AdminBundle\Form\Type\UserChoiceType (role filter)
         if (null !== $user = $this->userProvider->getUser()) {
             return $user;
         }

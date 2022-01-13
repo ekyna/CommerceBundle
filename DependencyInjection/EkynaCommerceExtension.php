@@ -97,6 +97,7 @@ class EkynaCommerceExtension extends Extension implements PrependExtensionInterf
         $this->configureDocument($config['document'], $container);
         $this->configureFeatures($config['feature'], $container, $loader);
         $this->configureGoogle($container);
+        $this->configureNotify($config['default'], $container);
         $this->configureLocking($config['default'], $container);
         $this->configurePricing($config['pricing'], $container);
         $this->configureShipment($config['default'], $container);
@@ -116,7 +117,6 @@ class EkynaCommerceExtension extends Extension implements PrependExtensionInterf
         $container->setParameter('ekyna_commerce.default.fraud', $default['fraud']);
         $container->setParameter('ekyna_commerce.default.expiration.cart', $default['expiration']['cart']);
         $container->setParameter('ekyna_commerce.default.expiration.quote', $default['expiration']['quote']);
-        $container->setParameter('ekyna_commerce.default.notify', $default['notify']);
 
         $classes = $config['class'];
         $container->setParameter('ekyna_commerce.class.context', $classes['context']);
@@ -183,16 +183,25 @@ class EkynaCommerceExtension extends Extension implements PrependExtensionInterf
 
     private function configureGoogle(ContainerBuilder $container): void
     {
-        if ($container->has('ivory.google_map.geocoder')) {
-            // Address event listener (geocoding)
-            $container
-                ->register('ekyna_commerce.listener.address', AddressEventSubscriber::class)
-                ->setArguments([
-                    new Reference('ekyna_resource.orm.persistence_helper'),
-                    new Reference('ivory.google_map.geocoder'),
-                ])
-                ->addTag('resource.event_subscriber');
+        if (!$container->has('ivory.google_map.geocoder')) {
+            return;
         }
+
+        // Address event listener (geocoding)
+        $container
+            ->register('ekyna_commerce.listener.address', AddressEventSubscriber::class)
+            ->setArguments([
+                new Reference('ekyna_resource.orm.persistence_helper'),
+                new Reference('ivory.google_map.geocoder'),
+            ])
+            ->addTag('resource.event_subscriber');
+    }
+
+    private function configureNotify(array $config, ContainerBuilder $container): void
+    {
+        $container
+            ->getDefinition('ekyna_commerce.helper.notify')
+            ->replaceArgument(3, $config['notify']);
     }
 
     private function configureMailchimp(array $config, ContainerBuilder $container, PhpFileLoader $loader): void

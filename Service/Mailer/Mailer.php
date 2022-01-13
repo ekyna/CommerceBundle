@@ -311,21 +311,21 @@ class Mailer
 
         // TO
         foreach ($notify->getRecipients() as $recipient) {
-            $message->addTo($recipientAddress);
+            $message->addTo($this->recipientToAddress($recipient));
             $report .= "To: {$this->formatRecipient($recipient)}\n";
         }
         foreach ($notify->getExtraRecipients() as $recipient) {
-            $message->addTo($recipientAddress);
+            $message->addTo($this->recipientToAddress($recipient));
             $report .= "To: {$this->formatRecipient($recipient)}\n";
         }
 
         // Copy
         foreach ($notify->getCopies() as $recipient) {
-            $message->addCc($recipientAddress);
+            $message->addCc($this->recipientToAddress($recipient));
             $report .= "Cc: {$this->formatRecipient($recipient)}\n";
         }
         foreach ($notify->getExtraCopies() as $recipient) {
-            $message->addCc($recipientAddress);
+            $message->addCc($this->recipientToAddress($recipient));
             $report .= "Cc: {$this->formatRecipient($recipient)}\n";
         }
 
@@ -429,7 +429,6 @@ class Mailer
             // Supplier order form
             if ($notify->isIncludeForm()) {
                 $renderer = $this->rendererFactory->createRenderer($source);
-                $content = null;
                 try {
                     $content = $renderer->render(RendererInterface::FORMAT_PDF);
                 } catch (PdfException $e) {
@@ -502,13 +501,13 @@ class Mailer
         $message
             ->subject('Notification failed')
             ->text("Notification failure\n\n" . $notify->getReport())
-            ->setFrom(new Address(
+            ->from(new Address(
                 $this->settingsManager->getParameter('notification.from_email'),
                 $this->settingsManager->getParameter('notification.from_name')
             ))
-            ->setTo($notify->getFrom()->getEmail(), $notify->getFrom()->getName());
+            ->to(new Address($notify->getFrom()->getEmail(), $notify->getFrom()->getName()));
 
-        $this->mailer->send($message);
+        $this->mailer->getDefaultMailer()->send($message);
     }
 
     /**
@@ -554,9 +553,6 @@ class Mailer
             ->from(...$from);
     }
 
-    /**
-     * Formats the recipient.
-     */
     private function formatRecipient(Recipient $recipient): string
     {
         if (empty($recipient->getName())) {
@@ -564,6 +560,11 @@ class Mailer
         }
 
         return sprintf('%s <%s>', $recipient->getName(), $recipient->getEmail());
+    }
+
+    private function recipientToAddress(Recipient $recipient): Address
+    {
+        return new Address($recipient->getEmail(), $recipient->getName());
     }
 
     /**
