@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
+use Decimal\Decimal;
 use Ekyna\Bundle\CommerceBundle\Event\CheckoutPaymentEvent;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\BalancePaymentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\PaymentType;
@@ -120,7 +121,7 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
 
         // If not refund, check customer balance
         if ($payment->isRefund()) {
-            $options['available_amount'] = INF;
+            $options['available_amount'] = new Decimal(INF);
         } else {
             // Abort if customer has no fund
             if (0 >= $customer->getCreditBalance()) {
