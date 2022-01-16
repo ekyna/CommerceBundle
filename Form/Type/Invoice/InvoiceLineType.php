@@ -11,15 +11,12 @@ use Ekyna\Component\Commerce\Common\Model\Units;
 use Ekyna\Component\Commerce\Document\Model\DocumentLineTypes;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceLineInterface;
-use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
-use function Symfony\Component\Translation\t;
 
 /**
  * Class InvoiceLineType
@@ -34,11 +31,12 @@ class InvoiceLineType extends AbstractResourceType
             /** @var InvoiceLineInterface $line */
             $line = $event->getData();
 
-            $disabled = $options['disabled'] || $this->isDisabled($line);
-
-            $unit = $line->getSaleItem()
-                ? $line->getSaleItem()->getUnit()
-                : Units::PIECE;
+            $unit = Units::PIECE;
+            $disabled = $options['disabled']; // || $this->isDisabled($line);
+            if ($saleItem = $line->getSaleItem()) {
+                $unit = $saleItem->getUnit();
+                $disabled = $disabled || $saleItem->isPrivate();
+            }
 
             FormHelper::addQuantityType($event->getForm(), $unit, [
                 'disabled'       => $disabled,
@@ -61,7 +59,7 @@ class InvoiceLineType extends AbstractResourceType
         });
     }
 
-    private function isDisabled(InvoiceLineInterface $line): bool
+    /*private function isDisabled(InvoiceLineInterface $line): bool
     {
         // Don't lock Shipment / discount line
         if ($line->getType() !== DocumentLineTypes::TYPE_GOOD) {
@@ -75,7 +73,7 @@ class InvoiceLineType extends AbstractResourceType
         }
 
         return $parent->isPrivate() || ($parent->isCompound() && $parent->hasPrivateChildren());
-    }
+    }*/
 
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
@@ -83,16 +81,23 @@ class InvoiceLineType extends AbstractResourceType
         $line = $form->getData();
         /** @var InvoiceInterface $invoice */
         $invoice = $options['invoice'];
+        $unit = Units::PIECE;
+        if ($saleItem = $line->getSaleItem()) {
+            $unit = $saleItem->getUnit();
+        }
 
         $view->vars['line'] = $line;
         $view->vars['level'] = $options['level'];
         $view->vars['credit_mode'] = $invoice->isCredit();
 
-        $view->children['quantity']->vars['attr']['data-max'] = $line->getAvailable() ?: New Decimal(0);
+        $view->children['quantity']->vars['attr']['data-max'] =
+            Units::fixed($line->getAvailable() ?: new Decimal(0), $unit);
 
-        if ($form->get('quantity')->isDisabled() && isset($view->parent->parent->children['quantity'])) {
-            $view->children['quantity']->vars['attr']['data-quantity'] = $line->getSaleItem()->getQuantity();
-            $view->children['quantity']->vars['attr']['data-parent'] = $view->parent->parent->children['quantity']->vars['id'];
+        if ($saleItem && $form->get('quantity')->isDisabled() && isset($view->parent->parent->children['quantity'])) {
+            $view->children['quantity']->vars['attr']['data-quantity'] =
+                Units::fixed($saleItem->getQuantity(), $unit);
+            $view->children['quantity']->vars['attr']['data-parent'] =
+                $view->parent->parent->children['quantity']->vars['id'];
         }
     }
 

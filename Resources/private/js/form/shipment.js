@@ -89,8 +89,25 @@ define(['jquery', 'ekyna-form/collection'], function($) {
 
                     $children.each(function() {
                         var $input = $(this);
+                        // TODO Only if input is disabled and quantity differs (do not trigger 'change' if not needed)
                         $input.val(quantity * $input.data('quantity')).trigger('change');
                     });
+
+                    /* TODO // Update (public) parent quantity if needed
+                    var $parent = null;
+                    // TODO data-parent attribute is not set on non-disabled inputs
+                    if ($input.data('parent')) {
+                        $parent = $form.find('#' + $input.data('parent'));
+                    }
+
+                    if (!$parent || (0 === $parent.length)) {
+                        return;
+                    }
+
+                    var parentMinQuantity = quantity / $input.data('quantity');
+                    if ($parent.val() < parentMinQuantity) {
+                        $parent.val(parentMinQuantity).trigger('change');
+                    }*/
                 })
                 .not(':disabled').trigger('change');
 

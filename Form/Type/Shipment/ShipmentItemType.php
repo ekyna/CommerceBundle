@@ -34,11 +34,12 @@ class ShipmentItemType extends AbstractResourceType
             /** @var ShipmentItemInterface $item */
             $item = $event->getData();
 
-            $disabled = $options['disabled'] || $this->isDisabled($item);
-
-            $unit = $item->getSaleItem()
-                ? $item->getSaleItem()->getUnit()
-                : Units::PIECE;
+            $unit = Units::PIECE;
+            $disabled = $options['disabled']; // || $this->>isDisabled($item);
+            if ($saleItem = $item->getSaleItem()) {
+                $unit = $saleItem->getUnit();
+                $disabled = $disabled || $saleItem->isPrivate();
+            }
 
             FormHelper::addQuantityType($event->getForm(), $unit, [
                 'disabled'       => $disabled,
@@ -61,7 +62,7 @@ class ShipmentItemType extends AbstractResourceType
         });
     }
 
-    private function isDisabled(ShipmentItemInterface $item): bool
+    /*private function isDisabled(ShipmentItemInterface $item): bool
     {
         $saleItem = $item->getSaleItem();
 
@@ -70,7 +71,7 @@ class ShipmentItemType extends AbstractResourceType
         }
 
         return $parent->isPrivate() || ($parent->isCompound() && $parent->hasPrivateChildren());
-    }
+    }*/
 
     public function finishView(FormView $view, FormInterface $form, array $options): void
     {
@@ -79,16 +80,20 @@ class ShipmentItemType extends AbstractResourceType
         /** @var ShipmentInterface $shipment */
         $shipment = $options['shipment'];
         $saleItem = $item->getSaleItem();
+        $unit = $saleItem->getUnit();
 
         $view->vars['item'] = $item;
         $view->vars['level'] = $options['level'];
         $view->vars['return_mode'] = $shipment->isReturn();
 
-        $view->children['quantity']->vars['attr']['data-max'] = ($item->getAvailable() ?: new Decimal(0));
+        $view->children['quantity']->vars['attr']['data-max'] =
+            Units::fixed($item->getAvailable() ?: new Decimal(0), $unit);
 
         if ($form->get('quantity')->isDisabled() && isset($view->parent->parent->children['quantity'])) {
-            $view->children['quantity']->vars['attr']['data-quantity'] = $saleItem->getQuantity();
-            $view->children['quantity']->vars['attr']['data-parent'] = $view->parent->parent->children['quantity']->vars['id'];
+            $view->children['quantity']->vars['attr']['data-quantity'] =
+                Units::fixed($saleItem->getQuantity(), $unit);
+            $view->children['quantity']->vars['attr']['data-parent'] =
+                $view->parent->parent->children['quantity']->vars['id'];
         }
 
         // Geocode
