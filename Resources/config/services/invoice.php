@@ -56,6 +56,7 @@ return static function (ContainerConfigurator $container) {
             ->call('setCreditNumberGenerator', [service('ekyna_commerce.generator.credit_number')])
             ->call('setInvoiceBuilder', [service('ekyna_commerce.builder.invoice')])
             ->call('setInvoiceCalculator', [service('ekyna_commerce.calculator.document')])
+            ->call('setInvoicePaymentResolver', [service('ekyna_commerce.resolver.invoice_payment')])
 
         // Invoice line abstract listener
         ->set('ekyna_commerce.listener.abstract_invoice_line', AbstractInvoiceLineListener::class)

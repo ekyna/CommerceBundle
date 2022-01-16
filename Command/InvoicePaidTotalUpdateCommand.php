@@ -80,7 +80,7 @@ class InvoicePaidTotalUpdateCommand extends Command
             "UPDATE $table SET real_paid_total=:total WHERE id=:id LIMIT 1"
         );
 
-        $qb = $this->manager->createQueryBuilder()->from($metadata->getName(), 'i');
+        $qb = $this->manager->createQueryBuilder()->from($metadata->getName(), 'i')->select('i');
 
         // Single order invoices case
         if (0 < $orderId) {
