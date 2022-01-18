@@ -103,7 +103,7 @@ class TransformAction extends AbstractSaleAction implements RoutingActionInterfa
         return $this->render($this->options['template'], [
             'context'                   => $this->context,
             $config->getCamelCaseName() => $this->context->getResource(),
-            'form_template'             => $this->options['form_templates'][$target],
+            'form'                      => $form->createView(),
             'target'                    => $target,
         ]);
     }
