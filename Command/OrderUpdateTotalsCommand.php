@@ -18,6 +18,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Throwable;
 
+use function sprintf;
+
 /**
  * Class OrderUpdateTotalsCommand
  * @package Ekyna\Bundle\CommerceBundle\Command
@@ -33,7 +35,7 @@ class OrderUpdateTotalsCommand extends Command
     private NotifyQueue            $notifyQueue;
     private string                 $orderClass;
 
-    private Query $nextOrderQuery;
+    private ?Query $nextOrderQuery = null;
     private int   $lastId;
     private bool  $amount;
     private bool  $payment;
@@ -159,17 +161,40 @@ class OrderUpdateTotalsCommand extends Command
         $changed = false;
 
         try {
+            $changes = [];
             if ($this->amount) {
+                $changes['net'] = [$order->getNetTotal()->toFixed(2)];
+                $changes['grand'] = [$order->getGrandTotal()->toFixed(2)];
                 $changed = $this->saleUpdater->updateAmountTotals($order) || $changed;
+                $changes['net'][1] = $order->getNetTotal()->toFixed(2);
+                $changes['grand'][1] = $order->getGrandTotal()->toFixed(2);
             }
             if ($this->payment) {
+                $changes['paid'] = [$order->getPaidTotal()->toFixed(2)];
+                $changes['refunded'] = [$order->getRefundedTotal()->toFixed(2)];
+                $changes['pending'] = [$order->getPendingTotal()->toFixed(2)];
+                $changes['outstanding_accepted'] = [$order->getOutstandingAccepted()->toFixed(2)];
+                $changes['outstanding_expired'] = [$order->getOutstandingExpired()->toFixed(2)];
                 $changed = $this->saleUpdater->updatePaymentTotals($order) || $changed;
+                $changes['paid'][1] = $order->getPaidTotal()->toFixed(2);
+                $changes['refunded'][1] = $order->getRefundedTotal()->toFixed(2);
+                $changes['pending'][1] = $order->getPendingTotal()->toFixed(2);
+                $changes['outstanding_accepted'][1] = $order->getOutstandingAccepted()->toFixed(2);
+                $changes['outstanding_expired'][1] = $order->getOutstandingExpired()->toFixed(2);
             }
             if ($this->invoice) {
+                $changes['invoice'] = [$order->getInvoiceTotal()->toFixed(2)];
+                $changes['credit'] = [$order->getCreditTotal()->toFixed(2)];
                 $changed = $this->saleUpdater->updateInvoiceTotals($order) || $changed;
+                $changes['invoice'][1] = $order->getInvoiceTotal()->toFixed(2);
+                $changes['credit'][1] = $order->getCreditTotal()->toFixed(2);
             }
             if ($this->margin) {
+                $changes['margin'] = [$order->getMarginTotal()->toFixed(2)];
+                $changes['revenue'] = [$order->getRevenueTotal()->toFixed(2)];
                 $changed = $this->orderUpdater->updateMarginTotals($order) || $changed;
+                $changes['margin'][1] = $order->getMarginTotal()->toFixed(2);
+                $changes['revenue'][1] = $order->getRevenueTotal()->toFixed(2);
             }
 
             if ($changed) {
@@ -181,6 +206,15 @@ class OrderUpdateTotalsCommand extends Command
                 }
 
                 $output->writeln('<info>updated</info>');
+
+                foreach ($changes as $key => $values) {
+                    if ($values[0] === $values[1]) {
+                        continue;
+                    }
+
+                    $output->writeln(sprintf('%s : %s <> %s', $key, ...$values));
+                }
+
                 $this->updatedCount++;
             } else {
                 $output->writeln('<comment>skipped</comment>');
@@ -215,7 +249,7 @@ class OrderUpdateTotalsCommand extends Command
 
     private function findNextOrder(): ?OrderInterface
     {
-        if (!$this->nextOrderQuery) {
+        if (null === $this->nextOrderQuery) {
             $qb = $this->manager->createQueryBuilder();
 
             $this->nextOrderQuery = $qb

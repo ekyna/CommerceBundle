@@ -121,6 +121,8 @@ resources:
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice\RecalculateAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice\RenderAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice\UnlinkAction: ~
+            permissions:
+                - list
 
         order_invoice_item:
             driver: doctrine/orm
@@ -212,6 +214,8 @@ resources:
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Payment\CreateAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Payment\DeleteAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Payment\UpdateAction: ~
+            permissions:
+                - list
 
         order_shipment:
             driver: doctrine/orm
@@ -240,6 +244,8 @@ resources:
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Shipment\GatewayFormAction:
                     expose: true
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Shipment\RenderAction: ~
+            permissions:
+                - list
 
         order_shipment_item:
             driver: doctrine/orm
