@@ -48,7 +48,7 @@ class AbortAction extends AbstractOrderAction
 
         if (null !== $shipment) {
             $em = $this->getManager(OrderShipmentInterface::class);
-            $em->remove($order);
+            $em->remove($shipment);
             $em->flush();
 
             $this->addFlash(t('sale.abort.success', [], 'EkynaCommerce'), 'success');

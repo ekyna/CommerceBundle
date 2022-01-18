@@ -34,6 +34,13 @@ class ExportAction extends AbstractSaleAction implements RoutingActionInterface
     private SaleXlsExporter $xlsExporter;
     private bool            $debug;
 
+    public function __construct(SaleCsvExporter $csvExporter, SaleXlsExporter $xlsExporter, bool $debug)
+    {
+        $this->csvExporter = $csvExporter;
+        $this->xlsExporter = $xlsExporter;
+        $this->debug = $debug;
+    }
+
     public function __invoke(): Response
     {
         if (!$sale = $this->getSale()) {
