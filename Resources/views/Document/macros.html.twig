@@ -128,7 +128,7 @@
     {%- if 0 < subject.sale.depositTotal -%}
         <strong>
             {{- 'document.mention.deposit'|trans({
-                '%percent%': (subject.sale.depositTotal / subject.sale.grandTotal)|format_number('percent'),
+                '%percent%': (subject.sale.depositTotal / subject.sale.grandTotal)|format_number(style='percent'),
                 '%amount%': subject.sale.depositTotal|currency_quote
             }, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw -}}
         </strong>.

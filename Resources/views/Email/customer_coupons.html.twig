@@ -33,7 +33,7 @@
                     {{- 'coupon.field.value'|trans({
                         '%amount%': coupon.mode == constant('Ekyna\\Component\\Commerce\\Common\\Model\\AdjustmentModes::MODE_FLAT')
                             ? coupon.amount|format_currency(commerce_default_currency)
-                            : (coupon.amount / 100)|format_number('percent')
+                            : (coupon.amount / 100)|format_number(style='percent')
                     }, 'EkynaCommerce') -}}
                 </p>
             </td>
