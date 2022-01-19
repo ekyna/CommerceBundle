@@ -213,8 +213,8 @@ class OrderViewType extends AbstractViewType
                 $removePath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\DeleteAction::class);
                 $view->addAction(new View\Action($removePath, 'fa fa-percent', [
                     'title'         => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
-                    // TODO Remove 'confirm'       => $this->trans('sale.confirm.adjustment.remove', [], 'EkynaCommerce'),
-                    // TODO Remove 'data-sale-xhr' => null,
+                    //'confirm'       => $this->trans('sale.confirm.adjustment.remove', [], 'EkynaCommerce'),
+                    //'data-sale-xhr' => null,
                     'data-sale-modal' => null,
                     'class'         => 'text-danger',
                 ]));
@@ -268,8 +268,8 @@ class OrderViewType extends AbstractViewType
                 $removePath = $this->resourceUrl($item, Admin\Sale\Item\DeleteAction::class);
                 $view->addAction(new View\Action($removePath, 'fa fa-remove', [
                     'title'         => $this->trans('sale.button.item.remove', [], 'EkynaCommerce'),
-                    // TODO Remove 'confirm'       => $this->trans('sale.confirm.item.remove', [], 'EkynaCommerce'),
-                    // TODO Remove 'data-sale-xhr' => null,
+                    //'confirm'       => $this->trans('sale.confirm.item.remove', [], 'EkynaCommerce'),
+                    //'data-sale-xhr' => null,
                     'data-sale-modal' => null,
                     'class'         => 'text-danger',
                 ]));
@@ -373,8 +373,8 @@ class OrderViewType extends AbstractViewType
         $removePath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\DeleteAction::class);
         $view->addAction(new View\Action($removePath, 'fa fa-remove', [
             'title'         => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
-            // TODO Remove 'confirm'       => $this->trans('sale.confirm.adjustment.remove', [], 'EkynaCommerce'),
-            // TODO Remove 'data-sale-xhr' => null,
+            //'confirm'       => $this->trans('sale.confirm.adjustment.remove', [], 'EkynaCommerce'),
+            //'data-sale-xhr' => null,
             'data-sale-modal' => null,
             'class'         => 'text-danger',
         ]));

@@ -33,12 +33,6 @@ class DeleteAction extends BaseAction
             return new Response('', Response::HTTP_NOT_FOUND);
         }
 
-        if ($this->request->isXmlHttpRequest()) {
-            $this->getManager()->delete($item);
-
-            return $this->buildXhrSaleViewResponse($item->getSale());
-        }
-
         return null;
     }
 
@@ -46,6 +40,10 @@ class DeleteAction extends BaseAction
     {
         /** @var SaleItemInterface $item */
         $item = $this->context->getResource();
+
+        if ($this->request->isXmlHttpRequest()) {
+            return $this->buildXhrSaleViewResponse($item->getSale());
+        }
 
         return $this->redirect($this->generateResourcePath($item->getSale()));
     }

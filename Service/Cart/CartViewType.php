@@ -128,19 +128,23 @@ class CartViewType extends AbstractViewType
         }
 
         // Remove action
+        $removeOptions = [
+            'title'         => $this->trans('sale.button.item.remove', [], 'EkynaCommerce'),
+            'class'         => 'text-danger',
+        ];
         if ($options['private']) {
             $removePath = $this->resourceUrl($item, Admin\Sale\Item\DeleteAction::class);
+            $removeOptions['data-sale-modal'] = null;
         } else {
             $removePath = $this->generateUrl('ekyna_commerce_cart_item_remove', [
                 'itemId' => $item->getId(),
             ]);
+            $removeOptions = array_replace($removeOptions, [
+                'confirm'       => $this->trans('sale.confirm.item.remove', [], 'EkynaCommerce'),
+                'data-sale-xhr' => null,
+            ]);
         }
-        $view->addAction(new View\Action($removePath, 'fa fa-remove', [
-            'title'         => $this->trans('sale.button.item.remove', [], 'EkynaCommerce'),
-            'confirm'       => $this->trans('sale.confirm.item.remove', [], 'EkynaCommerce'),
-            'data-sale-xhr' => null,
-            'class'         => 'text-danger',
-        ]));
+        $view->addAction(new View\Action($removePath, 'fa fa-remove', $removeOptions));
     }
 
     public function buildShipmentView(Common\SaleInterface $sale, View\LineView $view, array $options): void
