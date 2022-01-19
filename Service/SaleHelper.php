@@ -4,12 +4,12 @@ namespace Ekyna\Bundle\CommerceBundle\Service;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleCouponType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleQuantitiesType;
-use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
+use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
 use Ekyna\Component\Commerce\Common\Model;
 use Ekyna\Component\Commerce\Common\Updater\SaleUpdaterInterface;
 use Ekyna\Component\Commerce\Common\View\ViewBuilder;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 
@@ -26,9 +26,9 @@ class SaleHelper
     private $subjectHelper;
 
     /**
-     * @var SaleFactoryInterface
+     * @var FactoryHelperInterface
      */
-    private $saleFactory;
+    private $factoryHelper;
 
     /**
      * @var SaleUpdaterInterface
@@ -45,25 +45,15 @@ class SaleHelper
      */
     private $formFactory;
 
-
-    /**
-     * Constructor.
-     *
-     * @param SubjectHelperInterface $subjectHelper
-     * @param SaleFactoryInterface   $saleFactory
-     * @param SaleUpdaterInterface   $saleUpdater
-     * @param ViewBuilder            $viewBuilder
-     * @param FormFactoryInterface   $formFactory
-     */
     public function __construct(
         SubjectHelperInterface $subjectHelper,
-        SaleFactoryInterface $saleFactory,
-        SaleUpdaterInterface $saleUpdater,
-        ViewBuilder $viewBuilder,
-        FormFactoryInterface $formFactory
+        FactoryHelperInterface $factoryHelper,
+        SaleUpdaterInterface   $saleUpdater,
+        ViewBuilder            $viewBuilder,
+        FormFactoryInterface   $formFactory
     ) {
         $this->subjectHelper = $subjectHelper;
-        $this->saleFactory = $saleFactory;
+        $this->factoryHelper = $factoryHelper;
         $this->saleUpdater = $saleUpdater;
         $this->viewBuilder = $viewBuilder;
         $this->formFactory = $formFactory;
@@ -92,11 +82,11 @@ class SaleHelper
     /**
      * Returns the sale factory.
      *
-     * @return SaleFactoryInterface
+     * @return FactoryHelperInterface
      */
-    public function getSaleFactory()
+    public function getFactoryHelper()
     {
-        return $this->saleFactory;
+        return $this->factoryHelper;
     }
 
     /**

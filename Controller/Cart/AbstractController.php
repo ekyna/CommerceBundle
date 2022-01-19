@@ -10,7 +10,7 @@ use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
-use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
+use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
 use Ekyna\Component\Commerce\Features;
@@ -23,8 +23,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\ConstraintViolationInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 /**
@@ -292,11 +292,11 @@ class AbstractController
     }
 
     /**
-     * Returns the sale factory.
+     * Returns the sale helper.
      */
-    protected function getSaleFactory(): SaleFactoryInterface
+    protected function getFactoryHelper(): FactoryHelperInterface
     {
-        return $this->getSaleHelper()->getSaleFactory();
+        return $this->getSaleHelper()->getFactoryHelper();
     }
 
     /**

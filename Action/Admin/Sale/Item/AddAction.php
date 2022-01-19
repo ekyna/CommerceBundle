@@ -11,7 +11,7 @@ use Ekyna\Bundle\CommerceBundle\Event\SaleItemModalEvent;
 use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
 use Ekyna\Bundle\UiBundle\Model\Modal;
 use Ekyna\Component\Commerce\Common\Context\ContextProvider;
-use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
+use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
@@ -31,21 +31,21 @@ class AddAction extends AbstractCreateFlowAction
     use XhrTrait;
 
     private ContextProvider          $contextProvider;
-    private SaleFactoryInterface     $saleFactory;
+    private FactoryHelperInterface   $factoryHelper;
     private SaleHelper               $saleHelper;
     private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
-        FormFlowInterface $flow,
-        ContextProvider $contextProvider,
-        SaleFactoryInterface $saleFactory,
-        SaleHelper $saleHelper,
+        FormFlowInterface        $flow,
+        ContextProvider          $contextProvider,
+        FactoryHelperInterface   $factoryHelper,
+        SaleHelper               $saleHelper,
         EventDispatcherInterface $eventDispatcher
     ) {
         parent::__construct($flow);
 
         $this->contextProvider = $contextProvider;
-        $this->saleFactory = $saleFactory;
+        $this->factoryHelper = $factoryHelper;
         $this->saleHelper = $saleHelper;
         $this->eventDispatcher = $eventDispatcher;
     }
@@ -60,7 +60,7 @@ class AddAction extends AbstractCreateFlowAction
 
         $this->contextProvider->setContext($sale);
 
-        return $this->saleFactory->createItemForSale($sale);
+        return $this->factoryHelper->createItemForSale($sale);
     }
 
     protected function doPersist(): ResourceEventInterface

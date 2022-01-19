@@ -16,7 +16,7 @@ use Ekyna\Bundle\UiBundle\Service\FlashHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Common\Export\SaleCsvExporter;
 use Ekyna\Component\Commerce\Common\Export\SaleXlsExporter;
-use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
+use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Order\Model\OrderAttachmentInterface;
@@ -55,7 +55,7 @@ class OrderController implements ControllerInterface
     private UrlGeneratorInterface      $urlGenerator;
     private Environment                $twig;
 
-    private SaleFactoryInterface       $saleFactory;
+    private FactoryHelperInterface     $factoryHelper;
     private SaleStepValidatorInterface $stepValidator;
     private CheckoutManager            $checkoutManager;
     private PaymentHelper              $paymentHelper;
@@ -73,7 +73,7 @@ class OrderController implements ControllerInterface
         ManagerFactoryInterface    $managerFactory,
         UrlGeneratorInterface      $urlGenerator,
         Environment                $twig,
-        SaleFactoryInterface       $saleFactory,
+        FactoryHelperInterface     $factoryHelper,
         SaleStepValidatorInterface $stepValidator,
         CheckoutManager            $checkoutManager,
         PaymentHelper              $paymentHelper,
@@ -89,7 +89,7 @@ class OrderController implements ControllerInterface
         $this->managerFactory = $managerFactory;
         $this->urlGenerator = $urlGenerator;
         $this->twig = $twig;
-        $this->saleFactory = $saleFactory;
+        $this->factoryHelper = $factoryHelper;
         $this->stepValidator = $stepValidator;
         $this->checkoutManager = $checkoutManager;
         $this->paymentHelper = $paymentHelper;
@@ -330,7 +330,7 @@ class OrderController implements ControllerInterface
         $order = $this->findOrderByCustomerAndNumber($customer, $request->attributes->get('number'));
 
         /** @var OrderAttachmentInterface $attachment */
-        $attachment = $this->saleFactory->createAttachmentForSale($order);
+        $attachment = $this->factoryHelper->createAttachmentForSale($order);
         $attachment->setOrder($order);
 
         $redirect = $this->urlGenerator->generate('ekyna_commerce_account_order_read', [

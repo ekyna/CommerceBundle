@@ -14,7 +14,7 @@ use Ekyna\Bundle\UiBundle\Model\Modal;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
 use Ekyna\Bundle\UiBundle\Service\Modal\ModalRenderer;
 use Ekyna\Component\Commerce\Common\Context\ContextProviderInterface;
-use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
+use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteItemInterface;
@@ -43,7 +43,7 @@ class QuoteItemController implements ControllerInterface
     use QuoteTrait;
 
     private ContextProviderInterface $contextProvider;
-    private SaleFactoryInterface     $saleFactory;
+    private FactoryHelperInterface   $factoryHelper;
     private SaleItemCreateFlow       $createFlow;
     private FormFactoryInterface     $formFactory;
     private EventDispatcherInterface $eventDispatcher;
@@ -59,14 +59,14 @@ class QuoteItemController implements ControllerInterface
         UrlGeneratorInterface      $urlGenerator,
         Environment                $twig,
         // This
-        ContextProviderInterface $contextProvider,
-        SaleFactoryInterface     $saleFactory,
-        SaleItemCreateFlow       $createFlow,
-        FormFactoryInterface     $formFactory,
-        EventDispatcherInterface $eventDispatcher,
-        SaleHelper               $saleHelper,
-        FlashHelper              $flashHelper,
-        ModalRenderer            $modalRenderer
+        ContextProviderInterface   $contextProvider,
+        FactoryHelperInterface     $factoryHelper,
+        SaleItemCreateFlow         $createFlow,
+        FormFactoryInterface       $formFactory,
+        EventDispatcherInterface   $eventDispatcher,
+        SaleHelper                 $saleHelper,
+        FlashHelper                $flashHelper,
+        ModalRenderer              $modalRenderer
     ) {
         // Quote trait
         $this->repositoryFactory = $repositoryFactory;
@@ -77,7 +77,7 @@ class QuoteItemController implements ControllerInterface
 
         // This
         $this->contextProvider = $contextProvider;
-        $this->saleFactory = $saleFactory;
+        $this->factoryHelper = $factoryHelper;
         $this->createFlow = $createFlow;
         $this->formFactory = $formFactory;
         $this->eventDispatcher = $eventDispatcher;
@@ -93,7 +93,7 @@ class QuoteItemController implements ControllerInterface
         // Set the context using sale
         $this->contextProvider->setContext($quote);
 
-        $item = $this->saleFactory->createItemForSale($quote);
+        $item = $this->factoryHelper->createItemForSale($quote);
 
         $this->createFlow->setGenericFormOptions([
             'method' => 'post',
@@ -165,12 +165,12 @@ class QuoteItemController implements ControllerInterface
         ]);
 
         $form = $this->formFactory->create(SaleItemConfigureType::class, $item, [
-                'method' => 'post',
-                'action' => $action,
-                'attr'   => [
-                    'class' => 'form-horizontal',
-                ],
-            ]);
+            'method' => 'post',
+            'action' => $action,
+            'attr'   => [
+                'class' => 'form-horizontal',
+            ],
+        ]);
 
         $form->handleRequest($request);
 

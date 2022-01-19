@@ -93,7 +93,7 @@ class CartHelper
     public function createAddSubjectToCartForm(SubjectInterface $subject, array $options = []): FormInterface
     {
         /** @var CartItemInterface $item */
-        $item = $this->getSaleHelper()->getSaleFactory()->createItemForSale(new Cart());
+        $item = $this->getSaleHelper()->getFactoryHelper()->createItemForSale(new Cart());
 
         $this->getSaleHelper()->getSubjectHelper()->assign($item, $subject);
 

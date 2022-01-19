@@ -23,7 +23,7 @@ use Ekyna\Bundle\UiBundle\Service\Modal\ModalRenderer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\SaleStepValidatorInterface;
 use Ekyna\Component\Commerce\Common\Export\SaleCsvExporter;
 use Ekyna\Component\Commerce\Common\Export\SaleXlsExporter;
-use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
+use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
 use Ekyna\Component\Commerce\Common\Updater\SaleUpdaterInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes as CDocumentTypes;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
@@ -61,7 +61,7 @@ class QuoteController implements ControllerInterface
     use QuoteTrait;
 
     private SaleUpdaterInterface       $saleUpdater;
-    private SaleFactoryInterface       $saleFactory;
+    private FactoryHelperInterface     $factoryHelper;
     private SaleStepValidatorInterface $stepValidator;
     private CheckoutManager            $checkoutManager;
     private PaymentHelper              $paymentHelper;
@@ -83,7 +83,7 @@ class QuoteController implements ControllerInterface
         Environment                $twig,
         // This
         SaleUpdaterInterface       $saleUpdater,
-        SaleFactoryInterface       $saleFactory,
+        FactoryHelperInterface     $factoryHelper,
         SaleStepValidatorInterface $stepValidator,
         CheckoutManager            $checkoutManager,
         PaymentHelper              $paymentHelper,
@@ -105,7 +105,7 @@ class QuoteController implements ControllerInterface
 
         // This
         $this->saleUpdater = $saleUpdater;
-        $this->saleFactory = $saleFactory;
+        $this->factoryHelper = $factoryHelper;
         $this->stepValidator = $stepValidator;
         $this->checkoutManager = $checkoutManager;
         $this->paymentHelper = $paymentHelper;
@@ -259,7 +259,7 @@ class QuoteController implements ControllerInterface
         // Create voucher attachment if not exists
         if (null === $attachment = $quote->getVoucherAttachment()) {
             $attachment = $this
-                ->saleFactory
+                ->factoryHelper
                 ->createAttachmentForSale($quote);
 
             $type = CDocumentTypes::TYPE_VOUCHER;
@@ -420,7 +420,7 @@ class QuoteController implements ControllerInterface
         $quote = $this->findQuoteByCustomerAndNumber($customer, $request->attributes->get('number'));
 
         /** @var QuoteAttachmentInterface $attachment */
-        $attachment = $this->saleFactory->createAttachmentForSale($quote);
+        $attachment = $this->factoryHelper->createAttachmentForSale($quote);
         $attachment->setQuote($quote);
 
         $redirect = $this->urlGenerator->generate('ekyna_commerce_account_quote_read', [

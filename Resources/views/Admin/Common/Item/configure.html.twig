@@ -1,17 +1,9 @@
 {% extends '@EkynaAdmin/Entity/Crud/update.html.twig' %}
 
-{% set resource = _context[resource_name] %}
+{% set resource = context.resource %}
 
 {% block title %}
     <h1>{{ 'sale.header.item.configure'|trans({}, 'EkynaCommerce')|raw }}</h1>
 {% endblock title %}
 
 {% block actions %}{% endblock actions %}
-
-{% block main %}
-    {{ form_start(form) }}
-    <div class="form-body">
-        {{ form_widget(form) }}
-    </div>
-    {{ form_end(form) }}
-{% endblock main %}

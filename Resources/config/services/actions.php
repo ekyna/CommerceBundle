@@ -230,7 +230,7 @@ return static function (ContainerConfigurator $container) {
             ->args([
                 service('ekyna_commerce.form_flow.sale_item_add'),
                 service('ekyna_commerce.provider.context'),
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
                 service('ekyna_commerce.helper.sale'),
                 service('event_dispatcher'),
             ])
@@ -245,7 +245,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.action.sale_item_create', Item\CreateAction::class)
             ->args([
                 service('ekyna_commerce.provider.context'),
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
                 service('ekyna_commerce.helper.sale'),
             ])
             ->tag('ekyna_resource.action')

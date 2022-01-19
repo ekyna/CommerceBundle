@@ -8,7 +8,7 @@ use Ekyna\Bundle\AdminBundle\Action\CreateAction as BaseAction;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\XhrTrait;
 use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
 use Ekyna\Component\Commerce\Common\Context\ContextProvider;
-use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
+use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Resource\Event\ResourceEventInterface;
@@ -27,17 +27,17 @@ class CreateAction extends BaseAction
 {
     use XhrTrait;
 
-    private ContextProvider          $contextProvider;
-    private SaleFactoryInterface     $saleFactory;
-    private SaleHelper               $saleHelper;
+    private ContextProvider        $contextProvider;
+    private FactoryHelperInterface $factoryHelper;
+    private SaleHelper             $saleHelper;
 
     public function __construct(
-        ContextProvider $contextProvider,
-        SaleFactoryInterface $saleFactory,
-        SaleHelper $saleHelper
+        ContextProvider        $contextProvider,
+        FactoryHelperInterface $factoryHelper,
+        SaleHelper             $saleHelper
     ) {
         $this->contextProvider = $contextProvider;
-        $this->saleFactory = $saleFactory;
+        $this->factoryHelper = $factoryHelper;
         $this->saleHelper = $saleHelper;
     }
 
@@ -50,7 +50,7 @@ class CreateAction extends BaseAction
 
         $this->contextProvider->setContext($sale);
 
-        return $this->saleFactory->createItemForSale($sale);
+        return $this->factoryHelper->createItemForSale($sale);
     }
 
     protected function getForm(array $options = []): FormInterface

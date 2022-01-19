@@ -19,9 +19,8 @@ use Ekyna\Component\Commerce\Common\EventListener\AbstractSaleAddressListener;
 use Ekyna\Component\Commerce\Common\EventListener\AbstractSaleItemListener;
 use Ekyna\Component\Commerce\Common\EventListener\AbstractSaleListener;
 use Ekyna\Component\Commerce\Common\EventListener\SaleDiscountListener;
-use Ekyna\Component\Commerce\Common\Factory\SaleFactory;
+use Ekyna\Component\Commerce\Common\Helper\FactoryHelper;
 use Ekyna\Component\Commerce\Common\Preparer\SalePreparer;
-use Ekyna\Component\Commerce\Common\Resolver\AbstractSaleStateResolver;
 use Ekyna\Component\Commerce\Common\Resolver\DiscountResolver;
 use Ekyna\Component\Commerce\Common\Resolver\SaleStateResolverFactory;
 use Ekyna\Component\Commerce\Common\Transformer\SaleCopierFactory;
@@ -36,8 +35,8 @@ return static function (ContainerConfigurator $container) {
     $container
         ->services()
 
-        // Sale factory
-        ->set('ekyna_commerce.factory.sale', SaleFactory::class)
+        // Sale factory helper
+        ->set('ekyna_commerce.helper.factory', FactoryHelper::class)
             ->args([
                 service('ekyna_resource.factory.factory'),
             ])
@@ -46,7 +45,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.factory.abstract_sale', AbstractSaleFactory::class)
             ->abstract(true)
             ->args([
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
                 service('ekyna_commerce.updater.sale'),
                 service('ekyna_resource.provider.locale'),
                 service('ekyna_commerce.provider.currency'),
@@ -57,7 +56,7 @@ return static function (ContainerConfigurator $container) {
         // Sale copier factory
         ->set('ekyna_commerce.factory.sale_copier', SaleCopierFactory::class)
             ->args([
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
             ])
 
         // Sale transformer
@@ -65,6 +64,7 @@ return static function (ContainerConfigurator $container) {
             ->lazy(true)
             ->args([
                 service('ekyna_commerce.factory.sale_copier'),
+                service('ekyna_resource.factory.factory'),
                 service('ekyna_resource.manager.factory'),
                 service('ekyna_resource.upload_toggler'),
                 service('event_dispatcher'),
@@ -98,7 +98,7 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.calculator.payment'),
                 service('ekyna_commerce.calculator.invoice_subject'),
                 service('ekyna_commerce.releaser.outstanding'),
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
             ])
 
         // Sale preparer
@@ -108,7 +108,7 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_resource.event_dispatcher'),
                 service('ekyna_commerce.prioritizer.stock'),
                 service('ekyna_commerce.builder.shipment'),
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
             ])
 
         // Discount resolver
@@ -121,7 +121,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.builder.address', AddressBuilder::class)
             ->lazy(true)
             ->args([
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
                 service('ekyna_resource.orm.persistence_helper'),
             ])
 
@@ -129,7 +129,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.builder.adjustment', AdjustmentBuilder::class)
             ->lazy(true)
             ->args([
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
                 service('ekyna_commerce.resolver.tax'),
                 service('ekyna_commerce.resolver.discount'),
                 service('ekyna_resource.orm.persistence_helper'),
@@ -185,7 +185,7 @@ return static function (ContainerConfigurator $container) {
             ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
             ->call('setKeyGenerator', [service('ekyna_commerce.generator.key')])
             ->call('setPricingUpdater', [service('ekyna_commerce.updater.pricing')])
-            ->call('setSaleFactory', [service('ekyna_commerce.factory.sale')])
+            ->call('setFactoryHelper', [service('ekyna_commerce.helper.factory')])
             ->call('setSaleUpdater', [service('ekyna_commerce.updater.sale')])
             ->call('setDueDateResolver', [service('ekyna_commerce.resolver.due_date')])
             ->call('setCurrencyProvider', [service('ekyna_commerce.provider.currency')])

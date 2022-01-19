@@ -87,7 +87,7 @@ class PaymentWatchCommand extends Command
             return;
         }
 
-        $fromName = $this->setting->getParameter('notification.from_name');
+        $fromName = $this->setting->getParameter('notification.from_name') ?? '';
         $fromEmail = $this->setting->getParameter('notification.from_email');
         $toEmails = $this->setting->getParameter('notification.to_emails');
 

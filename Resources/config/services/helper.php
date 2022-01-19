@@ -39,7 +39,7 @@ return static function (ContainerConfigurator $container) {
                 service('request_stack'),
                 service('form.factory'),
                 service('translator'),
-                param('ekyna_resource.locales'),
+                param('ekyna_resource.locales'), // TODO ekyna_cms.public_locales (need to define)
                 abstract_arg('Widget helper configuration'),
             ])
 
@@ -100,7 +100,7 @@ return static function (ContainerConfigurator $container) {
             ->lazy(true)
             ->args([
                 service('ekyna_commerce.helper.subject'),
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
                 service('ekyna_commerce.updater.sale'),
                 service('ekyna_commerce.builder.view'),
                 service('form.factory'),

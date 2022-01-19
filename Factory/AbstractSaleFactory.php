@@ -6,7 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Factory;
 
 use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Factory\AbstractSaleFactory as BaseFactory;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyProviderInterface;
-use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
+use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Updater\SaleUpdaterInterface;
 use Ekyna\Component\Commerce\Customer\Repository\CustomerRepositoryInterface;
@@ -24,20 +24,20 @@ abstract class AbstractSaleFactory extends BaseFactory
     private CustomerRepositoryInterface $customerRepository;
 
     public function __construct(
-        SaleFactoryInterface $saleFactory,
-        SaleUpdaterInterface $saleUpdater,
-        LocaleProviderInterface $localeProvider,
-        CurrencyProviderInterface $currencyProvider,
+        FactoryHelperInterface      $factoryHelper,
+        SaleUpdaterInterface        $saleUpdater,
+        LocaleProviderInterface     $localeProvider,
+        CurrencyProviderInterface   $currencyProvider,
         RequestStack                $requestStack,
         CustomerRepositoryInterface $customerRepository
     ) {
-        parent::__construct($saleFactory, $saleUpdater, $localeProvider, $currencyProvider);
+        parent::__construct($factoryHelper, $saleUpdater, $localeProvider, $currencyProvider);
 
         $this->requestStack = $requestStack;
         $this->customerRepository = $customerRepository;
     }
 
-    protected function initialize(SaleInterface $sale): void
+    public function initialize(SaleInterface $sale): void
     {
         $this->loadCustomerFromRequest($sale);
 

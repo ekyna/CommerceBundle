@@ -16,7 +16,7 @@ use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
  * @package Ekyna\Bundle\CommerceBundle\Factory
  * @author  Étienne Dauvergne <contact@ekyna.com>
  *
- * @method QuoteInterface create()
+ * @method QuoteInterface create(bool $initialize = true)
  * @method QuoteInterface createWithCustomer(CustomerInterface $customer)
  */
 class QuoteFactory extends AbstractSaleFactory
@@ -35,7 +35,7 @@ class QuoteFactory extends AbstractSaleFactory
         $this->expirationDelay = $delay;
     }
 
-    protected function initialize(SaleInterface $sale): void
+    public function initialize(SaleInterface $sale): void
     {
         parent::initialize($sale);
 

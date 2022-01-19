@@ -77,7 +77,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.builder.invoice', InvoiceBuilder::class)
             ->lazy(true)
             ->args([
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
                 service('ekyna_commerce.calculator.invoice_subject'),
                 service('ekyna_commerce.calculator.shipment_subject'),
                 service('ekyna_resource.provider.locale'),

@@ -5,7 +5,7 @@ namespace Ekyna\Bundle\CommerceBundle\EventListener;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Mailer\Mailer;
-use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
+use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Notify\NotifyQueue;
@@ -34,7 +34,7 @@ class NotificationEventSubscriber implements EventSubscriberInterface
     private $mailer;
 
     /**
-     * @var SaleFactoryInterface
+     * @var FactoryHelperInterface
      */
     private $factory;
 
@@ -49,13 +49,13 @@ class NotificationEventSubscriber implements EventSubscriberInterface
      *
      * @param NotifyQueue            $queue
      * @param Mailer                 $mailer
-     * @param SaleFactoryInterface   $factory
+     * @param FactoryHelperInterface $factory
      * @param EntityManagerInterface $manager
      */
     public function __construct(
-        NotifyQueue $queue,
-        Mailer $mailer,
-        SaleFactoryInterface $factory,
+        NotifyQueue            $queue,
+        Mailer                 $mailer,
+        FactoryHelperInterface $factory,
         EntityManagerInterface $manager
     ) {
         $this->queue = $queue;
@@ -104,9 +104,9 @@ class NotificationEventSubscriber implements EventSubscriberInterface
         if ($source instanceof SaleInterface) {
             $sale = $source;
         } elseif (
-            $source instanceof PaymentInterface ||
-            $source instanceof ShipmentInterface ||
-            $source instanceof InvoiceInterface
+            $source instanceof PaymentInterface
+            || $source instanceof ShipmentInterface
+            || $source instanceof InvoiceInterface
         ) {
             $sale = $source->getSale();
         } else {

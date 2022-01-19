@@ -251,7 +251,7 @@ class CartController extends AbstractController
 
         $saleHelper = $this->getSaleHelper();
 
-        $attachment = $saleHelper->getSaleFactory()->createAttachmentForSale($cart);
+        $attachment = $saleHelper->getFactoryHelper()->createAttachmentForSale($cart);
         $cart->addAttachment($attachment);
 
         $form = $this
@@ -498,7 +498,7 @@ class CartController extends AbstractController
         if (empty($buttons)) {
             $buttons = [
                 array_replace(Modal::BTN_SUBMIT, [
-                    'label'    => 'button.save',
+                    'label' => 'button.save',
                 ]),
                 Modal::BTN_CANCEL,
             ];

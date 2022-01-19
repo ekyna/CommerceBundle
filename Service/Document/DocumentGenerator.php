@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
-use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
+use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Document\Builder\DocumentBuilderInterface;
 use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculatorInterface;
@@ -35,36 +35,26 @@ class DocumentGenerator
     protected $rendererFactory;
 
     /**
-     * @var SaleFactoryInterface
+     * @var FactoryHelperInterface
      */
-    protected $saleFactory;
+    protected $factoryHelper;
 
     /**
      * @var TranslatorInterface
      */
     protected $translator;
 
-
-    /**
-     * Constructor.
-     *
-     * @param DocumentBuilderInterface    $documentBuilder
-     * @param DocumentCalculatorInterface $documentCalculator
-     * @param RendererFactory             $rendererFactory
-     * @param SaleFactoryInterface        $saleFactory
-     * @param TranslatorInterface         $translator
-     */
     public function __construct(
-        DocumentBuilderInterface $documentBuilder,
+        DocumentBuilderInterface    $documentBuilder,
         DocumentCalculatorInterface $documentCalculator,
-        RendererFactory $rendererFactory,
-        SaleFactoryInterface $saleFactory,
-        TranslatorInterface $translator
+        RendererFactory             $rendererFactory,
+        FactoryHelperInterface      $factoryHelper,
+        TranslatorInterface         $translator
     ) {
         $this->documentBuilder = $documentBuilder;
         $this->documentCalculator = $documentCalculator;
         $this->rendererFactory = $rendererFactory;
-        $this->saleFactory = $saleFactory;
+        $this->factoryHelper = $factoryHelper;
         $this->translator = $translator;
     }
 
@@ -102,7 +92,7 @@ class DocumentGenerator
         $file = new UploadedFile($path, $renderer->getFilename(), null, null, true);
 
         // Attachment
-        $attachment = $this->saleFactory->createAttachmentForSale($sale);
+        $attachment = $this->factoryHelper->createAttachmentForSale($sale);
 
         $attachment
             ->setType($type)

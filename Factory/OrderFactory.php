@@ -15,7 +15,7 @@ use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
  * @package Ekyna\Bundle\CommerceBundle\Factory
  * @author  Étienne Dauvergne <contact@ekyna.com>
  *
- * @method OrderInterface create()
+ * @method OrderInterface create(bool $initialize = true)
  * @method OrderInterface createWithCustomer(CustomerInterface $customer)
  */
 class OrderFactory extends AbstractSaleFactory
@@ -27,7 +27,7 @@ class OrderFactory extends AbstractSaleFactory
         $this->inChargeResolver = $resolver;
     }
 
-    protected function initialize(SaleInterface $sale): void
+    public function initialize(SaleInterface $sale): void
     {
         parent::initialize($sale);
 

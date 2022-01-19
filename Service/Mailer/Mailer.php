@@ -54,6 +54,7 @@ class Mailer
     protected SubjectHelperInterface  $subjectHelper;
     protected FilesystemOperator      $filesystem;
 
+    private ?Address $notificationSender = null;
 
     public function __construct(
         MailerFactory $mailer,
@@ -132,7 +133,7 @@ class Mailer
             'balance'  => $balance,
         ]);
 
-        $to = new Address($customer->getEmail(), $customer->getFirstName() . ' ' . $customer->getLastName());
+        $to = new Address($customer->getEmail(), trim($customer->getFirstName() . ' ' . $customer->getLastName()));
 
         $message = $this->createMessage($subject, $body, $to);
 
@@ -218,7 +219,7 @@ class Mailer
             'locale'  => $locale,
         ]);
 
-        $to = new Address($customer->getEmail(), $customer->getFirstName() . ' ' . $customer->getLastName());
+        $to = new Address($customer->getEmail(), trim($customer->getFirstName() . ' ' . $customer->getLastName()));
 
         return $this->mailer->send($this->createMessage($subject, $body, $to, false));
     }
@@ -247,7 +248,7 @@ class Mailer
             'messages' => $messages,
         ]);
 
-        $to = new Address($admin->getEmail(), $admin->hasFullName() ? $admin->getFullName() : null);
+        $to = new Address($admin->getEmail(), $admin->hasFullName() ? $admin->getFullName() : '');
 
         return $this->mailer->send($this->createMessage($subject, $body, $to, false));
     }
@@ -280,7 +281,7 @@ class Mailer
             'locale'  => $locale,
         ]);
 
-        $to = new Address($customer->getEmail(), $customer->getFirstName() . ' ' . $customer->getLastName());
+        $to = new Address($customer->getEmail(), trim($customer->getFirstName() . ' ' . $customer->getLastName()));
 
         return $this->mailer->send($this->createMessage($subject, $body, $to, false));
     }
@@ -501,10 +502,7 @@ class Mailer
         $message
             ->subject('Notification failed')
             ->text("Notification failure\n\n" . $notify->getReport())
-            ->from(new Address(
-                $this->settingsManager->getParameter('notification.from_email'),
-                $this->settingsManager->getParameter('notification.from_name')
-            ))
+            ->from($this->getNotificationSenderAddress())
             ->to(new Address($notify->getFrom()->getEmail(), $notify->getFrom()->getName()));
 
         $this->mailer->getDefaultMailer()->send($message);
@@ -531,10 +529,7 @@ class Mailer
         }
 
         if (empty($from)) {
-            $from = new Address(
-                $this->settingsManager->getParameter('notification.from_email'),
-                $this->settingsManager->getParameter('notification.from_name')
-            );
+            $from = $this->getNotificationSenderAddress();
         }
 
         if (!is_array($to)) {
@@ -565,6 +560,18 @@ class Mailer
     private function recipientToAddress(Recipient $recipient): Address
     {
         return new Address($recipient->getEmail(), $recipient->getName());
+    }
+
+    private function getNotificationSenderAddress(): Address
+    {
+        if (null !== $this->notificationSender) {
+            return $this->notificationSender;
+        }
+
+        return $this->notificationSender = new Address(
+            $this->settingsManager->getParameter('notification.from_email'),
+            $this->settingsManager->getParameter('notification.from_name')
+        );
     }
 
     /**

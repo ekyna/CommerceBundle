@@ -57,7 +57,7 @@ return static function (ContainerConfigurator $container) {
             ->args([
                 service('ekyna_commerce.queue.notify'),
                 service('ekyna_commerce.mailer'),
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
                 service('doctrine.orm.default_entity_manager'),
             ])
             ->tag('kernel.event_subscriber')

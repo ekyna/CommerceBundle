@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item;
 use Ekyna\Bundle\AdminBundle\Action\AbstractFormAction;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\XhrTrait;
 use Ekyna\Bundle\CommerceBundle\Event\SaleItemModalEvent;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemConfigureType;
 use Ekyna\Bundle\UiBundle\Model\Modal;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Resource\Action\Permission;
@@ -23,6 +24,11 @@ class ConfigureAction extends AbstractFormAction
     use XhrTrait;
 
     private EventDispatcherInterface $eventDispatcher;
+
+    public function __construct(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
 
     public function __invoke(): Response
     {
@@ -82,12 +88,13 @@ class ConfigureAction extends AbstractFormAction
                 'methods'  => ['GET', 'POST'],
             ],
             'button'     => [
-                'label' => 'sale.button.item.configure',
+                'label'        => 'sale.button.item.configure',
                 'trans_domain' => 'EkynaCommerce',
-                'theme' => 'primary',
-                'icon'  => 'cog',
+                'theme'        => 'primary',
+                'icon'         => 'cog',
             ],
             'options'    => [
+                'type'          => SaleItemConfigureType::class,
                 'template'      => '@EkynaCommerce/Admin/Common/Item/configure.html.twig',
                 'form_template' => '@EkynaCommerce/Admin/Common/Item/_form.html.twig',
             ],

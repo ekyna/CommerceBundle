@@ -86,7 +86,7 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_resource.manager.factory'),
                 service('router'),
                 service('twig'),
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
                 service('ekyna_commerce.validator.sale_step'),
                 service('ekyna_commerce.manager.payment_checkout'),
                 service('ekyna_commerce.helper.payment'),
@@ -120,7 +120,7 @@ return static function (ContainerConfigurator $container) {
                 service('twig'),
                 // Controller
                 service('ekyna_commerce.updater.sale'),
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
                 service('ekyna_commerce.validator.sale_step'),
                 service('ekyna_commerce.manager.payment_checkout'),
                 service('ekyna_commerce.helper.payment'),
@@ -147,7 +147,7 @@ return static function (ContainerConfigurator $container) {
                 service('twig'),
                 // Controller
                 service('ekyna_commerce.provider.context'),
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
                 service('ekyna_commerce.form_flow.sale_item_add'),
                 service('form.factory'),
                 service('event_dispatcher'),

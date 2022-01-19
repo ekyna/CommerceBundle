@@ -15,10 +15,13 @@ use Ekyna\Bundle\ResourceBundle\Action\TemplatingTrait;
 use Ekyna\Bundle\ResourceBundle\Action\TranslatorTrait;
 use Ekyna\Bundle\UiBundle\Action\FlashTrait;
 use Ekyna\Bundle\UiBundle\Form\Type\FormActionsType;
+use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Factory\AbstractSaleFactory;
+use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\TransformationTargets;
 use Ekyna\Component\Commerce\Common\Transformer\SaleTransformerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormInterface;
@@ -66,10 +69,13 @@ class TransformAction extends AbstractSaleAction implements RoutingActionInterfa
             ->getResourceRegistry()
             ->find('ekyna_commerce.' . $target);
 
+        $factory = $this->getFactory($targetConfig->getEntityInterface());
+        if (!$factory instanceof SaleFactoryInterface) {
+            throw new UnexpectedTypeException($factory, SaleFactoryInterface::class);
+        }
+
         /** @var SaleInterface $targetSale */
-        $targetSale = $this
-            ->getFactory($targetConfig->getEntityInterface())
-            ->create();
+        $targetSale = $factory->create(false);
 
         // Initialize the transformation
         $event = $this->saleTransformer->initialize($sourceSale, $targetSale);

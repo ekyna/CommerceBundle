@@ -92,7 +92,7 @@ return static function (ContainerConfigurator $container) {
             ->args([
                 service('ekyna_resource.orm.persistence_helper'),
                 service('ekyna_commerce.cache.stock_assignment'),
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
             ])
             ->tag('resource.event_subscriber')
 
@@ -128,7 +128,7 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.resolver.stock_unit'),
                 service('ekyna_commerce.manager.stock_assignment'),
                 service('ekyna_commerce.updater.stock_assignment'),
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
             ])
 
         // Stock unit linker

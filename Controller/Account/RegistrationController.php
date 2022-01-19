@@ -128,7 +128,10 @@ class RegistrationController extends BaseController
                 $registrationEvent = new RegistrationEvent($registration);
                 $this->dispatcher->dispatch($registrationEvent, RegistrationEvent::REGISTRATION_SUCCESS);
 
-                $user->setEnabled(true);
+                $user
+                    ->setSendCreationEmail(true)
+                    ->setEnabled(true);
+
                 $this->userManager->persist($user);
 
                 $resourceEvent = $this->customerManager->save($customer);

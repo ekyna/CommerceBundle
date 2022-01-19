@@ -111,7 +111,7 @@ class CartTransformCommand extends Command
         $output->writeln('');
 
         /** @var OrderInterface $order */
-        $order = $this->orderFactory->create();
+        $order = $this->orderFactory->create(false);
 
         $event = $this->saleTransformer->initialize($cart, $order);
         if ($event->isPropagationStopped()) {

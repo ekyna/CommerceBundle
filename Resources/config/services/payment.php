@@ -48,7 +48,7 @@ return static function (ContainerConfigurator $container) {
         // Payment factory
         ->set('ekyna_commerce.factory.payment', PaymentFactory::class)
             ->args([
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
                 service('ekyna_commerce.updater.payment'),
                 service('ekyna_commerce.calculator.payment'),
                 service('ekyna_commerce.converter.currency'),

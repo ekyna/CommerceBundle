@@ -69,8 +69,8 @@ class CreateUserAction extends AbstractAction implements AdminActionInterface
             $user = $this->getFactory(UserInterface::class)->create();
             $user
                 ->setSendCreationEmail(true)
-                ->setEnabled(true)
-                ->setEmail($customer->getEmail());
+                ->setEmail($customer->getEmail())
+                ->setEnabled(true);
 
             $customer->setUser($user);
 

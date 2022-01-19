@@ -70,7 +70,7 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.builder.document'),
                 service('ekyna_commerce.calculator.document'),
                 service('ekyna_commerce.factory.document_renderer'),
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
                 service('translator'),
             ])
     ;

@@ -86,7 +86,7 @@ return static function (ContainerConfigurator $container) {
         // Shipment builder
         ->set('ekyna_commerce.builder.shipment', ShipmentBuilder::class)
             ->args([
-                service('ekyna_commerce.factory.sale'),
+                service('ekyna_commerce.helper.factory'),
                 service('ekyna_commerce.registry.shipment_gateway'),
                 service('ekyna_commerce.calculator.shipment_subject'),
             ])

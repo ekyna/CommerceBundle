@@ -15,7 +15,7 @@ use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
  * @package Ekyna\Bundle\CommerceBundle\Factory
  * @author  Étienne Dauvergne <contact@ekyna.com>
  *
- * @method CartInterface create()
+ * @method CartInterface create(bool $initialize = true)
  * @method CartInterface createWithCustomer(CustomerInterface $customer)
  */
 class CartFactory extends AbstractSaleFactory
@@ -27,7 +27,7 @@ class CartFactory extends AbstractSaleFactory
         $this->expirationDelay = $delay;
     }
 
-    protected function initialize(SaleInterface $sale): void
+    public function initialize(SaleInterface $sale): void
     {
         parent::initialize($sale);
 
