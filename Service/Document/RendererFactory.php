@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
@@ -17,26 +19,14 @@ use Twig\Environment;
  */
 class RendererFactory
 {
-    /**
-     * @var Environment
-     */
-    protected $twig;
-
-    /**
-     * @var PdfGenerator
-     */
-    protected $pdfGenerator;
-
-    /**
-     * @var array
-     */
-    protected $config;
-
+    protected Environment  $twig;
+    protected PdfGenerator $pdfGenerator;
+    protected array        $config;
 
     public function __construct(
-        Environment $twig,
+        Environment  $twig,
         PdfGenerator $pdfGenerator,
-        array $config = []
+        array        $config = []
     ) {
         $this->twig = $twig;
         $this->pdfGenerator = $pdfGenerator;
@@ -50,12 +40,12 @@ class RendererFactory
     /**
      * Returns a new renderer.
      *
-     * @param mixed  $subjects The subjects
-     * @param string $type     The document type
+     * @param mixed       $subjects The subjects
+     * @param string|null $type     The document type
      *
      * @return RendererInterface
      */
-    public function createRenderer($subjects, $type = null)
+    public function createRenderer($subjects, string $type = null): RendererInterface
     {
         if (is_object($subjects)) {
             $subject = $subjects;
@@ -63,7 +53,7 @@ class RendererFactory
         } elseif (is_array($subjects)) {
             $subject = reset($subjects);
         } else {
-            throw new InvalidArgumentException("Unexpected subjects.");
+            throw new InvalidArgumentException('Unexpected subjects.');
         }
 
         if ($subject instanceof SupplierOrderInterface) {
@@ -75,7 +65,7 @@ class RendererFactory
         } elseif ($subject instanceof DocumentInterface) {
             $renderer = new DocumentRenderer($subjects);
         } else {
-            throw new InvalidArgumentException("Unsupported subject.");
+            throw new InvalidArgumentException('Unsupported subject.');
         }
 
         $renderer->setTwig($this->twig);

@@ -70,13 +70,15 @@ abstract class AbstractDocumentController
             );
         }
 
+        $type = $request->attributes->has('type') ? $request->attributes->get('type') : null;
+
         $renderer = $this
             ->rendererFactory
-            ->createRenderer($invoices);
+            ->createRenderer($invoices, $type);
 
         try {
             return $renderer->respond($request);
-        } catch (PdfException $e) {
+        } catch (PdfException $exception) {
             $this->flashHelper->addFlash(t('document.message.failed_to_generate', [], 'EkynaCommerce'), 'danger');
 
             return new RedirectResponse(
