@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Repository;
 
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
@@ -17,9 +19,9 @@ class TicketMessageRepository extends ResourceRepository implements TicketMessag
     /**
      * Finds admin messages to notify to customers.
      *
-     * @return TicketMessageInterface[]
+     * @return array<TicketMessageInterface>
      */
-    public function findNotNotifiedForCustomers()
+    public function findNotNotifiedForCustomers(): array
     {
         $qb = $this->createQueryBuilder('m');
         $ex = $qb->expr();
@@ -30,7 +32,7 @@ class TicketMessageRepository extends ResourceRepository implements TicketMessag
             ->andWhere($ex->isNull('m.notifiedAt'))
             ->andWhere($ex->isNotNull('c.user'))
             ->andWhere($ex->isNotNull('m.admin'))
-            ->andWhere($ex->eq('t.internal', ':internal'))
+            ->andWhere($ex->eq('m.internal', ':internal'))
             ->andWhere($ex->eq('t.internal', ':internal'))
             ->andWhere($ex->eq('m.notify', ':notify'))
             ->getQuery()
@@ -43,11 +45,9 @@ class TicketMessageRepository extends ResourceRepository implements TicketMessag
     /**
      * Finds customers messages to notify to the given admin user.
      *
-     * @param UserInterface $inCharge
-     *
-     * @return TicketMessageInterface[]
+     * @return array<TicketMessageInterface>
      */
-    public function findNotNotifiedByInCharge(UserInterface $inCharge)
+    public function findNotNotifiedByInCharge(UserInterface $inCharge): array
     {
         $qb = $this->createQueryBuilder('m');
         $ex = $qb->expr();
@@ -70,9 +70,9 @@ class TicketMessageRepository extends ResourceRepository implements TicketMessag
     /**
      * Finds customers messages to notify to default admin.
      *
-     * @return TicketMessageInterface[]
+     * @return array<TicketMessageInterface>
      */
-    public function findNotNotifiedAndUnassigned()
+    public function findNotNotifiedAndUnassigned(): array
     {
         $qb = $this->createQueryBuilder('m');
         $ex = $qb->expr();

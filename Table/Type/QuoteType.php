@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
 use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
+use Ekyna\Bundle\AdminBundle\Table\Type\Filter\ConstantChoiceType;
 use Ekyna\Bundle\CmsBundle\Table\Column\TagsType;
 use Ekyna\Bundle\CommerceBundle\Model;
 use Ekyna\Bundle\CommerceBundle\Table as Type;
@@ -175,14 +176,12 @@ class QuoteType extends AbstractResourceType
                 'label'    => t('sale.field.paid_total', [], 'EkynaCommerce'),
                 'position' => 60,
             ])
-            ->addFilter('state', CType\Filter\ChoiceType::class, [
+            ->addFilter('state', ConstantChoiceType::class, [
                 'label'    => t('field.status', [], 'EkynaCommerce'),
-                'choices'  => Model\OrderStates::getChoices(),
+                'class'  => Model\QuoteStates::class,
                 'position' => 70,
             ])
-            ->addFilter('paymentState', CType\Filter\ChoiceType::class, [
-                'label'    => t('sale.field.payment_state', [], 'EkynaCommerce'),
-                'choices'  => Model\PaymentStates::getChoices(),
+            ->addFilter('paymentState', Type\Filter\SalePaymentStateType::class, [
                 'position' => 80,
             ])
             ->addFilter('inCharge', Type\Filter\InChargeType::class, [

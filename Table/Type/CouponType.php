@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
 use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
+use Ekyna\Bundle\AdminBundle\Table\Type as AType;
 use Ekyna\Bundle\CommerceBundle\Model\AdjustmentModes;
 use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
@@ -57,9 +58,9 @@ class CouponType extends AbstractResourceType
 
         $builder
             ->addColumn('code', BType\Column\AnchorType::class, [
-                'label'                => t('field.code', [], 'EkynaUi'),
-                'sortable'             => true,
-                'position'             => 10,
+                'label'    => t('field.code', [], 'EkynaUi'),
+                'sortable' => true,
+                'position' => 10,
             ])
             // TODO usage column
             ->addColumn('usage', CType\Column\NumberType::class, [
@@ -74,9 +75,9 @@ class CouponType extends AbstractResourceType
                 'sortable'  => true,
                 'position'  => 30,
             ])
-            ->addColumn('mode', CType\Column\ChoiceType::class, [
+            ->addColumn('mode', AType\Column\ConstantChoiceType::class, [
                 'label'    => t('field.mode', [], 'EkynaUi'),
-                'choices'  => AdjustmentModes::getChoices(),
+                'class'    => AdjustmentModes::class,
                 'sortable' => true,
                 'position' => 40,
             ])
@@ -122,9 +123,9 @@ class CouponType extends AbstractResourceType
                 'label'    => t('coupon.field.limit', [], 'EkynaCommerce'),
                 'position' => 30,
             ])
-            ->addFilter('mode', CType\Filter\ChoiceType::class, [
+            ->addFilter('mode', AType\Filter\ConstantChoiceType::class, [
                 'label'    => t('field.mode', [], 'EkynaUi'),
-                'choices'  => AdjustmentModes::getChoices(),
+                'class'    => AdjustmentModes::class,
                 'position' => 40,
             ])
             ->addFilter('amount', CType\Filter\NumberType::class, [

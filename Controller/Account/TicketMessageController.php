@@ -55,7 +55,7 @@ class TicketMessageController extends AbstractTicketController
             if (!$event->hasErrors()) {
                 $data = [
                     'ticket'  => $ticket,
-                    'message' => $message,
+                    'ticketMessage' => $message,
                 ];
 
                 $response = new Response($this->serialize($data));
@@ -106,7 +106,7 @@ class TicketMessageController extends AbstractTicketController
             if (!$event->hasErrors()) {
                 $data = [
                     'ticket'  => $message->getTicket(),
-                    'message' => $message,
+                    'ticketMessage' => $message,
                 ];
 
                 $response = new Response($this->serialize($data));

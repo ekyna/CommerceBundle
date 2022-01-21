@@ -201,6 +201,9 @@ class Mailer
         if ($message->isCustomer()) {
             throw new LogicException('Expected admin message.');
         }
+        if ($message->isInternal() || $message->getTicket()->isInternal()) {
+            throw new LogicException('Unexpected internal message.');
+        }
 
         if (!$message->isNotify()) {
             return false;

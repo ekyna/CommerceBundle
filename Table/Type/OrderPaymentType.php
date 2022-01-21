@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
+use Ekyna\Bundle\AdminBundle\Table\Type\Filter\ConstantChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\PaymentStates;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
@@ -86,9 +87,9 @@ class OrderPaymentType extends AbstractOrderListType
                 'label'    => t('field.amount', [], 'EkynaUi'),
                 'position' => 50,
             ])
-            ->addFilter('state', CType\Filter\ChoiceType::class, [
+            ->addFilter('state', ConstantChoiceType::class, [
                 'label'    => t('field.status', [], 'EkynaUi'),
-                'choices'  => PaymentStates::getChoices(),
+                'class'    => PaymentStates::class,
                 'position' => 60,
             ])
             ->addFilter('outstandingDate', CType\Filter\DateTimeType::class, [

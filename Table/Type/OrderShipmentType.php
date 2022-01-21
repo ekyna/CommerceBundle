@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
+use Ekyna\Bundle\AdminBundle\Table\Type\Filter\ConstantChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentStates;
 use Ekyna\Bundle\CommerceBundle\Table\Action;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
@@ -91,9 +92,9 @@ class OrderShipmentType extends AbstractOrderListType
                 'resource' => 'ekyna_commerce.shipment_method',
                 'position' => 30,
             ])
-            ->addFilter('state', CType\Filter\ChoiceType::class, [
+            ->addFilter('state', ConstantChoiceType::class, [
                 'label'    => t('field.status', [], 'EkynaUi'),
-                'choices'  => ShipmentStates::getChoices(),
+                'class'    => ShipmentStates::class,
                 'position' => 40,
             ])
             ->addFilter('weight', CType\Filter\NumberType::class, [

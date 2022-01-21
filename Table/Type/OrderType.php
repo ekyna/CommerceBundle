@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
 use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
+use Ekyna\Bundle\AdminBundle\Table\Type\Filter\ConstantChoiceType;
 use Ekyna\Bundle\CmsBundle\Table\Column\TagsType;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Order\AbortAction;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Order\PrepareAction;
@@ -283,39 +284,35 @@ class OrderType extends AbstractResourceType
                 'label'    => t('sale.field.paid_total', [], 'EkynaCommerce'),
                 'position' => 70,
             ])
-            ->addFilter('state', CType\Filter\ChoiceType::class, [
+            ->addFilter('state', ConstantChoiceType::class, [
                 'label'    => t('field.status', [], 'EkynaCommerce'),
-                'choices'  => Model\OrderStates::getChoices(),
+                'class'    => Model\OrderStates::class,
                 'position' => 80,
             ])
             ->addFilter('paymentMethod', ResourceType::class, [
                 'resource' => 'ekyna_commerce.payment_method',
                 'position' => 90,
             ])
-            ->addFilter('paymentState', CType\Filter\ChoiceType::class, [
-                'label'    => t('sale.field.payment_state', [], 'EkynaCommerce'),
-                'choices'  => Model\PaymentStates::getChoices([
-                    PaymentStates::STATE_EXPIRED,
-                    PaymentStates::STATE_SUSPENDED,
-                    PaymentStates::STATE_UNKNOWN,
-                ]),
+            ->addFilter('paymentState', Type\Filter\SalePaymentStateType::class, [
                 'position' => 100,
             ])
-            ->addFilter('shipmentState', CType\Filter\ChoiceType::class, [
+            ->addFilter('shipmentState', ConstantChoiceType::class, [
                 'label'    => t('sale.field.shipment_state', [], 'EkynaCommerce'),
-                'choices'  => Model\ShipmentStates::getChoices([
+                'class'    => Model\ShipmentStates::class,
+                'filter'   => [
                     //ShipmentStates::STATE_NEW,
                     ShipmentStates::STATE_SHIPPED,
                     ShipmentStates::STATE_NONE,
-                ]),
+                ],
                 'position' => 110,
             ])
-            ->addFilter('invoiceState', CType\Filter\ChoiceType::class, [
+            ->addFilter('invoiceState', ConstantChoiceType::class, [
                 'label'    => t('sale.field.invoice_state', [], 'EkynaCommerce'),
-                'choices'  => Model\InvoiceStates::getChoices([
+                'class'    => Model\InvoiceStates::class,
+                'filter'   => [
                     //InvoiceStates::STATE_NEW,
                     InvoiceStates::STATE_INVOICED,
-                ]),
+                ],
                 'position' => 120,
             ])
             ->addFilter('inCharge', Type\Filter\InChargeType::class, [

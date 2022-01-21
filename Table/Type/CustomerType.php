@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
 use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
+use Ekyna\Bundle\AdminBundle\Table\Type\Filter\ConstantChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerStates;
 use Ekyna\Bundle\CommerceBundle\Table as Type;
 use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
@@ -202,9 +203,9 @@ class CustomerType extends AbstractResourceType
                     'resource' => 'ekyna_commerce.payment_method',
                     'position' => 115,
                 ])
-                ->addFilter('state', CType\Filter\ChoiceType::class, [
+                ->addFilter('state', ConstantChoiceType::class, [
                     'label'    => t('field.status', [], 'EkynaUi'),
-                    'choices'  => CustomerStates::getChoices(),
+                    'class'    => CustomerStates::class,
                     'position' => 120,
                 ])
                 ->addFilter('createdAt', CType\Filter\DateTimeType::class, [

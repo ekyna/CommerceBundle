@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
+use Ekyna\Bundle\AdminBundle\Table\Type\Filter\ConstantChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\TicketStates;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\CommerceBundle\Table\Filter;
@@ -80,9 +81,9 @@ class TicketType extends AbstractResourceType
                 'label'    => t('field.internal', [], 'EkynaCommerce'),
                 'position' => 20,
             ])
-            ->addFilter('state', CType\Filter\ChoiceType::class, [
+            ->addFilter('state', ConstantChoiceType::class, [
                 'label'    => t('field.status', [], 'EkynaCommerce'),
-                'choices'  => TicketStates::getChoices(),
+                'class'    => TicketStates::class,
                 'position' => 30,
             ])
             ->addFilter('subject', CType\Filter\TextType::class, [

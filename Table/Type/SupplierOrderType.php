@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
 use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
+use Ekyna\Bundle\AdminBundle\Table\Type\Filter\ConstantChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
@@ -104,9 +105,9 @@ class SupplierOrderType extends AbstractResourceType
                 'resource' => 'ekyna_commerce.supplier_carrier',
                 'position' => 40,
             ])
-            ->addFilter('state', CType\Filter\ChoiceType::class, [
+            ->addFilter('state', ConstantChoiceType::class, [
                 'label'    => t('field.status', [], 'EkynaCommerce'),
-                'choices'  => SupplierOrderStates::getChoices(),
+                'class'    => SupplierOrderStates::class,
                 'position' => 50,
             ])
             ->addFilter('paymentDate', CType\Filter\DateTimeType::class, [

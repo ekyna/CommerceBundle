@@ -65,8 +65,8 @@ class TicketAttachmentController extends AbstractTicketController
 
             if (!$event->hasErrors()) {
                 $data = [
-                    'ticket'  => $message->getTicket(),
-                    'message' => $message,
+                    'ticket'        => $message->getTicket(),
+                    'ticketMessage' => $message,
                 ];
 
                 $response = new Response($this->serialize($data));
@@ -122,8 +122,8 @@ class TicketAttachmentController extends AbstractTicketController
 
             if (!$event->hasErrors()) {
                 $data = [
-                    'ticket'  => $message->getTicket(),
-                    'message' => $attachment->getMessage(),
+                    'ticket'        => $message->getTicket(),
+                    'ticketMessage' => $attachment->getMessage(),
                 ];
 
                 $response = new Response($this->serialize($data));
@@ -181,8 +181,8 @@ class TicketAttachmentController extends AbstractTicketController
 
             if (!$event->hasErrors()) {
                 $data = [
-                    'ticket'  => $message->getTicket(),
-                    'message' => $message,
+                    'ticket'        => $message->getTicket(),
+                    'ticketMessage' => $message,
                 ];
 
                 $response = new Response($this->serialize($data));
@@ -205,6 +205,7 @@ class TicketAttachmentController extends AbstractTicketController
         return $this->modalRenderer->render($modal)->setPrivate();
     }
 
+    /** @noinspection PhpUnhandledExceptionInspection */
     public function download(Request $request): Response
     {
         $attachment = $this->findAttachment($request);
