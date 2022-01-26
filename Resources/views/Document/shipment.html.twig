@@ -17,7 +17,7 @@
     </h1>
     <p>
         <span class="text-alt">{{ 'field.date'|trans({}, 'EkynaUi') }}</span>
-        {{ subject.createdAt|format_datetime('long', 'none', locale) }}.
+        {{ subject.createdAt|format_datetime('long', 'none', locale=subject.locale) }}.
         <span class="text-alt">{{ 'order.label.singular'|trans({}, 'EkynaCommerce') }}</span>&nbsp;
         <strong>{{ subject.sale.number }}</strong>.
         {% if subject.sale.customer is not null -%}
@@ -126,7 +126,7 @@
     <p>
     {%- if remaining_date and (remaining.eda is not null) -%}
         {{ 'document.mention.remaining_with_date'|trans({
-            '%date%': remaining.eda|format_datetime('long', 'none', locale)
+            '%date%': remaining.eda|format_datetime('long', 'none', locale=subject.locale)
         }, 'EkynaCommerce') }}
     {%- else -%}
         {{ 'document.mention.remaining_unknown'|trans({}, 'EkynaCommerce') }}

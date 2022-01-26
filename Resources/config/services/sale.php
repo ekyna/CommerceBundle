@@ -174,9 +174,6 @@ return static function (ContainerConfigurator $container) {
 
         // Sale discount listener
         ->set('ekyna_commerce.listener.sale_discount', SaleDiscountListener::class)
-            ->args([
-                service('ekyna_commerce.repository.coupon'),
-            ])
             ->tag('kernel.event_subscriber')
 
         // Sale abstract listener

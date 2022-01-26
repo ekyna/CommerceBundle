@@ -138,11 +138,11 @@
         {% if subject.credit is defined and not subject.credit and subject.dueDate is not null -%}
             <span class="text-alt">{{ 'document.mention.due_date'|trans({}, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw }}</span>
             {{- '&nbsp;' -}}
-            <strong>{{ subject.dueDate|format_datetime('long', 'none', subject.locale) }}</strong>.
+            <strong>{{ subject.dueDate|format_datetime('long', 'none', locale=subject.locale) }}</strong>.
         {%- elseif subject.sale.outstandingDate is not null -%}
             <span class="text-alt">{{ 'document.mention.due_date'|trans({}, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw }}</span>
             {{- '&nbsp;' -}}
-            <strong>{{ subject.sale.outstandingDate|format_datetime('long', 'none', subject.locale) }}</strong>.
+            <strong>{{ subject.sale.outstandingDate|format_datetime('long', 'none', locale=subject.locale) }}</strong>.
         {%- endif %}
     {%- elseif 0 < subject.sale.depositTotal -%}
         <strong>{{ 'document.mention.deposit_remaining'|trans({}, 'EkynaCommerce') }}</strong>.
@@ -204,7 +204,7 @@
         <tr>
             <td>{{ payment.payment.getNumber() }}</td>
             <td>{{ payment.payment.getMethod().title }}</td>
-            <td>{{ payment.payment.getCompletedAt()|format_datetime('short', 'short') }}</td>
+            <td>{{ payment.payment.getCompletedAt()|format_datetime('short', 'short', locale=subject.locale) }}</td>
             <td class="text-right">
                 {{- payment.amount|format_currency(payment.payment.getCurrency().code) -}}
             </td>

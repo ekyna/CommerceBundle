@@ -15,14 +15,14 @@
         <span class="text-alt">{{ 'field.date'|trans({}, 'EkynaUi') }}</span>&nbsp;
         <strong>
         {%- if subject.orderedAt is not null -%}
-            {{ subject.orderedAt|format_datetime('long', 'none', locale) }}
+            {{ subject.orderedAt|format_datetime('long', 'none', locale=subject.locale) }}
         {%- else -%}
-            {{ subject.createdAt|format_datetime('long', 'none', locale) }}
+            {{ subject.createdAt|format_datetime('long', 'none', locale=subject.locale) }}
         {%- endif -%}
         </strong>.
         {%- if subject.estimatedDateOfArrival is not null -%}
         &nbsp;<span class="text-alt">{{ t('field.estimated_date_of_arrival', [], 'EkynaCommerce')|trans }}</span>&nbsp;
-        <strong>{{ subject.estimatedDateOfArrival|format_datetime('long', 'none', locale) }}</strong>.
+        <strong>{{ subject.estimatedDateOfArrival|format_datetime('long', 'none', locale=subject.locale) }}</strong>.
         {%- endif -%}
     </p>
 {%- endblock doc_title_content %}

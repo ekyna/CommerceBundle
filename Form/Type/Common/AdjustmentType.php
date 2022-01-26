@@ -60,7 +60,7 @@ class AdjustmentType extends AbstractResourceType
             ->add('amount', Type\NumberType::class, [
                 'label'   => t('field.value', [], 'EkynaUi'),
                 'decimal' => true,
-                'scale'   => 5,
+                'scale'   => 2,
                 'attr'    => [
                     'placeholder' => t('field.value', [], 'EkynaUi'),
                 ],

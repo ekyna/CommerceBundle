@@ -100,7 +100,7 @@ return static function (ContainerConfigurator $container) {
         // Mailer
         ->set('ekyna_commerce.mailer', Mailer::class)
             ->args([
-                service('ekyna_admin.mailer_factory'),
+                service('ekyna_admin.factory.mailer'),
                 service('twig'),
                 service('translator'),
                 service('ekyna_setting.manager'),

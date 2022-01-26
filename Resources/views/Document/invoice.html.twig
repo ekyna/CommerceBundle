@@ -13,7 +13,7 @@
     <p>
         <span class="text-alt">{{ 'field.date'|trans({}, 'EkynaUi') }}</span>
         {{- '&nbsp;' -}}
-        <strong>{{ subject.createdAt|format_datetime('long', 'none', locale) }}</strong>.
+        <strong>{{ subject.createdAt|format_datetime('long', 'none', locale=subject.locale) }}</strong>.
         <span class="text-alt">{{ 'order.label.singular'|trans({}, 'EkynaCommerce') }}</span>
         {{- '&nbsp;' -}}
         <strong>{{ subject.sale.number }}</strong>.
