@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Service\Notify;
 
 use Ekyna\Bundle\AdminBundle\Repository\UserRepositoryInterface;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\InChargeSubjectInterface;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Ekyna\Component\Commerce\Common\Model\RecipientList;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Customer\Model\CustomerContactInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierInterface;
@@ -36,9 +36,9 @@ class RecipientHelper
 
     public function __construct(
         SettingManagerInterface $settings,
-        UserProviderInterface $userProvider,
+        UserProviderInterface   $userProvider,
         UserRepositoryInterface $userRepository,
-        array $config
+        array                   $config
     ) {
         $this->setting = $settings;
         $this->userProvider = $userProvider;
@@ -82,6 +82,7 @@ class RecipientHelper
     {
         $list = new RecipientList();
 
+        /** @var CustomerInterface $customer */
         if ($customer = $sale->getCustomer()) {
             $list->add($this->createRecipient($customer, Recipient::TYPE_CUSTOMER));
             $this->addCustomerContacts($customer, $list);
@@ -112,6 +113,7 @@ class RecipientHelper
     {
         $copies = new RecipientList();
 
+        /** @var CustomerInterface $customer */
         if ($customer = $sale->getCustomer()) {
             $this->addCustomerContacts($customer, $copies);
         }
@@ -233,7 +235,7 @@ class RecipientHelper
 
             return new Recipient(
                 $element->getEmail(),
-                $element->getFirstName() . ' ' . $element->getLastName(),
+                trim($element->getFirstName() . ' ' . $element->getLastName()),
                 $type,
                 $element
             );
@@ -244,11 +246,11 @@ class RecipientHelper
             || $element instanceof CustomerInterface
             || $element instanceof CustomerContactInterface
         ) {
-            return new Recipient($element->getEmail(), $element->getFirstName() . ' ' . $element->getLastName(), $type);
+            return new Recipient($element->getEmail(), trim($element->getFirstName() . ' ' . $element->getLastName()), $type);
         }
 
         if ($element instanceof SupplierInterface) {
-            $name = !$element->isIdentityEmpty() ? $element->getFirstName() . ' ' . $element->getLastName() : null;
+            $name = !$element->isIdentityEmpty() ? trim($element->getFirstName() . ' ' . $element->getLastName()) : null;
 
             return new Recipient($element->getEmail(), $name, $type);
         }
@@ -258,7 +260,7 @@ class RecipientHelper
             SaleInterface::class,
             CustomerInterface::class,
             CustomerContactInterface::class,
-            SupplierInterface::class
+            SupplierInterface::class,
         ]);
     }
 
@@ -275,6 +277,7 @@ class RecipientHelper
             return;
         }
 
+        /** @var CustomerInterface $customer */
         if ($customer = $customer->getParent()) {
             $list->add($this->createRecipient($customer, Recipient::TYPE_ACCOUNTABLE));
             foreach ($customer->getContacts() as $contact) {

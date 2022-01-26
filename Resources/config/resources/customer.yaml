@@ -3,6 +3,7 @@ resources:
         customer:
             driver: doctrine/orm
             entity:
+                #TODO interface: Ekyna\Bundle\CommerceBundle\Model\CustomerInterface
                 interface: Ekyna\Component\Commerce\Customer\Model\CustomerInterface
                 class: Ekyna\Bundle\CommerceBundle\Entity\Customer
             repository:

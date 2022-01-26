@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Action\Admin\CustomerAddress;
 
 use Ekyna\Bundle\AdminBundle\Action\AdminActionInterface;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\ResourceBundle\Action\AbstractAction;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
 use Ekyna\Bundle\ResourceBundle\Action\ManagerTrait;
 use Ekyna\Bundle\UiBundle\Action\FlashTrait;
 use Ekyna\Component\Commerce\Customer\Model\CustomerAddressInterface;
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Resource\Action\Permission;
 use Ekyna\Component\Resource\Exception\UnexpectedTypeException;
 use Symfony\Component\HttpFoundation\Response;

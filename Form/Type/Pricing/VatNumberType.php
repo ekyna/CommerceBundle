@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Pricing;
 
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Customer;
 
+use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Customer\Provider\AbstractCustomerProvider;
 use Ekyna\Component\Commerce\Customer\Repository\CustomerGroupRepositoryInterface;
@@ -22,11 +23,10 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
 
     private bool $initialized = false;
 
-
     public function __construct(
         CustomerGroupRepositoryInterface $customerGroupRepository,
-        CustomerRepositoryInterface $customerRepository,
-        UserProviderInterface $userProvider
+        CustomerRepositoryInterface      $customerRepository,
+        UserProviderInterface            $userProvider
     ) {
         parent::__construct($customerGroupRepository);
 
@@ -34,9 +34,6 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
         $this->userProvider = $userProvider;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function hasCustomer(): bool
     {
         $this->initialize();
@@ -44,9 +41,6 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
         return parent::hasCustomer();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getCustomer(): ?CustomerInterface
     {
         $this->initialize();
@@ -54,9 +48,6 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
         return parent::getCustomer();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function reset(): void
     {
         parent::reset();
@@ -64,12 +55,9 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
         $this->initialized = false;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function clear(): void
     {
-        parent::reset();
+        parent::clear();
 
         $this->initialized = true;
     }
@@ -85,7 +73,9 @@ class SecurityCustomerProvider extends AbstractCustomerProvider
 
         $this->initialized = true;
 
-        if (null === $user = $this->userProvider->getUser()) {
+        $user = $this->userProvider->getUser();
+
+        if (!$user instanceof UserInterface) {
             return;
         }
 

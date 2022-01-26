@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentDesign;
 use Ekyna\Bundle\CommerceBundle\Service\Common\CommonRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
@@ -11,7 +12,6 @@ use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
 use Ekyna\Component\Commerce\Common\Model\MentionSubjectInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentLineTypes;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
@@ -274,6 +274,7 @@ class DocumentHelper
             }
         }
 
+        /** @var CustomerInterface $customer */
         if ($customer = $sale->getCustomer()) {
             $this->fillFromCustomer($design, $customer);
         }

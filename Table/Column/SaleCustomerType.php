@@ -6,9 +6,9 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Bundle\AdminBundle\Action\ReadAction;
 use Ekyna\Bundle\AdminBundle\Action\SummaryAction;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
@@ -74,9 +74,9 @@ class SaleCustomerType extends AbstractColumnType
 
     public function applySort(
         AdapterInterface $adapter,
-        ColumnInterface $column,
-        ActiveSort $activeSort,
-        array $options
+        ColumnInterface  $column,
+        ActiveSort       $activeSort,
+        array            $options
     ): bool {
         if (!$adapter instanceof EntityAdapter) {
             return false;

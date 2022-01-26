@@ -25,8 +25,8 @@ class ChoiceListController
 
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
-        RepositoryFactoryInterface $repositoryFactory,
-        SerializerInterface $serializer
+        RepositoryFactoryInterface    $repositoryFactory,
+        SerializerInterface           $serializer
     ) {
         $this->authorizationChecker = $authorizationChecker;
         $this->repositoryFactory = $repositoryFactory;
@@ -37,7 +37,7 @@ class ChoiceListController
     {
         $this->authorizationChecker->isGranted(CustomerAddressInterface::class, 'VIEW');
 
-        /** @var CustomerInterface $customer */
+        /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
         $customer = $this
             ->repositoryFactory
             ->getRepository(CustomerInterface::class)

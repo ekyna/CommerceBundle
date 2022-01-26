@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Service\Menu\MenuBuilder;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Map\MapBuilder;
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Customer\Repository\CustomerRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,16 +21,16 @@ use Twig\Environment;
  */
 class MapController
 {
-    private MapBuilder $mapBuilder;
-    private Environment $twig;
+    private MapBuilder                  $mapBuilder;
+    private Environment                 $twig;
     private CustomerRepositoryInterface $customerRepository;
-    private MenuBuilder $menuBuilder;
+    private MenuBuilder                 $menuBuilder;
 
     public function __construct(
-        MapBuilder $mapBuilder,
-        Environment $twig,
+        MapBuilder                  $mapBuilder,
+        Environment                 $twig,
         CustomerRepositoryInterface $customerRepository,
-        MenuBuilder $menuBuilder
+        MenuBuilder                 $menuBuilder
     ) {
         $this->mapBuilder = $mapBuilder;
         $this->twig = $twig;

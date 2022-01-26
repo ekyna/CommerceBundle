@@ -6,7 +6,6 @@ namespace Ekyna\Bundle\CommerceBundle\Action\Admin\Customer;
 
 use Ekyna\Bundle\AdminBundle\Action\AdminActionInterface;
 use Ekyna\Bundle\AdminBundle\Action\Util\BreadcrumbTrait;
-use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\ResourceBundle\Action\AbstractAction;
 use Ekyna\Bundle\ResourceBundle\Action\FactoryTrait;
 use Ekyna\Bundle\ResourceBundle\Action\FormTrait;
@@ -16,6 +15,7 @@ use Ekyna\Bundle\ResourceBundle\Action\TemplatingTrait;
 use Ekyna\Bundle\UiBundle\Action\FlashTrait;
 use Ekyna\Bundle\UiBundle\Form\Type\ConfirmType;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,6 +47,7 @@ class CreateUserAction extends AbstractAction implements AdminActionInterface
 
         $cancelPath = $this->generateResourcePath($customer);
 
+        /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
         if ($customer->getUser()) {
             $this->addFlash(t('customer.message.user_exists', [], 'EkynaCommerce'), 'info');
 

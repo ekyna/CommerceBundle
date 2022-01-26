@@ -14,7 +14,6 @@ use Ekyna\Bundle\CommerceBundle\Table as Type;
 use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
 use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
 use Ekyna\Component\Table\Exception\UnexpectedTypeException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
@@ -35,7 +34,7 @@ class QuoteType extends AbstractResourceType
     public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         $filters = false;
-        /** @var CustomerInterface $customer */
+        /** @var Model\CustomerInterface $customer */
         if (null !== $customer = $options['customer']) {
             $source = $builder->getSource();
             if (!$source instanceof EntitySource) {
@@ -178,7 +177,7 @@ class QuoteType extends AbstractResourceType
             ])
             ->addFilter('state', ConstantChoiceType::class, [
                 'label'    => t('field.status', [], 'EkynaCommerce'),
-                'class'  => Model\QuoteStates::class,
+                'class'    => Model\QuoteStates::class,
                 'position' => 70,
             ])
             ->addFilter('paymentState', Type\Filter\SalePaymentStateType::class, [
@@ -204,6 +203,6 @@ class QuoteType extends AbstractResourceType
 
         $resolver
             ->setDefault('customer', null)
-            ->setAllowedTypes('customer', ['null', CustomerInterface::class]);
+            ->setAllowedTypes('customer', ['null', Model\CustomerInterface::class]);
     }
 }

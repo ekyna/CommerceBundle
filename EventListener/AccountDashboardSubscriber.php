@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\UserBundle\Event\DashboardEvent;
 use Ekyna\Bundle\UserBundle\Model\DashboardWidget;
 use Ekyna\Bundle\UserBundle\Model\DashboardWidgetButton;
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Customer\Provider\CustomerProviderInterface;
 use Ekyna\Component\Commerce\Invoice\Repository\InvoiceRepositoryInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
@@ -44,6 +44,7 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
 
     public function onDashboard(DashboardEvent $event): void
     {
+        /** @var CustomerInterface $customer */
         $customer = $this->customerProvider->getCustomer();
 
         if (!$customer) {

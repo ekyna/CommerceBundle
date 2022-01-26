@@ -6,9 +6,8 @@ namespace Ekyna\Bundle\CommerceBundle\Show\Type;
 
 use Ekyna\Bundle\AdminBundle\Show\Type\AbstractType;
 use Ekyna\Bundle\AdminBundle\Show\View;
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
-use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function Symfony\Component\Translation\t;

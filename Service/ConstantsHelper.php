@@ -9,7 +9,7 @@ use Ekyna\Bundle\ResourceBundle\Helper\AbstractConstantsHelper;
 use Ekyna\Component\Commerce\Accounting\Model\AccountingInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Model as Common;
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Document\Model as Document;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model as Invoice;

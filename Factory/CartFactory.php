@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Factory;
 
 use DateTime;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 
 /**

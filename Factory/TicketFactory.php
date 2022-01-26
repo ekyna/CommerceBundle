@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Factory;
 
-use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Bundle\CommerceBundle\Model\TicketInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Common\InChargeResolver;
 use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Factory\TicketFactory as BaseFactory;
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Support\Factory\TicketMessageFactoryInterface;
 use Ekyna\Component\Resource\Model\ResourceInterface;

@@ -7,9 +7,9 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
 use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
 use Ekyna\Component\Table\Exception\UnexpectedTypeException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
@@ -55,7 +55,7 @@ class CustomerContactType extends AbstractResourceType
                 'position' => 10,
             ])
             ->addColumn('identity', Ctype\Column\TextType::class, [
-                'position'      => 20,
+                'position' => 20,
             ])
             ->addColumn('title', CType\Column\TextType::class, [
                 'label'    => t('field.title', [], 'EkynaUi'),

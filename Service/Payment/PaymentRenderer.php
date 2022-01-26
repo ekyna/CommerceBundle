@@ -7,11 +7,11 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Payment;
 use DateTime;
 use Decimal\Decimal;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Payment as Action;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface;
 use Ekyna\Bundle\CommerceBundle\Model\PaymentTransitions as BTransitions;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderPaymentInterface;
@@ -36,9 +36,9 @@ class PaymentRenderer
 
     public function __construct(
         PaymentCalculatorInterface $paymentCalculator,
-        PaymentHelper $paymentHelper,
-        ResourceHelper $resourceHelper,
-        TranslatorInterface $translator
+        PaymentHelper              $paymentHelper,
+        ResourceHelper             $resourceHelper,
+        TranslatorInterface        $translator
     ) {
         $this->paymentCalculator = $paymentCalculator;
         $this->paymentHelper = $paymentHelper;

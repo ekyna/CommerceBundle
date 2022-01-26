@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Support;
 
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
@@ -28,16 +28,16 @@ class TicketRenderer
     ];
 
     private TicketRepositoryInterface $repository;
-    private NormalizerInterface $normalizer;
-    private TranslatorInterface $translator;
-    private Environment         $twig;
+    private NormalizerInterface       $normalizer;
+    private TranslatorInterface       $translator;
+    private Environment               $twig;
 
 
     public function __construct(
         TicketRepositoryInterface $repository,
-        NormalizerInterface $normalizer,
-        TranslatorInterface $translator,
-        Environment $twig
+        NormalizerInterface       $normalizer,
+        TranslatorInterface       $translator,
+        Environment               $twig
     ) {
         $this->repository = $repository;
         $this->normalizer = $normalizer;

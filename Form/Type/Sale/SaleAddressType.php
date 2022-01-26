@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Customer\Repository\CustomerAddressRepositoryInterface;
 use Ekyna\Component\Resource\Repository\ResourceRepositoryInterface;
 use Symfony\Component\Form\AbstractType;
@@ -33,8 +33,8 @@ class SaleAddressType extends AbstractType
 
 
     public function __construct(
-        SerializerInterface $serializer,
-        ResourceRepositoryInterface $customerRepository,
+        SerializerInterface                $serializer,
+        ResourceRepositoryInterface        $customerRepository,
         CustomerAddressRepositoryInterface $customerAddressRepository
     ) {
         $this->serializer = $serializer;

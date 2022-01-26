@@ -16,11 +16,9 @@ use Ekyna\Bundle\CommerceBundle\Table as Type;
 use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
 use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
-use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceStates;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
-use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
@@ -52,7 +50,7 @@ class OrderType extends AbstractResourceType
 
         /** @var SubjectInterface $subject */
         $subject = $options['subject'];
-        /** @var CustomerInterface $customer */
+        /** @var Model\CustomerInterface $customer */
         $customer = $options['customer'];
 
         if (null !== $subject) {
@@ -359,7 +357,7 @@ class OrderType extends AbstractResourceType
             ->setDefault('paymentState', [])
             ->setDefault('invoiceState', [])
             ->setAllowedTypes('subject', ['null', SubjectInterface::class])
-            ->setAllowedTypes('customer', ['null', CustomerInterface::class])
+            ->setAllowedTypes('customer', ['null', Model\CustomerInterface::class])
             ->setAllowedTypes('state', 'array')
             ->setAllowedTypes('shipmentState', 'array')
             ->setAllowedTypes('paymentState', 'array')

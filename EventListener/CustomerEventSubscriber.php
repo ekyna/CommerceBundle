@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CustomerEventSubscriber as BaseSubscriber;
