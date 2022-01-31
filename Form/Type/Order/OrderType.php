@@ -31,6 +31,7 @@ class OrderType extends SaleType
         $builder
             ->add('inCharge', UserChoiceType::class, [
                 'label'    => t('customer.field.in_charge', [], 'EkynaCommerce'),
+                'roles'    => [],
                 'required' => false,
             ])
             ->add('originCustomer', CustomerSearchType::class, [

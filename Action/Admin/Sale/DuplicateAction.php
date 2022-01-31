@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Action\Admin\Sale;
 
 use Decimal\Decimal;
 use Ekyna\Bundle\AdminBundle\Action\Util\BreadcrumbTrait;
+use Ekyna\Bundle\CommerceBundle\Model\InChargeSubjectInterface;
 use Ekyna\Bundle\ResourceBundle\Action\FactoryTrait;
 use Ekyna\Bundle\ResourceBundle\Action\FormTrait;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
@@ -89,8 +90,13 @@ class DuplicateAction extends AbstractSaleAction implements RoutingActionInterfa
             ->copyItems();
 
         $targetSale
-            ->setSameAddress(true)
+            ->setCustomer(null)
             ->setCustomerGroup(null)
+            ->setSameAddress(true)
+            ->setInvoiceAddress(null)
+            ->setDeliveryAddress(null)
+            ->setShipmentMethod(null)
+            ->setPaymentMethod(null)
             ->setPaymentTerm(null)
             ->setOutstandingLimit(new Decimal(0))
             ->setDepositTotal(new Decimal(0))
@@ -98,6 +104,10 @@ class DuplicateAction extends AbstractSaleAction implements RoutingActionInterfa
             ->setExchangeRate(null)
             ->setExchangeDate(null)
             ->setAcceptedAt(null);
+
+        if ($targetSale instanceof InChargeSubjectInterface) {
+            $targetSale->setInCharge(null);
+        }
 
         $factory->initialize($targetSale);
 

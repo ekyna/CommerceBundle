@@ -60,6 +60,7 @@ class CustomerType extends AbstractResourceType
             ])
             ->add('inCharge', UserChoiceType::class, [
                 'label'    => t('customer.field.in_charge', [], 'EkynaCommerce'),
+                'roles'    => [],
                 'required' => false,
             ])
             ->add('email', Type\EmailType::class, [

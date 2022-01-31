@@ -27,6 +27,7 @@ class TicketType extends AbstractResourceType
             $builder
                 ->add('inCharge', UserChoiceType::class, [
                     'label'    => t('customer.field.in_charge', [], 'EkynaCommerce'),
+                    'roles'    => [],
                     'required' => false,
                 ])
                 ->add('customer', CustomerSearchType::class, [

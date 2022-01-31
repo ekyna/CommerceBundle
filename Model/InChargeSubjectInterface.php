@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
@@ -13,17 +15,11 @@ interface InChargeSubjectInterface
 {
     /**
      * Returns the 'in charge' user.
-     *
-     * @return UserInterface
      */
     public function getInCharge(): ?UserInterface;
 
     /**
      * Sets the 'in charge' user.
-     *
-     * @param UserInterface $inCharge
-     *
-     * @return $this|InChargeSubjectInterface
      */
-    public function setInCharge(UserInterface $inCharge = null): InChargeSubjectInterface;
+    public function setInCharge(?UserInterface $inCharge): InChargeSubjectInterface;
 }

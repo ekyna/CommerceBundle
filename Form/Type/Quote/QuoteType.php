@@ -28,6 +28,7 @@ class QuoteType extends SaleType
         $builder
             ->add('inCharge', UserChoiceType::class, [
                 'label'    => t('customer.field.in_charge', [], 'EkynaCommerce'),
+                'roles'    => [],
                 'required' => false,
             ])
             ->add('editable', CheckboxType::class, [

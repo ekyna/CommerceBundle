@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
@@ -11,30 +13,14 @@ use Ekyna\Bundle\AdminBundle\Model\UserInterface;
  */
 trait InChargeSubjectTrait
 {
-    /**
-     * @var UserInterface
-     */
-    protected $inCharge;
+    protected ?UserInterface $inCharge = null;
 
-
-    /**
-     * Returns the inCharge.
-     *
-     * @return UserInterface
-     */
     public function getInCharge(): ?UserInterface
     {
         return $this->inCharge;
     }
 
-    /**
-     * Sets the inCharge.
-     *
-     * @param UserInterface $inCharge
-     *
-     * @return $this|InChargeSubjectInterface
-     */
-    public function setInCharge(UserInterface $inCharge = null): InChargeSubjectInterface
+    public function setInCharge(?UserInterface $inCharge): InChargeSubjectInterface
     {
         $this->inCharge = $inCharge;
 
