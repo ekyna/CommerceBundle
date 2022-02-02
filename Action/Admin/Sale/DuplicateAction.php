@@ -90,7 +90,6 @@ class DuplicateAction extends AbstractSaleAction implements RoutingActionInterfa
             ->copyItems();
 
         $targetSale
-            ->setCustomer(null)
             ->setCustomerGroup(null)
             ->setSameAddress(true)
             ->setInvoiceAddress(null)

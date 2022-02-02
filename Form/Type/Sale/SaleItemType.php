@@ -20,7 +20,7 @@ class SaleItemType extends AbstractResourceType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $subscriber = new SaleItemTypeSubscriber($options['currency']);
+        $subscriber = new SaleItemTypeSubscriber($options['currency'], $options['with_collections']);
 
         $builder->addEventSubscriber($subscriber);
     }
@@ -36,12 +36,12 @@ class SaleItemType extends AbstractResourceType
 
         $resolver
             ->setDefaults([
+                'currency'             => null,
+                'with_collections'     => false,
+                'error_bubbling'       => false,
                 // TODO Remove useless options
-                'with_collections'     => true,
                 'item_type'            => null,
                 'item_adjustment_type' => null,
-                'currency'             => null,
-                'error_bubbling'       => false,
             ])
             ->setAllowedTypes('with_collections', 'bool')
             ->setAllowedTypes('item_type', 'string')

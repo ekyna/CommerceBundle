@@ -45,8 +45,6 @@ class CreateAction extends BaseAction
     {
         /** @var SaleInterface $sale */
         $sale = $this->context->getParentResource();
-        /** @var SaleItemInterface $item */
-        $item = $this->context->getResource();
 
         $this->contextProvider->setContext($sale);
 

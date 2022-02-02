@@ -17,7 +17,6 @@ use Ekyna\Component\Resource\Model\AbstractTranslatable;
  */
 class NotifyModel extends AbstractTranslatable implements NotifyModelInterface
 {
-    private ?int    $id              = null;
     private ?string $type            = null;
     private ?bool   $paymentMessage  = null;
     private ?bool   $shipmentMessage = null;
@@ -33,11 +32,6 @@ class NotifyModel extends AbstractTranslatable implements NotifyModelInterface
         }
 
         return sprintf('notify.type.%s.label', $this->type);
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getType(): ?string

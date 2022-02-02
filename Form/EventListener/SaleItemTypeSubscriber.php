@@ -24,10 +24,12 @@ use function Symfony\Component\Translation\t;
 class SaleItemTypeSubscriber implements EventSubscriberInterface
 {
     private string $currency;
+    private bool   $collection;
 
-    public function __construct(string $currency)
+    public function __construct(string $currency, bool $collection)
     {
         $this->currency = $currency;
+        $this->collection = $collection;
     }
 
     public function onPreSetData(FormEvent $event): void
@@ -102,8 +104,11 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
                 'label'    => t('field.private', [], 'EkynaCommerce'),
                 'disabled' => $item->hasPublicChildren(),
                 'required' => false,
-            ])
-            ->add('position', CollectionPositionType::class, []);
+            ]);
+
+        if ($this->collection) {
+            $form->add('position', CollectionPositionType::class, []);
+        }
     }
 
     public static function getSubscribedEvents(): array

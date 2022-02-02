@@ -635,11 +635,25 @@
         <td>{{ form_widget(form.taxGroup) }}</td>
         <td>{{ form_widget(form.quantity) }}</td>
         <td>{{ form_widget(form.private) }}</td>
-        <td rowspan="{{ form.vars.with_collections ? 3 : 2 }}" class="ekyna-collection-controls">
+        {% if form.vars.with_collections -%}
+        <td rowspan="3" class="ekyna-collection-controls">
             {{- form_widget(form.position) }}
             <div class="btn-group-vertical">__controls__</div>
         </td>
+        {%- endif %}
     </tr>
+    {% if form.vars.with_collections -%}
+        <tr>
+            <td colspan="7" class="commerce-sale-item-children">
+                {{- form_widget(form.items) -}}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="7" class="commerce-sale-item-children">
+                {{- form_widget(form.adjustments) -}}
+            </td>
+        </tr>
+    {%- endif -%}
     {#{%- if errors|length > 0 -%}
         <tr>
             <td colspan="7">
@@ -647,20 +661,6 @@
             </td>
         </tr>
     {%- endif -%}#}
-    {%- if form.items is defined -%}
-        <tr>
-            <td colspan="7" class="commerce-sale-item-children">
-                {{- form_widget(form.items) -}}
-            </td>
-        </tr>
-    {%- endif -%}
-    {%- if form.adjustments is defined -%}
-    <tr>
-        <td colspan="7" class="commerce-sale-item-children">
-            {{- form_widget(form.adjustments) -}}
-        </td>
-    </tr>
-    {%- endif -%}
     {#{{- form_rest(form) -}}#}
     </tbody>
     {{- bootstrap_restore_form_settings() -}}

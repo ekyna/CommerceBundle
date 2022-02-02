@@ -96,7 +96,7 @@ class ConfigureAction extends AbstractFormAction
             'options'    => [
                 'type'          => SaleItemConfigureType::class,
                 'template'      => '@EkynaCommerce/Admin/Common/Item/configure.html.twig',
-                'form_template' => '@EkynaCommerce/Admin/Common/Item/_form.html.twig',
+                'form_template' => '@EkynaCommerce/Admin/Common/Item/_form_configure.html.twig',
             ],
         ];
     }

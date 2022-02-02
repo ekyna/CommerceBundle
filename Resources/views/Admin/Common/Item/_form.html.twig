@@ -1,3 +1,4 @@
+{% apply spaceless %}
 {{ bootstrap_set_style('horizontal') }}
 {{ bootstrap_set_col_size('md') }}
 {{ form_errors(form, {'global_errors': true}) }}
@@ -11,9 +12,9 @@
         <th>{{ 'field.tax_group'|trans({}, 'EkynaCommerce') }}</th>
         <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
         <th>{{ 'field.private'|trans({}, 'EkynaCommerce') }}</th>
-        <th></th>
     </tr>
     </thead>
     {{ form_widget(form)|replace({'__controls__': ''})|raw }}
 </table>
 {{ form_rest(form) }}
+{% endapply %}
