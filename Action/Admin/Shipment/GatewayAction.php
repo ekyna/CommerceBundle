@@ -89,7 +89,7 @@ class GatewayAction extends AbstractAction implements AdminActionInterface, Rout
                 throw $e;
             }
 
-            $this->addFlash('danger', $e->getMessage());
+            $this->addFlash($e->getMessage(), 'danger');
 
             return $redirect;
         }
