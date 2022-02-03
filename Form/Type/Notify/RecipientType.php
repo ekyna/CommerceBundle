@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Notify;
 
+use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function Symfony\Component\Translation\t;
@@ -28,6 +31,7 @@ class RecipientType extends AbstractType
                 'attr'  => [
                     'placeholder' => t('field.email', [], 'EkynaUi'),
                 ],
+                'empty_data' => '',
             ])
             ->add('name', TextType::class, [
                 'label'    => false,
@@ -35,7 +39,13 @@ class RecipientType extends AbstractType
                 'attr'     => [
                     'placeholder' => t('field.name', [], 'EkynaUi'),
                 ],
+                'empty_data' => '',
             ]);
+    }
+
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        FormUtil::addClass($view, 'commerce-recipient');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

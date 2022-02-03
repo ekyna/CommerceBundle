@@ -1385,8 +1385,14 @@
     {%- set class = attr.class|default('') -%}
     {%- set attr = attr|merge({'class': ('ekyna-collection-child ' ~ class)|trim }) -%}
     <tr {{ block('widget_container_attributes') }}>
-        <td>{{ form_widget(form.email, {'sizing': 'sm'}) }}</td>
-        <td>{{ form_widget(form.name, {'sizing': 'sm'}) }}</td>
+        <td{% if form.email.vars.errors|length > 0 %} class="has-error"{% endif %}>
+            {{ form_widget(form.email, {'sizing': 'sm'}) }}
+            {{ form_errors(form.email) }}
+        </td>
+        <td{% if form.name.vars.errors|length > 0 %} class="has-error"{% endif %}>
+            {{ form_widget(form.name, {'sizing': 'sm'}) }}
+            {{ form_errors(form.name) }}
+        </td>
         <td class="ekyna-collection-controls">
             <div class="btn-group-vertical">__controls__</div>
         </td>
