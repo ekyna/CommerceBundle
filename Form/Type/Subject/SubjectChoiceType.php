@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Subject;
 
 use Closure;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
+use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Subject\Entity\SubjectIdentity;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
@@ -138,13 +139,23 @@ class SubjectChoiceType extends AbstractType
             $values = $provider->getSearchActionAndParameters($context);
 
             $values = array_replace([
-                'action'      => null,
+                'route'      => null,
+                'action'     => null,
                 'parameters' => [],
             ], $values);
 
-            $path = $this
-                ->resourceHelper
-                ->generateResourcePath($provider->getSubjectClass(), $values['action'], $values['parameters']);
+            if ($values['action']) {
+                $path = $this
+                    ->resourceHelper
+                    ->generateResourcePath($provider->getSubjectClass(), $values['action'], $values['parameters']);
+            } elseif ($values['route']) {
+                $path = $this
+                    ->resourceHelper
+                    ->getUrlGenerator()
+                    ->generate($values['route'], $values['parameters']);
+            } else {
+                throw new LogicException('Neither \'route\' nor \'action\' is defined.');
+            }
 
             return [
                 'data-config' => json_encode([
