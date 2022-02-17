@@ -1695,6 +1695,7 @@ stock_subject:
         floor: Stock de rupture
         replenishment_time: Délai de réappro.
         minimum_order_quantity: Qté Min Com
+        released_at: Date de sortie
         end_of_life: Fin de vie
         quote_only: Sur devis uniquement
         package_weight: Poids emballé
@@ -1719,6 +1720,7 @@ stock_subject:
             pre_order: "%eda% (%qty%)"
             replenishment: ~%days% jours
             end_of_life: Fin de vie
+            released_at: Disp. %date%
             out_of_stock: Rupture
             min_quantity: Min %min%
             max_quantity: Max %max%
@@ -1729,6 +1731,7 @@ stock_subject:
             pre_order: Réassort le %eda% (%qty%)
             replenishment: Réassort ~%days% jours
             end_of_life: En fin de vie
+            released_at: Disponible à partir du %date%
             out_of_stock: En rupture
             min_quantity: "Quantité min. d'achat : %min%"
             max_quantity: "Quantité max. disponible : %max%"

@@ -68,6 +68,17 @@
 {% endmacro show_minimum_order_quantity %}
 
 
+{%- macro show_released_at(product, options = {}) -%}
+{% apply spaceless %}
+    {{- show_row(product.releasedAt, 'datetime', {
+        'label': t('stock_subject.field.released_at', [], 'EkynaCommerce'),
+        'id': 'subject_releasedAt',
+        'time': false
+    }|merge(options)) -}}
+{% endapply %}
+{%- endmacro show_released_at -%}
+
+
 {% macro show_eda(subject, options = {}) %}
 {% apply spaceless %}
     {{ show_row(subject.estimatedDateOfArrival, 'datetime', {
@@ -204,6 +215,7 @@
     }|merge(options)) -}}
 {%- endmacro show_package_depth -%}
 
+
 {% macro show_stock_view(subject, prefix) %}
 {% apply spaceless %}
     {% import _self as macros %}
@@ -310,8 +322,8 @@
     </div>
     <div class="row">
         <div class="col-md-4">
-            {{ macros.show_eda(subject, {
-                'id': prefix ~'_estimatedDateOfArrival',
+            {{ macros.show_released_at(subject, {
+                'id': prefix ~'_releasedAt',
                 'label_col': 6
             }) }}
         </div>
@@ -344,6 +356,14 @@
         <div class="col-md-4">
             {{ macros.show_virtual_stock(subject, {
                 'id': prefix ~'_virtualStock',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ macros.show_eda(subject, {
+                'id': prefix ~'_estimatedDateOfArrival',
                 'label_col': 6
             }) }}
         </div>

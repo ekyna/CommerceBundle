@@ -73,6 +73,10 @@ class SubjectHelper extends BaseHelper implements SubjectHelperInterface
      */
     public function renderAddToCartButton(SubjectInterface $subject, array $options = []): string
     {
+        /*
+         * TODO Use AvailabilityHelper ? Consistency with sale-item-configure.js ?
+         */
+
         $options = array_replace_recursive(
             $this->addToCartDefaults(),
             $this->config['add_to_cart'],

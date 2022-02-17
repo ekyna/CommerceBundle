@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type as SF;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 
+use function array_replace;
 use function Symfony\Component\Translation\t;
 
 /**
@@ -85,6 +86,21 @@ class StockSubjectFormBuilder
         ], $options);
 
         $this->form->add('minimumOrderQuantity', SF\NumberType::class, $options);
+
+        return $this;
+    }
+
+    /**
+     * Adds the released at field.
+     */
+    public function addReleasedAtField(array $options = []): StockSubjectFormBuilder
+    {
+        $options = array_replace([
+            'label'    => t('stock_subject.field.released_at', [], 'EkynaCommerce'),
+            'required' => false,
+        ], $options);
+
+        $this->form->add('releasedAt', SF\DateType::class, $options);
 
         return $this;
     }

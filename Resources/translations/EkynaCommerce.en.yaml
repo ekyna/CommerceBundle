@@ -1660,6 +1660,7 @@ stock_subject:
         floor: Shortage stock
         replenishment_time: Replenishment time
         minimum_order_quantity: Min. order qty
+        released_at: Released at
         end_of_life: End of life
         quote_only: Quote only
         package_weight: Packed weight
@@ -1684,6 +1685,7 @@ stock_subject:
             pre_order: "%eda% (%qty%)"
             replenishment: ~%days% days
             end_of_life: EOL
+            released_at: Avai. %date%
             out_of_stock: OOS
             min_quantity: Min %min%
             max_quantity: Max %max%
@@ -1694,6 +1696,7 @@ stock_subject:
             pre_order: Restocking the %eda% (%qty%)
             replenishment: ~%days% days replenishment
             end_of_life: End of life
+            released_at: Available from %date%
             out_of_stock: Out of stock
             min_quantity: "Min. purchase quantity : %min%"
             max_quantity: "Max. available quantity : %max%"
