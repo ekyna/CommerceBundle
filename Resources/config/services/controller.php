@@ -217,17 +217,27 @@ return static function (ContainerConfigurator $container) {
             ])
             ->alias(Admin\Export\OrderController::class, 'ekyna_commerce.controller.admin.export.order')->public()
 
-        // Admin export supplier controller
-        ->set('ekyna_commerce.controller.admin.export.supplier', Admin\Export\SupplierController::class)
+        // Admin export supplier order controller
+        ->set('ekyna_commerce.controller.admin.export.supplier_order', Admin\Export\SupplierOrderController::class)
             ->args([
                 service('ekyna_commerce.exporter.supplier_order'),
                 service('router'),
                 service('ekyna_ui.helper.flash'),
                 param('kernel.debug'),
             ])
-            ->alias(Admin\Export\SupplierController::class, 'ekyna_commerce.controller.admin.export.supplier')->public()
+            ->alias(Admin\Export\SupplierOrderController::class, 'ekyna_commerce.controller.admin.export.supplier_order')->public()
 
-        // Admin export supplier controller
+        // Admin export supplier order item controller
+        ->set('ekyna_commerce.controller.admin.export.supplier_order_item', Admin\Export\SupplierOrderItemController::class)
+            ->args([
+                service('ekyna_commerce.exporter.supplier_order_item'),
+                service('router'),
+                service('ekyna_ui.helper.flash'),
+                param('kernel.debug'),
+            ])
+            ->alias(Admin\Export\SupplierOrderItemController::class, 'ekyna_commerce.controller.admin.export.supplier_order_item')->public()
+
+        // Admin export stat controller
         ->set('ekyna_commerce.controller.admin.export.stat', Admin\Export\StatController::class)
             ->args([
                 service('ekyna_commerce.exporter.stat'),

@@ -1848,6 +1848,8 @@ supplier_order:
         none: Aucune commande fournisseur à traiter
 
 supplier_order_item:
+    button:
+        export_paid_not_delivered: Export payés non livrés
     field:
         supplier_data: Données Four.
         subject: Article

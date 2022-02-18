@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin\Export;
 use DateTime;
 use Ekyna\Bundle\CommerceBundle\Service\Order\OrderInvoiceExporter;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
+use Ekyna\Component\Commerce\Common\Util\DateUtil;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Resource\Helper\File\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -58,7 +59,7 @@ class InvoiceController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('due-invoices-%s.csv', (new DateTime())->format('Y-m-d'));
+        $filename = sprintf('due-invoices-%s.csv', DateUtil::today());
 
         return File::buildResponse($path, [
             'file_name' => $filename,
@@ -84,7 +85,7 @@ class InvoiceController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('fall-invoices-%s.csv', (new DateTime())->format('Y-m-d'));
+        $filename = sprintf('fall-invoices-%s.csv', DateUtil::today());
 
         return File::buildResponse($path, [
             'file_name' => $filename,

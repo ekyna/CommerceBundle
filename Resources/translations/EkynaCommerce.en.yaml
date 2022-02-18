@@ -1813,6 +1813,8 @@ supplier_order:
         none: No supplier orders to process
 
 supplier_order_item:
+    button:
+        export_paid_not_delivered: Export paid not delivered
     field:
         supplier_data: Supplier data
         subject: Product

@@ -59,6 +59,7 @@ class SupplierOrderExporter extends BaseExporter
 
     protected function transform(string $name, string $value): string
     {
+        // TODO Move to map (override getDefaultMap)
         if ($name === 'state') {
             return SupplierOrderStates::getLabel($value)->trans($this->translator);
         }

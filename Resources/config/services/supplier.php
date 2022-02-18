@@ -10,6 +10,7 @@ use Ekyna\Bundle\CommerceBundle\EventListener\SupplierDeliveryItemEventSubscribe
 use Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderItemEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierOrderExporter;
+use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierOrderItemExporter;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\SupplierProductEventSubscriber;
 use Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator;
 use Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculator;
@@ -98,10 +99,18 @@ return static function (ContainerConfigurator $container) {
             ->parent('ekyna_commerce.listener.abstract_supplier')
             ->tag('resource.event_subscriber')
 
-        // Supplier delivery item (resource) event listener
+        // Supplier order exporter
         ->set('ekyna_commerce.exporter.supplier_order', SupplierOrderExporter::class)
             ->args([
                 service('ekyna_commerce.repository.supplier_order'),
+                service('translator'),
+            ])
+
+        // Supplier order item exporter
+        ->set('ekyna_commerce.exporter.supplier_order_item', SupplierOrderItemExporter::class)
+            ->args([
+                service('ekyna_commerce.repository.supplier_order_item'),
+                service('ekyna_commerce.converter.currency'),
                 service('translator'),
             ])
     ;

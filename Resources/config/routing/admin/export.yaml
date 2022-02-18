@@ -56,22 +56,27 @@ admin_ekyna_commerce_export_outstanding_pending_due_orders:
 admin_ekyna_commerce_export_suppliers_expired_due_orders:
     path: /suppliers-expired-due-orders
     methods: [GET]
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\SupplierController::suppliersExpiredDueOrders
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\SupplierOrderController::suppliersExpiredDueOrders
 
 admin_ekyna_commerce_export_suppliers_fall_due_orders:
     path: /suppliers-fall-due-orders
     methods: [GET]
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\SupplierController::suppliersFallDueOrders
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\SupplierOrderController::suppliersFallDueOrders
 
 admin_ekyna_commerce_export_forwarders_expired_due_orders:
     path: /forwarders-expired-due-orders
     methods: [GET]
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\SupplierController::forwardersExpiredDueOrders
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\SupplierOrderController::forwardersExpiredDueOrders
 
 admin_ekyna_commerce_export_forwarders_fall_due_orders:
     path: /forwarders-fall-due-orders
     methods: [GET]
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\SupplierController::forwardersFallDueOrders
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\SupplierOrderController::forwardersFallDueOrders
+
+admin_ekyna_commerce_export_supplier_order_item_paid_but_not_delivered:
+    path: /paid-but-not-delivered-supplier-order-items
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\SupplierOrderItemController::exportPaidButNotDelivered
 
 admin_ekyna_commerce_export_regions_orders_stats:
     path: /regions-orders-stats

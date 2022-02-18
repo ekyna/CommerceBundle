@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Admin\Export;
 use DateTime;
 use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierOrderExporter;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
+use Ekyna\Component\Commerce\Common\Util\DateUtil;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Resource\Helper\File\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -16,11 +17,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use function sprintf;
 
 /**
- * Class SupplierController
+ * Class SupplierOrderController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Admin\Export
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class SupplierController
+class SupplierOrderController
 {
     private SupplierOrderExporter $supplierOrderExporter;
     private UrlGeneratorInterface $urlGenerator;
@@ -58,7 +59,7 @@ class SupplierController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('suppliers-expired-due-orders-%s.csv', (new DateTime())->format('Y-m-d'));
+        $filename = sprintf('suppliers-expired-due-orders-%s.csv', DateUtil::today());
 
         return File::buildResponse($path, [
             'file_name' => $filename,
@@ -84,7 +85,7 @@ class SupplierController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('suppliers-fall-due-orders-%s.csv', (new DateTime())->format('Y-m-d'));
+        $filename = sprintf('suppliers-fall-due-orders-%s.csv', DateUtil::today());
 
         return File::buildResponse($path, [
             'file_name' => $filename,
@@ -110,7 +111,7 @@ class SupplierController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('forwarders-expired-due-orders-%s.csv', (new DateTime())->format('Y-m-d'));
+        $filename = sprintf('forwarders-expired-due-orders-%s.csv', DateUtil::today());
 
         return File::buildResponse($path, [
             'file_name' => $filename,
@@ -136,7 +137,7 @@ class SupplierController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('forwarders-fall-due-orders-%s.csv', (new DateTime())->format('Y-m-d'));
+        $filename = sprintf('forwarders-fall-due-orders-%s.csv', DateUtil::today());
 
         return File::buildResponse($path, [
             'file_name' => $filename,

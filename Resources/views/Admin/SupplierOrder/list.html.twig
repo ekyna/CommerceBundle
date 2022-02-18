@@ -1,5 +1,9 @@
 {% extends '@EkynaAdmin/Entity/Crud/list.html.twig' %}
 
 {% block actions %}
+    {{ ui_button(t('supplier_order_item.button.export_paid_not_delivered', {}, 'EkynaCommerce'), {
+        'type': 'link',
+        'path': path('admin_ekyna_commerce_export_supplier_order_item_paid_but_not_delivered')
+    }) }}
     {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\SupplierOrder\\CreateAction') }}
 {% endblock actions %}

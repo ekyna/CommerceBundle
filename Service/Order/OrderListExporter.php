@@ -65,6 +65,7 @@ class OrderListExporter extends BaseExporter
 
     protected function transform(string $name, string $value): string
     {
+        // TODO Move to map (override getDefaultMap)
         switch ($name) {
             case 'payment_state':
                 return PaymentStates::getLabel($value)->trans($this->translator);
