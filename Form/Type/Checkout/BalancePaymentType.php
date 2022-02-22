@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Checkout;
 
 use Decimal\Decimal;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MoneyType;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentTermInterface;
 use Ekyna\Component\Commerce\Payment\Updater\PaymentUpdaterInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -45,7 +45,8 @@ class BalancePaymentType extends AbstractType
 
                     $fieldOptions = [
                         'label'    => t('field.amount', [], 'EkynaUi'),
-                        'quote'    => $payment->getCurrency()->getCode(),
+                        'currency' => $payment->getCurrency()->getCode(),
+                        'decimal'  => true,
                         'disabled' => !empty($options['lock_message']),
                     ];
 

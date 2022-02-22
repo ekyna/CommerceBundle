@@ -79,10 +79,11 @@ class SupplierProductType extends AbstractResourceType
 
             $form = $event->getForm();
 
-            $form->add('netPrice', Commerce\Common\MoneyType::class, [
-                'label' => t('field.net_price', [], 'EkynaCommerce'),
-                'quote' => $currency->getCode(),
-                'scale' => 5,
+            $form->add('netPrice', Symfony\MoneyType::class, [
+                'label'    => t('field.net_price', [], 'EkynaCommerce'),
+                'currency' => $currency->getCode(),
+                'decimal'  => true,
+                'scale'    => 5,
             ]);
         });
     }
