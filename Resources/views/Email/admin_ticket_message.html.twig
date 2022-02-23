@@ -1,20 +1,35 @@
 {% extends "email.html.twig" %}
 
 {% block stylesheets %}
-{{ parent() }}
-<style>
-    table { border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; width: 100% }
-    td, th { font-size: 13px; padding: 2px 4px; border-top: 1px solid #ddd; border-left: 1px solid #ddd; }
-    p { margin-bottom: 10px; }
-</style>
+    {{ parent() }}
+    <style>
+        table {
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            font-size: 14px;
+            padding: 4px 8px;
+            border-top: 1px solid #ddd;
+            border-left: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        td p {
+            margin: 0 0 10px 0;
+        }
+    </style>
 {% endblock stylesheets %}
 
 {% block subject %}{{ subject|raw }}{% endblock subject %}
 
 {% block body %}
 {% apply spaceless %}
-    {{ 'ticket_message.notify.admin.content'|trans({}, 'EkynaCommerce')|raw }}
-    <table border="0" cellpadding="0" cellspacing="0">
+    <p>{{ content|raw }}</p>
+    <table>
         <thead>
         <tr>
             <th>Ticket</th>
@@ -25,7 +40,7 @@
         {% for message in messages -%}
         <tr>
             <td>
-                <a href="{{ admin_resource_path(message.ticket, 'admin_read', {}, true) }}">
+                <a href="{{ absolute_url(admin_resource_path(message.ticket)) }}">
                     {{- message.ticket.number -}}
                 </a>
             </td>

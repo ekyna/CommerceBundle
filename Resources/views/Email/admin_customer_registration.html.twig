@@ -16,7 +16,7 @@
         {{ customer.description|nl2br }}
     </p>
     <p style="text-align: center;">
-        <a href="{{ admin_resource_path(customer, 'admin_read', {}, true) }}">
+        <a href="{{ absolute_url(admin_resource_path(customer)) }}">
             {{ 'customer.notify.admin_link'|trans({}, 'EkynaCommerce') }}
         </a>
     </p>

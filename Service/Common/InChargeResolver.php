@@ -8,6 +8,7 @@ use Ekyna\Bundle\AdminBundle\Model\UserInterface;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\InChargeSubjectInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
+use Ekyna\Component\Commerce\Support\Model\TicketInterface;
 use Ekyna\Component\User\Service\UserProviderInterface;
 
 /**
@@ -19,7 +20,6 @@ class InChargeResolver
 {
     private UserProviderInterface $userProvider;
 
-
     public function __construct(UserProviderInterface $userProvider)
     {
         $this->userProvider = $userProvider;
@@ -28,9 +28,7 @@ class InChargeResolver
     /**
      * Updates the subject's 'in charge' user.
      *
-     * @param InChargeSubjectInterface $subject
-     *
-     * @return bool Whether or not the subject has been updated.
+     * @return bool Whether the subject has been updated.
      */
     public function update(InChargeSubjectInterface $subject): bool
     {
@@ -38,21 +36,17 @@ class InChargeResolver
             return false;
         }
 
-        if (null !== $inCharge = $this->resolve($subject)) {
-            $subject->setInCharge($inCharge);
-
-            return true;
+        if (null === $inCharge = $this->resolve($subject)) {
+            return false;
         }
 
-        return false;
+        $subject->setInCharge($inCharge);
+
+        return true;
     }
 
     /**
      * Resolves the given subject's 'in charge' user.
-     *
-     * @param InChargeSubjectInterface $subject
-     *
-     * @return UserInterface|null
      */
     public function resolve(InChargeSubjectInterface $subject): ?UserInterface
     {
@@ -65,9 +59,11 @@ class InChargeResolver
         }
 
         if ($subject instanceof SaleInterface) {
-            if (null !== $inCharge = $this->resolveSale($subject)) {
-                return $inCharge;
-            }
+            return $this->resolveSale($subject);
+        }
+
+        if ($subject instanceof TicketInterface) {
+            return $this->resolveTicket($subject);
         }
 
         return null;
@@ -75,25 +71,49 @@ class InChargeResolver
 
     /**
      * Resolves the given sale's 'in charge' user.
-     *
-     * @param SaleInterface $sale
-     *
-     * @return UserInterface|null
      */
     private function resolveSale(SaleInterface $sale): ?UserInterface
     {
         /** @var CustomerInterface $customer */
-        if (null !== $customer = $sale->getCustomer()) {
-            if (null !== $inCharge = $customer->getInCharge()) {
+        if (null === $customer = $sale->getCustomer()) {
+            return null;
+        }
+
+        if (null !== $inCharge = $customer->getInCharge()) {
+            return $inCharge;
+        }
+
+        /** @var CustomerInterface $customer */
+        if (null === $customer = $customer->getParent()) {
+            return null;
+        }
+
+        return $customer->getInCharge();
+    }
+
+    private function resolveTicket(TicketInterface $ticket): ?UserInterface
+    {
+        foreach ($ticket->getOrders() as $order) {
+            if (!$order instanceof InChargeSubjectInterface) {
+                continue;
+            }
+            if ($inCharge = $order->getInCharge()) {
                 return $inCharge;
             }
+        }
 
-            /** @var CustomerInterface $customer */
-            if (null !== $customer = $customer->getParent()) {
-                if (null !== $inCharge = $customer->getInCharge()) {
-                    return $inCharge;
-                }
+        foreach ($ticket->getQuotes() as $quote) {
+            if (!$quote instanceof InChargeSubjectInterface) {
+                continue;
             }
+
+            if ($inCharge = $quote->getInCharge()) {
+                return $inCharge;
+            }
+        }
+
+        if (($customer = $ticket->getCustomer()) && $customer instanceof InChargeSubjectInterface) {
+            return $customer->getInCharge();
         }
 
         return null;

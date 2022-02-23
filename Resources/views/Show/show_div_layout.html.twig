@@ -5,7 +5,7 @@
     {%- set attr = attr|merge({'class': ('show-widget show-widget-inline ' ~ attr.class|default(''))|trim }) -%}
     <div{{ block('widget_attributes') }}>
     {%- if value -%}
-        <a href="{{ admin_resource_path(value, 'Ekyna\\Bundle\\AdminBundle\\Action\\ReadAction') }}" class="show-entity">
+        <a href="{{ admin_resource_path(value) }}" class="show-entity">
             {{- value|identity -}}
         </a>
     {%- else -%}

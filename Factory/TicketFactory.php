@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Factory;
 
-use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Bundle\CommerceBundle\Model\TicketInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Common\InChargeResolver;
 use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Factory\TicketFactory as BaseFactory;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
+use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Support\Factory\TicketMessageFactoryInterface;
 use Ekyna\Component\Resource\Model\ResourceInterface;
 use Ekyna\Component\Resource\Repository\RepositoryFactoryInterface;
@@ -47,17 +47,19 @@ class TicketFactory extends BaseFactory
         /** @var TicketInterface $ticket */
         $ticket = parent::create();
 
-        $this->inChargeResolver->update($ticket);
-
         $request = $this->requestStack->getCurrentRequest();
 
         if ($number = $request->query->get('order')) {
             $this->setTicketOrder($ticket, $number);
-        } elseif ($number = $request->query->get('quote')) {
+        }
+        if ($number = $request->query->get('quote')) {
             $this->setTicketQuote($ticket, $number);
-        } elseif ($number = $request->query->get('customer')) {
+        }
+        if ($number = $request->query->get('customer')) {
             $this->setTicketCustomer($ticket, $number);
         }
+
+        $this->inChargeResolver->update($ticket);
 
         return $ticket;
     }

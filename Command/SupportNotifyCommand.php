@@ -27,7 +27,6 @@ class SupportNotifyCommand extends Command
     private EntityManagerInterface  $messageManager;
     private Mailer                  $mailer;
 
-
     public function __construct(
         TicketMessageRepository $messageRepository,
         UserRepositoryInterface $adminRepository,
@@ -44,13 +43,14 @@ class SupportNotifyCommand extends Command
 
     protected function configure(): void
     {
-        $this->setDescription('Sends emails to customers and administrators about created or update ticket messages.');
+        $this->setDescription('Sends emails to customers and administrators about created or updated ticket messages.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->notifyCustomers();
         $this->notifyAdministrators();
+        $this->notifyUnassigned();
 
         return Command::SUCCESS;
     }
@@ -61,17 +61,24 @@ class SupportNotifyCommand extends Command
 
         $messages = $this->messageRepository->findNotNotifiedForCustomers();
 
+        if (empty($messages)) {
+            return;
+        }
+
         $count = 0;
         foreach ($messages as $message) {
-            // Do not notify the customer twice for the same ticket.
             $ticketId = $message->getTicket()->getId();
-            if (!in_array($ticketId, $ticketIds, true)) {
-                if (!$this->mailer->sendTicketMessageToCustomer($message)) {
-                    continue;
-                }
 
-                $ticketIds[] = $ticketId;
+            // Don't notify the customer twice for the same ticket.
+            if (in_array($ticketId, $ticketIds, true)) {
+                continue;
             }
+
+            if (!$this->mailer->sendTicketMessageToCustomer($message)) {
+                continue;
+            }
+
+            $ticketIds[] = $ticketId;
 
             // Mark the message as notified
             $message->setNotifiedAt(new DateTime());
@@ -110,5 +117,24 @@ class SupportNotifyCommand extends Command
 
             $this->messageManager->flush();
         }
+    }
+
+    private function notifyUnassigned(): void
+    {
+        $messages = $this->messageRepository->findNotNotifiedAndUnassigned();
+
+        if (empty($messages)) {
+            return;
+        }
+
+        $this->mailer->sendTicketMessagesToAdmin($messages, null);
+
+        foreach ($messages as $message) {
+            // Mark the message as notified
+            $message->setNotifiedAt(new DateTime());
+            $this->messageManager->persist($message);
+        }
+
+        $this->messageManager->flush();
     }
 }

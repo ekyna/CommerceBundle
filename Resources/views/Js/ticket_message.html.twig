@@ -2,8 +2,8 @@
     <div class="head">
         <p class="controls">
             {% if config.admin -%}
-            <span class="btn btn-xs btn-{% if message.notified_at is not null %}success{% else %}default{% endif %}"
-                  title="{{ message.f_notified_at }}">
+            <span class="btn btn-xs btn-{% if message.notified_at is not null %}success{% elseif message.notify %}warning{% else %}default{% endif %}"
+                  title="{% if message.f_notified_at is not empty %}{{  message.f_notified_at }}{% elseif message.notify %}(Pending...){% endif %}">
                 <i class="fa fa-{% if message.notify %}envelope-o{% else %}ban{% endif %}"></i>
             </span>
             {%- endif %}

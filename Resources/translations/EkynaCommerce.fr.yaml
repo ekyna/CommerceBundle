@@ -2055,7 +2055,9 @@ ticket_message:
         admin:
             subject: "Service client : nouveau messages"
             content: Vous avez reçu de nouveaux messages dans les tickets qui vous sont assignés.
-
+        unassigned:
+            subject: "Service client : messages non attribués"
+            content: Les tickets suivants ne sont pas assignés aux administrateurs.
     message:
         remove_confirm: Confirmer la suppression du message.
 

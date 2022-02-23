@@ -2020,6 +2020,9 @@ ticket_message:
         admin:
             subject: "Customer service : new messages"
             content: You have new messages for your assigned tickets.
+        unassigned:
+            subject: "Customer service : unassigned messages"
+            content: The following messages are not assigned to administrators.
     message:
         remove_confirm: Confirm the message removal.
 

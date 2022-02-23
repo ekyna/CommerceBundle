@@ -57,15 +57,15 @@ class Mailer
     private ?Address $notificationSender = null;
 
     public function __construct(
-        MailerFactory $mailer,
-        Environment $templating,
-        TranslatorInterface $translator,
+        MailerFactory           $mailer,
+        Environment             $templating,
+        TranslatorInterface     $translator,
         SettingManagerInterface $settingsManager,
-        RendererFactory $rendererFactory,
-        ShipmentLabelRenderer $shipmentLabelRenderer,
-        SubjectLabelRenderer $subjectLabelRenderer,
-        SubjectHelperInterface $subjectHelper,
-        FilesystemOperator $filesystem
+        RendererFactory         $rendererFactory,
+        ShipmentLabelRenderer   $shipmentLabelRenderer,
+        SubjectLabelRenderer    $subjectLabelRenderer,
+        SubjectHelperInterface  $subjectHelper,
+        FilesystemOperator      $filesystem
     ) {
         $this->mailer = $mailer;
         $this->templating = $templating;
@@ -232,7 +232,7 @@ class Mailer
      *
      * @param TicketMessageInterface[] $messages
      */
-    public function sendTicketMessagesToAdmin(array $messages, UserInterface $admin): bool
+    public function sendTicketMessagesToAdmin(array $messages, ?UserInterface $admin): bool
     {
         foreach ($messages as $message) {
             if (!$message instanceof TicketMessageInterface) {
@@ -244,14 +244,17 @@ class Mailer
             }
         }
 
-        $subject = $this->translator->trans('ticket_message.notify.admin.subject', [], 'EkynaCommerce');
+        $type = $admin ? 'admin' : 'unassigned';
+        $subject = $this->translator->trans("ticket_message.notify.$type.subject", [], 'EkynaCommerce');
+        $content = $this->translator->trans("ticket_message.notify.$type.content", [], 'EkynaCommerce');
 
         $body = $this->templating->render('@EkynaCommerce/Email/admin_ticket_message.html.twig', [
             'subject'  => $subject,
+            'content'  => $content,
             'messages' => $messages,
         ]);
 
-        $to = new Address($admin->getEmail(), $admin->hasFullName() ? $admin->getFullName() : '');
+        $to = $admin ? new Address($admin->getEmail(), $admin->hasFullName() ? $admin->getFullName() : '') : null;
 
         return $this->mailer->send($this->createMessage($subject, $body, $to, false));
     }
@@ -520,8 +523,8 @@ class Mailer
     protected function createMessage(
         string $subject,
         string $body,
-        $to = null,
-        $from = null
+               $to = null,
+               $from = null
     ): Email {
         if (empty($to)) {
             $to = $this->settingsManager->getParameter('notification.to_emails');
