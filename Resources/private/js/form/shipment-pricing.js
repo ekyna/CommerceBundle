@@ -54,7 +54,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
             /*$collection.on('invalid', 'input', function(e) {
                 console.log(e);
                 var $child = $(e.target).eq(0).closest('tr');
-                if ($child.size()) {
+                if ($child.length) {
                     $filter.val($child.data('method'));
                     togglePricesVisibility();
                     return;

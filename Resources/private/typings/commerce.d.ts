@@ -10,11 +10,12 @@ declare class Widget {
     reload(): void
 }
 
-declare let init:() => void;
+interface Commerce {
+    init(): void
+}
+
+declare let commerce:Commerce;
 
 declare module "ekyna-commerce/commerce" {
-    export = {
-        init: init,
-        Widget: Widget
-    };
+    export = commerce;
 }

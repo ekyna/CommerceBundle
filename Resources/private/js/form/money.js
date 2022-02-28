@@ -7,7 +7,7 @@ define(['jquery', 'ekyna-polyfill', 'bootstrap'], function ($) {
 
         this.$base = this.$element.find('.commerce-money-base');
         this.$quote = this.$element.find('.commerce-money-quote');
-        if (0 === this.$base.size() || 0 === this.$quote.size()) {
+        if (0 === this.$base.length || 0 === this.$quote.length) {
             return;
         }
 

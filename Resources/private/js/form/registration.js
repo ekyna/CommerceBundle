@@ -5,7 +5,7 @@ define(['jquery', 'validator'], function($, Validator) {
         $field.prop('required', required);
 
         var $label = $('label[for="' + $field.attr('id') + '"]');
-        if (1 === $label.size()) {
+        if (1 === $label.length) {
             if (required) {
                 $label.addClass('required');
             } else {
@@ -92,10 +92,10 @@ define(['jquery', 'validator'], function($, Validator) {
                 $passwordFirstGroup.addClass('has-error');
             }
 
-            if (1 === $emailFirst.size()) {
+            if (1 === $emailFirst.length) {
                 $this.on('change keyup', config.email_first + ', ' + config.email_second, emailStates);
             }
-            if (1 === $passwordFirst.size()) {
+            if (1 === $passwordFirst.length) {
                 $this.on('change keyup', config.password_first + ', ' + config.password_second, passwordStates);
             }
 
@@ -104,7 +104,7 @@ define(['jquery', 'validator'], function($, Validator) {
             function updateBusinessFields() {
                 console.log($applyGroup.val());
                 var $groupOption = $applyGroup.filter(':checked');
-                if (1 === $groupOption.size()) {
+                if (1 === $groupOption.length) {
                     if (1 === parseInt($groupOption.data('business'))) {
                         toggleRequired($company, true);
                         $regular.slideUp(function() {

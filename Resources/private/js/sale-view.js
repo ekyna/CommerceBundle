@@ -5,7 +5,8 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-spinner', 'jquery/fo
         $('.sale-view [data-toggle="popover"]').popover({
             trigger: 'hover',
             placement: 'top',
-            html: true
+            html: true,
+            sanitize: false
         });
 
         // TODO Toggle recalculate disabled on quantity change
@@ -15,7 +16,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-spinner', 'jquery/fo
         var $xml = $(response),
             $view = $xml.find('view');
 
-        if (1 === $view.size()) {
+        if (1 === $view.length) {
             $saleView.replaceWith($($view.text()));
 
             Dispatcher.trigger('ekyna_commerce.sale_view_response', response);

@@ -88,7 +88,8 @@ define(['jquery', 'bootstrap'], function($) {
                             container: 'body',
                             content: result.content,
                             html: true,
-                            placement: 'top'
+                            placement: 'top',
+                            sanitize: false
                         });
                 } else {
                     $button.addClass('btn-danger');

@@ -19,7 +19,7 @@ define(['jquery', 'ekyna-modal'], function ($, Modal) {
             if (frameMapping.hasOwnProperty(key)) {
                 var $node = $xml.find(key);
 
-                if (1 === $node.size()) {
+                if (1 === $node.length) {
                     $(frameMapping[key]).html($node.text());
                 }
             }
@@ -29,7 +29,7 @@ define(['jquery', 'ekyna-modal'], function ($, Modal) {
 
         // Sale view
         var $view = $xml.find('view');
-        if (1 === $view.size()) {
+        if (1 === $view.length) {
             $('.account-sale-view').html($($view.text()));
 
             return true;

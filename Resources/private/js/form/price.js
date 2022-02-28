@@ -1,4 +1,4 @@
-define(['jquery', 'jquery-ui/widget', 'ekyna-polyfill'], function ($) {
+define(['jquery', 'jquery-ui/ui/widget', 'ekyna-polyfill'], function ($) {
     "use strict";
 
     var defaultLocale = (navigator.language || navigator.browserLanguage).split('-')[0] || 'en';

@@ -22,25 +22,19 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\GenderChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MoneyType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\BalanceType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerGroupChoiceType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerSearchType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyModelChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderPaymentType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderSearchType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentParcelType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodFactoryChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentMethodType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Payment\PaymentTermChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\PriceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteSearchType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleAddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemConfigureType;
@@ -50,7 +44,6 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleShipmentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\GatewayDataType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentAddressType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodFactoryChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodPickType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodType;
@@ -58,15 +51,14 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentPlatformChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentPriceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentPricingType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentRuleType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Stock\WarehouseChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Stock\WarehouseType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Subject\SubjectChoiceType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierDeliveryType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderItemsType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderItemType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderSubmitType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierProductType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierTemplateChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierType;
 
@@ -509,6 +501,14 @@ return static function (ContainerConfigurator $container) {
             ->tag('form.js', [
                 'selector' => '.commerce-supplier-template',
                 'path'     => 'ekyna-commerce/form/supplier-template-choice',
+            ])
+
+        // Supplier product form type
+        ->set('ekyna_commerce.form_type.supplier_product', SupplierProductType::class)
+            ->tag('form.type')
+            ->tag('form.js', [
+                'selector' => 'form[name=supplier_product]',
+                'path'     => 'ekyna-commerce/form/supplier-product',
             ])
 
         // Sale create item form flow

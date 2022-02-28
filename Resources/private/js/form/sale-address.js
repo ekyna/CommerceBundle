@@ -15,7 +15,7 @@ define(['jquery', 'routing', 'ekyna-commerce/form/address'], function($, router)
                 $choiceSelect = $this.find('.sale-address-choice'),
                 $addressForm = $this.find('.sale-address').address();
 
-            if (1 === $customerChoice.size()) {
+            if (1 === $customerChoice.length) {
                 $customerChoice.on('change', function() {
                     $choiceSelect
                         .empty()
@@ -49,14 +49,14 @@ define(['jquery', 'routing', 'ekyna-commerce/form/address'], function($, router)
                                             $addressForm.address('set', addressData);
                                         } else if (mode === 'delivery' && addressData['delivery_default'] === 1) {
                                             if (addressData['invoice_default'] === 1) {
-                                                if (1 === $sameCheckbox.size()) {
+                                                if (1 === $sameCheckbox.length) {
                                                     $sameCheckbox
                                                         .prop('checked', true)
                                                         .trigger('change');
                                                 }
                                                 $addressForm.address('clear');
                                             } else {
-                                                if (1 === $sameCheckbox.size()) {
+                                                if (1 === $sameCheckbox.length) {
                                                     $sameCheckbox
                                                         .prop('checked', false)
                                                         .trigger('change');
@@ -81,7 +81,7 @@ define(['jquery', 'routing', 'ekyna-commerce/form/address'], function($, router)
                 }
 
                 var $option = $choiceSelect.find('option[value=' + $choiceSelect.val() + ']');
-                if (0 === $option.size()) {
+                if (0 === $option.length) {
                     return;
                 }
 
@@ -91,13 +91,13 @@ define(['jquery', 'routing', 'ekyna-commerce/form/address'], function($, router)
                 }
             });
 
-            if (1 === $sameCheckbox.size()) {
+            if (1 === $sameCheckbox.length) {
                 var $wrapper = $this.find('.sale-address-wrap'),
                     toggleAddress = function () {
                         if ($sameCheckbox.prop('checked')) {
                             $wrapper.slideUp(function() {
                                 $addressForm.address('clear');
-                                if ($choiceSelect.size()) {
+                                if ($choiceSelect.length) {
                                     $choiceSelect.val(null).trigger('change');
                                 }
                             });

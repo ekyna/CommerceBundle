@@ -28,7 +28,7 @@ define(['jquery', 'ekyna-dispatcher'], function ($, Dispatcher) {
             if (mapping.hasOwnProperty(key)) {
                 var $node = $xml.find(key);
 
-                if (1 === $node.size()) {
+                if (1 === $node.length) {
                     $(mapping[key]).html($node.text());
                 }
             }

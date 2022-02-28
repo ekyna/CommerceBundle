@@ -8,9 +8,12 @@ module.exports = function (grunt, options) {
                 }
             ],
             options: {
-                fast: 'never',
-                module: 'amd',
                 rootDir: 'src/Ekyna/Bundle/CommerceBundle/Resources/private/ts',
+                //verbose: true,
+                lib: ['dom', 'es2015', 'esnext'],
+                target: 'es5',
+                module: 'amd',
+                moduleResolution: 'classic',
                 noImplicitAny: false,
                 removeComments: true,
                 preserveConstEnums: true,

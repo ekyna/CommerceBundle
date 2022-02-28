@@ -38,7 +38,14 @@ function dispatchAddToCartEvent(data: any, jqXHR: JQueryXHR, modal: Ekyna.Modal)
     return event;
 }
 
-function init(config) {
+interface CommerceConfig {
+    debug: boolean
+    customer: WidgetConfig
+    cart: WidgetConfig
+    context: WidgetConfig
+}
+
+function init(config: CommerceConfig) {
     config = $.extend({
         debug: false,
         customer: {
@@ -61,7 +68,7 @@ function init(config) {
         }
     }, config);
 
-    let customerWidget, cartWidget, contextWidget;
+    let customerWidget:Widget, cartWidget:Widget, contextWidget:Widget;
     if (config.customer) {
         config.customer.debug = config.debug;
         customerWidget = new Widget(config.customer);
@@ -102,7 +109,7 @@ function init(config) {
 
     $(document)
         // Resupply alert modal
-        .on('click', 'a[data-resupply-alert]:not([data-resupply-alert=""])', function (e: JQueryEventObject) {
+        .on('click', 'a[data-resupply-alert]:not([data-resupply-alert=""])', function (e: JQuery.ClickEvent) {
             if (e.ctrlKey || e.shiftKey || e.button === 2) {
                 return true;
             }
@@ -119,7 +126,7 @@ function init(config) {
             return false;
         })
         // Sale item modal
-        .on('click', 'a[data-add-to-cart]:not([data-add-to-cart=""])', function (e: JQueryEventObject) {
+        .on('click', 'a[data-add-to-cart]:not([data-add-to-cart=""])', function (e: JQuery.ClickEvent) {
             if (e.ctrlKey || e.shiftKey || e.button === 2) {
                 return true;
             }
@@ -139,7 +146,7 @@ function init(config) {
             return false;
         })
         // Sale item form
-        .on('submit', 'form[data-add-to-cart]:not([data-add-to-cart=""])', function (e: JQueryEventObject) {
+        .on('submit', 'form[data-add-to-cart]:not([data-add-to-cart=""])', function (e: JQuery.SubmitEvent) {
             let $form = $(e.currentTarget).closest('form');
 
             e.preventDefault();

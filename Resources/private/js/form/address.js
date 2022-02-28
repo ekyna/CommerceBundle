@@ -1,4 +1,4 @@
-define(['jquery', 'jquery-ui/widget'], function($) {
+define(['jquery', 'jquery-ui/ui/widget'], function($) {
     "use strict";
 
     var mapping = {

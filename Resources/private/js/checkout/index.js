@@ -109,7 +109,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-spinner', 'jquery/fo
             if (frameMapping.hasOwnProperty(key)) {
                 var $node = $xml.find(key);
 
-                if (1 === $node.size()) {
+                if (1 === $node.length) {
                     $(frameMapping[key]).html($node.text());
                 }
             }
@@ -119,7 +119,7 @@ define(['jquery', 'ekyna-modal', 'ekyna-dispatcher', 'ekyna-spinner', 'jquery/fo
 
         // Sale view
         var $view = $xml.find('view');
-        if (1 === $view.size()) {
+        if (1 === $view.length) {
             $('.cart-checkout-view').html($($view.text()));
 
             return true;

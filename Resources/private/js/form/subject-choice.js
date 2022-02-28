@@ -36,7 +36,7 @@ define(['jquery', 'select2'], function($) {
                 }
 
                 $option = $provider.find('option[value="' + $provider.val() + '"]');
-                if (1 !== $option.size()) {
+                if (1 !== $option.length) {
                     return;
                 }
 
@@ -50,7 +50,7 @@ define(['jquery', 'select2'], function($) {
                 };
 
                 var $parent = $provider.closest('.modal');
-                if (!$parent.size()) {
+                if (!$parent.length) {
                     $parent = null;
                 }
 
