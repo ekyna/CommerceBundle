@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Payment;
 
+use Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface;
 use Ekyna\Component\Commerce\Bridge\Payum\Request\Status;
 use Ekyna\Component\Commerce\Common\Locking\LockChecker;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
@@ -9,13 +12,16 @@ use Ekyna\Component\Commerce\Payment\Event\PaymentEvent;
 use Ekyna\Component\Commerce\Payment\Event\PaymentEvents;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentTransitions;
+use Payum\Core\Action\ActionInterface;
 use Payum\Core\Action\ExecuteSameRequestWithModelDetailsAction;
 use Payum\Core\GatewayInterface;
 use Payum\Core\Payum;
 use Payum\Core\Request\Notify;
 use Payum\Core\Security\TokenInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Cache\InvalidArgumentException as CacheException;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
+use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,47 +34,18 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PaymentHelper
 {
-    /**
-     * @var Payum
-     */
-    private $payum;
+    private Payum                    $payum;
+    private LockChecker              $lockChecker;
+    private EventDispatcherInterface $dispatcher;
+    private CacheItemPoolInterface   $cache;
+    private bool                     $debug;
 
-    /**
-     * @var LockChecker
-     */
-    private $lockChecker;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    /**
-     * @var AdapterInterface
-     */
-    private $cache;
-
-    /**
-     * @var boolean
-     */
-    private $debug;
-
-
-    /**
-     * Constructor.
-     *
-     * @param Payum                    $payum
-     * @param LockChecker              $lockChecker
-     * @param EventDispatcherInterface $dispatcher
-     * @param AdapterInterface         $cache
-     * @param bool                     $debug
-     */
     public function __construct(
-        Payum $payum,
-        LockChecker $lockChecker,
+        Payum                    $payum,
+        LockChecker              $lockChecker,
         EventDispatcherInterface $dispatcher,
-        AdapterInterface $cache,
-        bool $debug = false
+        CacheItemPoolInterface   $cache,
+        bool                     $debug = false
     ) {
         $this->payum = $payum;
         $this->lockChecker = $lockChecker;
@@ -79,10 +56,6 @@ class PaymentHelper
 
     /**
      * Returns whether the payment can be canceled by the user.
-     *
-     * @param PaymentInterface $payment
-     *
-     * @return bool
      */
     public function isUserCancellable(PaymentInterface $payment): bool
     {
@@ -96,14 +69,11 @@ class PaymentHelper
     /**
      * Returns the available transitions for the given payment.
      *
-     * @param PaymentInterface $payment
-     * @param bool             $admin
-     *
-     * @return array
+     * @return array<string>
      */
-    public function getTransitions(PaymentInterface $payment, bool $admin = false): array
+    public function getTransitions(PaymentInterface $payment, bool $admin): array
     {
-        /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface $method */
+        /** @var PaymentMethodInterface $method */
         $method = $payment->getMethod();
 
         $locked = $this->lockChecker->isLocked($payment);
@@ -139,11 +109,6 @@ class PaymentHelper
 
     /**
      * Captures the payment.
-     *
-     * @param PaymentInterface $payment
-     * @param string           $afterUrl
-     *
-     * @return Response
      */
     public function capture(PaymentInterface $payment, string $afterUrl): Response
     {
@@ -160,11 +125,6 @@ class PaymentHelper
 
     /**
      * Cancels the payment.
-     *
-     * @param PaymentInterface $payment
-     * @param string           $afterUrl
-     *
-     * @return Response
      */
     public function cancel(PaymentInterface $payment, string $afterUrl): Response
     {
@@ -181,11 +141,6 @@ class PaymentHelper
 
     /**
      * Hangs the payment.
-     *
-     * @param PaymentInterface $payment
-     * @param string           $afterUrl
-     *
-     * @return Response
      */
     public function hang(PaymentInterface $payment, string $afterUrl): Response
     {
@@ -202,11 +157,6 @@ class PaymentHelper
 
     /**
      * Accepts the payment.
-     *
-     * @param PaymentInterface $payment
-     * @param string           $afterUrl
-     *
-     * @return Response
      */
     public function accept(PaymentInterface $payment, string $afterUrl): Response
     {
@@ -223,11 +173,6 @@ class PaymentHelper
 
     /**
      * Accepts the payment.
-     *
-     * @param PaymentInterface $payment
-     * @param string           $afterUrl
-     *
-     * @return Response
      */
     public function authorize(PaymentInterface $payment, string $afterUrl): Response
     {
@@ -243,12 +188,7 @@ class PaymentHelper
     }
 
     /**
-     * Marks the payment as "payed out".
-     *
-     * @param PaymentInterface $payment
-     * @param string           $afterUrl
-     *
-     * @return Response
+     * Marks the payment as "payed-out".
      */
     public function payout(PaymentInterface $payment, string $afterUrl): Response
     {
@@ -265,11 +205,6 @@ class PaymentHelper
 
     /**
      * Refunds the payment.
-     *
-     * @param PaymentInterface $payment
-     * @param string           $afterUrl
-     *
-     * @return Response
      */
     public function refund(PaymentInterface $payment, string $afterUrl): Response
     {
@@ -286,11 +221,6 @@ class PaymentHelper
 
     /**
      * Refunds the payment.
-     *
-     * @param PaymentInterface $payment
-     * @param string           $afterUrl
-     *
-     * @return Response
      */
     public function reject(PaymentInterface $payment, string $afterUrl): Response
     {
@@ -307,10 +237,6 @@ class PaymentHelper
 
     /**
      * Handle payment notify.
-     *
-     * @param Request $request
-     *
-     * @return PaymentInterface|null
      */
     public function notify(Request $request): ?PaymentInterface
     {
@@ -334,10 +260,6 @@ class PaymentHelper
 
     /**
      * Updates the payment status.
-     *
-     * @param Request $request
-     *
-     * @return PaymentInterface|null
      */
     public function status(Request $request): ?PaymentInterface
     {
@@ -362,15 +284,12 @@ class PaymentHelper
     /**
      * Resolves the available transitions for the given payment.
      *
-     * @param PaymentInterface $payment
-     * @param bool             $admin
-     *
-     * @return array
-     * @throws \ReflectionException
+     * @return array<string>
+     * @throws ReflectionException
      */
     protected function resolveTransitions(PaymentInterface $payment, bool $admin = false): array
     {
-        /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface $method */
+        /** @var PaymentMethodInterface $method */
         $method = $payment->getMethod();
         $locked = $this->lockChecker->isLocked($payment);
 
@@ -416,34 +335,24 @@ class PaymentHelper
     /**
      * Returns the gateway actions.
      *
-     * @param GatewayInterface $gateway
-     *
-     * @return \Payum\Core\Action\ActionInterface[]
-     * @throws \ReflectionException
+     * @return array<ActionInterface>
+     * @throws ReflectionException
      */
     protected function getGatewayActions(GatewayInterface $gateway): array
     {
-        $rc = new \ReflectionClass(get_class($gateway));
+        $rc = new ReflectionClass(get_class($gateway));
         $rp = $rc->getProperty('actions');
         $rp->setAccessible(true);
-        /** @var \Payum\Core\Action\ActionInterface[] $actions */
-        $actions = $rp->getValue($gateway);
 
-        return $actions;
+        return $rp->getValue($gateway);
     }
 
     /**
      * Creates a payment token.
-     *
-     * @param PaymentInterface $payment
-     * @param string           $url
-     * @param string           $afterUrl
-     *
-     * @return TokenInterface
      */
     protected function createToken(PaymentInterface $payment, string $url, string $afterUrl): TokenInterface
     {
-        /** @var \Ekyna\Bundle\CommerceBundle\Model\PaymentMethodInterface $method */
+        /** @var PaymentMethodInterface $method */
         $method = $payment->getMethod();
 
         $tokenFactory = $this->payum->getTokenFactory();
@@ -463,12 +372,6 @@ class PaymentHelper
 
     /**
      * Dispatches the payment event.
-     *
-     * @param PaymentInterface $payment
-     * @param string           $eventName
-     * @param string           $redirect
-     *
-     * @return Response|null
      */
     protected function dispatch(PaymentInterface $payment, string $eventName, string $redirect): ?Response
     {
@@ -485,8 +388,6 @@ class PaymentHelper
 
     /**
      * Validates the given absolute url.
-     *
-     * @param string $url
      */
     protected function validateUrl(string $url): void
     {

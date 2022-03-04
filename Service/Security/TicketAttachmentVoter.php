@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Security;
 
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
+use Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Commerce\Support\Model\TicketAttachmentInterface;
 use Ekyna\Component\Commerce\Support\Model\TicketStates;
@@ -21,7 +25,7 @@ class TicketAttachmentVoter extends Voter
      *
      * @param TicketAttachmentInterface $subject
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
         if (!$user instanceof UserInterface) {
@@ -32,7 +36,7 @@ class TicketAttachmentVoter extends Voter
             return false;
         }
 
-        /** @var \Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface $message */
+        /** @var TicketMessageInterface $message */
         $message = $subject->getMessage();
         if (null !== $message->getAdmin()) {
             if ($attribute === Permission::READ) {
@@ -50,7 +54,7 @@ class TicketAttachmentVoter extends Voter
             }
         }
 
-        /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+        /** @var CustomerInterface $customer */
         $customer = $ticket->getCustomer();
 
         return $customer->getUser() === $user;
@@ -59,7 +63,7 @@ class TicketAttachmentVoter extends Voter
     /**
      * @inheritDoc
      */
-    protected function supports($attribute, $subject)
+    protected function supports(string $attribute, $subject): bool
     {
         return $subject instanceof TicketAttachmentInterface;
     }

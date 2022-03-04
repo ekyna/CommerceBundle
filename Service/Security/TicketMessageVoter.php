@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Security;
 
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Commerce\Support\Model\TicketStates;
@@ -21,7 +24,7 @@ class TicketMessageVoter extends Voter
      *
      * @param TicketMessageInterface $subject
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
         if (!$user instanceof UserInterface) {
@@ -48,7 +51,7 @@ class TicketMessageVoter extends Voter
             }
         }
 
-        /** @var \Ekyna\Bundle\CommerceBundle\Model\CustomerInterface $customer */
+        /** @var CustomerInterface $customer */
         $customer = $ticket->getCustomer();
 
         return $customer->getUser() === $user;
@@ -57,7 +60,7 @@ class TicketMessageVoter extends Voter
     /**
      * @inheritDoc
      */
-    protected function supports($attribute, $subject)
+    protected function supports(string $attribute, $subject): bool
     {
         return $subject instanceof TicketMessageInterface;
     }

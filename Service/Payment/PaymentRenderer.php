@@ -63,7 +63,7 @@ class PaymentRenderer
             return '';
         }
 
-        $transitions = $this->paymentHelper->getTransitions($payment);
+        $transitions = $this->paymentHelper->getTransitions($payment, false);
 
         if (empty($transitions)) {
             return '';
