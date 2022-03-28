@@ -20,12 +20,6 @@ class ShipmentItemsDataTransformer implements DataTransformerInterface
 {
     private ShipmentInterface $shipment;
 
-
-    /**
-     * Constructor.
-     *
-     * @param ShipmentInterface $shipment
-     */
     public function __construct(ShipmentInterface $shipment)
     {
         $this->shipment = $shipment;
@@ -34,7 +28,7 @@ class ShipmentItemsDataTransformer implements DataTransformerInterface
     /**
      * Transforms the flat shipment items collection into a tree shipment items collection.
      *
-     * @param Collection|ShipmentItemInterface[] $value
+     * @param Collection<ShipmentItemInterface> $value
      *
      * @return Collection
      */
@@ -55,7 +49,7 @@ class ShipmentItemsDataTransformer implements DataTransformerInterface
     /**
      * Transforms the tree shipment items collection into a flat shipment items collection.
      *
-     * @param Collection|ShipmentItemInterface[] $value
+     * @param Collection<ShipmentItemInterface> $value
      *
      * @return Collection
      */
@@ -72,12 +66,8 @@ class ShipmentItemsDataTransformer implements DataTransformerInterface
 
     /**
      * Builds the tree shipment item.
-     *
-     * @param SaleItemInterface $saleItem
-     * @param Collection        $flat
-     * @param Collection        $parent
      */
-    private function buildTreeShipmentItem(SaleItemInterface $saleItem, Collection $flat, Collection $parent)
+    private function buildTreeShipmentItem(SaleItemInterface $saleItem, Collection $flat, Collection $parent): void
     {
         $shipmentItem = null;
 
@@ -110,18 +100,15 @@ class ShipmentItemsDataTransformer implements DataTransformerInterface
      * @param ShipmentItemInterface $item
      * @param Collection            $flat
      */
-    private function flattenShipmentItem(ShipmentItemInterface $item, Collection $flat)
+    private function flattenShipmentItem(ShipmentItemInterface $item, Collection $flat): void
     {
         if (0 < $item->getQuantity()) {
             $flat->add($item);
         }
 
-        $saleItem = $item->getSaleItem();
-        $override = $saleItem->isPrivate() || ($saleItem->isCompound() && $saleItem->hasPrivateChildren());
-
         foreach ($item->getChildren() as $child) {
-            if ($override) {
-                $child->setQuantity($item->getQuantity() * $child->getSaleItem()->getQuantity());
+            if ($child->isQuantityLocked()) {
+                $child->setQuantity($item->getQuantity()->mul($child->getSaleItem()->getQuantity()));
             }
 
             $this->flattenShipmentItem($child, $flat);

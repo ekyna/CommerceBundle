@@ -25,6 +25,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\BalanceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyModelChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceLineType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderPaymentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentParcelType;
@@ -190,6 +191,7 @@ return static function (ContainerConfigurator $container) {
         // Order form type
         ->set('ekyna_commerce.form_type.order', OrderType::class)
             ->args([
+                service('security.authorization_checker'),
                 param('ekyna_commerce.default.currency'),
             ])
             ->tag('form.type')
@@ -238,6 +240,13 @@ return static function (ContainerConfigurator $container) {
                 'path'     => 'ekyna-commerce/form/invoice',
             ])
 
+        // Order invoice line form type
+        ->set('ekyna_commerce.form_type.order_invoice_line', OrderInvoiceLineType::class)
+            ->args([
+                service('ekyna_commerce.factory.resolver.invoice_availability'),
+            ])
+            ->tag('form.type')
+
         // Phone number (ui) form type extension
         ->set('ekyna_commerce.form_type_extension.phone_number', PhoneNumberTypeExtension::class)
             ->args([
@@ -260,6 +269,7 @@ return static function (ContainerConfigurator $container) {
         // Quote form type
         ->set('ekyna_commerce.form_type.quote', QuoteType::class)
             ->args([
+                service('security.authorization_checker'),
                 param('ekyna_commerce.default.currency'),
             ])
             ->tag('form.type')

@@ -10,7 +10,10 @@
     <tbody>
     {% for item in items -%}
     <tr>
-        <td>{{ item.designation }}</td>
+        <td>
+            {% for i in 0..item.level %}{% if loop.index0 > 0 %}&nbsp;&dash;{% endif %}{% endfor %}
+            {{ item.designation }}
+        </td>
         <td>{{ item.reference }}</td>
         <td>{{ item.quantity|format_number }} / {{ item.total|format_number }}</td>{# TODO Packaging format #}
     </tr>

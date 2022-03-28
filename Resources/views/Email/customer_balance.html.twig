@@ -36,7 +36,7 @@
         </tbody>
     </table>
 
-    {{- get_setting('commerce.email_signature', locale)|raw -}}
+    {{- admin_email_signature(app.user, locale) -}}
     {% do trans_revert_locale() %}
 {% endapply %}
 {% endblock body %}

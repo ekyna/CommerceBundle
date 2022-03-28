@@ -51,6 +51,6 @@
         {%- endfor %}
         </tbody>
     </table>
-    {{- get_setting('commerce.email_signature')|raw -}}
+    {{- admin_email_signature(null) -}}
 {% endapply %}
 {% endblock body %}

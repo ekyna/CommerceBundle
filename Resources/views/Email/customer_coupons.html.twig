@@ -48,7 +48,7 @@
     {{- 'coupon.notify.customer.content_foot'|trans({
         '%url%': absolute_url(path('ekyna_commerce_account_loyalty_index'))
     }, 'EkynaCommerce')|raw -}}
-    {{- get_setting('commerce.email_signature', locale)|raw -}}
+    {{- admin_email_signature(null, locale) -}}
     {% do trans_revert_locale() %}
 {% endapply %}
 {% endblock body %}

@@ -23,6 +23,7 @@ use Ekyna\Component\Commerce\Shipment\EventListener\AbstractShipmentListener;
 use Ekyna\Component\Commerce\Shipment\Gateway\InStore\InStorePlatform;
 use Ekyna\Component\Commerce\Shipment\Gateway\Noop\NoopPlatform;
 use Ekyna\Component\Commerce\Shipment\Gateway\GatewayRegistry;
+use Ekyna\Component\Commerce\Shipment\Resolver\AvailabilityResolverFactory;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolver;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentSubjectStateResolver;
 
@@ -86,19 +87,27 @@ return static function (ContainerConfigurator $container) {
         // Shipment builder
         ->set('ekyna_commerce.builder.shipment', ShipmentBuilder::class)
             ->args([
+                service('ekyna_commerce.factory.resolver.shipment_availability'),
                 service('ekyna_commerce.helper.factory'),
                 service('ekyna_commerce.registry.shipment_gateway'),
-                service('ekyna_commerce.calculator.shipment_subject'),
             ])
 
         // Shipment invoice synchronizer
         ->set('ekyna_commerce.synchronizer.shipment_invoice', InvoiceSynchronizer::class)
             ->args([
                 service('ekyna_commerce.builder.invoice'),
+                service('ekyna_commerce.calculator.invoice_subject'),
                 service('ekyna_commerce.calculator.document'),
                 service('ekyna_resource.orm.persistence_helper'),
             ])
             ->call('setLockingHelper', [service('ekyna_commerce.checker.locking')])
+
+        // Shipment availability resolver factory
+        ->set('ekyna_commerce.factory.resolver.shipment_availability', AvailabilityResolverFactory::class)
+            ->args([
+                service('ekyna_commerce.calculator.shipment_subject'),
+                service('ekyna_commerce.helper.subject'),
+            ])
 
         // Shipment price list builder
         ->set('ekyna_commerce.builder.shipment_price_list', PriceListBuilder::class)

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Doctrine\ORM\Events;
 use Ekyna\Bundle\CommerceBundle\Service\Invoice\InvoiceArchiver;
 use Ekyna\Component\Commerce\Common\Generator\DefaultGenerator;
 use Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilder;
@@ -12,8 +13,10 @@ use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceSubjectCalculator;
 use Ekyna\Component\Commerce\Invoice\EventListener\AbstractInvoiceItemListener;
 use Ekyna\Component\Commerce\Invoice\EventListener\AbstractInvoiceLineListener;
 use Ekyna\Component\Commerce\Invoice\EventListener\AbstractInvoiceListener;
+use Ekyna\Component\Commerce\Invoice\Resolver\AvailabilityResolverFactory;
 use Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolver;
 use Ekyna\Component\Commerce\Invoice\Resolver\InvoiceSubjectStateResolver;
+use Ekyna\Component\Resource\Event\QueueEvents;
 
 return static function (ContainerConfigurator $container) {
     $container
@@ -78,8 +81,8 @@ return static function (ContainerConfigurator $container) {
             ->lazy(true)
             ->args([
                 service('ekyna_commerce.helper.factory'),
+                service('ekyna_commerce.factory.resolver.invoice_availability'),
                 service('ekyna_commerce.calculator.invoice_subject'),
-                service('ekyna_commerce.calculator.shipment_subject'),
                 service('ekyna_resource.provider.locale'),
                 service('libphonenumber\PhoneNumberUtil'),
             ])
@@ -104,6 +107,26 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.resolver.state.invoice_subject', InvoiceSubjectStateResolver::class)
             ->args([
                 service('ekyna_commerce.calculator.invoice_subject'),
+            ])
+
+        // Invoice payment resolver
+        ->set('ekyna_commerce.factory.resolver.invoice_availability', AvailabilityResolverFactory::class)
+            ->args([
+                service('ekyna_commerce.calculator.invoice_subject'),
+                service('ekyna_commerce.calculator.shipment_subject'),
+            ])
+            ->tag('doctrine.event_listener', [
+                'event'      => Events::onClear,
+                'connection' => 'default',
+                'method'     => 'clear',
+            ])
+            ->tag('resource.event_listener', [
+                'event'  => QueueEvents::QUEUE_CLOSE,
+                'method' => 'clear',
+            ])
+            ->tag('resource.event_listener', [
+                'event'  => QueueEvents::QUEUE_FLUSH,
+                'method' => 'clear',
             ])
     ;
 };

@@ -112,36 +112,36 @@
                     background: url('data:image/gif;base64,R0lGODlhGAAkAJECAJmZmQAAAP///wAAACH5BAEAAAIALAAAAAAYACQAAAIulI8Cye0PzYq0wmmzxrpH7oUMKJaKiUopSq6bW7ZwJc+f7dW4o++jn+kBD8JUAQA7') 0 0 repeat-y scroll;
                 }
 
-                &.level-0 .sale-detail-information, .sale-detail-designation > span {
+                &.level-0 .sale-detail-information {
                     padding-left: @base-cell-padding;
                     background-position-x: -24px;
                 }
 
-                &.level-1 .sale-detail-information, .sale-detail-designation > span {
+                &.level-1 .sale-detail-information {
                     padding-left: @base-cell-padding + 24px;
                 }
 
-                &.level-2 .sale-detail-information, .sale-detail-designation > span {
+                &.level-2 .sale-detail-information {
                     padding-left: @base-cell-padding + 48px;
                     background-position-x: 24px;
                 }
 
-                &.level-3 .sale-detail-information, .sale-detail-designation > span {
+                &.level-3 .sale-detail-information {
                     padding-left: @base-cell-padding + 72px;
                     background-position-x: 48px;
                 }
 
-                &.level-4 .sale-detail-information, .sale-detail-designation > span {
+                &.level-4 .sale-detail-information {
                     padding-left: @base-cell-padding + 96px;
                     background-position-x: 72px;
                 }
 
-                &.level-5 .sale-detail-information, .sale-detail-designation > span {
+                &.level-5 .sale-detail-information {
                     padding-left: @base-cell-padding + 120px;
                     background-position-x: 96px;
                 }
 
-                &.level-6 .sale-detail-information, .sale-detail-designation > span {
+                &.level-6 .sale-detail-information {
                     padding-left: @base-cell-padding + 144px;
                     background-position-x: 120px;
                 }
@@ -151,6 +151,7 @@
                     line-height: 18px + (2*@base-cell-padding);
                     max-width: 280px;
 
+                    /* TODO Use .table-nested styles from table bundle */
                     > i {
                         display: inline-block;
                         width: 24px;

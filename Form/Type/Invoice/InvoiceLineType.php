@@ -8,9 +8,10 @@ use Decimal\Decimal;
 use Ekyna\Bundle\CommerceBundle\Form\FormHelper;
 use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Component\Commerce\Common\Model\Units;
-use Ekyna\Component\Commerce\Document\Model\DocumentLineTypes;
+use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceLineInterface;
+use Ekyna\Component\Commerce\Invoice\Resolver\AvailabilityResolverFactory;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -25,6 +26,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class InvoiceLineType extends AbstractResourceType
 {
+    private AvailabilityResolverFactory $availabilityResolverFactory;
+
+    public function __construct(AvailabilityResolverFactory $availabilityResolverFactory)
+    {
+        $this->availabilityResolverFactory = $availabilityResolverFactory;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
@@ -32,10 +40,9 @@ class InvoiceLineType extends AbstractResourceType
             $line = $event->getData();
 
             $unit = Units::PIECE;
-            $disabled = $options['disabled']; // || $this->isDisabled($line);
+            $disabled = $options['disabled'] || $line->isQuantityLocked();
             if ($saleItem = $line->getSaleItem()) {
                 $unit = $saleItem->getUnit();
-                $disabled = $disabled || $saleItem->isPrivate();
             }
 
             FormHelper::addQuantityType($event->getForm(), $unit, [
@@ -59,22 +66,6 @@ class InvoiceLineType extends AbstractResourceType
         });
     }
 
-    /*private function isDisabled(InvoiceLineInterface $line): bool
-    {
-        // Don't lock Shipment / discount line
-        if ($line->getType() !== DocumentLineTypes::TYPE_GOOD) {
-            return false;
-        }
-
-        $saleItem = $line->getSaleItem();
-
-        if (null === $parent = $saleItem->getParent()) {
-            return false;
-        }
-
-        return $parent->isPrivate() || ($parent->isCompound() && $parent->hasPrivateChildren());
-    }*/
-
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         /** @var InvoiceLineInterface $line */
@@ -82,22 +73,44 @@ class InvoiceLineType extends AbstractResourceType
         /** @var InvoiceInterface $invoice */
         $invoice = $options['invoice'];
         $unit = Units::PIECE;
+        $availability = $line->getAvailability();
+
+        $resolver = $this->availabilityResolverFactory->createWithInvoice($invoice);
+
         if ($saleItem = $line->getSaleItem()) {
             $unit = $saleItem->getUnit();
+            if (!$availability) {
+                $availability = $resolver->resolveSaleItem($saleItem);
+            }
+        } elseif ($adjustment = $line->getSaleAdjustment()) {
+            if (!$availability) {
+                $availability = $resolver->resolveSaleDiscount($adjustment);
+            }
+        } elseif ($sale = $line->getSale()) {
+            if (!$availability) {
+                $availability = $resolver->resolveSaleShipment($sale);
+            }
+        } else {
+            throw new RuntimeException();
         }
 
         $view->vars['line'] = $line;
+        $view->vars['availability'] = $availability;
         $view->vars['level'] = $options['level'];
         $view->vars['credit_mode'] = $invoice->isCredit();
 
-        $view->children['quantity']->vars['attr']['data-max'] =
-            Units::fixed($line->getAvailable() ?: new Decimal(0), $unit);
+        $view
+            ->children['quantity']
+            ->vars['attr']['data-max'] = Units::fixed($availability->getMaximum() ?: new Decimal(0), $unit);
 
         if ($saleItem && $form->get('quantity')->isDisabled() && isset($view->parent->parent->children['quantity'])) {
-            $view->children['quantity']->vars['attr']['data-quantity'] =
-                Units::fixed($saleItem->getQuantity(), $unit);
-            $view->children['quantity']->vars['attr']['data-parent'] =
-                $view->parent->parent->children['quantity']->vars['id'];
+            $view
+                ->children['quantity']
+                ->vars['attr']['data-quantity'] = Units::fixed($saleItem->getQuantity(), $unit);
+
+            $view
+                ->children['quantity']
+                ->vars['attr']['data-parent'] = $view->parent->parent->children['quantity']->vars['id'];
         }
     }
 

@@ -1453,7 +1453,6 @@ sale_item:
 
 setting:
     invoice_footer: Documents footer
-    email_signature: Email signature
     vat_display_mode: Default VAT display
     shipment_label:
         label: Shipment label

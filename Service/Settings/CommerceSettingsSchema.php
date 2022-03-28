@@ -52,11 +52,9 @@ class CommerceSettingsSchema extends AbstractSchema implements LocalizedSchemaIn
         $builder
             ->setDefaults(array_merge([
                 'invoice_footer'  => $this->createI18nParameter('<p>Default invoice footer</p>'),
-                'email_signature' => $this->createI18nParameter('<p>Default email signature</p>'),
                 'shipment_label'  => $labelDefaults,
             ], $this->defaults))
             ->setAllowedTypes('invoice_footer', I18nParameter::class)
-            ->setAllowedTypes('email_signature', I18nParameter::class)
             ->setAllowedTypes('shipment_label', 'array')
             ->setNormalizer('shipment_label', function (Options $options, $value) use ($labelResolver) {
                 return $labelResolver->resolve($value);
@@ -68,20 +66,6 @@ class CommerceSettingsSchema extends AbstractSchema implements LocalizedSchemaIn
         $builder
             ->add('invoice_footer', I18nParameterType::class, [
                 'label'        => t('setting.invoice_footer', [], 'EkynaCommerce'),
-                'form_type'    => TinymceType::class,
-                'form_options' => [
-                    'label'       => false,
-                    'theme'       => 'simple',
-                    'constraints' => [
-                        new Assert\NotBlank(),
-                    ],
-                ],
-                'constraints'  => [
-                    new Assert\Valid(),
-                ],
-            ])
-            ->add('email_signature', I18nParameterType::class, [
-                'label'        => t('setting.email_signature', [], 'EkynaCommerce'),
                 'form_type'    => TinymceType::class,
                 'form_options' => [
                     'label'       => false,

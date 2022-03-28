@@ -41,7 +41,7 @@
     {{- 'ticket_message.notify.customer.content_foot'|trans({
         '%url%': absolute_url(path) ~ '#support-tickets'
     }, 'EkynaCommerce')|raw -}}
-    {{- get_setting('commerce.email_signature', locale)|raw -}}
+    {{- admin_email_signature(null, locale=locale) -}}
     {% do trans_revert_locale() %}
 {% endapply %}
 {% endblock body %}

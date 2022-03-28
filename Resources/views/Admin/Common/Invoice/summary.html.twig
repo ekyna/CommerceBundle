@@ -11,7 +11,10 @@
     <tbody>
     {%- for line in lines -%}
         <tr>
-            <td>{{ line.designation }}</td>
+            <td>
+                {% for i in 0..line.level %}{% if loop.index0 > 0 %}&nbsp;&dash;{% endif %}{% endfor %}
+                {{ line.designation }}
+            </td>
             <td>{{ line.reference }}</td>
             <td>{{ line.quantity|format_number }}{% if 0 < line.total %} / {{ line.total|format_number }}{% endif %}</td>{# TODO Packaging format #}
         </tr>

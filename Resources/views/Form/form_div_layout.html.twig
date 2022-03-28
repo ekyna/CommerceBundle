@@ -724,20 +724,25 @@
     {%- endif -%}
     <tr {{ block('widget_container_attributes') }}>
         <td style="padding-left:{{ level * 20 }}px">
-            {{- form.vars.item.saleItem.designation -}}
-            {%- if form.vars.item.saleItem.description is not empty -%}
-                <br><p style="font-size:11px;padding-left:12px;">{{ form.vars.item.saleItem.description|nl2br }}</p>
+            {{- item.saleItem.designation -}}
+            {%- if item.saleItem.description is not empty -%}
+                <br><p style="font-size:11px;padding-left:12px;">{{ item.saleItem.description|nl2br }}</p>
             {%- endif -%}
         </td>
-        <td>{{ form.vars.item.saleItem.reference }}</td>
+        <td>{{ item.saleItem.reference }}</td>
         <td>{{ form_widget(form.quantity) }}</td>
         {%- if return_mode -%}
-            <td>{{ form.vars.item.available|number_format }}</td>{# TODO packaging format #}
+            <td>{{ availability.assigned|number_format }}</td>{# TODO packaging format #}
         {%- else -%}
-            <td>{{ form.vars.item.available|number_format }}</td>{# TODO packaging format #}
-            <td>{{ form.vars.item.expected|number_format }}</td>{# TODO packaging format #}
+            <td>
+                {{ availability.assigned|number_format }}{# TODO packaging format #}
+                {% if availability.inStock -%}
+                <em class="text-muted">({{ availability.inStock|number_format }})</em>{# TODO packaging format #}
+                {%- endif %}
+            </td>
+            <td>{{ availability.expected|number_format }}</td>{# TODO packaging format #}
         {%- endif -%}
-        <td>{{ form.vars.geocodes|join(', ') }}</td>
+        <td>{{ geocodes|join(', ') }}</td>
     </tr>
     {%- if errors|length > 0 -%}
     <tr>
@@ -835,22 +840,22 @@
     {%- endif -%}
     <tr {{ block('widget_container_attributes') }}>
         <td style="padding-left:{{ level * 20 }}px">
-            {%- if form.vars.line.designation is empty and form.vars.line.type == 'discount' -%}
+            {%- if line.designation is empty and line.type == 'discount' -%}
                 {{ 'adjustment.type.discount'|trans({}, 'EkynaCommerce') }}
             {%- else -%}
-                {{ form.vars.line.designation }}
+                {{ line.designation }}
             {%- endif -%}
-            {%- if form.vars.line.description is not empty -%}
-                <br><p style="font-size:11px;padding-left:12px;">{{ form.vars.line.description|nl2br }}</p>
+            {%- if line.description is not empty -%}
+                <br><p style="font-size:11px;padding-left:12px;">{{ line.description|nl2br }}</p>
             {%- endif -%}
         </td>
-        <td>{{ form.vars.line.reference }}</td>
+        <td>{{ line.reference }}</td>
         <td>{{ form_widget(form.quantity) }}</td>
         {%- if credit_mode -%}
-        <td>{{ form.vars.line.available|number_format }}</td>{# TODO packaging format #}
+        <td>{{ availability.maximum|number_format }}</td>{# TODO packaging format #}
         {%- else -%}
-        <td>{{ form.vars.line.available|number_format }}</td>{# TODO packaging format #}
-        <td>{{ form.vars.line.expected|number_format }}</td>{# TODO packaging format #}
+        <td>{{ availability.maximum|number_format }}{# TODO packaging format #}</td>
+        <td>{{ availability.expected|number_format }}</td>{# TODO packaging format #}
         {%- endif -%}
     </tr>
     {%- if errors|length > 0 -%}

@@ -21,12 +21,6 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
 {
     private InvoiceInterface $invoice;
 
-
-    /**
-     * Constructor.
-     *
-     * @param InvoiceInterface $invoice
-     */
     public function __construct(InvoiceInterface $invoice)
     {
         $this->invoice = $invoice;
@@ -35,7 +29,7 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
     /**
      * Transforms the flat invoice lines collection into a tree invoice lines collection.
      *
-     * @param Collection|InvoiceLineInterface[] $value
+     * @param Collection<InvoiceLineInterface> $value
      *
      * @return Collection
      */
@@ -64,7 +58,7 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
     /**
      * Transforms the tree invoice lines collection into a flat invoice lines collection.
      *
-     * @param Collection|InvoiceLineInterface[] $value
+     * @param Collection<InvoiceLineInterface> $value
      *
      * @return Collection
      */
@@ -81,10 +75,6 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
 
     /**
      * Builds the tree invoice line.
-     *
-     * @param SaleItemInterface $saleItem
-     * @param Collection        $flat
-     * @param Collection        $parent
      */
     private function buildTreeInvoiceLine(SaleItemInterface $saleItem, Collection $flat, Collection $parent): void
     {
@@ -115,9 +105,6 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
 
     /**
      * Adds item and his children to the flat collection.
-     *
-     * @param InvoiceLineInterface $line
-     * @param ArrayCollection      $flat
      */
     private function flattenInvoiceLine(InvoiceLineInterface $line, ArrayCollection $flat): void
     {
@@ -126,12 +113,9 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
         }
 
         if ($line->getType() === DocumentLineTypes::TYPE_GOOD) {
-            $saleItem = $line->getSaleItem();
-            $override = $saleItem->isPrivate() || ($saleItem->isCompound() && $saleItem->hasPrivateChildren());
-
             foreach ($line->getChildren() as $child) {
-                if ($override) {
-                    $child->setQuantity($line->getQuantity() * $child->getSaleItem()->getQuantity());
+                if ($child->isQuantityLocked()) {
+                    $child->setQuantity($line->getQuantity()->mul($child->getSaleItem()->getQuantity()));
                 }
 
                 $this->flattenInvoiceLine($child, $flat);

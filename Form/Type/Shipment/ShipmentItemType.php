@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 
-use Decimal\Decimal;
 use Ekyna\Bundle\CommerceBundle\Form\FormHelper;
 use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Component\Commerce\Common\Model\Units;
@@ -35,10 +34,9 @@ class ShipmentItemType extends AbstractResourceType
             $item = $event->getData();
 
             $unit = Units::PIECE;
-            $disabled = $options['disabled']; // || $this->>isDisabled($item);
+            $disabled = $options['disabled'] || $item->isQuantityLocked();
             if ($saleItem = $item->getSaleItem()) {
                 $unit = $saleItem->getUnit();
-                $disabled = $disabled || $saleItem->isPrivate();
             }
 
             FormHelper::addQuantityType($event->getForm(), $unit, [
@@ -62,17 +60,6 @@ class ShipmentItemType extends AbstractResourceType
         });
     }
 
-    /*private function isDisabled(ShipmentItemInterface $item): bool
-    {
-        $saleItem = $item->getSaleItem();
-
-        if (null === $parent = $saleItem->getParent()) {
-            return false;
-        }
-
-        return $parent->isPrivate() || ($parent->isCompound() && $parent->hasPrivateChildren());
-    }*/
-
     public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         /** @var ShipmentItemInterface $item */
@@ -83,17 +70,22 @@ class ShipmentItemType extends AbstractResourceType
         $unit = $saleItem->getUnit();
 
         $view->vars['item'] = $item;
+        $view->vars['availability'] = $availability = $item->getAvailability();
         $view->vars['level'] = $options['level'];
         $view->vars['return_mode'] = $shipment->isReturn();
 
-        $view->children['quantity']->vars['attr']['data-max'] =
-            Units::fixed($item->getAvailable() ?: new Decimal(0), $unit);
+        $view
+            ->children['quantity']
+            ->vars['attr']['data-max'] = Units::fixed($availability->getAssigned(), $unit);
 
         if ($form->get('quantity')->isDisabled() && isset($view->parent->parent->children['quantity'])) {
-            $view->children['quantity']->vars['attr']['data-quantity'] =
-                Units::fixed($saleItem->getQuantity(), $unit);
-            $view->children['quantity']->vars['attr']['data-parent'] =
-                $view->parent->parent->children['quantity']->vars['id'];
+            $view
+                ->children['quantity']
+                ->vars['attr']['data-quantity'] = Units::fixed($saleItem->getQuantity(), $unit);
+
+            $view
+                ->children['quantity']
+                ->vars['attr']['data-parent'] = $view->parent->parent->children['quantity']->vars['id'];
         }
 
         // Geocode

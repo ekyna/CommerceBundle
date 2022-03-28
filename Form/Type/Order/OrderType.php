@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 use function Symfony\Component\Translation\t;
 
@@ -24,16 +25,20 @@ use function Symfony\Component\Translation\t;
  */
 class OrderType extends SaleType
 {
+    private AuthorizationCheckerInterface $authorizationChecker;
+
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, string $defaultCurrency)
+    {
+        parent::__construct($defaultCurrency);
+
+        $this->authorizationChecker = $authorizationChecker;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
 
         $builder
-            ->add('inCharge', UserChoiceType::class, [
-                'label'    => t('customer.field.in_charge', [], 'EkynaCommerce'),
-                'roles'    => [],
-                'required' => false,
-            ])
             ->add('originCustomer', CustomerSearchType::class, [
                 'label'    => t('sale.field.origin_customer', [], 'EkynaCommerce'),
                 'required' => false,
@@ -45,16 +50,21 @@ class OrderType extends SaleType
             $order = $event->getData();
             $form = $event->getForm();
 
-            $disabled = null !== $order && ($order->hasPayments() || $order->hasInvoices() || $order->isReleased());
-
-            $form->add('sample', CheckboxType::class, [
-                'label'    => t('field.sample', [], 'EkynaCommerce'),
-                'required' => false,
-                'disabled' => $disabled,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
-            ]);
+            $form
+                ->add('sample', CheckboxType::class, [
+                    'label'    => t('field.sample', [], 'EkynaCommerce'),
+                    'required' => false,
+                    'disabled' => $order && ($order->hasPayments() || $order->hasInvoices() || $order->isReleased()),
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ])
+                ->add('inCharge', UserChoiceType::class, [
+                    'label'    => t('customer.field.in_charge', [], 'EkynaCommerce'),
+                    'roles'    => [],
+                    'required' => false,
+                    'disabled' => $order->getInCharge() && !$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN'),
+                ]);
         });
     }
 

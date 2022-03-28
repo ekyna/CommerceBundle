@@ -10,6 +10,6 @@
         {{ notify.customMessage|raw }}
     {%- endif %}
 
-    {{- get_setting('commerce.email_signature', order.supplier.locale)|raw -}}
+    {{- admin_email_signature(app.user, order.supplier.locale) -}}
 {% endapply %}
 {% endblock body %}

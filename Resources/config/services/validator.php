@@ -106,7 +106,7 @@ return static function (ContainerConfigurator $container) {
         // Shipment item validator
         ->set('ekyna_commerce.validator.shipment_item', ShipmentItemValidator::class)
             ->args([
-                service('ekyna_commerce.calculator.shipment_subject'),
+                service('ekyna_commerce.factory.resolver.shipment_availability'),
             ])
             ->tag('validator.constraint_validator')
 

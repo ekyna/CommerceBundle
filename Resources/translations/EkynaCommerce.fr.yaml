@@ -1488,7 +1488,6 @@ sale_item:
 
 setting:
     invoice_footer: Pied de page documents
-    email_signature: Signature email
     vat_display_mode: Affichage TVA par défaut
     shipment_label:
         label: Étiquette expédition
