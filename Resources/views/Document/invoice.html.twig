@@ -25,6 +25,7 @@
             {{ macro.render_payment_term(subject) }}
         {%- endif %}
     </p>
+    {{ get_setting('commerce.invoice_mention', subject.locale)|raw }}
     {% if subject.comment is not empty -%}
     <p>{{ subject.comment|nl2br }}</p>
     {%- endif %}

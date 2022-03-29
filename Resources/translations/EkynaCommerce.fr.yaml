@@ -1488,6 +1488,7 @@ sale_item:
         plural: Lignes
 
 setting:
+    invoice_mention: Mentions sur factures
     invoice_footer: Pied de page documents
     vat_display_mode: Affichage TVA par défaut
     shipment_label:

@@ -1453,6 +1453,7 @@ sale_item:
         plural: Lines
 
 setting:
+    invoice_mention: Invoice mention
     invoice_footer: Documents footer
     vat_display_mode: Default VAT display
     shipment_label:

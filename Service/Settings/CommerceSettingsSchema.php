@@ -16,7 +16,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
-
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
@@ -51,9 +50,11 @@ class CommerceSettingsSchema extends AbstractSchema implements LocalizedSchemaIn
 
         $builder
             ->setDefaults(array_merge([
+                'invoice_mention' => $this->createI18nParameter(''),
                 'invoice_footer'  => $this->createI18nParameter('<p>Default invoice footer</p>'),
                 'shipment_label'  => $labelDefaults,
             ], $this->defaults))
+            ->setAllowedTypes('invoice_mention', I18nParameter::class)
             ->setAllowedTypes('invoice_footer', I18nParameter::class)
             ->setAllowedTypes('shipment_label', 'array')
             ->setNormalizer('shipment_label', function (Options $options, $value) use ($labelResolver) {
@@ -64,6 +65,17 @@ class CommerceSettingsSchema extends AbstractSchema implements LocalizedSchemaIn
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('invoice_mention', I18nParameterType::class, [
+                'label'        => t('setting.invoice_mention', [], 'EkynaCommerce'),
+                'form_type'    => TinymceType::class,
+                'form_options' => [
+                    'label' => false,
+                    'theme' => 'simple',
+                ],
+                'constraints'  => [
+                    new Assert\Valid(),
+                ],
+            ])
             ->add('invoice_footer', I18nParameterType::class, [
                 'label'        => t('setting.invoice_footer', [], 'EkynaCommerce'),
                 'form_type'    => TinymceType::class,
