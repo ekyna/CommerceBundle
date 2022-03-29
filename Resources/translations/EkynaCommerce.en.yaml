@@ -15,6 +15,7 @@ field:
     max_quantity: Max quantity
     net_price: Price ex-tax
     buy_net_price: Purchase price
+    buy_net_price_including_shipping: Purchase price (shipping included)
     vat: VAT
     exchange_rate: Exchange rate
     exchange_date: Exchange date
