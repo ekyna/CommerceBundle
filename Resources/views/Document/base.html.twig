@@ -25,29 +25,24 @@ table.header, .footer, .table thead th, .table thead th:before, .table thead th:
 
 {# --- HEADER --- #}
 {% block doc_header -%}
-<table class="bloc header">
-    <tr>
-        <td class="logo">
-            {%- block logo -%}
+<header class="bloc">
+    <div class="logo">
+        {%- block logo -%}
             {% if design.logoLink %}<a href="{{ absolute_url(design.logoLink) }}">{% endif %}
-                <img alt="{{ design.brandName }}" src="{{ absolute_url(design.logoPath) }}">
+            <img alt="{{ design.brandName }}" src="{{ absolute_url(design.logoPath) }}">
             {% if design.logoLink %}</a>{% endif %}
-            {%- endblock logo -%}
-        </td>
-        <td class="blank">
-            &nbsp;
-        </td>
-        <td class="address">
-            {%- block company -%}
-                {% if design.headerHtml is not empty %}
-                    {{ design.headerHtml|raw }}
-                {% else %}
-                    {{ macro.render_company(locale) }}
-                {% endif %}
-            {%- endblock company -%}
-        </td>
-    </tr>
-</table>
+        {%- endblock logo -%}
+    </div>
+    {% block company_address -%}
+    <div class="address">
+    {%- if design.headerHtml is not empty -%}
+        {{ design.headerHtml|raw }}
+    {%- else -%}
+        {{ macro.render_company(locale) }}
+    {%- endif -%}
+    </div>
+    {%- endblock company_address %}
+</header>
 {%- endblock doc_header %}
 
 

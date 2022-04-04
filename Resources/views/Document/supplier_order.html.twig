@@ -4,6 +4,15 @@
 
 {% set currency = subject.currency.code %}
 
+{%- block company_address -%}
+<div class="address">
+{%- if subject.supplier.address is not null -%}
+    {{ subject.supplier.address|address }}
+{%- else -%}
+    {{ parent() }}
+{%- endif -%}
+</div>
+{%- endblock company_address %}
 
 {# --- DOC TITLE --- #}
 {% block doc_title_content -%}

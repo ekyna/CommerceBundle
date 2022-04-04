@@ -240,7 +240,7 @@ class DocumentHelper
         }
 
         $logoPath = $this->config['logo_path'];
-        if (0 !== strpos($logoPath, '/')) {
+        if (0 !== strpos($logoPath, '/')) { // TODO !str_starts_with()
             $logoPath = '/' . $logoPath;
         }
 

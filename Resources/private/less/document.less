@@ -72,29 +72,18 @@ table {
     }
 }
 
-table.header {
-    width: 100%;
-    border-bottom: 1px dotted @border-color;
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-    td.logo {
+    > .logo {
+        min-width: 200px;
         width: 25%;
-        max-width: 25%;
-        vertical-align: middle;
 
         > a {
             display: block;
-
-            > img {
-                height: auto;
-                max-width: 100%;
-            }
         }
-    }
-
-    td.address {
-        width: 40%;
-        max-width: 40%;
-        vertical-align: top;
     }
 }
 

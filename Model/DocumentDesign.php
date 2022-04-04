@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 /**
@@ -9,74 +11,22 @@ namespace Ekyna\Bundle\CommerceBundle\Model;
  */
 class DocumentDesign
 {
-    /**
-     * @var string
-     */
-    private $type;
+    private string  $type;
+    private string  $locale;
+    private ?string $brandName      = null;
+    private ?string $primaryColor   = null;
+    private ?string $secondaryColor = null;
+    private ?string $logoPath       = null;
+    private ?string $logoLink       = null;
+    private ?string $headerHtml     = null;
+    private ?string $footerHtml     = null;
+    private bool    $addLinks       = true;
 
-    /**
-     * @var string
-     */
-    private $locale;
-
-    /**
-     * @var string
-     */
-    private $brandName;
-
-    /**
-     * @var string
-     */
-    private $primaryColor;
-
-    /**
-     * @var string
-     */
-    private $secondaryColor;
-
-    /**
-     * @var string
-     */
-    private $logoPath;
-
-    /**
-     * @var string
-     */
-    private $logoLink;
-
-    /**
-     * @var string
-     */
-    private $headerHtml;
-
-    /**
-     * @var string
-     */
-    private $footerHtml;
-
-    /**
-     * @var bool
-     */
-    private $addLinks = true;
-
-
-    /**
-     * Returns the type.
-     *
-     * @return string
-     */
     public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * Sets the type.
-     *
-     * @param string $type
-     *
-     * @return DocumentDesign
-     */
     public function setType(string $type): self
     {
         $this->type = $type;
@@ -84,23 +34,11 @@ class DocumentDesign
         return $this;
     }
 
-    /**
-     * Returns the locale.
-     *
-     * @return string
-     */
     public function getLocale(): ?string
     {
         return $this->locale;
     }
 
-    /**
-     * Sets the locale.
-     *
-     * @param string $locale
-     *
-     * @return DocumentDesign
-     */
     public function setLocale(string $locale): self
     {
         $this->locale = $locale;
@@ -108,24 +46,12 @@ class DocumentDesign
         return $this;
     }
 
-    /**
-     * Returns the brandName.
-     *
-     * @return string
-     */
     public function getBrandName(): ?string
     {
         return $this->brandName;
     }
 
-    /**
-     * Sets the brandName.
-     *
-     * @param string $brandName
-     *
-     * @return DocumentDesign
-     */
-    public function setBrandName(string $brandName = null): self
+    public function setBrandName(?string $brandName): self
     {
         $this->brandName = $brandName;
 
@@ -134,8 +60,6 @@ class DocumentDesign
 
     /**
      * Returns the brand primary color.
-     *
-     * @return string
      */
     public function getPrimaryColor(): ?string
     {
@@ -144,12 +68,8 @@ class DocumentDesign
 
     /**
      * Sets the brand primary color.
-     *
-     * @param string $color
-     *
-     * @return DocumentDesign
      */
-    public function setPrimaryColor(string $color = null): self
+    public function setPrimaryColor(?string $color): self
     {
         $this->primaryColor = $color;
 
@@ -158,8 +78,6 @@ class DocumentDesign
 
     /**
      * Returns the brand secondary color.
-     *
-     * @return string
      */
     public function getSecondaryColor(): ?string
     {
@@ -168,12 +86,8 @@ class DocumentDesign
 
     /**
      * Sets the brand secondary color.
-     *
-     * @param string $color
-     *
-     * @return DocumentDesign
      */
-    public function setSecondaryColor(string $color = null): self
+    public function setSecondaryColor(?string $color): self
     {
         $this->secondaryColor = $color;
 
@@ -182,8 +96,6 @@ class DocumentDesign
 
     /**
      * Returns the logo image url.
-     *
-     * @return string
      */
     public function getLogoPath(): ?string
     {
@@ -192,12 +104,8 @@ class DocumentDesign
 
     /**
      * Sets the logo image url.
-     *
-     * @param string $url
-     *
-     * @return DocumentDesign
      */
-    public function setLogoPath(string $url = null): self
+    public function setLogoPath(?string $url): self
     {
         $this->logoPath = $url;
 
@@ -206,8 +114,6 @@ class DocumentDesign
 
     /**
      * Returns the logo link url.
-     *
-     * @return string
      */
     public function getLogoLink(): ?string
     {
@@ -216,60 +122,32 @@ class DocumentDesign
 
     /**
      * Sets the logo link url.
-     *
-     * @param string $url
-     *
-     * @return DocumentDesign
      */
-    public function setLogoLink(string $url = null): self
+    public function setLogoLink(?string $url): self
     {
         $this->logoLink = $url;
 
         return $this;
     }
 
-    /**
-     * Returns the header html.
-     *
-     * @return string
-     */
     public function getHeaderHtml(): ?string
     {
         return $this->headerHtml;
     }
 
-    /**
-     * Sets the header html.
-     *
-     * @param string $html
-     *
-     * @return DocumentDesign
-     */
-    public function setHeaderHtml(string $html = null): self
+    public function setHeaderHtml(?string $html): self
     {
         $this->headerHtml = $html;
 
         return $this;
     }
 
-    /**
-     * Returns the footer html.
-     *
-     * @return string
-     */
     public function getFooterHtml(): ?string
     {
         return $this->footerHtml;
     }
 
-    /**
-     * Sets the footer html.
-     *
-     * @param string $html
-     *
-     * @return DocumentDesign
-     */
-    public function setFooterHtml(string $html = null): self
+    public function setFooterHtml(?string $html): self
     {
         $this->footerHtml = $html;
 
@@ -278,8 +156,6 @@ class DocumentDesign
 
     /**
      * Returns whether to add links.
-     *
-     * @return bool
      */
     public function isAddLinks(): bool
     {
@@ -288,10 +164,6 @@ class DocumentDesign
 
     /**
      * Sets whether to add links.
-     *
-     * @param bool $add
-     *
-     * @return DocumentDesign
      */
     public function setAddLinks(bool $add): DocumentDesign
     {
