@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Ekyna\Bundle\CommerceBundle\Action\Admin\CustomerAddress;
+namespace Ekyna\Bundle\CommerceBundle\Action\Admin\Customer;
 
 use Ekyna\Bundle\AdminBundle\Action\AdminActionInterface;
 use Ekyna\Bundle\AdminBundle\Action\ListAction;
 use Ekyna\Bundle\AdminBundle\Action\Util\BreadcrumbTrait;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\Import\AddressConfigType;
-use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\Import\CustomerConfigType;
 use Ekyna\Bundle\ResourceBundle\Action\AbstractAction;
 use Ekyna\Bundle\ResourceBundle\Action\FormTrait;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
@@ -18,9 +18,8 @@ use Ekyna\Bundle\ResourceBundle\Service\Import\ImportConfig;
 use Ekyna\Bundle\UiBundle\Action\FlashTrait;
 use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Customer\Import\AddressConsumer;
-use Ekyna\Component\Commerce\Customer\Model\CustomerAddressInterface;
-use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
-use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
+use Ekyna\Component\Commerce\Customer\Import\CustomerConsumer;
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Resource\Action\Permission;
 use Ekyna\Component\Resource\Exception\ImportException;
 use Ekyna\Component\Resource\Import\CsvImporter;
@@ -34,7 +33,7 @@ use function Symfony\Component\Translation\t;
 
 /**
  * Class ImportAction
- * @package Ekyna\Bundle\CommerceBundle\Action\Admin\CustomerAddress
+ * @package Ekyna\Bundle\CommerceBundle\Action\Admin\Customer
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
 class ImportAction extends AbstractAction implements AdminActionInterface
@@ -58,15 +57,9 @@ class ImportAction extends AbstractAction implements AdminActionInterface
 
     public function __invoke(): Response
     {
-        $customer = $this->context->getParentResource();
+        $importConfig = $this->createImportConfig();
 
-        if (!$customer instanceof CustomerInterface) {
-            throw new UnexpectedTypeException($customer, CustomerInterface::class);
-        }
-
-        $importConfig = $this->createImportConfig($customer);
-
-        $redirect = $this->generateResourcePath($customer);
+        $redirect = $this->generateResourcePath(CustomerInterface::class, ListAction::class);
 
         $form = $this->createImportForm($importConfig, $redirect);
 
@@ -100,28 +93,49 @@ class ImportAction extends AbstractAction implements AdminActionInterface
         ]);
     }
 
-    private function createImportConfig(CustomerInterface $customer): ImportConfig
+    private function createImportConfig(): ImportConfig
     {
-        $addressConsumer = new AddressConsumer($this->phoneNumberUtil);
-        $addressConsumer
+        $customerConsumer = new CustomerConsumer($this->phoneNumberUtil);
+        $customerConsumer->getConfig()->setNumbers([
+            'company'       => 1,
+            'email'         => 2,
+            'firstName'     => 3,
+            'lastName'      => 4,
+            'phone'         => 5,
+            'mobile'        => 6,
+            'companyNumber' => 7, // TODO Remove
+        ]);
+
+        $invoiceConsumer = new AddressConsumer($this->phoneNumberUtil);
+        $invoiceConsumer->setCustomerConsumer($customerConsumer);
+        $invoiceConsumer
             ->getConfig()
-            ->setCustomer($customer)
+            ->setInvoiceDefault(true)
             ->setNumbers([
-                'company'    => 1,
-                'firstName'  => 2,
-                'lastName'   => 3,
-                'street'     => 4,
-                'complement' => 5,
-                'supplement' => 6,
-                'extra'      => 7,
-                'postalCode' => 8,
-                'city'       => 9,
-                'phone'      => 10,
-                'mobile'     => 11,
+                'company'    => 8,
+                'street'     => 9,
+                'complement' => 10,
+                'postalCode' => 11,
+                'city'       => 12,
+            ]);
+
+        $deliveryConsumer = new AddressConsumer($this->phoneNumberUtil);
+        $deliveryConsumer->setCustomerConsumer($customerConsumer);
+        $deliveryConsumer
+            ->getConfig()
+            ->setDeliveryDefault(true)
+            ->setNumbers([
+                'company'    => 13,
+                'street'     => 14,
+                'complement' => 15,
+                'postalCode' => 16,
+                'city'       => 17,
             ]);
 
         $importConfig = new ImportConfig();
-        $importConfig->addConsumer('address', $addressConsumer);
+        $importConfig->addConsumer('customer', $customerConsumer);
+        $importConfig->addConsumer('invoice', $invoiceConsumer);
+        $importConfig->addConsumer('delivery', $deliveryConsumer);
 
         return $importConfig;
     }
@@ -129,14 +143,27 @@ class ImportAction extends AbstractAction implements AdminActionInterface
     private function createImportForm(ImportConfig $importConfig, string $cancelPath): FormInterface
     {
         $form = $this->createForm(ImportConfigType::class, $importConfig, [
-            'action'         => $this->generateResourcePath(CustomerAddressInterface::class, self::class),
+            'action'         => $this->generateResourcePath(CustomerInterface::class, self::class),
             'attr'           => [
                 'class' => 'form-horizontal',
             ],
             'method'         => 'POST',
             'consumer_types' => [
-                'address' => [
-                    'type' => AddressConfigType::class,
+                'customer' => [
+                    'type'    => CustomerConfigType::class, // TODO Translation
+                    'options' => [],
+                ],
+                'invoice'  => [
+                    'type'    => AddressConfigType::class,
+                    'options' => [
+                        'label' => 'Invoice address config', // TODO Translation
+                    ],
+                ],
+                'delivery' => [
+                    'type'    => AddressConfigType::class,
+                    'options' => [
+                        'label' => 'Delivery address config', // TODO Translation
+                    ],
                 ],
             ],
         ]);
@@ -153,7 +180,7 @@ class ImportAction extends AbstractAction implements AdminActionInterface
     public static function configureAction(): array
     {
         return [
-            'name'       => 'commerce_customer_address_import',
+            'name'       => 'commerce_customer_import',
             'permission' => Permission::CREATE,
             'route'      => [
                 'name'    => 'admin_%s_import',
@@ -161,12 +188,12 @@ class ImportAction extends AbstractAction implements AdminActionInterface
                 'methods' => ['GET', 'POST'],
             ],
             'button'     => [
-                'label'        => 'customer_address.button.import',
+                'label'        => 'customer.button.import',
                 'trans_domain' => 'EkynaCommerce',
                 'icon'         => 'import',
             ],
             'options'    => [
-                'template' => '@EkynaCommerce/Admin/CustomerAddress/import.html.twig',
+                'template' => '@EkynaCommerce/Admin/Customer/import.html.twig',
             ],
         ];
     }

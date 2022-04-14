@@ -89,8 +89,8 @@ class ExportAction extends AbstractAction implements AdminActionInterface
                 'methods' => ['GET', 'POST'],
             ],
             'button'     => [
-                'label'        => 'button.export',
-                'trans_domain' => 'EkynaUi',
+                'label'        => 'customer.button.export',
+                'trans_domain' => 'EkynaCommerce',
                 'icon'         => 'download',
             ],
             'options'    => [

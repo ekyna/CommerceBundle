@@ -32,6 +32,12 @@ field:
     revenue: Revenue
     template: Template
 
+import:
+    default_gender: Default gender
+    default_locale: Default locale
+    default_currency: Default currency
+    default_country: Default country
+
 placeholder:
     template: Pick a template
 
@@ -671,7 +677,8 @@ customer:
         remove: Remove the customer
         create_user: Create the user
         balance: Account balance
-        export: Customers export
+        export: Export customers
+        import: Import customers
     field:
         parent: Accountable service
         company_number: Registry number
@@ -688,6 +695,11 @@ customer:
         graphics: Design
         document_types: Use for
         newsletter: Newsletter
+    import:
+        default_group: Default group
+        default_parent: Default accountable service
+        default_payment_term: Default payment term
+        skip_duplicate_email: Ignore duplicate email
     short:
         outstanding_balance: Outstanding
         credit_balance: Credit
@@ -750,9 +762,6 @@ customer_address:
     field:
         invoice_default: Default billing address
         delivery_default: Default shipping address
-        import_from: First line
-        import_to: Last line
-        default_country: Default country
     message:
         cant_be_deleted: Default billing and shipping addresses can't be deleted.
     alert:

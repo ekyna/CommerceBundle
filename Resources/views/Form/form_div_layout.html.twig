@@ -346,6 +346,60 @@
 {%- endblock ekyna_commerce_identity_widget -%}
 
 
+{%- block ekyna_commerce_import_address_config_widget -%}
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.defaultGender, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.defaultCountry, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+    </div>
+    {% if form.customer is defined %}
+        {{ form_row(form.customer) }}
+    {% endif %}
+    {{ form_row(form.numbers) }}
+{%- endblock ekyna_commerce_import_address_config_widget -%}
+
+
+{%- block ekyna_commerce_import_customer_config_widget -%}
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.defaultGender, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.defaultLocale, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.defaultCurrency, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.defaultCountry, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.defaultGroup, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.defaultParent, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.defaultPaymentMethod, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.defaultPaymentTerm, {'label_col': 4, 'widget_col': 8}) }}
+        </div>
+    </div>
+    {{ form_row(form.skipDuplicateEmail) }}
+    {{ form_row(form.numbers) }}
+{%- endblock ekyna_commerce_import_customer_config_widget -%}
+
+
 {%- block ekyna_commerce_messages_widget -%}
     <ul class="nav nav-tabs">
     {%- for child in form -%}

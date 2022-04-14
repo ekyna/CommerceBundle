@@ -36,10 +36,9 @@ class GenderChoiceType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label'              => t('field.gender', [], 'EkynaUi'),
-            'translation_domain' => false,
-            'class'              => $this->genderClass,
-            'select2'            => false,
+            'label'   => t('field.gender', [], 'EkynaUi'),
+            'class'   => $this->genderClass,
+            'select2' => false,
         ]);
     }
 

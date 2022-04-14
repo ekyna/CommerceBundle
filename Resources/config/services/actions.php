@@ -61,11 +61,19 @@ return static function (ContainerConfigurator $container) {
             ])
             ->tag('ekyna_resource.action')
 
+        ->set('ekyna_commerce.action.customer.import', Customer\ImportAction::class)
+            ->args([
+                service('ekyna_resource.importer.csv'),
+                service('libphonenumber\PhoneNumberUtil'),
+            ])
+            ->tag('ekyna_resource.action')
+
         // Customer address actions --------------------------------------------------------------------
 
         ->set('ekyna_commerce.action.customer_address.import', CustomerAddress\ImportAction::class)
             ->args([
-                service('ekyna_commerce.importer.customer_address'),
+                service('ekyna_resource.importer.csv'),
+                service('libphonenumber\PhoneNumberUtil'),
             ])
             ->tag('ekyna_resource.action')
 

@@ -15,7 +15,6 @@ use Ekyna\Bundle\CommerceBundle\Service\Customer\SecurityCustomerProvider;
 use Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator;
 use Ekyna\Component\Commerce\Customer\Balance\BalanceBuilder;
 use Ekyna\Component\Commerce\Customer\Export\CustomerExporter;
-use Ekyna\Component\Commerce\Customer\Import\AddressImporter;
 use Ekyna\Component\Commerce\Customer\Updater\CustomerUpdater;
 
 return static function (ContainerConfigurator $container) {
@@ -52,18 +51,6 @@ return static function (ContainerConfigurator $container) {
                 service('doctrine.orm.default_entity_manager'),
                 param('ekyna_commerce.class.order'),
             ])
-
-        // Customer address importer
-        ->set('ekyna_commerce.importer.customer_address', AddressImporter::class)
-            ->args([
-                service('ekyna_commerce.factory.customer_address'),
-                service('ekyna_commerce.repository.country'),
-                service('libphonenumber\PhoneNumberUtil'),
-                service('validator'),
-                service('doctrine.orm.default_entity_manager'),
-                service('ekyna_commerce.listener.customer_address'),
-            ])
-            ->tag('kernel.event_listener', ['event' => 'kernel.terminate', 'method' => 'flush'])
 
         // Customer provider
         ->set('ekyna_commerce.provider.customer', SecurityCustomerProvider::class)
