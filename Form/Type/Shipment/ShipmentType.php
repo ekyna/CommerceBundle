@@ -174,10 +174,13 @@ class ShipmentType extends AbstractResourceType
         /** @var ShipmentInterface $shipment */
         $shipment = $form->getData();
 
+        $locked = ShipmentStates::isStockableState($shipment, false);
+        $privileged = $locked && $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
+
         // For items layout
         $view->vars['return_mode'] = $shipment->isReturn();
-        $view->vars['privileged'] = ShipmentStates::isStockableState($shipment, false)
-            && $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
+        $view->vars['locked'] = $locked;
+        $view->vars['privileged'] = $privileged;
 
         FormUtil::addClass($view, 'shipment');
 

@@ -735,11 +735,13 @@
                 <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
                 <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
                 <th style="width:15%">{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
+                {%- if not disabled -%}
                 {%- if form.parent.vars.return_mode -%}
                     <th>{{ 'field.shipped'|trans({}, 'EkynaCommerce') }}</th>
                 {%- else -%}
                 <th>{{ 'field.available'|trans({}, 'EkynaCommerce') }}</th>
                 <th>{{ 'field.expected'|trans({}, 'EkynaCommerce') }}</th>
+                {%- endif -%}
                 {%- endif -%}
                 <th>{{ 'field.geocode'|trans({}, 'EkynaCommerce') }}</th>
             </tr>
@@ -785,9 +787,10 @@
         </td>
         <td>{{ item.saleItem.reference }}</td>
         <td>{{ form_widget(form.quantity) }}</td>
-        {%- if return_mode -%}
+        {% if not disabled %}
+            {%- if return_mode -%}
             <td>{{ availability.assigned|number_format }}</td>{# TODO packaging format #}
-        {%- else -%}
+            {%- else -%}
             <td>
                 {{ availability.assigned|number_format }}{# TODO packaging format #}
                 {% if availability.inStock -%}
@@ -795,6 +798,7 @@
                 {%- endif %}
             </td>
             <td>{{ availability.expected|number_format }}</td>{# TODO packaging format #}
+            {%- endif -%}
         {%- endif -%}
         <td>{{ geocodes|join(', ') }}</td>
     </tr>
@@ -852,11 +856,13 @@
                 <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
                 <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
                 <th style="width:15%">{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
+                {%- if not disabled -%}
                 {%- if form.parent.vars.credit_mode -%}
                 <th>{{ 'field.max_quantity'|trans({}, 'EkynaCommerce') }}</th>
                 {%- else -%}
                 <th>{{ 'field.max_quantity'|trans({}, 'EkynaCommerce') }}</th>
                 <th>{{ 'field.expected'|trans({}, 'EkynaCommerce') }}</th>
+                {%- endif -%}
                 {%- endif -%}
             </tr>
         </thead>
@@ -905,11 +911,13 @@
         </td>
         <td>{{ line.reference }}</td>
         <td>{{ form_widget(form.quantity) }}</td>
+        {%- if not disabled -%}
         {%- if credit_mode -%}
         <td>{{ availability.maximum|number_format }}</td>{# TODO packaging format #}
         {%- else -%}
         <td>{{ availability.maximum|number_format }}{# TODO packaging format #}</td>
         <td>{{ availability.expected|number_format }}</td>{# TODO packaging format #}
+        {%- endif -%}
         {%- endif -%}
     </tr>
     {%- if errors|length > 0 -%}
