@@ -266,6 +266,7 @@ dashboard:
     export:
         title: Exports
         due_orders: Commandes échues
+        sample_order_items: Commandes d'échantillons
         field:
             due_amount: Montant dû
     debt:

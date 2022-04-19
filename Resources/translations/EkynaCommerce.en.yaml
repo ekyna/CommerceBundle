@@ -253,6 +253,7 @@ dashboard:
     export:
         title: Export
         due_orders: Due orders
+        sample_order_items: Sample orders
         field:
             due_amount: Due amount
     debt:

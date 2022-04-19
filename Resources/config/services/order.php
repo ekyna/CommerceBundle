@@ -13,6 +13,7 @@ use Ekyna\Bundle\CommerceBundle\Factory\InvoiceFactory;
 use Ekyna\Bundle\CommerceBundle\Factory\OrderFactory;
 use Ekyna\Bundle\CommerceBundle\Factory\ShipmentFactory;
 use Ekyna\Bundle\CommerceBundle\Service\Order\OrderInvoiceExporter;
+use Ekyna\Bundle\CommerceBundle\Service\Order\OrderItemExporter;
 use Ekyna\Bundle\CommerceBundle\Service\Order\OrderListExporter;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderAddressEventSubscriber;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderInvoiceEventSubscriber;
@@ -153,14 +154,7 @@ return static function (ContainerConfigurator $container) {
             ])
             ->tag('resource.event_subscriber')
 
-        // Order list exporter
-        ->set('ekyna_commerce.exporter.order_list', OrderListExporter::class)
-            ->args([
-                service('ekyna_commerce.repository.order'),
-                service('translator'),
-            ])
-
-        // Order list exporter
+        // Order invoice exporter
         ->set('ekyna_commerce.exporter.order_invoice', OrderInvoiceExporter::class)
             ->args([
                 service('ekyna_commerce.repository.order_invoice'),
@@ -168,5 +162,17 @@ return static function (ContainerConfigurator $container) {
                 service('translator'),
             ])
 
+        // Order item exporter
+        ->set('ekyna_commerce.exporter.order_item', OrderItemExporter::class)
+            ->args([
+                service('doctrine.dbal.default_connection'),
+            ])
+
+        // Order list exporter
+        ->set('ekyna_commerce.exporter.order_list', OrderListExporter::class)
+            ->args([
+                service('ekyna_commerce.repository.order'),
+                service('translator'),
+            ])
     ;
 };

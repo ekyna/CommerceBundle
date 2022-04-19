@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin\Export;
 
+use DateTime;
 use Ekyna\Bundle\CommerceBundle\Service\Order\OrderListExporter;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Resource\Helper\File\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use function sprintf;
@@ -22,10 +22,10 @@ use function sprintf;
  */
 class OrderController
 {
-    private OrderListExporter $orderListExporter;
+    private OrderListExporter     $orderListExporter;
     private UrlGeneratorInterface $urlGenerator;
-    private FlashHelper $flashHelper;
-    private bool $debug;
+    private FlashHelper           $flashHelper;
+    private bool                  $debug;
 
     public function __construct(
         OrderListExporter     $orderListExporter,
@@ -58,7 +58,7 @@ class OrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('remaining-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+        $filename = sprintf('remaining-orders-%s.csv', (new DateTime())->format('Y-m-d'));
 
         return File::buildResponse($path, [
             'file_name' => $filename,
@@ -84,7 +84,7 @@ class OrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('due-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+        $filename = sprintf('due-orders-%s.csv', (new DateTime())->format('Y-m-d'));
 
         return File::buildResponse($path, [
             'file_name' => $filename,
@@ -110,7 +110,7 @@ class OrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('due-orders-%s.zip', (new \DateTime())->format('Y-m-d'));
+        $filename = sprintf('due-orders-%s.zip', (new DateTime())->format('Y-m-d'));
 
         return File::buildResponse($path, [
             'file_name' => $filename,
@@ -136,7 +136,7 @@ class OrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('regular-due-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+        $filename = sprintf('regular-due-orders-%s.csv', (new DateTime())->format('Y-m-d'));
 
         return File::buildResponse($path, [
             'file_name' => $filename,
@@ -162,7 +162,7 @@ class OrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('outstanding-expired-due-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+        $filename = sprintf('outstanding-expired-due-orders-%s.csv', (new DateTime())->format('Y-m-d'));
 
         return File::buildResponse($path, [
             'file_name' => $filename,
@@ -188,7 +188,7 @@ class OrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('outstanding-fall-due-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+        $filename = sprintf('outstanding-fall-due-orders-%s.csv', (new DateTime())->format('Y-m-d'));
 
         return File::buildResponse($path, [
             'file_name' => $filename,
@@ -214,7 +214,7 @@ class OrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('outstanding-pending-due-orders-%s.csv', (new \DateTime())->format('Y-m-d'));
+        $filename = sprintf('outstanding-pending-due-orders-%s.csv', (new DateTime())->format('Y-m-d'));
 
         return File::buildResponse($path, [
             'file_name' => $filename,

@@ -53,6 +53,11 @@ admin_ekyna_commerce_export_outstanding_pending_due_orders:
     methods: [GET]
     controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\OrderController::outstandingPendingDueOrders
 
+admin_ekyna_commerce_export_sample_order_items:
+    path: /sample-order-item
+    methods: [GET]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\OrderItemController::samples
+
 admin_ekyna_commerce_export_suppliers_expired_due_orders:
     path: /suppliers-expired-due-orders
     methods: [GET]

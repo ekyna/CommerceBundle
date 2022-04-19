@@ -217,6 +217,16 @@ return static function (ContainerConfigurator $container) {
             ])
             ->alias(Admin\Export\OrderController::class, 'ekyna_commerce.controller.admin.export.order')->public()
 
+        // Admin export order item controller
+        ->set('ekyna_commerce.controller.admin.export.order_item', Admin\Export\OrderItemController::class)
+            ->args([
+                service('ekyna_commerce.exporter.order_item'),
+                service('router'),
+                service('ekyna_ui.helper.flash'),
+                param('kernel.debug'),
+            ])
+            ->alias(Admin\Export\OrderItemController::class, 'ekyna_commerce.controller.admin.export.order_item')->public()
+
         // Admin export supplier order controller
         ->set('ekyna_commerce.controller.admin.export.supplier_order', Admin\Export\SupplierOrderController::class)
             ->args([

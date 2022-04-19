@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Subject;
 
-use Doctrine\DBAL\Platforms\MySQLPlatform;
+use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Statement;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Bundle\AdminBundle\Action\ReadAction;
@@ -16,7 +16,6 @@ use Ekyna\Component\Commerce\Subject\Entity\SubjectIdentity;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Ekyna\Component\Resource\Helper\File\Csv;
-use PDO;
 
 /**
  * Class SubjectOrderExporter
@@ -172,7 +171,7 @@ class SubjectOrderExporter
         $connection = $this->entityManager->getConnection();
         $platform = $connection->getDatabasePlatform();
 
-        if (!$platform instanceof MySQLPlatform) {
+        if (!$platform instanceof MySqlPlatform) {
             throw new RuntimeException('Unsupported database platform');
         }
 
@@ -194,6 +193,7 @@ class SubjectOrderExporter
             )->getTableName();
 
         /** @noinspection SqlDialectInspection */
+        /** @noinspection SqlResolve */
         return $connection->prepare(
             <<<SQL
             SELECT o.id,
