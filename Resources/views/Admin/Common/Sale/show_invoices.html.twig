@@ -22,10 +22,12 @@
             {% set currency = invoice.currency %}
             {% set locked = invoice is commerce_locked %}
             {% set invoiceId = prefix ~ '_' ~ loop.index0 %}
-            <tr data-id="{{ invoice.id }}"
-                data-side-detail='{{ admin_resource_path(invoice, 'Ekyna\\Bundle\\AdminBundle\\Action\\SummaryAction') }}'>
+            <tr data-id="{{ invoice.id }}">
                 <td id="{{ invoiceId }}_number">
-                    {{ invoice.number }}
+                    <a href="javascript: void(0)"
+                       data-side-detail='{{ admin_resource_path(invoice, 'Ekyna\\Bundle\\AdminBundle\\Action\\SummaryAction') }}'>
+                        {{- invoice.number -}}
+                    </a>
                     {% if locked -%}
                         <span class="fa fa-lock text-danger" title="{{ 'field.locked'|trans({}, 'EkynaUi') }}"></span>
                     {%- endif %}
