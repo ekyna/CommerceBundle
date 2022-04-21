@@ -20,6 +20,7 @@ return static function (ContainerConfigurator $container) {
             ->lazy(true)
             ->args([
                 service('ekyna_resource.provider.locale'),
+                service('ekyna_commerce.transformer.array_address'),
                 service('libphonenumber\PhoneNumberUtil'),
             ])
 

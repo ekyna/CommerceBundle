@@ -19,7 +19,7 @@
             {% set shipmentId = prefix ~ '_' ~ loop.index0 -%}
             {% set details = 0 < shipment.parcels|length -%}
             <tr data-id="{{ shipment.id }}"
-                data-summary='{{ admin_resource_path(shipment, 'Ekyna\\Bundle\\AdminBundle\\Action\\SummaryAction') }}'>
+                data-side-detail='{{ admin_resource_path(shipment, 'Ekyna\\Bundle\\AdminBundle\\Action\\SummaryAction') }}'>
                 <td id="{{ shipmentId }}_number">{{ shipment.number }}</td>
                 <td id="{{ shipmentId }}_return">
                     {% if shipment.return %}

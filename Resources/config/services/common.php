@@ -21,6 +21,7 @@ use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\CustomerGroupReposit
 use Ekyna\Component\Commerce\Bridge\Swap\SwapProvider;
 use Ekyna\Component\Commerce\Bridge\Symfony\Currency\CachedExchangeRateProvider;
 use Ekyna\Component\Commerce\Bridge\Symfony\Currency\SessionCurrencyProvider;
+use Ekyna\Component\Commerce\Bridge\Symfony\Transformer\ArrayToAddressTransformer;
 use Ekyna\Component\Commerce\Common\Context\ContextProvider;
 use Ekyna\Component\Commerce\Common\Currency\ArrayExchangeRateProvider;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyConverter;
@@ -39,6 +40,13 @@ use Ekyna\Component\Commerce\Order\Resolver\OrderPaymentLockResolver;
 return static function (ContainerConfigurator $container) {
     $container
         ->services()
+
+        // Array address transformer
+        ->set('ekyna_commerce.transformer.array_address', ArrayToAddressTransformer::class)
+            ->args([
+                service('ekyna_commerce.repository.country'),
+                service('libphonenumber\PhoneNumberUtil'),
+            ])
 
         // Key generator
         ->set('ekyna_commerce.generator.key', KeyGenerator::class)
@@ -194,11 +202,12 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.renderer.common', CommonRenderer::class)
             ->args([
                 service('twig'),
+                service('ekyna_commerce.transformer.array_address'),
             ])
             ->tag('twig.runtime')
 
         // Button renderer
-        ->set('ekyna_commerce.renderer.renderer', ButtonRenderer::class)
+        ->set('ekyna_commerce.renderer.button', ButtonRenderer::class)
             ->args([
                 service('event_dispatcher'),
                 service('ekyna_ui.renderer'),

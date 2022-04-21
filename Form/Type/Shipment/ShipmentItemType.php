@@ -7,7 +7,6 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Shipment;
 use Ekyna\Bundle\CommerceBundle\Form\FormHelper;
 use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Component\Commerce\Common\Model\Units;
-use Ekyna\Component\Commerce\Shipment\Model\ShipmentAvailability;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentItemInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockAssignmentsInterface;
@@ -75,20 +74,15 @@ class ShipmentItemType extends AbstractResourceType
         $view->vars['level'] = $options['level'];
         $view->vars['return_mode'] = $shipment->isReturn();
 
+        $quantity = $view->children['quantity'];
+
         if ($availability) {
-            $view
-                ->children['quantity']
-                ->vars['attr']['data-max'] = Units::fixed($availability->getAssigned(), $unit);
+            $quantity->vars['attr']['data-max'] = Units::fixed($availability->getAssigned(), $unit);
         }
 
-        if ($form->get('quantity')->isDisabled() && isset($view->parent->parent->children['quantity'])) {
-            $view
-                ->children['quantity']
-                ->vars['attr']['data-quantity'] = Units::fixed($saleItem->getQuantity(), $unit);
-
-            $view
-                ->children['quantity']
-                ->vars['attr']['data-parent'] = $view->parent->parent->children['quantity']->vars['id'];
+        if (isset($view->parent->parent->children['quantity'])) {
+            $quantity->vars['attr']['data-quantity'] = Units::fixed($saleItem->getQuantity(), $unit);
+            $quantity->vars['attr']['data-parent'] = $view->parent->parent->children['quantity']->vars['id'];
         }
 
         // Geocode

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Invoice;
 
 use DateTime;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\ArrayAddressType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Locking\LockChecker;
@@ -107,11 +108,29 @@ class InvoiceType extends AbstractResourceType
                     $disabledLines = false;
                 }
 
-                $form->add('lines', InvoiceTreeType::class, [
-                    'invoice'    => $invoice,
-                    'entry_type' => $options['line_type'],
-                    'disabled'   => $locked || $disabledLines,
-                ]);
+                $form
+                    ->add('lines', InvoiceTreeType::class, [
+                        'invoice'    => $invoice,
+                        'entry_type' => $options['line_type'],
+                        'disabled'   => $locked || $disabledLines,
+                    ])
+                    // TODO Test post_submit event
+                    ->add('customInvoiceAddress', ArrayAddressType::class, [
+                        'label'    => t('sale.field.invoice_address', [], 'EkynaCommerce'),
+                        'required' => false,
+                        'disabled' => $locked,
+                        'attr'     => [
+                            'class' => 'invoice-invoice-address',
+                        ],
+                    ])
+                    ->add('customDeliveryAddress', ArrayAddressType::class, [
+                        'label'    => t('sale.field.delivery_address', [], 'EkynaCommerce'),
+                        'required' => false,
+                        'disabled' => $locked,
+                        'attr'     => [
+                            'class' => 'invoice-delivery-address',
+                        ],
+                    ]);
             });
     }
 

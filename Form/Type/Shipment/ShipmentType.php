@@ -36,9 +36,9 @@ class ShipmentType extends AbstractResourceType
     private string                        $defaultCurrency;
 
     public function __construct(
-        ShipmentBuilderInterface $shipmentBuilder,
+        ShipmentBuilderInterface      $shipmentBuilder,
         AuthorizationCheckerInterface $authorizationChecker,
-        string $defaultCurrency
+        string                        $defaultCurrency
     ) {
         $this->shipmentBuilder = $shipmentBuilder;
         $this->authorizationChecker = $authorizationChecker;
@@ -86,14 +86,15 @@ class ShipmentType extends AbstractResourceType
                     ])
                     ->add('weight', Type\NumberType::class, [
                         'label'    => t('field.weight', [], 'EkynaUi'),
-                        'decimal'    => true,
-                        'scale'      => 3,
+                        'decimal'  => true,
+                        'scale'    => 3,
                         'required' => false,
                         'disabled' => $locked,
                         'attr'     => [
-                            'placeholder' => t('field.weight', [], 'EkynaUi'),
-                            'input_group' => ['append' => 'kg'],
-                            'min'         => 0,
+                            'placeholder'  => t('field.weight', [], 'EkynaUi'),
+                            'input_group'  => ['append' => 'kg'],
+                            'min'          => 0,
+                            'autocomplete' => 'off',
                         ],
                     ])
                     ->add('valorization', Type\MoneyType::class, [
@@ -103,7 +104,8 @@ class ShipmentType extends AbstractResourceType
                         'required' => false,
                         'disabled' => $locked,
                         'attr'     => [
-                            'placeholder' => t('shipment.field.valorization', [], 'EkynaCommerce'),
+                            'placeholder'  => t('shipment.field.valorization', [], 'EkynaCommerce'),
+                            'autocomplete' => 'off',
                         ],
                     ])
                     ->add('method', ShipmentMethodPickType::class, [
@@ -115,6 +117,10 @@ class ShipmentType extends AbstractResourceType
                         'label'    => t('shipment.field.tracking_number', [], 'EkynaCommerce'),
                         'required' => false,
                         'disabled' => !empty($shipment->getTrackingNumber()),
+                        'attr'     => [
+                            'placeholder'  => t('shipment.field.tracking_number', [], 'EkynaCommerce'),
+                            'autocomplete' => 'off',
+                        ],
                     ])
                     ->add('items', ShipmentTreeType::class, [
                         'entry_type' => $options['item_type'],
@@ -156,8 +162,8 @@ class ShipmentType extends AbstractResourceType
                 if (!$sale->isSample()) {
                     $form->add('autoInvoice', Type\CheckboxType::class, [
                         'label'    => t(
-                            'shipment.field.' . ($shipment->isReturn() ? 'auto_credit' : 'auto_invoice'),
-                            [], 'EkynaCommerce'
+                            'shipment.field.' . ($shipment->isReturn() ? 'auto_credit'
+                                : 'auto_invoice'), [], 'EkynaCommerce'
                         ),
                         'disabled' => $locked || null !== $shipment->getInvoice(),
                         'required' => false,

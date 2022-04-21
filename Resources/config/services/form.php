@@ -17,6 +17,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\BalancePaymentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Checkout\PaymentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AddressType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Common\ArrayAddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CountryChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\GenderChoiceType;
@@ -44,7 +45,6 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleShipmentType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\GatewayDataType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentAddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodFactoryChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodPickType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodType;
@@ -77,6 +77,14 @@ return static function (ContainerConfigurator $container) {
 
         // Address form type
         ->set('ekyna_commerce.form_type.address', AddressType::class)
+            ->tag('form.type')
+
+        // Array address form type
+        ->set('ekyna_commerce.form_type.array_address', ArrayAddressType::class)
+            ->args([
+                service('ekyna_commerce.transformer.array_address'),
+                service('validator'),
+            ])
             ->tag('form.type')
 
         // Cart form type
@@ -333,14 +341,6 @@ return static function (ContainerConfigurator $container) {
                 'selector' => '.commerce-shipment-gateway-data',
                 'path'     => 'ekyna-commerce/form/shipment-gateway-data',
             ])
-
-        // Shipment address form type
-        ->set('ekyna_commerce.form_type.shipment_address', ShipmentAddressType::class)
-            ->args([
-                service('ekyna_commerce.transformer.shipment_address'),
-                service('validator'),
-            ])
-            ->tag('form.type')
 
         // Shipment method form type
         ->set('ekyna_commerce.form_type.shipment_method', ShipmentMethodType::class)

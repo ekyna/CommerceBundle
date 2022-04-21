@@ -84,6 +84,7 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.factory.resolver.invoice_availability'),
                 service('ekyna_commerce.calculator.invoice_subject'),
                 service('ekyna_resource.provider.locale'),
+                service('ekyna_commerce.transformer.array_address'),
                 service('libphonenumber\PhoneNumberUtil'),
             ])
 

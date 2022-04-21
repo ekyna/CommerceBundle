@@ -14,12 +14,24 @@ use Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketMessageNormalizer;
 use Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Helper\SubjectNormalizerHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\AddressNormalizer;
+use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceItemNormalizer;
+use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceLineNormalizer;
+use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\RelayPointNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SaleItemNormalizer;
+use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ShipmentItemNormalizer;
+use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ShipmentNormalizer;
+use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ShipmentParcelNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SupplierOrderItemNormalizer;
 use Ekyna\Component\Commerce\Common\Model\AddressInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceItemInterface;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceLineInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentItemInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentParcelInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockAdjustmentInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
@@ -32,6 +44,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.normalizer.address', AddressNormalizer::class)
             ->parent('ekyna_resource.normalizer.abstract')
             ->args([
+                service('ekyna_commerce.transformer.array_address'),
                 service('libphonenumber\PhoneNumberUtil'),
             ])
             ->call('setClass', [AddressInterface::class])
@@ -46,6 +59,27 @@ return static function (ContainerConfigurator $container) {
             ])
             ->call('setFormatterFactory', [service('ekyna_commerce.factory.formatter')])
             ->tag('serializer.normalizer', ['priority' => 1024])
+
+        // Invoice normalizer
+        ->set('ekyna_commerce.normalizer.invoice', InvoiceNormalizer::class)
+            ->parent('ekyna_resource.normalizer.abstract')
+            ->call('setClass', [InvoiceInterface::class])
+            ->tag('serializer.normalizer')
+            ->tag('serializer.denormalizer')
+
+        // Invoice line normalizer
+        ->set('ekyna_commerce.normalizer.invoice_line', InvoiceLineNormalizer::class)
+            ->parent('ekyna_resource.normalizer.abstract')
+            ->call('setClass', [InvoiceLineInterface::class])
+            ->tag('serializer.normalizer')
+            ->tag('serializer.denormalizer')
+
+        // Invoice item normalizer
+        ->set('ekyna_commerce.normalizer.invoice_item', InvoiceItemNormalizer::class)
+            ->parent('ekyna_resource.normalizer.abstract')
+            ->call('setClass', [InvoiceItemInterface::class])
+            ->tag('serializer.normalizer')
+            ->tag('serializer.denormalizer')
 
         // Relay point normalizer
         ->set('ekyna_commerce.normalizer.relay_point', RelayPointNormalizer::class)
@@ -75,6 +109,31 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.helper.subject'),
             ])
             ->call('setClass', [SaleItemInterface::class])
+            ->tag('serializer.normalizer')
+            ->tag('serializer.denormalizer')
+
+        // Shipment normalizer
+        ->set('ekyna_commerce.normalizer.shipment', ShipmentNormalizer::class)
+            ->parent('ekyna_resource.normalizer.abstract')
+            ->args([
+                service('ekyna_commerce.resolver.shipment_address'),
+                service('ekyna_commerce.calculator.shipment_weight'),
+            ])
+            ->call('setClass', [ShipmentInterface::class])
+            ->tag('serializer.normalizer')
+            ->tag('serializer.denormalizer')
+
+        // Shipment item normalizer
+        ->set('ekyna_commerce.normalizer.shipment_item', ShipmentItemNormalizer::class)
+            ->parent('ekyna_resource.normalizer.abstract')
+            ->call('setClass', [ShipmentItemInterface::class])
+            ->tag('serializer.normalizer')
+            ->tag('serializer.denormalizer')
+
+        // Shipment parcel normalizer
+        ->set('ekyna_commerce.normalizer.shipment_parcel', ShipmentParcelNormalizer::class)
+            ->parent('ekyna_resource.normalizer.abstract')
+            ->call('setClass', [ShipmentParcelInterface::class])
             ->tag('serializer.normalizer')
             ->tag('serializer.denormalizer')
 

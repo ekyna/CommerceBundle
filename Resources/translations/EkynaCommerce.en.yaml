@@ -1490,7 +1490,7 @@ shipment:
         return: Return
         items: Items
         valorization: Valorization
-        parcels: Parcles
+        parcels: Parcels
         shipped_at: Shipped at
         tracking_number: Tracking number
         auto_invoice: Generate invoice

@@ -1,4 +1,32 @@
 {% apply spaceless %}
+<h1 class="header">{{ number }}</h1>
+<dl class="dl-horizontal">
+    <dt>{{ 'field.weight'|trans({}, 'EkynaUi') }}</dt>
+    <dd>{{ weight|format_number }}&nbsp;kg</dd>
+    {% if tracking_number is not empty -%}
+        <dt>{{ 'shipment.field.tracking_number'|trans({}, 'EkynaCommerce') }}</dt>
+        <dd>{{ tracking_number }}</dd>
+    {%- endif %}
+    {% if valorization is not empty -%}
+        <dt>{{ 'shipment.field.valorization'|trans({}, 'EkynaCommerce') }}</dt>
+        <dd>{{ valorization|format_currency(commerce_default_currency) }}</dd>
+    {%- endif %}
+    {% if description is not empty -%}
+        <dt>{{ 'field.description'|trans({}, 'EkynaCommerce') }}</dt>
+        <dd>{{ description|nl2br|raw }}</dd>
+    {%- endif %}
+</dl>
+<hr>
+<div class="flex">
+    <div>
+        <span class="text-muted">{{ 'shipment.field.sender_address'|trans({}, 'EkynaCommerce') }}</span><br>
+        {{- sender_address|address -}}
+    </div>
+    <div>
+        <span class="text-muted">{{ 'shipment.field.receiver_address'|trans({}, 'EkynaCommerce') }}</span><br>
+        {{- receiver_address|address -}}
+    </div>
+</div>
 <table class="table table-condensed table-alt-head">
     <thead>
     <tr>
@@ -11,31 +39,38 @@
     {% for item in items -%}
     <tr>
         <td>
-            {% for i in 0..item.level %}{% if loop.index0 > 0 %}&nbsp;&dash;{% endif %}{% endfor %}
-            {{ item.designation }}
+            {% for i in 0..item['level'] %}{% if loop.index0 > 0 %}&nbsp;&dash;{% endif %}{% endfor %}
+            {{ item['designation'] }}
         </td>
-        <td>{{ item.reference }}</td>
-        <td>{{ item.quantity|format_number }} / {{ item.total|format_number }}</td>{# TODO Packaging format #}
+        <td>{{ item['reference'] }}</td>
+        <td>{{ item['quantity']|format_number }} / {{ item['total']|format_number }}</td>{# TODO Packaging format #}
     </tr>
     {%- endfor %}
     </tbody>
 </table>
-{% if description is not empty or valorization is not empty or parcels is not empty -%}
-<div>
-    <dl class="dl-horizontal">
-    {% if description is not empty %}
-        <dt>{{ 'field.description'|trans({}, 'EkynaCommerce') }}</dt>
-        <dd>{{ description|nl2br|raw }}</dd>
-    {% endif %}
-    {% if parcels is not empty %}
-        <dt>{{ 'shipment.field.parcels'|trans({}, 'EkynaCommerce') }}</dt>
-        <dd>{{ parcels|length }}</dd>
-    {% endif %}
-    {% if valorization is not empty %}
-        <dt>{{ 'shipment.field.valorization'|trans({}, 'EkynaCommerce') }}</dt>
-        <dd>{{ valorization|format_currency(commerce_default_currency) }}</dd>
-    {% endif %}
-    </dl>
-</div>
+{% if parcels is not empty -%}
+<h3>{{ 'shipment.field.parcels'|trans({}, 'EkynaCommerce') }}</h3>
+<table class="table table-condensed table-alt-head">
+    <thead>
+    <tr>
+        <th>{{ 'field.weight'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'shipment.field.valorization'|trans({}, 'EkynaCommerce') }}</th>
+        <th>{{ 'shipment.field.tracking_number'|trans({}, 'EkynaCommerce') }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for parcel in parcels -%}
+    <tr>
+        <td>{{ parcel['weight']|format_number }}&nbsp;kg</td>
+        <td>
+        {%- if 0 < parcel['valorization'] -%}
+            {{ parcel['valorization']|format_currency(commerce_default_currency) }}
+        {%- endif -%}
+        </td>
+        <td>{{ parcel['tracking_number'] }}</td>
+    </tr>
+    {%- endfor %}
+    </tbody>
+</table>
 {%- endif %}
 {% endapply %}

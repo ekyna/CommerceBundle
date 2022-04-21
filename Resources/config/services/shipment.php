@@ -12,7 +12,6 @@ use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Provider\ShipmentGatewayProvide
 use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\ShipmentRuleRepository;
 use Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\ShipmentGatewayRegistryPass;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\ShipmentMethodEventSubscriber;
-use Ekyna\Component\Commerce\Bridge\Symfony\Transformer\ShipmentAddressTransformer;
 use Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator;
 use Ekyna\Component\Commerce\Shipment\Builder\InvoiceSynchronizer;
 use Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilder;
@@ -35,12 +34,6 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.repository.shipment_rule', ShipmentRuleRepository::class)
             ->call('setContextProvider', [service('ekyna_commerce.provider.context')])
             ->call('setCalculatorFactory', [service('ekyna_commerce.factory.amount_calculator')])
-
-        // Shipment address transformer
-        ->set('ekyna_commerce.transformer.shipment_address', ShipmentAddressTransformer::class)
-            ->args([
-                service('ekyna_commerce.repository.country'),
-            ])
 
         // Shipment number generator
         ->set('ekyna_commerce.generator.shipment_number', DateNumberGenerator::class)
@@ -134,7 +127,7 @@ return static function (ContainerConfigurator $container) {
         // Shipment address resolver
         ->set('ekyna_commerce.resolver.shipment_address', ShipmentAddressResolver::class)
             ->args([
-                service('ekyna_commerce.transformer.shipment_address'),
+                service('ekyna_commerce.transformer.array_address'),
                 service('ekyna_setting.manager'),
             ])
 

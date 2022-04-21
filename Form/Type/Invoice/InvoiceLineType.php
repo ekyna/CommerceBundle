@@ -66,7 +66,7 @@ class InvoiceLineType extends AbstractResourceType
         });
     }
 
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         /** @var InvoiceLineInterface $line */
         $line = $form->getData();
@@ -99,18 +99,12 @@ class InvoiceLineType extends AbstractResourceType
         $view->vars['level'] = $options['level'];
         $view->vars['credit_mode'] = $invoice->isCredit();
 
-        $view
-            ->children['quantity']
-            ->vars['attr']['data-max'] = Units::fixed($availability->getMaximum() ?: new Decimal(0), $unit);
+        $quantity = $view->children['quantity'];
+        $quantity->vars['attr']['data-max'] = Units::fixed($availability->getMaximum() ?: new Decimal(0), $unit);
 
-        if ($saleItem && $form->get('quantity')->isDisabled() && isset($view->parent->parent->children['quantity'])) {
-            $view
-                ->children['quantity']
-                ->vars['attr']['data-quantity'] = Units::fixed($saleItem->getQuantity(), $unit);
-
-            $view
-                ->children['quantity']
-                ->vars['attr']['data-parent'] = $view->parent->parent->children['quantity']->vars['id'];
+        if ($saleItem && isset($view->parent->parent->children['quantity'])) {
+            $quantity->vars['attr']['data-quantity'] = Units::fixed($saleItem->getQuantity(), $unit);
+            $quantity->vars['attr']['data-parent'] = $view->parent->parent->children['quantity']->vars['id'];
         }
     }
 

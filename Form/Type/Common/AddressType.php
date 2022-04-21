@@ -128,7 +128,7 @@ class AddressType extends AbstractType
                     'class'        => 'address-digicode1',
                     'placeholder'  => t('address.field.digicode1', [], 'EkynaCommerce'),
                     'maxlength'    => 8,
-                    'autocomplete' => 'digicode1', // Non standard to suppress warning
+                    'autocomplete' => 'digicode1', // Non-standard to suppress warning
                 ],
             ])
             ->add('digicode2', Type\TextType::class, [
@@ -138,7 +138,7 @@ class AddressType extends AbstractType
                     'class'        => 'address-digicode2',
                     'placeholder'  => t('address.field.digicode2', [], 'EkynaCommerce'),
                     'maxlength'    => 8,
-                    'autocomplete' => 'digicode2', // Non standard to suppress warning
+                    'autocomplete' => 'digicode2', // Non-standard to suppress warning
                 ],
             ])
             ->add('intercom', Type\TextType::class, [
@@ -148,7 +148,7 @@ class AddressType extends AbstractType
                     'class'        => 'address-intercom',
                     'placeholder'  => t('address.field.intercom', [], 'EkynaCommerce'),
                     'maxlength'    => 10,
-                    'autocomplete' => 'intercomid', // Non standard to suppress warning
+                    'autocomplete' => 'intercomid', // Non-standard to suppress warning
                 ],
             ]);
         /*->add('state', Type\TextType::class, [

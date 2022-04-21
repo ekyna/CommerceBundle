@@ -32,9 +32,10 @@ class ShipmentParcelType extends AbstractResourceType
                 'decimal' => true,
                 'scale'   => 3,
                 'attr'    => [
-                    'placeholder' => t('field.weight', [], 'EkynaUi'),
-                    'input_group' => ['append' => 'kg'],
-                    'min'         => 0,
+                    'placeholder'  => t('field.weight', [], 'EkynaUi'),
+                    'input_group'  => ['append' => 'kg'],
+                    'min'          => 0,
+                    'autocomplete' => 'off',
                 ],
             ])
             ->add('valorization', Type\MoneyType::class, [
@@ -43,13 +44,15 @@ class ShipmentParcelType extends AbstractResourceType
                 'currency' => $this->defaultCurrency,
                 'required' => false,
                 'attr'     => [
-                    'placeholder' => t('shipment.field.valorization', [], 'EkynaCommerce'),
+                    'placeholder'  => t('shipment.field.valorization', [], 'EkynaCommerce'),
+                    'autocomplete' => 'off',
                 ],
             ])
             ->add('trackingNumber', Type\TextType::class, [
                 'label'    => t('shipment.field.tracking_number', [], 'EkynaCommerce'),
                 'attr'     => [
-                    'placeholder' => t('shipment.field.tracking_number', [], 'EkynaCommerce'),
+                    'placeholder'  => t('shipment.field.tracking_number', [], 'EkynaCommerce'),
+                    'autocomplete' => 'off',
                 ],
                 'required' => false,
             ]);

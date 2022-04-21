@@ -44,9 +44,10 @@ class ShipmentPriceType extends AbstractResourceType
                 'scale'      => 3,
                 'empty_data' => new Decimal(0),
                 'attr'       => [
-                    'placeholder' => 'field.weight',
-                    'input_group' => ['append' => 'kg'],
-                    'min'         => 0,
+                    'placeholder'  => 'field.weight',
+                    'input_group'  => ['append' => 'kg'],
+                    'min'          => 0,
+                    'autocomplete' => 'off',
                 ],
             ])
             ->add('netPrice', NumberType::class, [
@@ -55,8 +56,9 @@ class ShipmentPriceType extends AbstractResourceType
                 'scale'      => 5,
                 'empty_data' => new Decimal(0),
                 'attr'       => [
-                    'placeholder' => 'field.net_price',
-                    'input_group' => ['append' => '€'],  // TODO by currency
+                    'placeholder'  => 'field.net_price',
+                    'input_group'  => ['append' => '€'],  // TODO by currency
+                    'autocomplete' => 'off',
                 ],
             ]);
 

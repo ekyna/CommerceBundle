@@ -54,7 +54,7 @@ class ChoiceListController
 
         $data = $this
             ->serializer
-            ->serialize(['choices' => $addresses], 'json', ['groups' => ['Default']]);
+            ->serialize(['choices' => $addresses], 'json', ['groups' => ['Default', 'AddressChoice']]);
 
         return new Response($data, Response::HTTP_OK, ['Content-Type' => 'application/json']);
     }

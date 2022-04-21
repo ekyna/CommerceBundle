@@ -46,16 +46,16 @@
 {%- endblock doc_customer -%}
 
 {%- block doc_invoice_address -%}
-    {{- macro.render_address(subject.invoiceAddress) -}}
+    {{- subject.invoiceAddress|address -}}
 {%- endblock doc_invoice_address -%}
 
 {%- block doc_delivery_address -%}
     {%- if subject.relayPoint is not empty -%}
-        {{ macro.render_address(subject.relayPoint) }}
+        {{ subject.relayPoint|address }}
     {%- elseif subject.deliveryAddress is not empty -%}
-        {{ macro.render_address(subject.deliveryAddress) }}
+        {{ subject.deliveryAddress|address }}
     {%- else -%}
-        {{ macro.render_address(subject.invoiceAddress) }}
+        {{ subject.invoiceAddress|address }}
     {%- endif -%}
 {%- endblock doc_delivery_address -%}
 

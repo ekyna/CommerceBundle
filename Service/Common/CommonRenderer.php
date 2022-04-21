@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
 use Ekyna\Bundle\CommerceBundle\Model\NotificationTypes as BTypes;
 use Ekyna\Component\Commerce\Common\Model\AddressInterface;
 use Ekyna\Component\Commerce\Common\Model\NotificationTypes as CTypes;
+use Ekyna\Component\Commerce\Common\Transformer\ArrayToAddressTransformer;
 use Ekyna\Component\Commerce\Customer\Model\CustomerContactInterface;
 use Ekyna\Component\Commerce\Customer\Model\NotificationsInterface;
+use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Twig\Environment;
 use Twig\TemplateWrapper;
+
+use function array_replace;
+use function is_array;
 
 /**
  * Class CommonRenderer
@@ -17,31 +24,16 @@ use Twig\TemplateWrapper;
  */
 class CommonRenderer
 {
-    /**
-     * @var Environment
-     */
-    private $twig;
+    private Environment               $twig;
+    private ArrayToAddressTransformer $addressTransformer;
+    private array                     $config;
 
-    /**
-     * @var array
-     */
-    private $config;
+    private ?TemplateWrapper $template = null;
 
-    /**
-     * @var TemplateWrapper
-     */
-    private $template;
-
-
-    /**
-     * Constructor.
-     *
-     * @param Environment $twig
-     * @param array       $config
-     */
-    public function __construct(Environment $twig, array $config = [])
+    public function __construct(Environment $twig, ArrayToAddressTransformer $addressTransformer, array $config = [])
     {
-        $this->twig   = $twig;
+        $this->twig = $twig;
+        $this->addressTransformer = $addressTransformer;
         $this->config = array_replace([
             'template' => '@EkynaCommerce/Show/common.html.twig',
         ], $config);
@@ -50,13 +42,39 @@ class CommonRenderer
     /**
      * Renders the address.
      *
-     * @param AddressInterface $address
-     * @param array            $options ('display_phones' and 'locale')
-     *
-     * @return string
+     * @param array|AddressInterface $address
+     * @param array                  $options ('display_phones' and 'locale')
      */
-    public function renderAddress(AddressInterface $address, array $options = []): string
+    public function renderAddress($address, array $options = []): string
     {
+        if ($address instanceof AddressInterface) {
+            $address = $this->addressTransformer->transformAddress($address);
+        }
+
+        if (!is_array($address)) {
+            throw new UnexpectedTypeException($address, ['array', AddressInterface::class]);
+        }
+
+        $address = array_replace([
+            'company'     => null,
+            'first_name'  => null,
+            'last_name'   => null,
+            'street'      => null,
+            'supplement'  => null,
+            'complement'  => null,
+            'extra'       => null,
+            'postal_code' => null,
+            'city'        => null,
+            'country'     => null,
+            'state'       => null,
+            'phone'       => null,
+            'mobile'      => null,
+            'digicode1'   => null,
+            'digicode2'   => null,
+            'intercom'    => null,
+            'information' => null,
+        ], $address);
+
         $options = array_replace([
             'display_phones' => true,
             'locale'         => null,

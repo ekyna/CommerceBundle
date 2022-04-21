@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Controller\Api;
 
 use Decimal\Decimal;
+use Ekyna\Component\Commerce\Common\Model\Address;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Exception\ShipmentGatewayException;
 use Ekyna\Component\Commerce\Shipment\Gateway\GatewayInterface;
 use Ekyna\Component\Commerce\Shipment\Gateway\GatewayRegistryInterface;
-use Ekyna\Component\Commerce\Shipment\Gateway\Model\Address;
 use Ekyna\Component\Commerce\Shipment\Repository\RelayPointRepositoryInterface;
 use Ekyna\Component\Resource\Manager\ResourceManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -68,7 +68,7 @@ class ShipmentGatewayController
             ]);
         }
 
-        return new JsonResponse($data, JsonResponse::HTTP_OK, [], true);
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 
     public function getRelayPoint(Request $request): Response

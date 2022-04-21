@@ -10,7 +10,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
 
         this.each(function() {
 
-            var $form = $(this),
+            const $form = $(this),
                 name = $form.attr('name'),
                 $quantities = $form.find('.shipment-items > tbody > tr input'),
                 $method = $form.find('[name="' + name + '[method]"]'),
@@ -19,10 +19,9 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                 $relayTab = $form.find('#toggle-relay-point'),
                 $toggle = $form.find('#toggle-quantities');
 
-            var onMethodChange = function() {
-                var supportParcel = 0,
-                    supportRelay = 0,
-                    $selectedMethod = $method.find('option[value="' + $method.val() + '"]');
+            const onMethodChange = function() {
+                const $selectedMethod = $method.find('option[value="' + $method.val() + '"]');
+                let supportParcel = 0, supportRelay = 0;
 
                 if (1 === $selectedMethod.length) {
                     supportParcel = $selectedMethod.data('parcel');
@@ -48,7 +47,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
             $method.on('change', onMethodChange);
             onMethodChange();
 
-            var onParcelsChange = function() {
+            const onParcelsChange = function() {
                 $parcels.find('.parcel-index').each(function(index, element) {
                     $(element).text(index + 1);
                 });
@@ -67,18 +66,19 @@ define(['jquery', 'ekyna-form/collection'], function($) {
             }).trigger('change');*/
 
             // TODO Packaging format
+
             $quantities
                 .on('blur', function() {
-                    var $input = $(this),
+                    const $input = $(this),
                         quantity = parseInt($input.val());
                     if (isNaN(quantity)) $input.val(0).trigger('change');
                 })
                 .on('change keyup', function() {
-                    var $input = $(this),
-                        quantity = parseInt($input.val()),
+                    const $input = $(this),
                         $children = $form
                             .find('.shipment-items > tbody > tr input[data-parent="' + $input.attr('id') + '"]');
 
+                    let quantity = parseInt($input.val());
                     if (isNaN(quantity)) quantity = 0;
 
                     if (quantity > $input.data('max')) {
@@ -88,7 +88,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                     }
 
                     $children.each(function() {
-                        var $input = $(this);
+                        const $input = $(this);
                         // TODO Only if input is disabled and quantity differs (do not trigger 'change' if not needed)
                         $input.val(quantity * $input.data('quantity')).trigger('change');
                     });
@@ -108,13 +108,12 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                     if ($parent.val() < parentMinQuantity) {
                         $parent.val(parentMinQuantity).trigger('change');
                     }*/
-                })
-                .not(':disabled').trigger('change');
+                });
 
             $toggle.on('click', function() {
-                var sum = 0, total = 0;
+                let sum = 0, total = 0;
                 $quantities.each(function(index, input) {
-                    var $input = $(input);
+                    const $input = $(input);
                     sum += parseFloat($input.val());
                     total += $input.data('max');
                 });
@@ -124,7 +123,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                     }).trigger('change');
                 } else {
                     $quantities.not(':disabled').each(function(index, input) {
-                        var $input = $(input);
+                        const $input = $(input);
                         $input.val($input.data('max'));
                     }).trigger('change');
                 }

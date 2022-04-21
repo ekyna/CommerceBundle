@@ -102,7 +102,6 @@ resources:
                 interface : Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface
                 class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderInvoiceRepository
             factory: Ekyna\Bundle\CommerceBundle\Factory\InvoiceFactory
-            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceNormalizer
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceType
             table: Ekyna\Bundle\CommerceBundle\Table\Type\OrderInvoiceType
             parent: ekyna_commerce.order
@@ -129,7 +128,6 @@ resources:
             entity:
                 interface: Ekyna\Component\Commerce\Order\Model\OrderInvoiceItemInterface
                 class: Ekyna\Component\Commerce\Order\Entity\OrderInvoiceItem
-            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceItemNormalizer
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceItemType
             parent: ekyna_commerce.order_invoice
             trans_domain: EkynaCommerce
@@ -139,7 +137,6 @@ resources:
             entity:
                 interface: Ekyna\Component\Commerce\Order\Model\OrderInvoiceLineInterface
                 class: Ekyna\Component\Commerce\Order\Entity\OrderInvoiceLine
-            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceLineNormalizer
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceLineType
             parent: ekyna_commerce.order_invoice
             trans_domain: EkynaCommerce
@@ -226,7 +223,6 @@ resources:
             #    interface : Ekyna\Component\Commerce\Order\Repository\OrderShipmentRepositoryInterface
             #    class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderShipmentRepository
             factory: Ekyna\Bundle\CommerceBundle\Factory\ShipmentFactory
-            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ShipmentNormalizer
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentType
             table: Ekyna\Bundle\CommerceBundle\Table\Type\OrderShipmentType
             parent: ekyna_commerce.order
@@ -252,7 +248,6 @@ resources:
             entity:
                 interface: Ekyna\Component\Commerce\Order\Model\OrderShipmentItemInterface
                 class: Ekyna\Component\Commerce\Order\Entity\OrderShipmentItem
-            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ShipmentItemNormalizer
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentItemType
             parent: ekyna_commerce.order_shipment
             trans_prefix: sale_item
@@ -263,7 +258,6 @@ resources:
             entity:
                 # TODO interface: ~
                 class: Ekyna\Component\Commerce\Order\Entity\OrderShipmentParcel
-            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ShipmentParcelNormalizer
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentParcelType
             parent: ekyna_commerce.order_shipment
             trans_domain: EkynaCommerce

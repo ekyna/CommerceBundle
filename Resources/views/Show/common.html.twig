@@ -1,60 +1,61 @@
 {% block address %}
 {% apply spaceless %}
-{%- if options.locale is not null -%}
-    {%- do trans_set_locale(options.locale) -%}
+{%- if options['locale'] is not null -%}
+    {%- do trans_set_locale(options['locale']) -%}
 {%- endif -%}
-{% if address.company is not empty -%}
-    <strong><em>{{ address.company }}</em></strong><br>
+
+{% set name_tag = 'strong' %}
+{%- if address['company'] is not empty -%}
+    <strong>{{ address['company'] }}</strong><br>
+    {% set name_tag = 'span' %}
+{%- endif -%}
+
+{%- if address['last_name'] is not empty and address['first_name'] is not empty -%}
+    <{{ name_tag }}>{{ address['last_name'] }} {{ address['first_name'] }}</{{ name_tag }}><br>
+{%- endif -%}
+
+{{- address['street'] -}}
+
+{% if address['complement'] is not empty -%}
+    <br>{{ address['complement'] -}}
+{%- endif %}
+{% if address['supplement'] is not empty -%}
+    <br>{{ address['supplement'] -}}
+{%- endif %}
+{% if address['extra'] is not empty -%}
+    <br>{{ address['extra'] -}}
 {%- endif %}
 
-{% if address.lastName is not empty and address.firstName is not empty -%}
-    <strong>{{ address|identity }}</strong><br>
-{%- elseif address.company is empty and attribute(address, 'customer') is defined and attribute(address, 'customer') is not null -%}
-    <strong>{{ attribute(address, 'customer')|identity }}</strong><br>
-{%- endif %}
+<br>{{ address['postal_code'] }} {{ address['city'] -}}
+<br>{{ address['country']|country -}}{#{% if address['state'] is not empty %}, {{ address['state']|state }}{% endif %}#}
 
-{{- address.street -}}
-
-{% if address.complement is not empty -%}
-    <br>{{ address.complement -}}
-{%- endif %}
-{% if address.supplement is not empty -%}
-    <br>{{ address.supplement -}}
-{%- endif %}
-{% if address.extra is not empty -%}
-    <br>{{ address.extra -}}
-{%- endif %}
-
-<br>{{ address.postalCode }} {{ address.city -}}
-<br>{{ address.country.code|country -}}{#{% if address.state is not empty %}, {{ address.state }}{% endif %}#}
-
-{% if address.digicode1 is not empty or address.digicode2 is not empty or address.intercom is not empty %}
+{% if address['digicode1'] is not empty or address['digicode2'] is not empty or address['intercom'] is not empty %}
     <br>
-    {% if address.digicode1 is not empty -%}
-    <abbr title="{{ 'address.field.digicode1'|trans({}, 'EkynaCommerce') }}">C1:</abbr>&nbsp;{{ address.digicode1 }}.&nbsp;
+    {% if address['digicode1'] is not empty -%}
+    <abbr title="{{ 'address.field.digicode1'|trans({}, 'EkynaCommerce') }}">C1:</abbr>&nbsp;{{ address['digicode1'] }}.&nbsp;
     {%- endif %}
-    {% if address.digicode2 is not empty -%}
-    <abbr title="{{ 'address.field.digicode2'|trans({}, 'EkynaCommerce') }}">C2:</abbr>&nbsp;{{ address.digicode2 }}.&nbsp;
+    {% if address['digicode2'] is not empty -%}
+    <abbr title="{{ 'address.field.digicode2'|trans({}, 'EkynaCommerce') }}">C2:</abbr>&nbsp;{{ address['digicode2'] }}.&nbsp;
     {%- endif %}
-    {% if address.intercom is not empty -%}
-    <abbr title="{{ 'address.field.intercom'|trans({}, 'EkynaCommerce') }}">I:</abbr>&nbsp;{{ address.intercom }}
+    {% if address['intercom'] is not empty -%}
+    <abbr title="{{ 'address.field.intercom'|trans({}, 'EkynaCommerce') }}">I:</abbr>&nbsp;{{ address['intercom'] }}
     {%- endif %}
 {% endif %}
 
-{% if options.display_phones -%}
-    {% if address.phone is not empty -%}
-        <br><abbr title="{{ 'field.phone'|trans({}, 'EkynaUi') }}">T:</abbr> {{ address.phone|phone_number_format -}}
+{% if options['display_phones'] -%}
+    {% if address['phone'] is not empty -%}
+        <br><abbr title="{{ 'field.phone'|trans({}, 'EkynaUi') }}">T:</abbr> {{ address['phone'] -}}
     {%- endif %}
-    {% if address.mobile is not empty -%}
-        <br><abbr title="{{ 'field.mobile'|trans({}, 'EkynaUi') }}">M:</abbr> {{ address.mobile|phone_number_format -}}
+    {% if address['mobile'] is not empty -%}
+        <br><abbr title="{{ 'field.mobile'|trans({}, 'EkynaUi') }}">M:</abbr> {{ address['mobile'] -}}
     {%- endif %}
 {%- endif %}
 
-{%- if attribute(address, 'information') is defined and attribute(address, 'information') is not empty -%}
-    <hr>{{ attribute(address, 'information')|nl2br }}
+{%- if address['information'] is not empty -%}
+    <hr>{{ address['information']|nl2br }}
 {%- endif -%}
 
-{%- if options.locale is not null -%}
+{%- if options['locale'] is not null -%}
     {% do trans_revert_locale() %}
 {% endif %}
 {% endapply %}

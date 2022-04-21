@@ -10,7 +10,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
 
         this.each(function() {
 
-            var $invoice = $(this),
+            const $invoice = $(this),
                 $quantities = $invoice.find('.invoice-lines > tbody > tr input'),
                 $toggle = $invoice.find('#toggle-quantities');
 
@@ -20,16 +20,16 @@ define(['jquery', 'ekyna-form/collection'], function($) {
 
             $quantities
                 .on('blur', function() {
-                    var $input = $(this),
+                    const $input = $(this),
                         quantity = parseInt($input.val());
                     if (isNaN(quantity)) $input.val(0).trigger('change');
                 })
                 .on('change keyup', function() {
-                    var $input = $(this),
-                        quantity = parseInt($input.val()),
+                    const $input = $(this),
                         $children = $invoice
                             .find('.invoice-lines > tbody > tr input[data-parent="' + $input.attr('id') + '"]');
 
+                    let quantity = parseInt($input.val());
                     if (isNaN(quantity)) quantity = 0;
 
                     if (quantity > $input.data('max')) {
@@ -39,16 +39,15 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                     }
 
                     $children.each(function() {
-                        var $child = $(this);
+                        const $child = $(this);
                         $child.val(quantity * $child.data('quantity')).trigger('change');
                     });
-                })
-                .not(':disabled').trigger('change');
+                });
 
             $toggle.on('click', function() {
-                var sum = 0, total = 0;
+                let sum = 0, total = 0;
                 $quantities.each(function(index, input) {
-                    var $input = $(input);
+                    const $input = $(input);
                     sum += parseFloat($input.val());
                     total += $input.data('max');
                 });
@@ -58,7 +57,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                     }).trigger('change');
                 } else {
                     $quantities.not(':disabled').each(function(index, input) {
-                        var $input = $(input);
+                        const $input = $(input);
                         $input.val($input.data('max'));
                     }).trigger('change');
                 }

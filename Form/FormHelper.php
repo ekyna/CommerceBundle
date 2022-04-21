@@ -10,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 
-use function array_replace;
+use function array_replace_recursive;
 use function Symfony\Component\Translation\t;
 
 /**
@@ -25,9 +25,12 @@ class FormHelper
      */
     public static function addQuantityType($form, string $unit, array $options = []): void
     {
-        $options = array_replace([
+        $options = array_replace_recursive([
             'label'   => t('field.quantity', [], 'EkynaUi'),
             'decimal' => true,
+            'attr'    => [
+                'autocomplete' => 'off',
+            ],
         ], $options);
 
         if (Units::PIECE === $unit) {

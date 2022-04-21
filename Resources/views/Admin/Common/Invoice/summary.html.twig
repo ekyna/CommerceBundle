@@ -1,4 +1,19 @@
 {% apply spaceless %}
+<h1 class="header">{{ number }}</h1>
+<div class="flex">
+    <div>
+        <span class="text-muted">{{ 'sale.field.invoice_address'|trans({}, 'EkynaCommerce') }}</span><br>
+        {{- invoice_address|address -}}
+    </div>
+    <div>
+        <span class="text-muted">{{ 'sale.field.delivery_address'|trans({}, 'EkynaCommerce') }}</span><br>
+        {% if delivery_address is not null -%}
+            {{- delivery_address|address -}}
+        {%- else -%}
+            {{- invoice_address|address -}}
+        {%- endif %}
+    </div>
+</div>
 <table class="table table-condensed table-alt-head">
     <thead>
     <tr>

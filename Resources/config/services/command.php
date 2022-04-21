@@ -19,6 +19,7 @@ use Ekyna\Bundle\CommerceBundle\Command\OrderUpdateTotalsCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderWatchCommand;
 use Ekyna\Bundle\CommerceBundle\Command\PaymentStateChangeCommand;
 use Ekyna\Bundle\CommerceBundle\Command\PaymentWatchCommand;
+use Ekyna\Bundle\CommerceBundle\Command\AddressMigrateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\ShipmentLabelPurgeCommand;
 use Ekyna\Bundle\CommerceBundle\Command\StatCalculateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\StatUpdateCommand;
@@ -166,6 +167,14 @@ return static function (ContainerConfigurator $container) {
                 service('doctrine.orm.default_entity_manager'),
                 service('ekyna_setting.manager'),
                 service('mailer.mailer'),
+            ])
+            ->tag('console.command')
+
+        // Shipment address migrate command
+        ->set('ekyna_commerce.command.shipment_address_migrate', AddressMigrateCommand::class)
+            ->args([
+                service('doctrine.dbal.default_connection'),
+                service('libphonenumber\PhoneNumberUtil'),
             ])
             ->tag('console.command')
 

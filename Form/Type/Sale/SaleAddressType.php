@@ -172,7 +172,7 @@ class SaleAddressType extends AbstractType
 
                     $data = $this
                         ->serializer
-                        ->serialize($addresses[$val], 'json', ['groups' => ['Default']]);
+                        ->serialize($addresses[$val], 'json', ['groups' => ['Default', 'AddressChoice']]);
 
                     return ['data-address' => $data];
                 };

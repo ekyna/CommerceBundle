@@ -32,6 +32,24 @@
 {%- endblock doc_title_content %}
 
 
+{%- block doc_invoice_address -%}
+    {%- if subject.customInvoiceAddress -%}
+        {{- subject.customInvoiceAddress|address -}}
+    {%- else -%}
+        {{ parent() }}
+    {%- endif -%}
+{%- endblock doc_invoice_address -%}
+
+
+{%- block doc_delivery_address -%}
+    {%- if subject.customDeliveryAddress -%}
+        {{- subject.customDeliveryAddress|address -}}
+    {%- else -%}
+        {{ parent() }}
+    {%- endif -%}
+{%- endblock doc_delivery_address -%}
+
+
 {# --- DOC MISC --- #}
 {% block doc_misc -%}
     {{- macro.render_invoice_payments(subject) -}}

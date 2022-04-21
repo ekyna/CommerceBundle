@@ -47,45 +47,6 @@
 {%- endmacro -%}
 
 
-{%- macro render_address(address) -%}
-<p>
-    {%- if address['number'] is defined and address['number'] is not empty -%}
-        <em>({{ 'relay_point.label.singular'|trans({}, 'EkynaCommerce') }})</em><br>
-    {%- endif -%}
-
-    {%- if address['company'] is not empty -%}
-        <strong>{{ address['company'] }}</strong><br>
-        {%- if address['full_name'] is not empty -%}
-            {{ address['full_name'] }}<br>
-        {%- endif -%}
-    {%- elseif address['full_name'] is not empty -%}
-        <strong>{{ address['full_name'] }}</strong><br>
-    {%- endif -%}
-
-    {{- address['street'] }}<br>
-    {%- if address['complement'] is not empty -%}
-        {{- address['complement'] }}<br>
-    {%- endif -%}
-    {%- if address['supplement'] is not empty -%}
-        {{- address['supplement'] }}<br>
-    {%- endif -%}
-
-    {{- address['postal_code'] }} {{ address['city'] }}, {{ address['country'] -}}
-
-    {%- if address['phone'] is not empty -%}
-        <br><abbr title="{{ 'field.phone'|trans({}, 'EkynaUi') }}">T:</abbr> {{ address['phone'] -}}
-    {%- endif -%}
-
-    {%- if address['mobile'] is not empty -%}
-        <br><abbr title="{{ 'field.mobile'|trans({}, 'EkynaUi') }}">M:</abbr> {{ address['mobile'] -}}
-    {%- endif -%}
-</p>
-{% if address['information'] is defined and address['information'] is not empty -%}
-<p>{{ address['information']|nl2br }}</p>
-{%- endif %}
-{%- endmacro -%}
-
-
 {%- macro render_voucher_number(subject) -%}
     {%- if subject.sale.voucherNumber is not empty -%}
         <span class="text-alt">{{ 'sale.field.voucher_number'|trans({}, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw }}</span>

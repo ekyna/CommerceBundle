@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 
+use Ekyna\Bundle\AdminBundle\Model\SiteAddress;
 use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
-use Ekyna\Component\Commerce\Bridge\Symfony\Transformer\ShipmentAddressTransformer;
+use Ekyna\Component\Commerce\Common\Model\Address;
 use Ekyna\Component\Commerce\Common\Model\AddressInterface;
 use Ekyna\Component\Commerce\Common\Model\CountryInterface;
+use Ekyna\Component\Commerce\Common\Transformer\ArrayToAddressTransformer;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\LogicException;
-use Ekyna\Component\Commerce\Shipment\Model\ShipmentAddress;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentAddressResolver as BaseResolver;
 use libphonenumber\PhoneNumberUtil;
 
@@ -24,9 +25,9 @@ class ShipmentAddressResolver extends BaseResolver
     private SettingManagerInterface $settingsManager;
 
     private ?PhoneNumberUtil $phoneUtil      = null;
-    private ?ShipmentAddress $companyAddress = null;
+    private ?Address         $companyAddress = null;
 
-    public function __construct(ShipmentAddressTransformer $transformer, SettingManagerInterface $settingsManager)
+    public function __construct(ArrayToAddressTransformer $transformer, SettingManagerInterface $settingsManager)
     {
         parent::__construct($transformer);
 
@@ -40,16 +41,16 @@ class ShipmentAddressResolver extends BaseResolver
         }
 
         $companyName = $this->settingsManager->getParameter('general.site_name');
-        /** @var \Ekyna\Bundle\AdminBundle\Model\SiteAddress $siteAddress */
+        /** @var SiteAddress $siteAddress */
         $siteAddress = $this->settingsManager->getParameter('general.site_address');
 
         if (empty($companyName) || empty($siteAddress)) {
-            throw new LogicException("Site name and site address parameters must be set.");
+            throw new LogicException('Site name and site address parameters must be set.');
         }
 
         $country = $this->findCountryByCode($siteAddress->getCountry());
 
-        $companyAddress = new ShipmentAddress();
+        $companyAddress = new Address();
         $companyAddress
             ->setCompany($companyName)
             ->setStreet($siteAddress->getStreet())
