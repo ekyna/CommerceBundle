@@ -595,7 +595,7 @@ document:
         invoice: Facture
         credit: Avoir
     mention:
-        cash_payment: Paiment comptant à la commande
+        payment_with_order: Paiment comptant à la commande
         due_date: Date d'échéance
         remaining_unknown: Les éléments suivants vous seront livrés ultérieurement.
         remaining_with_date: Les éléments suivants vous seront livrés à partir du %date%.

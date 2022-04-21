@@ -108,7 +108,7 @@
     {%- elseif 0 < subject.sale.depositTotal -%}
         <strong>{{ 'document.mention.deposit_remaining'|trans({}, 'EkynaCommerce') }}</strong>.
     {%- else -%}
-        <strong>{{ 'document.mention.cash_payment'|trans({}, 'EkynaCommerce') }}</strong>.
+        <strong>{{ 'document.mention.payment_with_order'|trans({}, 'EkynaCommerce') }}</strong>.
     {%- endif %}
     {#<br>{{ 'document.mention.no_anticipated_payment_discount'|trans({}, 'EkynaCommerce') }}#}
 {%- endmacro -%}

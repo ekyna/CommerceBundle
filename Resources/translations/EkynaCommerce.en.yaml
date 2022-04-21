@@ -581,7 +581,7 @@ document:
         invoice: Invoice
         credit: Credit
     mention:
-        cash_payment: Cash payment
+        payment_with_order: Payment with order
         due_date: Due date
         remaining_unknown: The following products will be shipped later.
         remaining_with_date: The following products will be shipped from %date%.
