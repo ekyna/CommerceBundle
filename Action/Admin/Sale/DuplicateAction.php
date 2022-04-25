@@ -91,9 +91,6 @@ class DuplicateAction extends AbstractSaleAction implements RoutingActionInterfa
 
         $targetSale
             ->setCustomerGroup(null)
-            ->setSameAddress(true)
-            ->setInvoiceAddress(null)
-            ->setDeliveryAddress(null)
             ->setShipmentMethod(null)
             ->setPaymentMethod(null)
             ->setPaymentTerm(null)
@@ -109,6 +106,12 @@ class DuplicateAction extends AbstractSaleAction implements RoutingActionInterfa
         }
 
         $factory->initialize($targetSale);
+
+        // Clear addresses
+        $targetSale
+            ->setSameAddress(true)
+            ->setInvoiceAddress(null)
+            ->setDeliveryAddress(null);
 
         $form = $this->createDuplicateConfirmForm(
             $sourceSale, $targetSale, $targetConfig->getData('form'), $target
