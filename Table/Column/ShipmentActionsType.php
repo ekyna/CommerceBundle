@@ -84,8 +84,8 @@ class ShipmentActionsType extends AbstractColumnType
             'disabled' => !$this->resourceHelper->isGranted(RenderAction::class, $shipment),
         ];
 
-        if (!ShipmentStates::isStockableState($shipment, false)) {
-            if (!$shipment->isReturn() && !$shipment->getSale()->isReleased()) {
+        if (!$shipment->getSale()->isReleased()) {
+            if (!$shipment->isReturn()) {
                 // Form document
                 $buttons[] = [
                     'label'    => t('document.type.shipment_form', [], 'EkynaCommerce'),
@@ -100,26 +100,27 @@ class ShipmentActionsType extends AbstractColumnType
                 ];
             }
 
-            if ($shipment->getState() === ShipmentStates::STATE_PREPARATION) {
-                $buttons[] = [
-                    'label'    => t('button.edit', [], 'EkynaUi'),
-                    'icon'     => 'pencil',
-                    'fa_icon'  => true,
-                    'theme'    => 'warning',
-                    'path'     => $this->resourceHelper->generateResourcePath($shipment, UpdateAction::class),
-                    'disabled' => !$this->resourceHelper->isGranted(UpdateAction::class, $shipment),
-                ];
-            }
+            // Edit
+            $buttons[] = [
+                'label'    => t('button.edit', [], 'EkynaUi'),
+                'icon'     => 'pencil',
+                'fa_icon'  => true,
+                'theme'    => 'warning',
+                'path'     => $this->resourceHelper->generateResourcePath($shipment, UpdateAction::class),
+                'disabled' => !$this->resourceHelper->isGranted(UpdateAction::class, $shipment),
+            ];
 
             // Remove
-            $buttons[] = [
-                'label'    => t('button.remove', [], 'EkynaUi'),
-                'icon'     => 'trash',
-                'fa_icon'  => true,
-                'theme'    => 'danger',
-                'path'     => $this->resourceHelper->generateResourcePath($shipment, DeleteAction::class),
-                'disabled' => !$this->resourceHelper->isGranted(DeleteAction::class, $shipment),
-            ];
+            if ($this->shipmentHelper->isShipmentDeleteable($shipment)) {
+                $buttons[] = [
+                    'label'    => t('button.remove', [], 'EkynaUi'),
+                    'icon'     => 'trash',
+                    'fa_icon'  => true,
+                    'theme'    => 'danger',
+                    'path'     => $this->resourceHelper->generateResourcePath($shipment, DeleteAction::class),
+                    'disabled' => !$this->resourceHelper->isGranted(DeleteAction::class, $shipment),
+                ];
+            }
         }
 
         $view->vars['buttons'] = array_map(function (array $button): array {

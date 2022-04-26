@@ -101,6 +101,7 @@ class InvoiceType extends AbstractResourceType
                         'entry_options' => [
                             'invoice' => $invoice,
                         ],
+                        'disabled'      => $locked,
                     ]);
 
                     $this->builder->build($invoice);
@@ -134,12 +135,17 @@ class InvoiceType extends AbstractResourceType
             });
     }
 
-    public function finishView(FormView $view, FormInterface $form, array $options): void
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         /** @var InvoiceInterface $invoice */
         $invoice = $form->getData();
 
+        $locked = $this->lockChecker->isLocked($invoice);
+        $privileged = $locked && $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
+
         $view->vars['credit_mode'] = $invoice->isCredit();
+        $view->vars['with_availability'] = !$locked;
+        $view->vars['privileged'] = $privileged;
 
         FormUtil::addClass($view, 'invoice');
     }

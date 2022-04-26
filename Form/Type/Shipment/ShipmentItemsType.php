@@ -19,17 +19,18 @@ use function Symfony\Component\Translation\t;
  */
 class ShipmentItemsType extends AbstractType
 {
-    public function finishView(FormView $view, FormInterface $form, array $options): void
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['headers'] = false;
+        $view->vars['with_availability'] = $view->parent->vars['with_availability'];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
+            ->setRequired(['entry_type'])
             ->setDefaults([
-                'label'      => t('shipment.field.items', [], 'EkynaCommerce'),
-                'entry_type' => ShipmentItemType::class,
+                'label' => t('shipment.field.items', [], 'EkynaCommerce'),
             ]);
     }
 

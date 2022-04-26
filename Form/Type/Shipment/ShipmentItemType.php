@@ -60,6 +60,11 @@ class ShipmentItemType extends AbstractResourceType
         });
     }
 
+    public function buildView(FormView $view, FormInterface $form, array $options): void
+    {
+        $view->vars['with_availability'] = $view->parent->vars['with_availability'];
+    }
+
     public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         /** @var ShipmentItemInterface $item */

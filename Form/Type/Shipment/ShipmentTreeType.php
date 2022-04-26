@@ -53,29 +53,30 @@ class ShipmentTreeType extends AbstractType
                 foreach ($data as $name => $value) {
                     $form->add($name, $options['entry_type'], array_replace([
                         'property_path' => '[' . $name . ']',
-                        'disabled'      => $options['disabled'],
                     ], $options['entry_options']));
                 }
             });
     }
 
-    public function finishView(FormView $view, FormInterface $form, array $options): void
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['headers'] = true;
+        $view->vars['with_availability'] = $view->parent->vars['with_availability'];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
+            ->setRequired(['entry_type'])
             ->setDefaults([
                 'shipment'      => null,
                 'label'         => t('shipment.field.items', [], 'EkynaCommerce'),
-                'entry_type'    => ShipmentItemType::class,
                 'entry_options' => [],
             ])
             ->setAllowedTypes('shipment', ShipmentInterface::class)
             ->setNormalizer('entry_options', function (Options $options, $value) {
                 $value['shipment'] = $options['shipment'];
+                $value['disabled'] = $options['disabled'];
 
                 return $value;
             });

@@ -128,7 +128,7 @@ class ShipmentHelper implements
     }
 
     /**
-     * Returns whether or not the given shipment can be deleted.
+     * Returns whether the given shipment can be deleted.
      */
     public function isShipmentDeleteable(Shipment\ShipmentInterface $shipment): bool
     {

@@ -160,11 +160,10 @@ class ShipmentType extends AbstractResourceType
                     ]);
 
                 if (!$sale->isSample()) {
+                    $label = 'shipment.field.' . ($shipment->isReturn() ? 'auto_credit' : 'auto_invoice');
+
                     $form->add('autoInvoice', Type\CheckboxType::class, [
-                        'label'    => t(
-                            'shipment.field.' . ($shipment->isReturn() ? 'auto_credit'
-                                : 'auto_invoice'), [], 'EkynaCommerce'
-                        ),
+                        'label'    => t($label, [], 'EkynaCommerce'),
                         'disabled' => $locked || null !== $shipment->getInvoice(),
                         'required' => false,
                         'attr'     => [
@@ -175,7 +174,7 @@ class ShipmentType extends AbstractResourceType
             });
     }
 
-    public function finishView(FormView $view, FormInterface $form, array $options): void
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         /** @var ShipmentInterface $shipment */
         $shipment = $form->getData();
@@ -185,7 +184,7 @@ class ShipmentType extends AbstractResourceType
 
         // For items layout
         $view->vars['return_mode'] = $shipment->isReturn();
-        $view->vars['locked'] = $locked;
+        $view->vars['with_availability'] = !($locked && !$privileged);
         $view->vars['privileged'] = $privileged;
 
         FormUtil::addClass($view, 'shipment');

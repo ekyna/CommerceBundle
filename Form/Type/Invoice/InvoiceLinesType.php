@@ -19,16 +19,19 @@ use function Symfony\Component\Translation\t;
  */
 class InvoiceLinesType extends AbstractType
 {
-    public function finishView(FormView $view, FormInterface $form, array $options): void
+    public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $view->vars['headers'] = false;
+        $view->vars['with_availability'] = $view->parent->vars['with_availability'];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'label' => t('invoice.field.lines', [], 'EkynaCommerce'),
-        ]);
+        $resolver
+            ->setRequired(['entry_type'])
+            ->setDefaults([
+                'label' => t('invoice.field.lines', [], 'EkynaCommerce'),
+            ]);
     }
 
     public function getBlockPrefix(): string

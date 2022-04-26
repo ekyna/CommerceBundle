@@ -58,9 +58,10 @@ class InvoiceTreeType extends AbstractType
             });
     }
 
-    public function finishView(FormView $view, FormInterface $form, array $options): void
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['headers'] = true;
+        $view->vars['with_availability'] = $view->parent->vars['with_availability'];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
