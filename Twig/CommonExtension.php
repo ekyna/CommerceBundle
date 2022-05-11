@@ -32,6 +32,11 @@ class CommonExtension extends AbstractExtension
                 ['is_safe' => ['html']]
             ),
             new TwigFilter(
+                'customer',
+                [CommonRenderer::class, 'renderCustomer'],
+                ['is_safe' => ['html']]
+            ),
+            new TwigFilter(
                 'customer_contact',
                 [CommonRenderer::class, 'renderCustomerContact'],
                 ['is_safe' => ['html']]

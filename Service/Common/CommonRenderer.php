@@ -87,6 +87,36 @@ class CommonRenderer
     }
 
     /**
+     * Renders the customer.
+     *
+     * @param array $options ('display_phones' and 'locale')
+     */
+    public function renderCustomer(array $customer, array $options = []): string
+    {
+        // TODO Accept CustomerInterface, SaleInterface and array as inputs.
+
+        $customer = array_replace([
+            'number'     => null,
+            'company'    => null,
+            'first_name' => null,
+            'last_name'  => null,
+            'email'      => null,
+            'phone'      => null,
+            'mobile'     => null,
+        ], $customer);
+
+        $options = array_replace([
+            'display_phones' => true,
+            'locale'         => null,
+        ], $options);
+
+        return $this->getTemplate()->renderBlock('customer', [
+            'customer' => $customer,
+            'options'  => $options,
+        ]);
+    }
+
+    /**
      * Renders the customer contact.
      *
      * @param CustomerContactInterface $contact

@@ -98,7 +98,7 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.repository.order_invoice'),
                 service('ekyna_commerce.calculator.document'),
                 service('doctrine.orm.default_entity_manager'),
-                param('ekyna_commerce.default.currency'),
+                service('ekyna_commerce.checker.locking'),
             ])
             ->tag('console.command')
 

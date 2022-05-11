@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Command;
 use DateTime;
 use Decimal\Decimal;
 use Doctrine\ORM\EntityManagerInterface;
+use Ekyna\Component\Commerce\Common\Locking\LockChecker;
 use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculatorInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
@@ -15,6 +16,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+
+use function count;
 
 /**
  * Class InvoiceRecalculateCommand
@@ -26,23 +29,22 @@ class InvoiceRecalculateCommand extends Command
     protected static $defaultName = 'ekyna:commerce:invoice:recalculate';
 
     private OrderInvoiceRepositoryInterface $invoiceRepository;
-    private DocumentCalculatorInterface $invoiceCalculator;
-    private EntityManagerInterface $invoiceManager;
-    private string $defaultCurrency;
-
+    private DocumentCalculatorInterface     $invoiceCalculator;
+    private EntityManagerInterface          $invoiceManager;
+    private LockChecker                     $lockChecker;
 
     public function __construct(
         OrderInvoiceRepositoryInterface $invoiceRepository,
-        DocumentCalculatorInterface $invoiceCalculator,
-        EntityManagerInterface $invoiceManager,
-        string $defaultCurrency
+        DocumentCalculatorInterface     $invoiceCalculator,
+        EntityManagerInterface          $invoiceManager,
+        LockChecker                     $lockChecker
     ) {
+        parent::__construct();
+
         $this->invoiceRepository = $invoiceRepository;
         $this->invoiceCalculator = $invoiceCalculator;
-        $this->invoiceManager    = $invoiceManager;
-        $this->defaultCurrency   = $defaultCurrency;
-
-        parent::__construct();
+        $this->invoiceManager = $invoiceManager;
+        $this->lockChecker = $lockChecker;
     }
 
     protected function configure(): void
@@ -50,7 +52,8 @@ class InvoiceRecalculateCommand extends Command
         $this
             ->setDescription('Recalculates the invoices created the given month.')
             ->addOption('id', 'i', InputOption::VALUE_REQUIRED, 'The invoice id.')
-            ->addOption('month', 'm', InputOption::VALUE_REQUIRED, 'The month date as `Y-m`.');
+            ->addOption('month', 'm', InputOption::VALUE_REQUIRED, 'The month date as `Y-m`.')
+            ->addOption('force', null, InputOption::VALUE_NONE, 'Whether to force update');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -76,11 +79,15 @@ class InvoiceRecalculateCommand extends Command
 
         // Confirmations
         $output->writeln('<error>This is a dangerous operation.</error>');
-        $count    = count($invoices);
-        $helper   = $this->getHelper('question');
+        $count = count($invoices);
+        $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion("Recalculate $count invoices ?", false);
         if (!$helper->ask($input, $output, $question)) {
             return Command::SUCCESS;
+        }
+
+        if ($input->getOption('force')) {
+            $this->lockChecker->setEnabled(false);
         }
 
         $confirm = function (string $number, array $diff) use ($helper, $input, $output) {
@@ -88,7 +95,7 @@ class InvoiceRecalculateCommand extends Command
             $output->writeln('  Diffs:');
 
             foreach ($diff as $key => $amounts) {
-                $output->writeln(sprintf('   * %s : %f => %f', $key, $amounts[0], $amounts[1]));
+                $output->writeln(sprintf('   * %s : %s => %s', $key, $amounts[0], $amounts[1]));
             }
 
             $question = new ConfirmationQuestion("  Confirm invoice $number update ?", false);
@@ -110,7 +117,7 @@ class InvoiceRecalculateCommand extends Command
             $this->invoiceCalculator->calculate($invoice);
             $newAmounts = $this->getAmounts($invoice);
 
-            if (empty($diff = $this->getDiff($oldAmounts, $newAmounts, $invoice->getCurrency()))) {
+            if (empty($diff = $this->getDiff($oldAmounts, $newAmounts))) {
                 $output->writeln('<comment>up to date</comment>');
 
                 continue;
@@ -153,34 +160,48 @@ class InvoiceRecalculateCommand extends Command
             'realGrandTotal' => $invoice->getRealPaidTotal(),
             'paidTotal'      => $invoice->getPaidTotal(),
             'realPaidTotal'  => $invoice->getRealPaidTotal(),
+            'taxesDetails'   => $invoice->getTaxesDetails(),
         ];
     }
 
     /**
      * Returns the invoice's amounts diff.
      */
-    private function getDiff(array $a, array $b, string $currency): array
+    private function getDiff(array $a, array $b): array
     {
+        $decimalDiff = function (Decimal $a, Decimal $b): ?array {
+            if ($a->equals($b)) {
+                return null;
+            }
+
+            return [$a->toFixed(5), $b->toFixed(5)];
+        };
+
+        $arrayDiff = function (array $a, array $b): ?array {
+            if ($a === $b) {
+                return null;
+            }
+
+            return ['array(' . count($a) . ')', 'array(' . count($b) . ')'];
+        };
+
         $keys = [
-            'goodsBase'      => $currency,
-            'discountBase'   => $currency,
-            'shipmentBase'   => $currency,
-            'taxesTotal'     => $currency,
-            'grandTotal'     => $currency,
-            'realGrandTotal' => $this->defaultCurrency,
-            'paidTotal'      => $currency,
-            'realPaidTotal'  => $this->defaultCurrency,
+            'goodsBase'      => $decimalDiff,
+            'discountBase'   => $decimalDiff,
+            'shipmentBase'   => $decimalDiff,
+            'taxesTotal'     => $decimalDiff,
+            'grandTotal'     => $decimalDiff,
+            'realGrandTotal' => $decimalDiff,
+            'paidTotal'      => $decimalDiff,
+            'realPaidTotal'  => $decimalDiff,
+            'taxesDetails'   => $arrayDiff,
         ];
 
         $diff = [];
 
-        foreach ($keys as $key => $c) {
-            /** @var Decimal $aD */
-            $aD = $a[$key];
-            /** @var Decimal $bD */
-            $bD = $b[$key];
-            if (!$aD->equals($bD)) {
-                $diff[$key] = [$aD->toFixed(5), $bD->toFixed(5)];
+        foreach ($keys as $key => $closure) {
+            if (null !== $d = $closure($a[$key], $b[$key])) {
+                $diff[$key] = $d;
             }
         }
 

@@ -21,32 +21,6 @@
 {%- endmacro -%}
 
 
-{%- macro render_customer(customer) -%}
-<p>
-    {%- if customer['number'] is not empty -%}
-        {{ customer['number'] }}<br>
-    {%- endif -%}
-
-    {%- if customer['company'] is not empty -%}
-        <strong>{{ customer['company'] }}</strong><br>
-        {{ customer['full_name'] }}<br>
-    {%- else -%}
-        <strong>{{ customer['full_name'] }}</strong><br>
-    {%- endif -%}
-
-    <em>{{ customer['email'] }}</em>
-
-    {%- if customer['phone'] is not empty -%}
-        <br><span class="text-alt">{{ 'field.phone'|trans({}, 'EkynaUi') }}</span> {{ customer['phone'] -}}
-    {%- endif -%}
-
-    {%- if customer['mobile'] is not empty -%}
-        <br><span class="text-alt">{{ 'field.mobile'|trans({}, 'EkynaUi') }}</span> {{ customer['mobile'] -}}
-    {%- endif -%}
-</p>
-{%- endmacro -%}
-
-
 {%- macro render_voucher_number(subject) -%}
     {%- if subject.sale.voucherNumber is not empty -%}
         <span class="text-alt">{{ 'sale.field.voucher_number'|trans({}, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw }}</span>

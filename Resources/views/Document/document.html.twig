@@ -42,7 +42,7 @@
 
 {# --- ADDRESSES --- #}
 {%- block doc_customer -%}
-    {{- macro.render_customer(subject.customer) -}}
+    <p>{{ subject.customer|customer }}</p>
 {%- endblock doc_customer -%}
 
 {%- block doc_invoice_address -%}

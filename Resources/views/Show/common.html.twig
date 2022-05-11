@@ -62,6 +62,43 @@
 {% endblock address %}
 
 
+{%- block customer -%}
+{% apply spaceless %}
+{%- if options['locale'] is not null -%}
+    {%- do trans_set_locale(options['locale']) -%}
+{%- endif -%}
+
+{%- if customer['number'] is not empty -%}
+    {{ customer['number'] }}<br>
+{%- endif -%}
+
+{%- if customer['company'] is not empty -%}
+    <strong>{{ customer['company'] }}</strong><br>
+    {% if customer['first_name'] is not empty and customer['last_name'] is not empty -%}
+        {{ customer['first_name'] }} {{ customer['last_name'] }}<br>
+    {%- endif -%}
+{%- else -%}
+    <strong>{{ customer['first_name'] }} {{ customer['last_name'] }}</strong><br>
+{%- endif -%}
+
+<em>{{ customer['email'] }}</em>
+
+{% if options['display_phones'] -%}
+    {%- if customer['phone'] is not empty -%}
+        <br><abbr title="{{ 'field.phone'|trans({}, 'EkynaUi') }}">T:</abbr> {{ customer['phone'] -}}
+    {%- endif -%}
+    {%- if customer['mobile'] is not empty -%}
+        <br><abbr title="{{ 'field.mobile'|trans({}, 'EkynaUi') }}">M:</abbr> {{ customer['mobile'] -}}
+    {%- endif -%}
+{%- endif -%}
+
+{%- if options['locale'] is not null -%}
+    {% do trans_revert_locale() %}
+{% endif %}
+{% endapply %}
+{%- endblock customer -%}
+
+
 {% block customer_contact %}
 {% apply spaceless %}
 {%- if options.locale is not null -%}
@@ -97,6 +134,7 @@
 {% endif %}
 {% endapply %}
 {% endblock customer_contact %}
+
 
 {% block notifications %}
 {% apply spaceless %}
