@@ -455,6 +455,7 @@ checkout:
     confirm:
         attachment_remove: Are you sure you want to remove this attachmment ?
     payment:
+        no_method_available: No payment method available
         last_step: >
             Clicking on the button &laquo;Pay by&hellip;&raquo; <strong>will confirm your order</strong>.
         pay_by: "Pay by %method%"

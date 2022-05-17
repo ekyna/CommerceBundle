@@ -45,6 +45,13 @@
             </div>
         </div>
     {% if loop.last or loop.index0 % 2 == 1 %}</div>{% endif %}
+    {%- else -%}
+        <div class="alert alert-danger">
+            <p>
+                <i class="glyphicon glyphicon-alert"></i>&nbsp;
+                {{ 'checkout.payment.no_method_available'|trans({}, 'EkynaCommerce') }}
+            </p>
+        </div>
     {%- endfor %}
 
 

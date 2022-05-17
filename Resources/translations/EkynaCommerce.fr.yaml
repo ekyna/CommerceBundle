@@ -211,7 +211,7 @@ account:
         show: Détail de la facture <em>%number%</em>
         empty_list: Aucune facture enregistré
     payment:
-        confirm_cancel: Êtes-vous sûr de vouloir annuler le paiment %number% ?
+        confirm_cancel: Êtes-vous sûr de vouloir annuler le paiement %number% ?
     attachment:
         title: Documents
     registration:
@@ -467,6 +467,7 @@ checkout:
     confirm:
         attachment_remove: Êtes-vous sûr de vouloir supprimer cette pièce jointe ?
     payment:
+        no_method_available: Aucun mode de paiement disponible
         last_step: >
             Cliquer sur un bouton &laquo;Régler par&hellip;&raquo; <strong>validera votre commande</strong>.
         pay_by: "Régler par %method%"
@@ -595,7 +596,7 @@ document:
         invoice: Facture
         credit: Avoir
     mention:
-        payment_with_order: Paiment comptant à la commande
+        payment_with_order: Paiement comptant à la commande
         due_date: Date d'échéance
         remaining_unknown: Les éléments suivants vous seront livrés ultérieurement.
         remaining_with_date: Les éléments suivants vous seront livrés à partir du %date%.
@@ -726,8 +727,8 @@ customer:
         default_payment_method: >
             Détermine les mentions et pied de page des documents
         payment_methods: >
-            Restreint les modes de paiment utilisables.
-            Le mode de paiment par défaut sélectionné ci-dessus est inclus dans ces restrictions.
+            Restreint les modes de paiement utilisables.
+            Le mode de paiement par défaut sélectionné ci-dessus est inclus dans ces restrictions.
     notify:
         admin_link: Voir la fiche client dans l'administration
         registration:

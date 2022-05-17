@@ -25,6 +25,13 @@
             {{- form(form) -}}
         </div>
     </div>
+    {%- else -%}
+        <div class="alert alert-warning">
+            <p>
+                <i class="glyphicon glyphicon-alert"></i>&nbsp;
+                {{ 'checkout.payment.no_method_available'|trans({}, 'EkynaCommerce') }}
+            </p>
+        </div>
     {%- endfor %}
     <script type="text/javascript">require(['ekyna-commerce/payment-forms']);</script>
 {% endapply %}

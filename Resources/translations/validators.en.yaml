@@ -32,6 +32,7 @@ ekyna_commerce:
         payment_methods_must_be_empty: A sales manager can't have restrictions on payment methods (but his accountable service can).
         duplicate_payment_method: Do not add the default payment method to the authorized payment methods.
         default_payment_method_is_mandatory: Please configure a default payment method if you wish to configure restricted payment methods.
+        term_required_for_factor_method: Factor payment method requires payment term.
         unexpected_payment_method: Unexpected payment method.
         vat_number_is_mandatory: Please enter your VAT umber.
         unique_user: This user is already assigned to another customer.
@@ -92,6 +93,7 @@ ekyna_commerce:
         outstanding_overflow_is_forbidden: Outstanding overflow is forbidden for this customer.
         outstanding_limit_require_term: Please select a payment term to define an outstanding limit.
         deposit_greater_than_grand_total: The deposit amount must be lower the the grand total.
+        term_required_for_factor_method: Factor payment method requires payment term.
     sale_item:
         root_item_cant_be_private: This product cannot be hidden.
         privacy_integrity: Hidden products cannot contain visible products.

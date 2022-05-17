@@ -31,7 +31,8 @@ ekyna_commerce:
         default_payment_method_must_be_null: Un commercial ne peut avoir de mode de paiement par défaut (à configurer sur le service achat).
         payment_methods_must_be_empty: Un commercial ne peut avoir de restrictions sur les modes de paiement (à configurer sur le service achat).
         duplicate_payment_method: N'ajoutez pas le mode de paiement par défaut aux modes de paiement autorisés.
-        default_payment_method_is_mandatory: Veuillez configurer un mode de paiment par défaut si vous souhaitez configurer des restrictions sur les modes de paiement.
+        default_payment_method_is_mandatory: Veuillez configurer un mode de paiement par défaut si vous souhaitez configurer des restrictions sur les modes de paiement.
+        term_required_for_factor_method: Le mode de paiement factor requiert des conditions de paiement.
         unexpected_payment_method: Mode de paiement inattendu.
         vat_number_is_mandatory: Veuillez saisir votre numéro de TVA.
         unique_user: Cet utilisateur est déjà attribué à un autre client.
@@ -94,6 +95,7 @@ ekyna_commerce:
         outstanding_overflow_is_forbidden: Les dépassement d'encours ne sont pas autorisés pour ce client.
         outstanding_limit_require_term: Veuillez choisir une condition de payment pour définir une limite d'encours.
         deposit_greater_than_grand_total: L'acompte doit être inférieur au total TTC.
+        term_required_for_factor_method: Le mode de paiement factor requiert des conditions de paiement.
     sale_item:
         root_item_cant_be_private: Cet article ne peut pas être privé.
         privacy_integrity: Les articles privés ne peuvent pas contenir des articles publiques.
