@@ -62,6 +62,8 @@ resources:
                     templates: '@EkynaCommerce/Admin/SupplierProduct'
                     create: false
                     list: false
+                    update:
+                        redirect_to_parent: false
                 Ekyna\Bundle\CommerceBundle\Action\Admin\SupplierProduct\CreateAction: ~
 
         supplier_carrier:

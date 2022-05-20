@@ -86,50 +86,42 @@ class OrderEventSubscriber extends BaseSubscriber
      *
      * @param OrderInterface $sale
      */
-    protected function handleContentChange(SaleInterface $sale): bool
+    protected function handleContentChange(SaleInterface $sale): void
     {
-        $changed = parent::handleContentChange($sale);
+        parent::handleContentChange($sale);
 
         $tags = $sale->getItemsTags();
 
         // TODO Remove unexpected tags
 
         foreach ($sale->getItems() as $item) {
-            $changed = $this->mergeItemTags($item, $tags) || $changed;
+            $this->mergeItemTags($item, $tags);
         }
-
-        return $changed;
     }
 
     /**
      * Resolves the item tags.
-     *
-     * @return bool Whether the order items tags has change.
      */
-    private function mergeItemTags(OrderItemInterface $item, Collection $tags): bool
+    private function mergeItemTags(OrderItemInterface $item, Collection $tags): void
     {
-        $changed = false;
         if ($item->hasChildren()) {
             foreach ($item->getChildren() as $child) {
-                $changed = $this->mergeItemTags($child, $tags) || $changed;
+                $this->mergeItemTags($child, $tags);
             }
         }
 
         if (null === $subject = $this->subjectHelper->resolve($item, false)) {
-            return $changed;
+            return;
         }
 
         if (!$subject instanceof TagsSubjectInterface) {
-            return $changed;
+            return;
         }
 
         foreach ($subject->getTags() as $tag) {
             if (!$tags->contains($tag)) {
                 $tags->add($tag);
-                $changed = true;
             }
         }
-
-        return $changed;
     }
 }

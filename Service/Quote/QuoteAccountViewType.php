@@ -71,7 +71,7 @@ class QuoteAccountViewType extends AbstractViewType
         // Move up
         if (0 < $item->getPosition()) {
             $moveUpPath = $this->generateUrl('ekyna_commerce_account_quote_item_move_up', [
-                'number' => $item->getSale()->getNumber(),
+                'number' => $item->getRootSale()->getNumber(),
                 'id'     => $item->getId(),
             ]);
             $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-up', [
@@ -84,7 +84,7 @@ class QuoteAccountViewType extends AbstractViewType
         // Move down
         if (!$item->isLast()) {
             $moveUpPath = $this->generateUrl('ekyna_commerce_account_quote_item_move_down', [
-                'number' => $item->getSale()->getNumber(),
+                'number' => $item->getRootSale()->getNumber(),
                 'id'     => $item->getId(),
             ]);
             $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-down', [
@@ -101,7 +101,7 @@ class QuoteAccountViewType extends AbstractViewType
 
         // Remove action
         $removePath = $this->generateUrl('ekyna_commerce_account_quote_item_remove', [
-            'number' => $item->getSale()->getNumber(),
+            'number' => $item->getRootSale()->getNumber(),
             'id'     => $item->getId(),
         ]);
         $view->addAction(new View\Action($removePath, 'fa fa-remove', [
@@ -114,7 +114,7 @@ class QuoteAccountViewType extends AbstractViewType
         // Configure action
         if ($item->isConfigurable()) {
             $configurePath = $this->generateUrl('ekyna_commerce_account_quote_item_configure', [
-                'number' => $item->getSale()->getNumber(),
+                'number' => $item->getRootSale()->getNumber(),
                 'id'     => $item->getId(),
             ]);
             $view->addAction(new View\Action($configurePath, 'fa fa-cog', [

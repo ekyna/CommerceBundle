@@ -38,7 +38,7 @@ class SaleItemEventSubscriber implements EventSubscriberInterface
      */
     public function onSaleItemInitialize(SaleItemEvent $event)
     {
-        if (null === $sale = $event->getItem()->getSale()) {
+        if (null === $sale = $event->getItem()->getRootSale()) {
             return;
         }
 

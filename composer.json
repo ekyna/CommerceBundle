@@ -29,6 +29,9 @@
         "florianv/swap-bundle": "^5.2",
         "tecnickcom/tc-lib-barcode": "^1.17"
     },
+    "suggest" : {
+        "symfony/messenger": "To make this bundle send messages about order state change, customer registration, etc"
+    },
     "autoload": {
         "psr-4": {
             "Ekyna\\Bundle\\CommerceBundle\\": ""

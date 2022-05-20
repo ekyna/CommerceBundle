@@ -65,7 +65,7 @@ class CreateAction extends BaseAction
         $sale = $this->context->getParentResource();
 
         if ($sale instanceof SaleItemInterface) {
-            $sale = $sale->getSale();
+            $sale = $sale->getRootSale();
         }
 
         if (!$sale instanceof SaleInterface) {

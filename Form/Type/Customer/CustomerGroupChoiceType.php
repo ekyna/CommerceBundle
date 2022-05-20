@@ -9,6 +9,7 @@ use Ekyna\Component\Commerce\Customer\Model\CustomerGroupInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function array_replace;
@@ -38,8 +39,14 @@ class CustomerGroupChoiceType extends AbstractType
     {
         $resolver->setDefaults([
             'resource'          => 'ekyna_commerce.customer_group',
-            'preferred_choices' => function (CustomerGroupInterface $customerGroup) {
-                return $customerGroup->isDefault();
+            'preferred_choices' => function (Options $options) {
+                if ($options['multiple']) {
+                    return [];
+                }
+
+                return function (CustomerGroupInterface $customerGroup) {
+                    return $customerGroup->isDefault();
+                };
             },
             'choice_attr'       => function ($value) {
                 if ($value instanceof CustomerGroupInterface) {

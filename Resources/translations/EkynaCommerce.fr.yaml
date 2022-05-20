@@ -785,6 +785,7 @@ customer_address:
         no_item: Aucune adresse configuré
 
 customer_contact:
+    tab: Contacts
     label:
         singular: Contact de client
         plural: Contacts de client

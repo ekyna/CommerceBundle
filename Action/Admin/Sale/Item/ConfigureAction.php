@@ -57,10 +57,10 @@ class ConfigureAction extends AbstractFormAction
         $item = $this->context->getResource();
 
         if ($this->request->isXmlHttpRequest()) {
-            return $this->buildXhrSaleViewResponse($item->getSale());
+            return $this->buildXhrSaleViewResponse($item->getRootSale());
         }
 
-        return $this->redirect($this->generateResourcePath($item->getSale()));
+        return $this->redirect($this->generateResourcePath($item->getRootSale()));
     }
 
     protected function onRenderModal(Modal $modal): ?Response

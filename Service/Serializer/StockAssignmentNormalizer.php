@@ -44,7 +44,7 @@ class StockAssignmentNormalizer extends BaseNormalizer
         $actions = [];
 
         if ($this->contextHasGroup('StockView', $context)) {
-            $order = $object->getSaleItem()->getSale();
+            $order = $object->getSaleItem()->getRootSale();
 
             $actions[] = [
                 'label' => sprintf('%s (%s)',

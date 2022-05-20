@@ -38,7 +38,7 @@ class UpdateAction extends BaseAction
         /** @var SaleItemInterface $item */
         $item = $this->context->getResource();
 
-        $options['currency'] = $item->getSale()->getCurrency()->getCode();
+        $options['currency'] = $item->getRootSale()->getCurrency()->getCode();
 
         return parent::getForm($options);
     }
@@ -49,10 +49,10 @@ class UpdateAction extends BaseAction
         $item = $this->context->getResource();
 
         if ($this->request->isXmlHttpRequest()) {
-            return $this->buildXhrSaleViewResponse($item->getSale());
+            return $this->buildXhrSaleViewResponse($item->getRootSale());
         }
 
-        return $this->redirect($this->generateResourcePath($item->getSale()));
+        return $this->redirect($this->generateResourcePath($item->getRootSale()));
     }
 
     public static function configureAction(): array

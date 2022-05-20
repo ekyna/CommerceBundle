@@ -102,30 +102,33 @@ class CartType extends AbstractResourceType
                     'position' => 20,
                     'time'     => false,
                 ])
+                ->addFilter('customer', Type\Filter\CustomerType::class, [
+                    'position' => 30,
+                ])
                 ->addFilter('email', CType\Filter\TextType::class, [
                     'label'    => t('field.email', [], 'EkynaUi'),
-                    'position' => 30,
+                    'position' => 31,
                 ])
                 ->addFilter('company', CType\Filter\TextType::class, [
                     'label'    => t('field.company', [], 'EkynaUi'),
-                    'position' => 31,
+                    'position' => 32,
                 ])
                 ->addFilter('firstName', CType\Filter\TextType::class, [
                     'label'    => t('field.first_name', [], 'EkynaUi'),
-                    'position' => 32,
+                    'position' => 33,
                 ])
                 ->addFilter('lastName', CType\Filter\TextType::class, [
                     'label'    => t('field.last_name', [], 'EkynaUi'),
-                    'position' => 33,
+                    'position' => 34,
                 ])
                 ->addFilter('companyNumber', CType\Filter\TextType::class, [
                     'label'         => t('customer.field.company_number', [], 'EkynaCommerce'),
                     'property_path' => 'customer.companyNumber',
-                    'position'      => 34,
+                    'position'      => 35,
                 ])
                 ->addFilter('customerGroup', ResourceType::class, [
                     'resource' => 'ekyna_commerce.customer_group',
-                    'position' => 35,
+                    'position' => 36,
                 ])
                 ->addFilter('subject', Type\Filter\SaleSubjectType::class, [
                     'position' => 150,

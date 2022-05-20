@@ -142,7 +142,7 @@ class OrderViewType extends AbstractViewType
             return;
         }
 
-        $sale = $item->getSale();
+        $sale = $item->getRootSale();
 
         // Popover
         $popover = '';
@@ -224,7 +224,7 @@ class OrderViewType extends AbstractViewType
                     'ekyna_commerce.order_item_adjustment',
                     Admin\Sale\Adjustment\CreateAction::class,
                     [
-                        'orderId'     => $item->getSale()->getId(),
+                        'orderId'     => $item->getRootSale()->getId(),
                         'orderItemId' => $item->getId(),
                     ]
                 );

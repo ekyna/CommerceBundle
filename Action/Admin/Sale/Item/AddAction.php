@@ -8,6 +8,7 @@ use Craue\FormFlowBundle\Form\FormFlowInterface;
 use Ekyna\Bundle\AdminBundle\Action\AbstractCreateFlowAction;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\XhrTrait;
 use Ekyna\Bundle\CommerceBundle\Event\SaleItemModalEvent;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemCreateFlow;
 use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
 use Ekyna\Bundle\UiBundle\Model\Modal;
 use Ekyna\Component\Commerce\Common\Context\ContextProvider;
@@ -42,6 +43,7 @@ class AddAction extends AbstractCreateFlowAction
         SaleHelper               $saleHelper,
         EventDispatcherInterface $eventDispatcher
     ) {
+        /** @var SaleItemCreateFlow $flow */
         parent::__construct($flow);
 
         $this->contextProvider = $contextProvider;

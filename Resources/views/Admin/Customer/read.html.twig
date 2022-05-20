@@ -33,13 +33,13 @@
     </li>
     <li>
         <a href="#{{ resource_name }}-addresses" id="toggle-addresses" data-toggle="tab">
-            {{ 'customer_address.label.plural'|trans({}, 'EkynaCommerce') }}
+            {{ 'address.label.plural'|trans({}, 'EkynaCommerce') }}
         </a>
     </li>
     {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::CUSTOMER_CONTACT')) -%}
     <li>
         <a href="#{{ resource_name }}-contacts" id="toggle-contacts" data-toggle="tab">
-            {{ 'customer_contact.label.plural'|trans({}, 'EkynaCommerce') }}
+            {{ 'customer_contact.tab'|trans({}, 'EkynaCommerce') }}
         </a>
     </li>
     {% endif %}

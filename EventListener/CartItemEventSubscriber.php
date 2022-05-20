@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\CartItemEventSubscriber as BaseSubscriber;
@@ -14,10 +16,7 @@ use Ekyna\Component\Resource\Event\ResourceMessage;
  */
 class CartItemEventSubscriber extends BaseSubscriber
 {
-    /**
-     * @inheritDoc
-     */
-    public function onPreUpdate(ResourceEventInterface $event)
+    public function onPreUpdate(ResourceEventInterface $event): void
     {
         try {
             parent::onPreUpdate($event);
@@ -26,10 +25,7 @@ class CartItemEventSubscriber extends BaseSubscriber
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function onPreDelete(ResourceEventInterface $event)
+    public function onPreDelete(ResourceEventInterface $event): void
     {
         try {
             parent::onPreDelete($event);

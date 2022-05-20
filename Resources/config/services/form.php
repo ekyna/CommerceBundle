@@ -549,7 +549,7 @@ return static function (ContainerConfigurator $container) {
         // Sale item configure form type
         ->set('ekyna_commerce.form_type.sale_item_configure', SaleItemConfigureType::class)
             ->args([
-                service('event_dispatcher'),
+                service('ekyna_commerce.helper.sale_item'),
             ])
             ->tag('form.type')
 

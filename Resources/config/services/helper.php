@@ -13,6 +13,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Payment\CheckoutRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
+use Ekyna\Bundle\CommerceBundle\Service\SaleItemHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentRenderer;
@@ -95,7 +96,7 @@ return static function (ContainerConfigurator $container) {
             ])
             ->tag('twig.runtime')
 
-        // Sale helper and renderer
+        // Sale helper
         ->set('ekyna_commerce.helper.sale', SaleHelper::class)
             ->lazy(true)
             ->args([
@@ -106,6 +107,13 @@ return static function (ContainerConfigurator $container) {
                 service('form.factory'),
             ])
             ->alias(SaleHelper::class, 'ekyna_commerce.helper.sale')
+
+        // Sale Item helper
+        ->set('ekyna_commerce.helper.sale_item', SaleItemHelper::class)
+            ->args([
+                service('ekyna_commerce.helper.subject'),
+                service('event_dispatcher'),
+            ])
 
         // Sale view helper
         ->set('ekyna_commerce.helper.sale_view', SaleViewHelper::class)

@@ -28,7 +28,7 @@ class CustomerType extends AbstractFilterType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label'      => t('customer.label.plural', [], 'EkynaCommerce'),
+            'label'      => t('customer.label.singular', [], 'EkynaCommerce'),
             'class'      => $this->customerClass,
             'form_class' => CustomerSearchType::class,
         ]);

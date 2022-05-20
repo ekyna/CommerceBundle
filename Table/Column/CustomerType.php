@@ -19,6 +19,9 @@ use function Symfony\Component\Translation\t;
  * Class CustomerType
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
  * @author  Etienne Dauvergne <contact@ekyna.com>
+ *
+ * @deprecated Use ResourceType column type
+ * @TODO Remove
  */
 class CustomerType extends AbstractColumnType
 {

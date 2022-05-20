@@ -96,7 +96,7 @@ class QuoteAdminViewType extends AbstractViewType
             return;
         }
 
-        $sale = $item->getSale();
+        $sale = $item->getRootSale();
 
         // Manual adjustments
         if (!$item->getSubjectIdentity()->hasIdentity()
@@ -130,7 +130,7 @@ class QuoteAdminViewType extends AbstractViewType
                     'ekyna_commerce.quote_item_adjustment',
                     Admin\Sale\Adjustment\CreateAction::class,
                     [
-                        'quoteId'     => $item->getSale()->getId(),
+                        'quoteId'     => $item->getRootSale()->getId(),
                         'quoteItemId' => $item->getId(),
                     ]
                 );

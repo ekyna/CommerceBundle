@@ -101,10 +101,6 @@ class DuplicateAction extends AbstractSaleAction implements RoutingActionInterfa
             ->setExchangeDate(null)
             ->setAcceptedAt(null);
 
-        if ($targetSale instanceof InChargeSubjectInterface) {
-            $targetSale->setInCharge(null);
-        }
-
         $factory->initialize($targetSale);
 
         // Clear addresses
@@ -112,6 +108,10 @@ class DuplicateAction extends AbstractSaleAction implements RoutingActionInterfa
             ->setSameAddress(true)
             ->setInvoiceAddress(null)
             ->setDeliveryAddress(null);
+
+        if ($targetSale instanceof InChargeSubjectInterface) {
+            $targetSale->setInCharge(null);
+        }
 
         $form = $this->createDuplicateConfirmForm(
             $sourceSale, $targetSale, $targetConfig->getData('form'), $target

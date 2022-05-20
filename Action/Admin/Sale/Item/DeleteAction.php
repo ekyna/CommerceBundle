@@ -42,10 +42,10 @@ class DeleteAction extends BaseAction
         $item = $this->context->getResource();
 
         if ($this->request->isXmlHttpRequest()) {
-            return $this->buildXhrSaleViewResponse($item->getSale());
+            return $this->buildXhrSaleViewResponse($item->getRootSale());
         }
 
-        return $this->redirect($this->generateResourcePath($item->getSale()));
+        return $this->redirect($this->generateResourcePath($item->getRootSale()));
     }
 
     public static function configureAction(): array

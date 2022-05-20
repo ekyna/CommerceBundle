@@ -74,7 +74,7 @@ class PrioritizeAction extends AbstractAction implements AdminActionInterface
                 $this->getManager($item)->flush();
             }
 
-            return $this->buildXhrSaleViewResponse($item->getSale());
+            return $this->buildXhrSaleViewResponse($item->getRootSale());
         }
 
         $modal = new Modal('sale.header.item.prioritize');

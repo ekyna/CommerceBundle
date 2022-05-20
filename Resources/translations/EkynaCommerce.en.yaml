@@ -770,6 +770,7 @@ customer_address:
         no_item: No address configured
 
 customer_contact:
+    tab: Contacts
     label:
         singular: Customer contact
         plural: Customer contacts

@@ -38,10 +38,6 @@ class UpdateAction extends BaseAction
     {
         $sale = $this->context->getParentResource();
 
-        if ($sale instanceof SaleItemInterface) {
-            $sale = $sale->getSale();
-        }
-
         if (!$sale instanceof SaleInterface) {
             throw new UnexpectedTypeException($sale, SaleInterface::class);
         }
