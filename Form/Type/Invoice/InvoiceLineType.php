@@ -8,10 +8,14 @@ use Decimal\Decimal;
 use Ekyna\Bundle\CommerceBundle\Form\FormHelper;
 use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Component\Commerce\Common\Model\Units;
+use Ekyna\Component\Commerce\Document\Model\DocumentLineTypes;
+use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceAvailability;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceLineInterface;
 use Ekyna\Component\Commerce\Invoice\Resolver\AvailabilityResolverFactory;
+use Ekyna\Component\Commerce\Stock\Model\Availability;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -78,25 +82,10 @@ class InvoiceLineType extends AbstractResourceType
         /** @var InvoiceInterface $invoice */
         $invoice = $options['invoice'];
         $unit = Units::PIECE;
-        $availability = $line->getAvailability();
-
-        $resolver = $this->availabilityResolverFactory->createWithInvoice($invoice);
+        $availability = $this->getAvailability($line, $invoice);
 
         if ($saleItem = $line->getSaleItem()) {
             $unit = $saleItem->getUnit();
-            if (!$availability) {
-                $availability = $resolver->resolveSaleItem($saleItem);
-            }
-        } elseif ($adjustment = $line->getSaleAdjustment()) {
-            if (!$availability) {
-                $availability = $resolver->resolveSaleDiscount($adjustment);
-            }
-        } elseif ($sale = $line->getSale()) {
-            if (!$availability) {
-                $availability = $resolver->resolveSaleShipment($sale);
-            }
-        } else {
-            throw new RuntimeException();
         }
 
         $view->vars['line'] = $line;
@@ -111,6 +100,37 @@ class InvoiceLineType extends AbstractResourceType
             $quantity->vars['attr']['data-quantity'] = Units::fixed($saleItem->getQuantity(), $unit);
             $quantity->vars['attr']['data-parent'] = $view->parent->parent->children['quantity']->vars['id'];
         }
+    }
+
+    private function getAvailability(InvoiceLineInterface $line, InvoiceInterface $invoice): InvoiceAvailability
+    {
+        if (null !== $availability = $line->getAvailability()) {
+            return $availability;
+        }
+
+        $resolver = $this->availabilityResolverFactory->createWithInvoice($invoice);
+
+        if (DocumentLineTypes::TYPE_GOOD === $line->getType()) {
+            if (null === $item = $line->getSaleItem()) {
+                throw new RuntimeException('Sale item is not set.');
+            }
+
+            return $resolver->resolveSaleItem($item);
+        }
+
+        if (DocumentLineTypes::TYPE_DISCOUNT === $line->getType()) {
+            if (null === $adjustment = $line->getSaleAdjustment()) {
+                throw new RuntimeException('Sale adjustment is not set.');
+            }
+
+            return $resolver->resolveSaleDiscount($adjustment);
+        }
+
+        if (DocumentLineTypes::TYPE_SHIPMENT === $line->getType()) {
+            return $resolver->resolveSaleShipment($invoice->getSale());
+        }
+
+        throw new RuntimeException();
     }
 
     public function configureOptions(OptionsResolver $resolver): void
