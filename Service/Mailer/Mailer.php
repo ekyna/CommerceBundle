@@ -6,7 +6,6 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Mailer;
 
 use DateTime;
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
-use Ekyna\Bundle\AdminBundle\Service\Mailer\MailerFactory;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes as BDocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderAttachmentTypes;
@@ -32,6 +31,8 @@ use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Resource\Exception\PdfException;
 use League\Flysystem\FilesystemOperator;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -44,7 +45,7 @@ use Twig\Environment;
  */
 class Mailer
 {
-    protected MailerFactory           $mailer;
+    protected MailerInterface         $mailer;
     protected Environment             $templating;
     protected TranslatorInterface     $translator;
     protected SettingManagerInterface $settingsManager;
@@ -57,7 +58,7 @@ class Mailer
     private ?Address $notificationSender = null;
 
     public function __construct(
-        MailerFactory           $mailer,
+        MailerInterface         $mailer,
         Environment             $templating,
         TranslatorInterface     $translator,
         SettingManagerInterface $settingsManager,
@@ -89,7 +90,7 @@ class Mailer
 
         $subject = $this->translator->trans('customer.notify.fraudster.subject', [], 'EkynaCommerce');
 
-        return $this->mailer->send($this->createMessage($subject, $body));
+        return $this->send($this->createMessage($subject, $body));
     }
 
     /**
@@ -103,7 +104,7 @@ class Mailer
 
         $subject = $this->translator->trans('customer.notify.registration.subject', [], 'EkynaCommerce');
 
-        return $this->mailer->send($this->createMessage($subject, $body));
+        return $this->send($this->createMessage($subject, $body));
     }
 
     public function sendCustomerRegistrationConfirmation(CustomerInterface $customer): void
@@ -142,10 +143,7 @@ class Mailer
             $message->attach(file_get_contents($csvPath), 'account-balance.csv', 'text/csv');
         }
 
-        // Trigger IMAP copy
-        // TODO $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
-
-        return $this->mailer->send($message);
+        return $this->send($message);
     }
 
     /**
@@ -187,10 +185,7 @@ class Mailer
             );
         }
 
-        // Trigger imap copy
-        // TODO $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
-
-        return $this->mailer->send($message);
+        return $this->send($message);
     }
 
     /**
@@ -224,7 +219,7 @@ class Mailer
 
         $to = new Address($customer->getEmail(), trim($customer->getFirstName() . ' ' . $customer->getLastName()));
 
-        return $this->mailer->send($this->createMessage($subject, $body, $to, false));
+        return $this->send($this->createMessage($subject, $body, $to, false));
     }
 
     /**
@@ -256,7 +251,7 @@ class Mailer
 
         $to = $admin ? new Address($admin->getEmail(), $admin->hasFullName() ? $admin->getFullName() : '') : null;
 
-        return $this->mailer->send($this->createMessage($subject, $body, $to, false));
+        return $this->send($this->createMessage($subject, $body, $to, false));
     }
 
     /**
@@ -289,7 +284,7 @@ class Mailer
 
         $to = new Address($customer->getEmail(), trim($customer->getFirstName() . ' ' . $customer->getLastName()));
 
-        return $this->mailer->send($this->createMessage($subject, $body, $to, false));
+        return $this->send($this->createMessage($subject, $body, $to, false));
     }
 
     /**
@@ -490,12 +485,7 @@ class Mailer
             return false;
         }
 
-        // Trigger IMAP copy
-        if (!$notify->isTest()) {
-            // TODO $message->getHeaders()->addTextHeader(ImapCopyPlugin::HEADER, 'do');
-        }
-
-        return $this->mailer->send($message);
+        return $this->send($message);
     }
 
     /**
@@ -511,7 +501,7 @@ class Mailer
             ->from($this->getNotificationSenderAddress())
             ->to(new Address($notify->getFrom()->getEmail(), $notify->getFrom()->getName()));
 
-        $this->mailer->getDefaultMailer()->send($message);
+        $this->send($message);
     }
 
     /**
@@ -598,5 +588,16 @@ class Mailer
         }
 
         throw new RuntimeException('Failed to fetch the sale from the notify object.');
+    }
+
+    private function send(Email $email): bool
+    {
+        try {
+            $this->mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+            return false;
+        }
+
+        return true;
     }
 }
