@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\DataFixtures;
 
+use DateTime;
 use Decimal\Decimal;
-use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
+use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
+use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderItemInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface;
 use Fidry\AliceDataFixtures\ProcessorInterface;
@@ -31,17 +33,14 @@ class CommerceProcessor implements ProcessorInterface
 
     private function preProcessSupplierOrderItem(SupplierOrderItemInterface $item): void
     {
-        /** @var SubjectInterface $subject */
         $subject = $item->getProduct()->getSubjectIdentity()->getSubject();
 
-        if (is_a($subject, 'Ekyna\Bundle\ProductBundle\Model\ProductInterface')) {
-            /** @var \Ekyna\Bundle\ProductBundle\Model\ProductInterface $subject */
-            $item->setDesignation($subject->getFullDesignation(true));
-        } else {
-            $item->setDesignation($subject->getDesignation());
+        if (!$subject instanceof StockSubjectInterface) {
+            throw new UnexpectedTypeException($subject, StockSubjectInterface::class);
         }
 
         $item
+            ->setDesignation((string)$subject)
             ->setReference($subject->getReference() . '-SUPP')
             ->setNetPrice($subject->getNetPrice()->div(2))
             ->setWeight(clone $subject->getWeight())
@@ -50,17 +49,14 @@ class CommerceProcessor implements ProcessorInterface
 
     private function preProcessSupplierProduct(SupplierProductInterface $product): void
     {
-        /** @var SubjectInterface $subject */
         $subject = $product->getSubjectIdentity()->getSubject();
 
-        if (is_a($subject, 'Ekyna\Bundle\ProductBundle\Model\ProductInterface')) {
-            /** @var \Ekyna\Bundle\ProductBundle\Model\ProductInterface $subject */
-            $product->setDesignation($subject->getFullDesignation(true));
-        } else {
-            $product->setDesignation($subject->getDesignation());
+        if (!$subject instanceof StockSubjectInterface) {
+            throw new UnexpectedTypeException($subject, StockSubjectInterface::class);
         }
 
         $product
+            ->setDesignation((string)$subject)
             ->setReference($subject->getReference() . '-SUPP')
             ->setNetPrice($subject->getNetPrice()->div(2))
             ->setWeight(clone $subject->getWeight())
@@ -75,7 +71,7 @@ class CommerceProcessor implements ProcessorInterface
                 // Pre order
                 $product
                     ->setAvailableStock(new Decimal(rand(50, 150)))
-                    ->setEstimatedDateOfArrival(new \DateTime(sprintf('+ %d days', rand(10, 30))));
+                    ->setEstimatedDateOfArrival(new DateTime(sprintf('+ %d days', rand(10, 30))));
                 break;
             default:
                 // Out of stock

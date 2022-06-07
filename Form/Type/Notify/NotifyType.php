@@ -37,6 +37,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function Symfony\Component\Translation\t;
@@ -48,25 +49,44 @@ use function Symfony\Component\Translation\t;
  */
 class NotifyType extends AbstractType
 {
-    private RecipientHelper     $recipientHelper;
-    private TranslatorInterface $translator;
+    private RecipientHelper               $recipientHelper;
+    private TranslatorInterface           $translator;
+    private AuthorizationCheckerInterface $authorizationChecker;
 
-    public function __construct(RecipientHelper $recipientHelper, TranslatorInterface $translator)
-    {
+    public function __construct(
+        RecipientHelper               $recipientHelper,
+        TranslatorInterface           $translator,
+        AuthorizationCheckerInterface $authorizationChecker
+    ) {
         $this->recipientHelper = $recipientHelper;
         $this->translator = $translator;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $source = $options['source'];
 
+        // TODO Always use logged-in user as sender.
+        $superAdmin = $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
+
+        $senders = [
+            $this->recipientHelper->createWebsiteRecipient(),
+        ];
+        if (null !== $user = $this->recipientHelper->createCurrentUserRecipient()) {
+            $senders[] = $user;
+        }
+
         if ($source instanceof SaleInterface) {
-            $senders = $this->recipientHelper->createFromListFromSale($source);
+            if ($superAdmin) {
+                $senders = $this->recipientHelper->createFromListFromSale($source);
+            }
             $recipients = $this->recipientHelper->createRecipientListFromSale($source);
             $copies = $this->recipientHelper->createCopyListFromSale($source);
         } elseif ($source instanceof SupplierOrderInterface) {
-            $senders = $this->recipientHelper->createFromListFromSupplierOrder($source);
+            if ($superAdmin) {
+                $senders = $this->recipientHelper->createFromListFromSupplierOrder($source);
+            }
             $recipients = $this->recipientHelper->createRecipientListFromSupplierOrder($source);
             $copies = $this->recipientHelper->createCopyListFromSupplierOrder($source);
         } else {
@@ -98,6 +118,7 @@ class NotifyType extends AbstractType
                 'choice_value'              => 'email',
                 'multiple'                  => false,
                 'required'                  => true,
+                'disabled'                  => !$superAdmin,
             ]);
         }
 
@@ -128,14 +149,14 @@ class NotifyType extends AbstractType
             $builder->add(
                 $builder
                     ->create('copies', ChoiceType::class, [
-                        'label'        => t('notify.field.copies', [], 'EkynaCommerce'),
-                        'choices'      => $copies,
-                        'choice_label' => [$this, 'renderChoiceLabel'],
+                        'label'                     => t('notify.field.copies', [], 'EkynaCommerce'),
+                        'choices'                   => $copies,
+                        'choice_label'              => [$this, 'renderChoiceLabel'],
                         'choice_translation_domain' => false,
-                        'choice_value' => 'email',
-                        'multiple'     => true,
-                        'expanded'     => true,
-                        'required'     => false,
+                        'choice_value'              => 'email',
+                        'multiple'                  => true,
+                        'expanded'                  => true,
+                        'required'                  => false,
                     ])
                     ->addModelTransformer($collectionToArrayTransformer)
             );

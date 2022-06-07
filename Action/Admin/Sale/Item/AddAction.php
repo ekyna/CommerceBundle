@@ -72,7 +72,7 @@ class AddAction extends AbstractCreateFlowAction
         /** @var SaleItemInterface $item */
         $item = $this->context->getResource();
 
-        $this->saleHelper->addItem($sale, $item);
+        $sale->addItem($item);
 
         return $this->getManager($sale)->save($sale);
     }

@@ -68,7 +68,7 @@ class CreateAction extends BaseAction
         /** @var SaleItemInterface $item */
         $item = $this->context->getResource();
 
-        $this->saleHelper->addItem($sale, $item);
+        $sale->addItem($item);
 
         return $this->getManager($sale)->save($sale);
     }

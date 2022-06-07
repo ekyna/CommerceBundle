@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use Ekyna\Component\Commerce\Common\Context\ContextProviderInterface;
@@ -15,17 +17,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class SaleItemEventSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ContextProviderInterface
-     */
-    protected $contextProvider;
+    protected ContextProviderInterface $contextProvider;
 
-
-    /**
-     * Constructor.
-     *
-     * @param ContextProviderInterface $contextProvider
-     */
     public function __construct(ContextProviderInterface $contextProvider)
     {
         $this->contextProvider = $contextProvider;
@@ -33,10 +26,8 @@ class SaleItemEventSubscriber implements EventSubscriberInterface
 
     /**
      * Sale item initialize event handler.
-     *
-     * @param SaleItemEvent $event
      */
-    public function onSaleItemInitialize(SaleItemEvent $event)
+    public function onSaleItemInitialize(SaleItemEvent $event): void
     {
         if (null === $sale = $event->getItem()->getRootSale()) {
             return;
@@ -47,20 +38,16 @@ class SaleItemEventSubscriber implements EventSubscriberInterface
 
     /**
      * Sale item build event handler.
-     *
-     * @param SaleItemEvent $event
      */
-    public function onSaleItemBuild(SaleItemEvent $event)
+    public function onSaleItemBuild(SaleItemEvent $event): void
     {
         $this->fixItemPrivacy($event->getItem());
     }
 
     /**
      * Fixes the sale item privacy.
-     *
-     * @param SaleItemInterface $item
      */
-    public function fixItemPrivacy(SaleItemInterface $item)
+    public function fixItemPrivacy(SaleItemInterface $item): void
     {
         // Fix children first
         foreach ($item->getChildren() as $child) {
@@ -79,23 +66,20 @@ class SaleItemEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // Skip if no parent
+        // Root items can't be private
         if (null === $parent = $item->getParent()) {
+            $item->setPrivate(false);
+
             return;
         }
 
         // Public if different tax group than parent's one
         if ($item->getTaxGroup() !== $parent->getTaxGroup()) {
             $item->setPrivate(false);
-
-            return;
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             SaleItemEvents::INITIALIZE => ['onSaleItemInitialize', 2048],

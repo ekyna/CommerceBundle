@@ -53,7 +53,7 @@ class SyncSubjectAction extends AbstractAction implements AdminActionInterface
     }
 
     /**
-     * Syncs the item with it's subject recursively.
+     * Syncs the item with its subject recursively.
      */
     private function syncItem(SaleItemInterface $item): bool
     {
