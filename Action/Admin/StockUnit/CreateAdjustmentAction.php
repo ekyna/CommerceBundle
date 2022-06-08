@@ -89,7 +89,7 @@ class CreateAdjustmentAction extends AbstractAction implements AdminActionInterf
             ->setDomain('EkynaCommerce')
             ->setForm($form->createView())
             ->setVars([
-                'form_template' => $this->options['form_template']
+                'form_template' => $this->options['form_template'],
             ])
             ->addButton(Modal::BTN_SUBMIT)
             ->addButton(Modal::BTN_CLOSE);
@@ -103,9 +103,9 @@ class CreateAdjustmentAction extends AbstractAction implements AdminActionInterf
             'name'       => 'commerce_stock_unit_adjustment_create',
             'permission' => Permission::CREATE,
             'route'      => [
-                'name'    => 'admin_%s_create',
-                'path'    => '/adjustments/create',
-                'methods' => ['GET', 'POST'],
+                'name'     => 'admin_%s_stock_unit_adjustment_create',
+                'path'     => '/adjustments/create',
+                'methods'  => ['GET', 'POST'],
                 'resource' => true,
             ],
             'button'     => [

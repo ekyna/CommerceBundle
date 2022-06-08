@@ -114,7 +114,7 @@ class DeleteAdjustmentAction extends AbstractAction implements AdminActionInterf
             'name'       => 'commerce_stock_unit_adjustment_delete',
             'permission' => Permission::DELETE,
             'route'      => [
-                'name'     => 'admin_%s_delete',
+                'name'     => 'admin_%s_stock_unit_adjustment_delete',
                 'path'     => '/adjustments/{adjustmentId}/delete',
                 'methods'  => ['GET', 'POST'],
                 'resource' => true,

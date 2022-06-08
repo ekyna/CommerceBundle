@@ -23,12 +23,8 @@ use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
 use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Response;
-
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
 use Symfony\Component\Routing\Route;
-
-use function array_merge;
 
 /**
  * Class UpdateAdjustmentAction
@@ -104,7 +100,7 @@ class UpdateAdjustmentAction extends AbstractAction implements AdminActionInterf
             ->setDomain('EkynaCommerce')
             ->setForm($form->createView())
             ->setVars([
-                'form_template' => $this->options['form_template']
+                'form_template' => $this->options['form_template'],
             ])
             ->addButton(Modal::BTN_SUBMIT)
             ->addButton(Modal::BTN_CLOSE);
@@ -118,9 +114,9 @@ class UpdateAdjustmentAction extends AbstractAction implements AdminActionInterf
             'name'       => 'commerce_stock_unit_adjustment_update',
             'permission' => Permission::UPDATE,
             'route'      => [
-                'name'    => 'admin_%s_update',
-                'path'    => '/adjustments/{adjustmentId}/update',
-                'methods' => ['GET', 'POST'],
+                'name'     => 'admin_%s_stock_unit_adjustment_update',
+                'path'     => '/adjustments/{adjustmentId}/update',
+                'methods'  => ['GET', 'POST'],
                 'resource' => true,
             ],
             'button'     => [

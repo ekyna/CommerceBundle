@@ -73,8 +73,10 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         $notify = $event->getNotify();
         $source = $notify->getSource();
 
+        $isManual = $notify->getType() === NotificationTypes::MANUAL;
+
         // Sender
-        if (null !== $recipient = $this->recipientHelper->createCurrentUserRecipient()) {
+        if ($isManual && (null !== $recipient = $this->recipientHelper->createCurrentUserRecipient())) {
             $notify->setFrom($recipient);
         } else {
             $notify->setFrom($this->recipientHelper->createWebsiteRecipient());
@@ -95,10 +97,8 @@ class NotifyEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $isManual = $notify->getType() === NotificationTypes::MANUAL;
-
         // Recipient
-        if (!$customer = $sale->getCustomer()) {
+        if (null === $customer = $sale->getCustomer()) {
             $notify->addRecipient($this->recipientHelper->createRecipient($sale, Recipient::TYPE_CUSTOMER));
 
             return;
