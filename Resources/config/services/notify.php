@@ -14,6 +14,7 @@ use Ekyna\Component\Commerce\Common\Listener\PaymentNotifyListener;
 use Ekyna\Component\Commerce\Common\Listener\ShipmentNotifyListener;
 use Ekyna\Component\Commerce\Common\Notify\NotifyBuilder;
 use Ekyna\Component\Commerce\Common\Notify\NotifyQueue;
+use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
 
 return static function (ContainerConfigurator $container) {
     $container
@@ -46,9 +47,9 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.repository.notify_model'),
                 service('ekyna_commerce.helper.notify'),
                 service('ekyna_commerce.helper.shipment'),
-                service('ekyna_user.manager.token'),
                 service('router'),
                 service('translator'),
+                service('security.authenticator.login_link_handler.main')->nullOnInvalid(),
             ])
             ->tag('kernel.event_subscriber')
 

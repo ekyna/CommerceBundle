@@ -10,7 +10,6 @@ use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Notify\RecipientHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
-use Ekyna\Bundle\UserBundle\Manager\TokenManager;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Event\NotifyEvent;
 use Ekyna\Component\Commerce\Common\Event\NotifyEvents;
@@ -28,9 +27,14 @@ use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Resource\Repository\ResourceRepositoryInterface;
+use League\Uri\Uri;
+use League\Uri\UriModifier;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+
+use function urlencode;
 
 /**
  * Class NotifyEventSubscriber
@@ -42,25 +46,25 @@ class NotifyEventSubscriber implements EventSubscriberInterface
     private ResourceRepositoryInterface $modelRepository;
     private RecipientHelper             $recipientHelper;
     private ShipmentHelper              $shipmentHelper;
-    private TokenManager                $loginTokenManager;
     private UrlGeneratorInterface       $urlGenerator;
     private TranslatorInterface         $translator;
+    private ?LoginLinkHandlerInterface  $loginLinkHandler;
 
 
     public function __construct(
         ResourceRepositoryInterface $modelRepository,
-        RecipientHelper $recipientHelper,
-        ShipmentHelper $shipmentHelper,
-        TokenManager $loginTokenManager,
-        UrlGeneratorInterface $urlGenerator,
-        TranslatorInterface $translator
+        RecipientHelper             $recipientHelper,
+        ShipmentHelper              $shipmentHelper,
+        UrlGeneratorInterface       $urlGenerator,
+        TranslatorInterface         $translator,
+        ?LoginLinkHandlerInterface  $loginLinkHandler
     ) {
         $this->modelRepository = $modelRepository;
         $this->recipientHelper = $recipientHelper;
         $this->shipmentHelper = $shipmentHelper;
-        $this->loginTokenManager = $loginTokenManager;
         $this->urlGenerator = $urlGenerator;
         $this->translator = $translator;
+        $this->loginLinkHandler = $loginLinkHandler;
     }
 
     /**
@@ -286,21 +290,19 @@ class NotifyEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (!($notify->isUnsafe() || NotificationTypes::MANUAL === $notify->getType())) {
-            $url = $this
-                ->urlGenerator
-                ->generate($route, ['number' => $source->getNumber()]);
+        $uri = $this
+            ->urlGenerator
+            ->generate($route, ['number' => $source->getNumber()], UrlGeneratorInterface::ABSOLUTE_URL);
 
-            // TODO $url = $this->loginTokenManager->generateLoginUrl($user, $after);
-        } else {
-            $url = $this
-                ->urlGenerator
-                ->generate($route, ['number' => $source->getNumber()], UrlGeneratorInterface::ABSOLUTE_URL);
+        if (!$notify->isUnsafe() && $user->isEnabled() && (null !== $this->loginLinkHandler)) {
+            $loginLink = $this->loginLinkHandler->createLoginLink($user);
+            $loginUri = Uri::createFromString($loginLink->getUrl());
+            $uri = (string)UriModifier::appendQuery($loginUri, 'redirect_after=' . urlencode($uri));
         }
 
         $notify
             ->setButtonLabel($this->translator->trans($label, [], 'EkynaCommerce'))
-            ->setButtonUrl($url);
+            ->setButtonUrl($uri);
     }
 
     /**
@@ -420,7 +422,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
     /**
      * Builds sale content.
      *
-     * @param NotifyEvent $event
+     * @param NotifyEvent          $event
      * @param NotifyModelInterface $model
      */
     protected function buildOrderContent(NotifyEvent $event, NotifyModelInterface $model): void
@@ -465,7 +467,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
     /**
      * Builds payment content.
      *
-     * @param NotifyEvent $event
+     * @param NotifyEvent          $event
      * @param NotifyModelInterface $model
      */
     protected function buildPaymentContent(NotifyEvent $event, NotifyModelInterface $model): void
@@ -513,7 +515,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
     /**
      * Builds shipment content.
      *
-     * @param NotifyEvent $event
+     * @param NotifyEvent          $event
      * @param NotifyModelInterface $model
      */
     protected function buildShipmentContent(NotifyEvent $event, NotifyModelInterface $model): void
@@ -583,7 +585,7 @@ class NotifyEventSubscriber implements EventSubscriberInterface
     /**
      * Builds invoice content.
      *
-     * @param NotifyEvent $event
+     * @param NotifyEvent          $event
      * @param NotifyModelInterface $model
      */
     protected function buildInvoiceContent(NotifyEvent $event, NotifyModelInterface $model): void
