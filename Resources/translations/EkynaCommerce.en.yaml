@@ -171,8 +171,8 @@ account:
             pay: Payment
         message:
             payment_denied: >
-                Please contact your accountable service to settle this order
-                (You must login as %identity%).
+                Please contact your billing service to settle this order
+                (You must login as {identity}).
     quote:
         title: My quotes
         summary: My quote
@@ -191,7 +191,9 @@ account:
             voucher_required: >
                 Please add voucher to your quote prior to pay it.
             voucher_denied: Please contact your billing service to manage the voucher.
-            payment_denied: Please contact your billing service to settle this quote.
+            payment_denied: >
+                Please contact your billing service to settle this quote
+                (You must login as {identity}).
     invoice:
         title: My invoices
         latest: Latest invoices

@@ -184,7 +184,7 @@ account:
         message:
             payment_denied: >
                 Contactez votre service d'achat pour le réglement de cette commande
-                (Vous devez être connecté en tant que %identity%).
+                (Vous devez être connecté en tant que {identity}).
     quote:
         title: Mes devis
         summary: Mon devis
@@ -201,9 +201,12 @@ account:
         message:
             expired: Ce devis est expiré, veuillez nous contacter pour l'actualiser.
             voucher_required: >
-                Avant de procéder au réglement du devis, nous vous prions de bien vouloir ajouter votre bon d'achat.
+                Avant de procéder au réglement du devis, nous vous prions de bien vouloir 
+                ajouter votre bon d'achat.
             voucher_denied: Contactez votre service d'achat pour la gestion du bon d'achat.
-            payment_denied: Contactez votre service d'achat pour le réglement de ce devis.
+            payment_denied: >
+                Contactez votre service d'achat pour le réglement de ce devis
+                (Vous devez être connecté en tant que {identity}).
     invoice:
         title: Mes factures
         latest: Factures récentes

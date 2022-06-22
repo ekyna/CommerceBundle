@@ -232,6 +232,7 @@ class PaymentCheckoutEventSubscriber implements EventSubscriberInterface
         $options = $event->getFormOptions();
         $options['available_amount'] = $available;
 
+        // To pay a quote with outstanding method, a customer needs to add voucher number and attachment.
         if (!$options['admin_mode'] && $sale instanceof QuoteInterface && !$sale->hasVoucher()) {
             $options['lock_message'] = $this->translator->trans('checkout.payment.voucher_mandatory', [
                 '%url%' => $this->urlGenerator->generate('ekyna_commerce_account_quote_voucher', [

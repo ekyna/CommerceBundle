@@ -12,6 +12,7 @@ use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes as BDocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteVoucher;
 use Ekyna\Bundle\CommerceBundle\Service\Common\SaleViewHelper;
+use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\CheckoutManager;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
 use Ekyna\Bundle\ResourceBundle\Service\Filesystem\FilesystemHelper;
@@ -71,6 +72,7 @@ class QuoteController implements ControllerInterface
     private SaleCsvExporter            $csvExporter;
     private SaleXlsExporter            $xlsExporter;
     private Filesystem                 $filesystem;
+    private ConstantsHelper            $constantsHelper;
     private ModalRenderer              $modalRenderer;
     private bool                       $debug;
 
@@ -93,6 +95,7 @@ class QuoteController implements ControllerInterface
         SaleCsvExporter            $csvExporter,
         SaleXlsExporter            $xlsExporter,
         Filesystem                 $filesystem,
+        ConstantsHelper            $constantsHelper,
         ModalRenderer              $modalRenderer,
         bool                       $debug
     ) {
@@ -115,6 +118,7 @@ class QuoteController implements ControllerInterface
         $this->csvExporter = $csvExporter;
         $this->xlsExporter = $xlsExporter;
         $this->filesystem = $filesystem;
+        $this->constantsHelper = $constantsHelper;
         $this->modalRenderer = $modalRenderer;
         $this->debug = $debug;
     }
@@ -321,7 +325,11 @@ class QuoteController implements ControllerInterface
         ]);
 
         if ($customer->hasParent()) {
-            $this->flashHelper->addFlash(t('account.quote.message.payment_denied', [], 'EkynaCommerce'), 'warning');
+            $message = t('account.quote.message.payment_denied', [
+                '{identity}' => $this->constantsHelper->renderIdentity($customer->getParent()),
+            ], 'EkynaCommerce');
+
+            $this->flashHelper->addFlash($message, 'warning');
 
             return new RedirectResponse($redirect);
         }

@@ -9,6 +9,7 @@ use Ekyna\Bundle\CommerceBundle\Command\CartPurgeCommand;
 use Ekyna\Bundle\CommerceBundle\Command\CartTransformCommand;
 use Ekyna\Bundle\CommerceBundle\Command\CustomerBalanceIntegrityCommand;
 use Ekyna\Bundle\CommerceBundle\Command\CustomerBirthdayCommand;
+use Ekyna\Bundle\CommerceBundle\Command\FixVoucherNumberCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceDueDateUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoicePaidTotalUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceRecalculateCommand;
@@ -71,6 +72,14 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.repository.customer'),
                 service('ekyna_resource.event_dispatcher'),
                 service('doctrine.orm.default_entity_manager'),
+            ])
+            ->tag('console.command')
+
+        // Fix duplicate order voucher number command
+        ->set('ekyna_commerce.command.fix_order_duplicate_voucher_number', FixVoucherNumberCommand::class)
+            ->args([
+                service('doctrine'),
+                param('ekyna_commerce.class.order'),
             ])
             ->tag('console.command')
 

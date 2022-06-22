@@ -96,6 +96,7 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.exporter.sale_xls'),
                 service('ekyna_commerce.factory.document_renderer'),
                 service('ekyna_commerce.filesystem'),
+                service('ekyna_commerce.helper.constants'),
                 param('kernel.debug'),
             ])
             ->call('setCustomerProvider', [service('ekyna_commerce.provider.customer')])
@@ -130,6 +131,7 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.exporter.sale_csv'),
                 service('ekyna_commerce.exporter.sale_xls'),
                 service('ekyna_commerce.filesystem'),
+                service('ekyna_commerce.helper.constants'),
                 service('ekyna_ui.modal.renderer'),
                 param('kernel.debug'),
             ])

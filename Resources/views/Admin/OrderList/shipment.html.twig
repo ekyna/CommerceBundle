@@ -23,7 +23,7 @@
                 <a href="{{ path('admin_ekyna_commerce_shipment_platform_action', {
                     'platform': name, 'action': action
                 }) }}">
-                    <strong>{{ name|capitalize }}</strong> - {{ action|shipment_action_label|trans|raw }}
+                    <strong>{{ name|capitalize }}</strong> - {{ ('shipment.action.' ~ action)|trans({}, 'EkynaCommerce') }}
                 </a>
             </li>
             {%- endfor -%}

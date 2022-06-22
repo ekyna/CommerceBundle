@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAttachmentType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
+use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\CheckoutManager;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
@@ -66,6 +67,7 @@ class OrderController implements ControllerInterface
     private SaleXlsExporter $xlsExporter;
     private RendererFactory $rendererFactory;
     private Filesystem      $filesystem;
+    private ConstantsHelper $constantsHelper;
     private bool            $debug;
 
     public function __construct(
@@ -83,6 +85,7 @@ class OrderController implements ControllerInterface
         SaleXlsExporter            $xlsExporter,
         RendererFactory            $rendererFactory,
         Filesystem                 $filesystem,
+        ConstantsHelper $constantsHelper,
         bool                       $debug
     ) {
         $this->repositoryFactory = $repositoryFactory;
@@ -99,6 +102,7 @@ class OrderController implements ControllerInterface
         $this->xlsExporter = $xlsExporter;
         $this->rendererFactory = $rendererFactory;
         $this->filesystem = $filesystem;
+        $this->constantsHelper = $constantsHelper;
         $this->debug = $debug;
     }
 
@@ -185,7 +189,11 @@ class OrderController implements ControllerInterface
         ]);
 
         if ($customer->hasParent()) {
-            $this->flashHelper->addFlash(t('account.order.message.payment_denied', [], 'EkynaCommerce'), 'warning');
+            $message = t('account.order.message.payment_denied', [
+                '{identity}' => $this->constantsHelper->renderIdentity($customer->getParent()),
+            ], 'EkynaCommerce');
+
+            $this->flashHelper->addFlash($message, 'warning');
 
             return new RedirectResponse($redirect);
         }

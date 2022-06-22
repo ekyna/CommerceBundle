@@ -60,7 +60,9 @@
             </div>
         {% else %}
         <div class="alert alert-info">
-            {{ 'account.quote.message.payment_denied'|trans({}, 'EkynaCommerce') }}
+            {{ 'account.quote.message.payment_denied'|trans({
+                '{identity}': customer.parent|identity
+            }, 'EkynaCommerce') }}
         </div>
         {% endif %}
     {% endif %}

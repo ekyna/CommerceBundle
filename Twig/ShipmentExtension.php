@@ -34,11 +34,6 @@ class ShipmentExtension extends AbstractExtension
                 ['is_safe' => ['html']]
             ),
             new TwigFilter(
-                'shipment_action_label',
-                [ShipmentHelper::class, 'getActionLabel'], // TODO Missing ! oO
-                ['is_safe' => ['html']]
-            ),
-            new TwigFilter(
                 'shipment_weight',
                 [ShipmentHelper::class, 'getShipmentWeight']
             ),
