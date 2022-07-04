@@ -85,7 +85,7 @@ class SaleCustomerType extends AbstractColumnType
         $qb = $adapter->getQueryBuilder();
 
         $prefix = '';
-        if (false !== $path = $column->getConfig()->getPropertyPath()) {
+        if (!empty($path = $column->getConfig()->getPropertyPath())) {
             $prefix = $path . '.';
         }
 

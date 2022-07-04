@@ -30,6 +30,10 @@ class NotifyModelType extends AbstractResourceType
             ->addColumn('type', NotifyModelTypeType::class, [
                 'position' => 10,
             ])
+            ->addColumn('subject', CType\Column\TextType::class, [
+                'label'    => t('field.title', [], 'EkynaUi'),
+                'position' => 20,
+            ])
             ->addColumn('enabled', CType\Column\BooleanType::class, [
                 'label'    => t('field.enabled', [], 'EkynaUi'),
                 'position' => 70,

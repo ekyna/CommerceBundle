@@ -6,8 +6,10 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Shipment\GatewayAction;
 use Ekyna\Bundle\CommerceBundle\Model\ShipmentGatewayActions;
-use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
-use Ekyna\Component\Commerce\Shipment\Model;
+use Ekyna\Bundle\CommerceBundle\Model\ShipmentMethodInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentDataInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentZoneInterface;
 use Twig\Environment;
 
 use function sprintf;
@@ -27,9 +29,9 @@ class ShipmentRenderer
 
     public function __construct(
         PriceListBuilder $priceListBuilder,
-        ShipmentHelper $shipmentHelper,
-        Environment $twig,
-        string $template = '@EkynaCommerce/Admin/ShipmentPrice/list.html.twig'
+        ShipmentHelper   $shipmentHelper,
+        Environment      $twig,
+        string           $template = '@EkynaCommerce/Admin/ShipmentPrice/list.html.twig'
     ) {
         $this->priceListBuilder = $priceListBuilder;
         $this->shipmentHelper = $shipmentHelper;
@@ -40,7 +42,7 @@ class ShipmentRenderer
     /**
      * Renders the shipment tracking buttons.
      */
-    public function renderShipmentTracking(Model\ShipmentDataInterface $shipment): string
+    public function renderShipmentTracking(ShipmentDataInterface $shipment): string
     {
         if (empty($number = $shipment->getTrackingNumber())) {
             return '';
@@ -65,7 +67,7 @@ class ShipmentRenderer
     /**
      * Returns the shipment gateway action buttons.
      */
-    public function getGatewayButtons(Model\ShipmentInterface $shipment): array
+    public function getGatewayButtons(ShipmentInterface $shipment): array
     {
         $actions = $this->shipmentHelper->getGatewayShipmentActions($shipment);
 
@@ -96,22 +98,13 @@ class ShipmentRenderer
 
     /**
      * Renders the price list.
-     *
-     * @param Model\ShipmentMethodInterface|Model\ShipmentZoneInterface $source
-     *
-     * @TODO PHP8 union types
      */
-    public function renderShipmentPrices($source): string
+    public function renderShipmentPrices(ShipmentMethodInterface|ShipmentZoneInterface $source): string
     {
-        if ($source instanceof Model\ShipmentMethodInterface) {
+        if ($source instanceof ShipmentMethodInterface) {
             $list = $this->priceListBuilder->buildByMethod($source);
-        } elseif ($source instanceof Model\ShipmentZoneInterface) {
-            $list = $this->priceListBuilder->buildByZone($source);
         } else {
-            throw new UnexpectedTypeException($source, [
-                Model\ShipmentMethodInterface::class,
-                Model\ShipmentZoneInterface::class,
-            ]);
+            $list = $this->priceListBuilder->buildByZone($source);
         }
 
         return $this->twig->render($this->priceTemplate, [

@@ -451,7 +451,6 @@ class OrderController implements ControllerInterface
             throw new NotFoundHttpException('Shipment not found.');
         }
 
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $shipment;
     }
 
@@ -469,7 +468,6 @@ class OrderController implements ControllerInterface
             throw new NotFoundHttpException('Invoice not found.');
         }
 
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $invoice;
     }
 
@@ -487,7 +485,6 @@ class OrderController implements ControllerInterface
             throw new NotFoundHttpException('Attachment not found.');
         }
 
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $attachment;
     }
 }

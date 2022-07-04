@@ -16,7 +16,6 @@ class SessionCountryProvider extends BaseProvider
 {
     private UserCountryGuesser $countryGuesser;
 
-
     public function setCountryGuesser(UserCountryGuesser $guesser): void
     {
         $this->countryGuesser = $guesser;

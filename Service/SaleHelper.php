@@ -165,8 +165,7 @@ class SaleHelper
         $hash = $item->getHash();
 
         foreach ($sale->getItems() as $i) {
-            $ih = $i->getHash();
-            if ($hash === $ih) {
+            if ($hash === $i->getHash()) {
                 $i->setQuantity($i->getQuantity() + $item->getQuantity());
 
                 return $i;

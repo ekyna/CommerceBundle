@@ -311,7 +311,7 @@ class DocumentHelper
         $design
             ->setBrandName($customer->getCompany())
             ->setPrimaryColor($color = $customer->getBrandColor())
-            ->setSecondaryColor($color ? (new Hex($color))->toHsl()->lightness(90) : null)
+            ->setSecondaryColor($color ? (string)(new Hex($color))->toHsl()->lightness(90) : null)
             ->setLogoPath($this->urlGenerator->generate('ekyna_commerce_api_customer_logo', [
                 'customerNumber' => $customer->getNumber(),
             ]))

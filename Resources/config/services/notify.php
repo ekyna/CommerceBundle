@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Ekyna\Bundle\CommerceBundle\EventListener\NotificationEventSubscriber;
+use Ekyna\Bundle\CommerceBundle\EventListener\NotificationListener;
 use Ekyna\Bundle\CommerceBundle\EventListener\NotifyEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\Service\Notify\RecipientHelper;
 use Ekyna\Component\Commerce\Common\Listener\AbstractNotifyListener;
@@ -14,6 +14,8 @@ use Ekyna\Component\Commerce\Common\Listener\PaymentNotifyListener;
 use Ekyna\Component\Commerce\Common\Listener\ShipmentNotifyListener;
 use Ekyna\Component\Commerce\Common\Notify\NotifyBuilder;
 use Ekyna\Component\Commerce\Common\Notify\NotifyQueue;
+use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
 
 return static function (ContainerConfigurator $container) {
@@ -53,15 +55,24 @@ return static function (ContainerConfigurator $container) {
             ])
             ->tag('kernel.event_subscriber')
 
-        // Notification event listener
-        ->set('ekyna_commerce.listener.notification', NotificationEventSubscriber::class)
+        // Notification listener
+        ->set('ekyna_commerce.listener.notification', NotificationListener::class)
             ->args([
                 service('ekyna_commerce.queue.notify'),
                 service('ekyna_commerce.mailer'),
                 service('ekyna_commerce.helper.factory'),
                 service('doctrine.orm.default_entity_manager'),
             ])
-            ->tag('kernel.event_subscriber')
+            ->tag('kernel.event_listener', [
+                'event'    => KernelEvents::TERMINATE,
+                'method'   => 'onKernelTerminate',
+                'priority' => 1024, // Before Symfony EmailSenderListener
+            ])
+            ->tag('kernel.event_listener', [
+                'event'    => ConsoleEvents::TERMINATE,
+                'method'   => 'onKernelTerminate',
+                'priority' => 1024, // Before Symfony EmailSenderListener
+            ])
 
         // Abstract notify listener
         ->set('ekyna_commerce.listener.notify.abstract', AbstractNotifyListener::class)

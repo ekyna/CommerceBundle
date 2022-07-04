@@ -31,9 +31,9 @@ define(['jquery', 'routing', 'ekyna-form', 'ekyna-spinner'], function($, Router,
 
                 var shipmentId = $gatewayData.data('shipment'),
                     parameters = {
-                    'orderId': $gatewayData.data('order'),
-                    'shipmentMethodId': methodId,
-                    'return': $gatewayData.data('return')
+                    orderId: $gatewayData.data('order'),
+                    shipmentMethodId: methodId,
+                    return: $gatewayData.data('return')
                 };
                 if (shipmentId) {
                     parameters.shipmentId = shipmentId;

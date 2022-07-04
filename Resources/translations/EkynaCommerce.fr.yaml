@@ -460,6 +460,9 @@ checkout:
         empty_delivery: (Si différente) Saisissez votre adresse de livraison
         empty_comment: (Optionnel) Ajoutez un commentaire à votre commande
         empty_attachments: (Optionnel) Ajoutez des pièces jointes à votre commande
+        confirmation_access_denied: > 
+            La commande a laquelle vous tentez d'accéder est rattachée à un autre compte client.<br>
+            Retrouvez toutes vos commandes dans votre <a href="{url}">espace client</a>.
     button:
         attachment_add: Ajouter une pièce jointe
         attachment_remove: Supprimer cette pièce jointe

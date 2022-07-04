@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Service;
 
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Common\Model;
 use Ekyna\Component\Commerce\Common\View\AbstractViewType as BaseType;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectRelativeInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
-use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use Ekyna\Component\Resource\Model\ResourceInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -19,14 +19,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Class AbstractViewType
  * @package Ekyna\Bundle\CommerceBundle\Service
  * @author  Etienne Dauvergne <contact@ekyna.com>
- *
- * @TODO PHP8 Union types
  */
 abstract class AbstractViewType extends BaseType
 {
-    private UrlGeneratorInterface $urlGenerator;
-    private TranslatorInterface $translator;
-    private ResourceHelper $resourceHelper;
+    private UrlGeneratorInterface  $urlGenerator;
+    private TranslatorInterface    $translator;
+    private ResourceHelper         $resourceHelper;
     private SubjectHelperInterface $subjectHelper;
 
     public function setUrlGenerator(UrlGeneratorInterface $urlGenerator): void
@@ -51,30 +49,24 @@ abstract class AbstractViewType extends BaseType
 
     /**
      * Returns the subject public url.
-     *
-     * @param SubjectRelativeInterface|SubjectInterface $subject
      */
-    public function getPublicUrl($subject): ?string
+    public function getPublicUrl(SubjectRelativeInterface|SubjectInterface $subject): ?string
     {
         return $this->subjectHelper->generatePublicUrl($subject, false);
     }
 
     /**
      * Returns the subject public url.
-     *
-     * @param SubjectRelativeInterface|SubjectInterface $subject
      */
-    public function getPrivateUrl($subject): ?string
+    public function getPrivateUrl(SubjectRelativeInterface|SubjectInterface $subject): ?string
     {
         return $this->subjectHelper->generatePrivateUrl($subject, false);
     }
 
     /**
      * Generates the resource url.
-     *
-     * @param ResourceInterface|string $resource
      */
-    protected function resourceUrl($resource, string $action, array $parameters = []): string
+    protected function resourceUrl(ResourceInterface|string $resource, string $action, array $parameters = []): string
     {
         return $this->resourceHelper->generateResourcePath($resource, $action, $parameters, true);
     }

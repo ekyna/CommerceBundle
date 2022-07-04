@@ -16,6 +16,7 @@ use Ekyna\Bundle\CommerceBundle\Controller\Subject\AddToCartController;
 use Ekyna\Bundle\CommerceBundle\Controller\Subject\ResupplyAlertController;
 use Ekyna\Bundle\CommerceBundle\Controller\WidgetController;
 use Ekyna\Bundle\CommerceBundle\EventListener\AccountControllerListener;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 return static function (ContainerConfigurator $container) {
     $container
@@ -28,7 +29,10 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.provider.customer'),
                 service('router'),
             ])
-            ->tag('kernel.event_listener', ['event' => 'kernel.controller', 'method' => 'onController'])
+            ->tag('kernel.event_listener', [
+                'event'  => KernelEvents::CONTROLLER,
+                'method' => 'onController'
+            ])
 
         // Account contact controller
         ->set('ekyna_commerce.controller.account.contact', Account\ContactController::class)

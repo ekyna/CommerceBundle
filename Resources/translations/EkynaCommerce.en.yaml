@@ -447,6 +447,9 @@ checkout:
         empty_delivery: (If different) Enter your billing address
         empty_comment: (Optional) Add a comment to your order
         empty_attachments: (Optional) Add attachment(s) to your order
+        confirmation_access_denied: >
+            The order you are trying to access is owned by another customer account.<br>
+            Go to your <a href="{url}">customer area</a> to get all your orders details.
     button:
         attachment_add: Add attachment
         attachment_remove: Remove attachment

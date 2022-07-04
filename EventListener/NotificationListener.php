@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\EventListener;
 
 use DateTime;
@@ -12,62 +14,26 @@ use Ekyna\Component\Commerce\Common\Notify\NotifyQueue;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
-use Symfony\Component\Console\ConsoleEvents;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Class NotificationEventSubscriber
+ * Class NotificationListener
  * @package Ekyna\Bundle\CommerceBundle\EventListener
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class NotificationEventSubscriber implements EventSubscriberInterface
+class NotificationListener
 {
-    /**
-     * @var NotifyQueue
-     */
-    private $queue;
-
-    /**
-     * @var Mailer
-     */
-    private $mailer;
-
-    /**
-     * @var FactoryHelperInterface
-     */
-    private $factory;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $manager;
-
-
-    /**
-     * Constructor.
-     *
-     * @param NotifyQueue            $queue
-     * @param Mailer                 $mailer
-     * @param FactoryHelperInterface $factory
-     * @param EntityManagerInterface $manager
-     */
     public function __construct(
-        NotifyQueue            $queue,
-        Mailer                 $mailer,
-        FactoryHelperInterface $factory,
-        EntityManagerInterface $manager
+        private readonly NotifyQueue $queue,
+        private readonly Mailer $mailer,
+        private readonly FactoryHelperInterface $factory,
+        private readonly EntityManagerInterface $manager
     ) {
-        $this->queue = $queue;
-        $this->mailer = $mailer;
-        $this->factory = $factory;
-        $this->manager = $manager;
     }
 
     /**
      * Kernel terminate event handler.
      */
-    public function onKernelTerminate()
+    public function onKernelTerminate(): void
     {
         if (!$this->manager->isOpen()) {
             return;
@@ -92,10 +58,8 @@ class NotificationEventSubscriber implements EventSubscriberInterface
 
     /**
      * Logs the notification.
-     *
-     * @param Notify $notify
      */
-    private function logNotification(Notify $notify)
+    private function logNotification(Notify $notify): void
     {
         if (null === $source = $notify->getSource()) {
             return;
@@ -121,24 +85,13 @@ class NotificationEventSubscriber implements EventSubscriberInterface
             ->setSentAt(new DateTime());
 
         if ($source instanceof PaymentInterface) {
-            $notification->setData($source->getNumber(), 'payment');
+            $notification->setData('payment', $source->getNumber());
         } elseif ($source instanceof ShipmentInterface) {
-            $notification->setData($source->getNumber(), 'shipment');
+            $notification->setData('shipment', $source->getNumber());
         } elseif ($source instanceof InvoiceInterface) {
-            $notification->setData($source->getNumber(), 'invoice');
+            $notification->setData('invoice', $source->getNumber());
         }
 
         $this->manager->persist($notification);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            KernelEvents::TERMINATE  => ['onKernelTerminate', 1024], // Before Symfony EmailSenderListener
-            ConsoleEvents::TERMINATE => ['onKernelTerminate', 1024], // Before Symfony EmailSenderListener
-        ];
     }
 }

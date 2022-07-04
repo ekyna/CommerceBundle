@@ -148,13 +148,13 @@ class StatCalculator implements StatCalculatorInterface
             ->setParameter('to', $to, Types::DATETIME_MUTABLE);
 
         if ($filter && !empty($filter->getSubjects())) {
-            $orders = $query->getResult(AbstractQuery::HYDRATE_SCALAR);
-            $data = $this->calculateOrders(array_column($orders, 'id'), $filter);
-        } else {
-            $data = $query->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR);
+            $data = $this->calculateOrders($query->getResult(IdHydrator::NAME), $filter);
+        } elseif (null !== $data = $query->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR)) {
+            $data = array_map(static fn($val) => $val + .0, $data);
         }
 
         if ($data) {
+            /** @var array{revenue: float, shipping: float, margin: float, orders: int, items: int, average: float} $result */
             $result = [
                 'revenue'  => (string)round($data['revenue'] - $data['shipping'], 3),
                 'shipping' => (string)round($data['shipping'], 3),
@@ -192,6 +192,8 @@ class StatCalculator implements StatCalculatorInterface
      * Calculates the order stats.
      *
      * @param int[] $orders
+     *
+     * @return array{revenue: float, shipping: float, margin: float, orders: int, items: int, average: float}
      */
     protected function calculateOrders(array $orders, StatFilter $filter): array
     {

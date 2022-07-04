@@ -22,6 +22,7 @@ use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -37,33 +38,16 @@ use function Symfony\Component\Translation\t;
  */
 class CheckoutController extends AbstractController
 {
-    protected OrderRepositoryInterface $orderRepository;
-    protected QuoteFactory             $quoteFactory;
-    protected CheckoutManager          $checkoutManager;
-    protected PaymentHelper            $paymentHelper;
-    protected SaleTransformerInterface $saleTransformer;
-    protected FormFactoryInterface     $formFactory;
-    protected EventDispatcherInterface $dispatcher;
-    protected FlashHelper              $flashHelper;
-
     public function __construct(
-        OrderRepositoryInterface $orderRepository,
-        QuoteFactory             $quoteFactory,
-        CheckoutManager          $checkoutManager,
-        PaymentHelper            $paymentHelper,
-        SaleTransformerInterface $saleTransformer,
-        FormFactoryInterface     $formFactory,
-        EventDispatcherInterface $dispatcher,
-        FlashHelper              $flashHelper
+        private readonly OrderRepositoryInterface $orderRepository,
+        private readonly QuoteFactory $quoteFactory,
+        private readonly CheckoutManager $checkoutManager,
+        private readonly PaymentHelper $paymentHelper,
+        private readonly SaleTransformerInterface $saleTransformer,
+        private readonly FormFactoryInterface $formFactory,
+        private readonly EventDispatcherInterface $dispatcher,
+        private readonly FlashHelper $flashHelper
     ) {
-        $this->orderRepository = $orderRepository;
-        $this->quoteFactory = $quoteFactory;
-        $this->checkoutManager = $checkoutManager;
-        $this->paymentHelper = $paymentHelper;
-        $this->saleTransformer = $saleTransformer;
-        $this->formFactory = $formFactory;
-        $this->dispatcher = $dispatcher;
-        $this->flashHelper = $flashHelper;
     }
 
     public function index(Request $request): Response
@@ -349,7 +333,17 @@ class CheckoutController extends AbstractController
             }
 
             if ($orderCustomer !== $currentCustomer) {
-                throw new AccessDeniedHttpException();
+                $message = t(
+                    'checkout.message.confirmation_access_denied',
+                    ['{url}' => $this->generateUrl('ekyna_user_account_index')],
+                    'EkynaCommerce'
+                );
+
+                $this->flashHelper->addFlash($message, 'warning');
+
+                return new RedirectResponse(
+                    $this->generateUrl('ekyna_commerce_cart_checkout_index')
+                );
             }
         }
 

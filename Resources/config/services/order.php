@@ -90,7 +90,6 @@ return static function (ContainerConfigurator $container) {
             ->call('setOrderUpdater', [service('ekyna_commerce.updater.order')])
             ->call('setSubjectHelper', [service('ekyna_commerce.helper.subject')])
             ->call('setInChargeResolver', [service('ekyna_commerce.resolver.in_charge')])
-            ->call('setMessageQueue', [service('ekyna_resource.queue.message')])
             ->tag('resource.event_subscriber')
 
         // Order address (resource) event listener
@@ -102,7 +101,6 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.listener.order_item', OrderItemEventSubscriber::class)
             ->parent('ekyna_commerce.listener.abstract_sale_item')
             ->call('setStockAssigner', [service('ekyna_commerce.assigner.stock_unit')])
-            ->call('setMessageQueue', [service('ekyna_resource.queue.message')])
             ->tag('resource.event_subscriber')
 
         // Order item adjustment (resource) event listener

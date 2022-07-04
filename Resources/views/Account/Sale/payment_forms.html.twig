@@ -22,7 +22,7 @@
     {% for form in forms -%}
     <div class="panel panel-default">
         <div class="panel-body">
-            {{- form(form) -}}
+            {{- form(form, {'attr': {'class': (form.vars.attr.class|default('')) ~ ' form-horizontal'}}) -}}
         </div>
     </div>
     {%- else -%}

@@ -191,7 +191,7 @@ class StatWidget extends AbstractWidgetType
                     }, $stack['values'])),
                 ];
 
-                $hex = new Hex($hex->lighten(5));
+                $hex = new Hex((string)$hex->lighten(5));
             }
         }
 

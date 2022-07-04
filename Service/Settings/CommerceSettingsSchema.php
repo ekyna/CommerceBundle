@@ -10,7 +10,7 @@ use Ekyna\Bundle\SettingBundle\Model\I18nParameter;
 use Ekyna\Bundle\SettingBundle\Schema\AbstractSchema;
 use Ekyna\Bundle\SettingBundle\Schema\LocalizedSchemaInterface;
 use Ekyna\Bundle\SettingBundle\Schema\LocalizedSchemaTrait;
-use Ekyna\Bundle\SettingBundle\Schema\SettingsBuilder;
+use Ekyna\Bundle\SettingBundle\Schema\SettingBuilder;
 use Ekyna\Bundle\UiBundle\Form\Type\TinymceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
@@ -29,7 +29,7 @@ class CommerceSettingsSchema extends AbstractSchema implements LocalizedSchemaIn
 {
     use LocalizedSchemaTrait;
 
-    public function buildSettings(SettingsBuilder $builder): void
+    public function buildSettings(SettingBuilder $builder): void
     {
         $labelDefaults = [
             'size'     => 'A4',
