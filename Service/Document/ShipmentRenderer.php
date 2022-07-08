@@ -1,11 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+
+use function array_filter;
+use function in_array;
 
 /**
  * Class ShipmentRenderer
@@ -14,23 +19,16 @@ use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
  */
 class ShipmentRenderer extends AbstractRenderer
 {
-    /**
-     * @var string
-     */
-    private $type;
+    private string $type;
 
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct($subjects, $type)
+    public function __construct(object|array $subjects, string $type)
     {
         if (!in_array($type, DocumentTypes::getShipmentTypes(), true)) {
             throw new InvalidArgumentException("Unexpected shipment document type '$type'.");
         }
 
         if ($type === DocumentTypes::TYPE_SHIPMENT_FORM) {
-            $subjects = array_filter($subjects, function (ShipmentInterface $shipment) {
+            $subjects = array_filter($subjects, static function (ShipmentInterface $shipment) {
                 return !$shipment->isReturn();
             });
         }
@@ -40,13 +38,10 @@ class ShipmentRenderer extends AbstractRenderer
         $this->type = $type;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getFilename()
+    public function getFilename(): string
     {
         if (empty($this->subjects)) {
-            throw new LogicException("Please add shipment(s) first.");
+            throw new LogicException('Call addSubject() first.');
         }
 
         if (1 < count($this->subjects)) {
@@ -59,9 +54,6 @@ class ShipmentRenderer extends AbstractRenderer
         return 'shipment_' . $this->type . '_' . $subject->getNumber();
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function getContent(string $format): string
     {
         if ($this->type === DocumentTypes::TYPE_SHIPMENT_FORM) {
@@ -73,10 +65,7 @@ class ShipmentRenderer extends AbstractRenderer
         return parent::getContent($format);
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function getParameters()
+    protected function getParameters(): array
     {
         return [
             'remaining_date' => $this->config['shipment_remaining_date'],
@@ -84,18 +73,12 @@ class ShipmentRenderer extends AbstractRenderer
         ];
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function supports($subject)
+    protected function supports(object $subject): bool
     {
         return $subject instanceof ShipmentInterface;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function getTemplate()
+    protected function getTemplate(): string
     {
         return '@EkynaCommerce/Document/shipment.html.twig';
     }

@@ -1761,6 +1761,9 @@ subject:
         plural: Articles
     price_from: >
         <small>À partir de</small>
+    label_format:
+        large: Grande
+        small: Petite
 
 supplier:
     label:

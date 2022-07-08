@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
+
+use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 
 /**
  * Class SubjectLabel
@@ -9,177 +13,94 @@ namespace Ekyna\Bundle\CommerceBundle\Model;
  */
 class SubjectLabel
 {
-    const FORMAT_SMALL = 'small';
-    const FORMAT_LARGE = 'large';
+    public const FORMAT_SMALL = 'small';
+    public const FORMAT_LARGE = 'large';
 
-    /**
-     * @var object
-     */
-    private $subject;
+    private ?string $designation = null;
+    private ?string $reference   = null;
+    private ?string $barcode     = null;
+    private ?string $geocode     = null;
+    private ?string $extra       = null;
 
-    /**
-     * @var string
-     */
-    private $designation;
-
-    /**
-     * @var string
-     */
-    private $reference;
-
-    /**
-     * @var string
-     */
-    private $barcode;
-
-    /**
-     * @var string
-     */
-    private $geocode;
-
-    /**
-     * @var string
-     */
-    private $extra;
-
-
-    /**
-     * Constructor.
-     *
-     * @param object $subject
-     */
-    public function __construct($subject)
+    public function __construct(private readonly SubjectInterface $subject)
     {
-        $this->subject = $subject;
     }
 
-    /**
-     * Returns the subject.
-     *
-     * @return object
-     */
-    public function getSubject()
+    public function getSubject(): SubjectInterface
     {
         return $this->subject;
     }
 
-    /**
-     * Returns the designation.
-     *
-     * @return string
-     */
-    public function getDesignation()
+    public function getDesignation(): ?string
     {
         return $this->designation;
     }
 
-    /**
-     * Sets the designation.
-     *
-     * @param string $designation
-     *
-     * @return SubjectLabel
-     */
-    public function setDesignation($designation)
+    public function setDesignation(?string $designation): SubjectLabel
     {
         $this->designation = $designation;
 
         return $this;
     }
 
-    /**
-     * Returns the reference.
-     *
-     * @return string
-     */
-    public function getReference()
+    public function getReference(): ?string
     {
         return $this->reference;
     }
 
-    /**
-     * Sets the reference.
-     *
-     * @param string $reference
-     *
-     * @return SubjectLabel
-     */
-    public function setReference($reference)
+    public function setReference(?string $reference): SubjectLabel
     {
         $this->reference = $reference;
 
         return $this;
     }
 
-    /**
-     * Returns the barcode.
-     *
-     * @return string
-     */
-    public function getBarcode()
+    public function getBarcode(): ?string
     {
         return $this->barcode;
     }
 
-    /**
-     * Sets the barcode.
-     *
-     * @param string $barcode
-     *
-     * @return SubjectLabel
-     */
-    public function setBarcode($barcode)
+    public function setBarcode(?string $barcode): SubjectLabel
     {
         $this->barcode = $barcode;
 
         return $this;
     }
 
-    /**
-     * Returns the geocode.
-     *
-     * @return string
-     */
-    public function getGeocode()
+    public function getGeocode(): ?string
     {
         return $this->geocode;
     }
 
-    /**
-     * Sets the geocode.
-     *
-     * @param string $geocode
-     *
-     * @return SubjectLabel
-     */
-    public function setGeocode($geocode)
+    public function setGeocode(?string $geocode): SubjectLabel
     {
         $this->geocode = $geocode;
 
         return $this;
     }
 
-    /**
-     * Returns the extra.
-     *
-     * @return string
-     */
-    public function getExtra()
+    public function getExtra(): ?string
     {
         return $this->extra;
     }
 
-    /**
-     * Sets the extra.
-     *
-     * @param string $extra
-     *
-     * @return SubjectLabel
-     */
-    public function setExtra($extra)
+    public function setExtra(?string $extra): SubjectLabel
     {
         $this->extra = $extra;
 
         return $this;
+    }
+
+    /**
+     * Returns the label formats.
+     *
+     * @return array<int, string>
+     */
+    public static function getFormats(): array
+    {
+        return [
+            self::FORMAT_LARGE,
+            self::FORMAT_SMALL,
+        ];
     }
 }

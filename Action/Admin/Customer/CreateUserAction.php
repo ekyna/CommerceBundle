@@ -12,6 +12,7 @@ use Ekyna\Bundle\ResourceBundle\Action\FormTrait;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
 use Ekyna\Bundle\ResourceBundle\Action\ManagerTrait;
 use Ekyna\Bundle\ResourceBundle\Action\TemplatingTrait;
+use Ekyna\Bundle\ResourceBundle\Action\ValidatorTrait;
 use Ekyna\Bundle\UiBundle\Action\FlashTrait;
 use Ekyna\Bundle\UiBundle\Form\Type\ConfirmType;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
@@ -32,6 +33,7 @@ class CreateUserAction extends AbstractAction implements AdminActionInterface
     use HelperTrait;
     use FlashTrait;
     use FormTrait;
+    use ValidatorTrait;
     use ManagerTrait;
     use FactoryTrait;
     use BreadcrumbTrait;
@@ -75,9 +77,16 @@ class CreateUserAction extends AbstractAction implements AdminActionInterface
 
             $customer->setUser($user);
 
-            $this->getManager(CustomerInterface::class)->persist($customer);
+            $violations = $this->validate($customer);
+            // TODO customer & user validation
 
-            // TODO Validation ?
+            if (0 < $violations->count()) {
+                $this->addFlashFromViolationList($violations);
+
+                return $this->redirect($cancelPath);
+            }
+
+            $this->getManager(CustomerInterface::class)->persist($customer);
 
             // TODO use ResourceManager
             $event = $this->getManager(UserInterface::class)->create($user);

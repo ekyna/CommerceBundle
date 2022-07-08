@@ -14,6 +14,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Twig\Environment;
 
+use function array_replace;
+use function file_exists;
+use function file_put_contents;
+use function sys_get_temp_dir;
+use function unlink;
+
 /**
  * Class LabelRenderer
  * @package Ekyna\Bundle\CommerceBundle\Service\Shipment
@@ -25,31 +31,21 @@ class LabelRenderer
     public const SIZE_A5 = 'A5';
     public const SIZE_A6 = 'A6';
 
-    private Environment             $twig;
-    private PdfGenerator            $generator;
-    private SettingManagerInterface $settings;
-
     public function __construct(
-        Environment             $twig,
-        PdfGenerator            $generator,
-        SettingManagerInterface $settings
+        private readonly Environment             $twig,
+        private readonly PdfGenerator            $generator,
+        private readonly SettingManagerInterface $setting
     ) {
-        $this->twig = $twig;
-        $this->generator = $generator;
-        $this->settings = $settings;
     }
 
     /**
      * Renders the labels.
      *
-     * @param ShipmentLabelInterface[] $labels
-     * @param bool                     $raw
-     *
-     * @return Response|string
+     * @param array<ShipmentLabelInterface> $labels
      *
      * @throws PdfException
      */
-    public function render(array $labels, bool $raw = false)
+    public function render(array $labels, bool $raw = false): Response|string
     {
         foreach ($labels as $label) {
             if (!$label instanceof ShipmentLabelInterface) {
@@ -60,43 +56,37 @@ class LabelRenderer
         $layout = false;
 
         $options = [
-            'format'  => 'A4',
-            'paper'   => [
-                'width'  => null,
-                'height' => null,
-                'unit'   => 'mm',
-            ],
-            'margins' => [
-                'top'    => 6,
-                'right'  => 6,
-                'bottom' => 6,
-                'left'   => 6,
-                'unit'   => 'mm',
-            ],
+            'unit'         => 'mm',
+            'marginTop'    => 6,
+            'marginBottom' => 6,
+            'marginLeft'   => 6,
+            'marginRight'  => 6,
+            'paperWidth'   => 210,
+            'paperHeight'  => 297,
         ];
 
-        $config = $this->settings->getParameter('commerce.shipment_label');
+        $config = $this->setting->getParameter('commerce.shipment_label');
 
         if (null !== $size = $config['size']) {
-            $options['format'] = $size;
-            $layout = $size === LabelRenderer::SIZE_A4;
-        } elseif (!empty($config['width']) && !empty($config['height'])) {
-            $options['margins'] = [
-                'top'    => 6,
-                'right'  => 6,
-                'bottom' => 6,
-                'left'   => 6,
-                'unit'   => 'mm',
-            ];
-            $options['paper']['width'] = $config['width'];
-            $options['paper']['height'] = $config['height'];
+            if (self::SIZE_A4 === $size) {
+                $layout = true;
+            } elseif (self::SIZE_A5 === $size) {
+                $options['paperWidth'] = 148;
+                $options['paperHeight'] = 210;
+            } elseif (self::SIZE_A6 === $size) {
+                $options['paperWidth'] = 105;
+                $options['paperHeight'] = 148;
+            }
+        } elseif ((0 < $width = ($config['width'] ?? 0)) && (0 < $height = ($config['height'] ?? 0))) {
+            $options['paperWidth'] = $width;
+            $options['paperHeight'] = $height;
 
-            if (!is_null($config['margin'])) {
-                $options['margins'] = array_replace($options['margins'], [
-                    'top'    => $config['margin'],
-                    'right'  => $config['margin'],
-                    'bottom' => $config['margin'],
-                    'left'   => $config['margin'],
+            if (0 < $margin = $config['margin'] ?? 0) {
+                $options = array_replace($options, [
+                    'marginTop'    => $margin,
+                    'marginBottom' => $margin,
+                    'marginLeft'   => $margin,
+                    'marginRight'  => $margin,
                 ]);
             }
         }

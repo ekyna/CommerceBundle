@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
+use DateTimeInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Resource\Exception\PdfException;
@@ -12,6 +15,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Twig\Environment;
 
+use function array_replace;
+use function file_put_contents;
+use function is_null;
+use function reset;
+use function sprintf;
+use function sys_get_temp_dir;
+use function uniqid;
+
 /**
  * Class AbstractRenderer
  * @package Ekyna\Bundle\CommerceBundle\Service\Document
@@ -19,33 +30,16 @@ use Twig\Environment;
  */
 abstract class AbstractRenderer implements RendererInterface
 {
-    /**
-     * @var Environment
-     */
-    protected $twig;
-
-    /**
-     * @var PdfGenerator
-     */
-    protected $pdfGenerator;
-
-    /**
-     * @var array
-     */
-    protected $config;
-
-    /**
-     * @var array
-     */
-    protected $subjects;
+    protected readonly Environment  $twig;
+    protected readonly PdfGenerator $pdfGenerator;
+    protected readonly array        $config;
+    protected array                 $subjects;
 
 
     /**
-     * Constructor.
-     *
-     * @param mixed $subjects
+     * @param object|array<object> $subjects
      */
-    public function __construct($subjects)
+    public function __construct(object|array $subjects)
     {
         $this->subjects = [];
 
@@ -58,54 +52,31 @@ abstract class AbstractRenderer implements RendererInterface
         }
     }
 
-    /**
-     * Adds the subject.
-     *
-     * @param mixed $subject
-     */
-    private function addSubject($subject)
+    private function addSubject(object $subject): void
     {
         if (!$this->supports($subject)) {
-            throw new InvalidArgumentException("Unsupported subject.");
+            throw new InvalidArgumentException('Unsupported subject.');
         }
 
         $this->subjects[] = $subject;
     }
 
-    /**
-     * Sets the templating engine.
-     *
-     * @param Environment $twig
-     */
-    public function setTwig(Environment $twig)
+    public function setTwig(Environment $twig): void
     {
         $this->twig = $twig;
     }
 
-    /**
-     * Sets the pdf generator.
-     *
-     * @param PdfGenerator $generator
-     */
-    public function setPdfGenerator(PdfGenerator $generator)
+    public function setPdfGenerator(PdfGenerator $generator): void
     {
         $this->pdfGenerator = $generator;
     }
 
-    /**
-     * Sets the config.
-     *
-     * @param array $config
-     */
-    public function setConfig(array $config)
+    public function setConfig(array $config): void
     {
         $this->config = $config;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function create($format = RendererInterface::FORMAT_PDF)
+    public function create(string $format = RendererInterface::FORMAT_PDF): string
     {
         $this->validateFormat($format);
 
@@ -115,8 +86,6 @@ abstract class AbstractRenderer implements RendererInterface
 
         if ($format === RendererInterface::FORMAT_PDF) {
             $content = $this->pdfGenerator->generateFromHtml($content);
-        } elseif ($format === RendererInterface::FORMAT_JPG) {
-            throw new PdfException("Not yet implemented.");
         }
 
         if (!file_put_contents($path, $content)) {
@@ -126,45 +95,26 @@ abstract class AbstractRenderer implements RendererInterface
         return $path;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function render($format = RendererInterface::FORMAT_HTML)
+    public function render(string $format = RendererInterface::FORMAT_HTML): string
     {
         $this->validateFormat($format);
 
         $content = $this->getContent($format);
 
-        if ($format !== RendererInterface::FORMAT_HTML) {
-            $options = [
-                'margins' => [
-                    'top'    => 6,
-                    'right'  => 6,
-                    'bottom' => 6,
-                    'left'   => 6,
-                    'unit'   => 'mm',
-                ],
-            ];
-            if ($format === RendererInterface::FORMAT_PDF) {
-                $content = $this->pdfGenerator->generateFromHtml($content, $options);
-            } elseif ($format === RendererInterface::FORMAT_JPG) {
-                throw new PdfException("Not yet implemented.");
-            }
+        if ($format === RendererInterface::FORMAT_HTML) {
+            return $content;
         }
 
-        return $content;
+        return $this->pdfGenerator->generateFromHtml($content);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function respond(Request $request): Response
     {
         $format = $request->attributes->get('_format', RendererInterface::FORMAT_HTML);
 
         $this->validateFormat($format);
 
-        $download = $request->query->getBoolean('_download', false);
+        $download = $request->query->getBoolean('_download');
 
         $response = new Response();
 
@@ -177,6 +127,7 @@ abstract class AbstractRenderer implements RendererInterface
 
         if (!$this->config['debug']) {
             $response->setLastModified($this->getLastModified());
+
             if ($response->isNotModified($request)) {
                 return $response;
             }
@@ -184,30 +135,25 @@ abstract class AbstractRenderer implements RendererInterface
 
         $response->setContent($this->render($format));
 
-        if ($format === RendererInterface::FORMAT_PDF) {
-            $response->headers->add(['Content-Type' => 'application/pdf']);
-        } elseif ($format === RendererInterface::FORMAT_JPG) {
-            throw new PdfException("Not yet implemented.");
-            //$response->headers->add(['Content-Type' => 'image/jpeg']);
+        if ($format === RendererInterface::FORMAT_HTML) {
+            return $response;
         }
+
+        $response->headers->set('Content-Type', 'application/pdf');
 
         return $response;
     }
 
     /**
      * Validates the format.
-     *
-     * @param string $format
      */
-    protected function validateFormat($format)
+    protected function validateFormat(string $format): void
     {
-        if (!in_array($format, [
-            RendererInterface::FORMAT_HTML,
-            RendererInterface::FORMAT_PDF,
-            RendererInterface::FORMAT_JPG,
-        ])) {
-            throw new PdfException("Unsupported format '$format'.");
+        if (in_array($format, RendererInterface::FORMATS, true)) {
+            return;
         }
+
+        throw new PdfException("Unsupported format '$format'.");
     }
 
     /**
@@ -227,59 +173,48 @@ abstract class AbstractRenderer implements RendererInterface
         ], $this->getParameters()));
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getLastModified()
+    public function getLastModified(): ?DateTimeInterface
     {
         if (empty($this->subjects)) {
-            throw new LogicException("Please add subject(s) first.");
+            throw new LogicException('Call addSubject() first.');
         }
 
-        /** @var TimestampableInterface $subject */
         $subject = null;
 
         if (1 === count($this->subjects)) {
             $subject = reset($this->subjects);
         } else {
-            /** @var TimestampableInterface $s */
             foreach ($this->subjects as $s) {
+                if (!$s instanceof TimestampableInterface) {
+                    continue;
+                }
+
                 if (is_null($subject) || ($subject->getUpdatedAt() < $s->getUpdatedAt())) {
                     $subject = $s;
                 }
             }
         }
 
-        return $subject->getUpdatedAt();
+        if ($subject instanceof TimestampableInterface) {
+            return $subject->getUpdatedAt();
+        }
+
+        return null;
     }
 
-    /**
-     * @inheritDoc
-     */
-    abstract function getFilename();
+    abstract public function getFilename(): string;
 
     /**
-     * Returns whether the render supports the given subject.
-     *
-     * @param mixed $subject
-     *
-     * @return bool
+     * Returns whether this renderer supports the given subject.
      */
-    abstract protected function supports($subject);
+    abstract protected function supports(object $subject): bool;
 
-    /**
-     * Returns the template.
-     *
-     * @return string
-     */
-    abstract protected function getTemplate();
+    abstract protected function getTemplate(): string;
 
     /**
      * Returns the template parameters.
-     *
-     * @return array
      */
-    protected function getParameters()
+    protected function getParameters(): array
     {
         return [];
     }

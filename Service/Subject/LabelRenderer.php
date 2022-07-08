@@ -19,19 +19,11 @@ use Twig\Environment;
  */
 class LabelRenderer
 {
-    private EventDispatcherInterface $dispatcher;
-    private Environment              $templating;
-    private PdfGenerator             $pdfGenerator;
-
-
     public function __construct(
-        EventDispatcherInterface $dispatcher,
-        Environment $twig,
-        PdfGenerator $pdfGenerator
+        private readonly EventDispatcherInterface $dispatcher,
+        private readonly Environment              $twig,
+        private readonly PdfGenerator             $pdfGenerator
     ) {
-        $this->dispatcher = $dispatcher;
-        $this->templating = $twig;
-        $this->pdfGenerator = $pdfGenerator;
     }
 
     /**
@@ -41,12 +33,14 @@ class LabelRenderer
      */
     public function render(array $labels, string $format = SubjectLabel::FORMAT_LARGE): string
     {
-        $content = $this->templating->render('@EkynaCommerce/Admin/Subject/label.html.twig', [
+        $content = $this->twig->render('@EkynaCommerce/Admin/Subject/label.html.twig', [
             'labels' => $labels,
             'format' => $format,
         ]);
 
-        return $this->pdfGenerator->generateFromHtml($content, $this->getPdfOptionsByFormat($format));
+        $options = $this->getPdfOptionsByFormat($format);
+
+        return $this->pdfGenerator->generateFromHtml($content, $options);
     }
 
     /**
@@ -74,37 +68,28 @@ class LabelRenderer
      */
     private function getPdfOptionsByFormat(string $format): array
     {
-        switch ($format) {
-            case SubjectLabel::FORMAT_LARGE:
-                return [
-                    'paper'   => [
-                        'width'  => 62,
-                        'height' => 100,
-                        'unit'   => 'mm',
-                    ],
-                    'margins' => [
-                        'bottom' => 4,
-                        'left'   => 4,
-                        'right'  => 4,
-                        'top'    => 4,
-                        'unit'   => 'mm',
-                    ],
-                ];
-            case SubjectLabel::FORMAT_SMALL:
-                return [
-                    'paper'   => [
-                        'width'  => 62,
-                        'height' => 29,
-                        'unit'   => 'mm',
-                    ],
-                    'margins' => [
-                        'bottom' => 3,
-                        'left'   => 3,
-                        'right'  => 3,
-                        'top'    => 3,
-                        'unit'   => 'mm',
-                    ],
-                ];
+        if (SubjectLabel::FORMAT_LARGE === $format) {
+            return [
+                'unit'         => 'mm',
+                'marginTop'    => 4,
+                'marginBottom' => 4,
+                'marginLeft'   => 4,
+                'marginRight'  => 4,
+                'paperWidth'   => 62,
+                'paperHeight'  => 100,
+            ];
+        }
+
+        if (SubjectLabel::FORMAT_SMALL === $format) {
+            return [
+                'unit'         => 'mm',
+                'marginTop'    => 3,
+                'marginBottom' => 3,
+                'marginLeft'   => 3,
+                'marginRight'  => 3,
+                'paperWidth'   => 62,
+                'paperHeight'  => 29,
+            ];
         }
 
         throw new InvalidArgumentException("Unexpected format '$format'.");

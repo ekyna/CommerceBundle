@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use DateTime;
+use Ekyna\Bundle\CommerceBundle\Model\SubjectLabel;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
@@ -12,6 +13,7 @@ use Ekyna\Component\Commerce\Subject\Guesser\PurchaseCostGuesserInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 use Twig\TwigTest;
 
 /**
@@ -60,6 +62,13 @@ class SubjectExtension extends AbstractExtension
         ];
     }
 
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('subject_label_formats', [SubjectLabel::class, 'getFormats']),
+        ];
+    }
+
     public function getTests(): array
     {
         return [
@@ -70,10 +79,10 @@ class SubjectExtension extends AbstractExtension
                 'subject_set',
                 [SubjectHelper::class, 'hasSubject']
             ),
-            new TwigTest('quote_only', function(StockSubjectInterface $subject) {
+            new TwigTest('quote_only', function (StockSubjectInterface $subject) {
                 return $subject->isQuoteOnly();
             }),
-            new TwigTest('in_stock', function(StockSubjectInterface $subject) {
+            new TwigTest('in_stock', function (StockSubjectInterface $subject) {
                 if ($subject->isQuoteOnly()) {
                     return false;
                 }
@@ -88,7 +97,7 @@ class SubjectExtension extends AbstractExtension
 
                 return false;
             }),
-            new TwigTest('pre_order', function(StockSubjectInterface $subject) {
+            new TwigTest('pre_order', function (StockSubjectInterface $subject) {
                 if ($subject->isQuoteOnly()) {
                     return false;
                 }
@@ -101,7 +110,8 @@ class SubjectExtension extends AbstractExtension
                     return false;
                 }
 
-                if ((0 < $vQty = $subject->getVirtualStock()) && (null !== $eda = $subject->getEstimatedDateOfArrival())) {
+                if ((0 < $vQty = $subject->getVirtualStock())
+                    && (null !== $eda = $subject->getEstimatedDateOfArrival())) {
                     $today = new DateTime();
                     $today->setTime(23, 59, 59, 999999);
                     if (($today < $eda) && (0 < $vQty - $aQty)) {
@@ -111,7 +121,7 @@ class SubjectExtension extends AbstractExtension
 
                 return false;
             }),
-            new TwigTest('end_of_life', function(StockSubjectInterface $subject) {
+            new TwigTest('end_of_life', function (StockSubjectInterface $subject) {
                 if ($subject->getStockMode() === StockSubjectModes::MODE_DISABLED) {
                     return false;
                 }

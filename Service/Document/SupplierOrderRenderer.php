@@ -1,10 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
+
+use function count;
+use function reset;
 
 /**
  * Class SupplierOrderRenderer
@@ -13,13 +18,10 @@ use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
  */
 class SupplierOrderRenderer extends AbstractRenderer
 {
-    /**
-     * @inheritDoc
-     */
-    public function getFilename()
+    public function getFilename(): string
     {
         if (empty($this->subjects)) {
-            throw new LogicException("Please add supplier order(s) first.");
+            throw new LogicException('Call addSubject() first');
         }
 
         if (1 < count($this->subjects)) {
@@ -32,28 +34,19 @@ class SupplierOrderRenderer extends AbstractRenderer
         return 'supplier_order_' . $subject->getNumber();
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function getParameters()
+    protected function getParameters(): array
     {
         return [
             'type' => DocumentTypes::TYPE_SUPPLIER_ORDER,
         ];
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function supports($subject)
+    protected function supports(object $subject): bool
     {
         return $subject instanceof SupplierOrderInterface;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function getTemplate()
+    protected function getTemplate(): string
     {
         return '@EkynaCommerce/Document/supplier_order.html.twig';
     }

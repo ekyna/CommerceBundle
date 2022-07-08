@@ -1725,6 +1725,9 @@ subject:
         plural: Products
     price_from: >
         <small>From</small>
+    label_format:
+        large: Large
+        small: Small
 
 supplier:
     label:

@@ -1,9 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
+use DateTime;
+use DateTimeInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
 use Ekyna\Component\Commerce\Exception\LogicException;
+
+use function count;
+use function is_null;
+use function reset;
 
 /**
  * Class SaleRenderer
@@ -12,13 +20,10 @@ use Ekyna\Component\Commerce\Exception\LogicException;
  */
 class DocumentRenderer extends AbstractRenderer
 {
-    /**
-     * @inheritDoc
-     */
-    public function getLastModified()
+    public function getLastModified(): ?DateTimeInterface
     {
         if (empty($this->subjects)) {
-            throw new LogicException("Please add subject(s) first.");
+            throw new LogicException('Call addSubject() first.');
         }
 
         if (1 === count($this->subjects)) {
@@ -33,20 +38,17 @@ class DocumentRenderer extends AbstractRenderer
         /** @var DocumentInterface $s */
         foreach ($this->subjects as $s) {
             if (is_null($date) || ($s->getSale()->getUpdatedAt() > $date)) {
-               $date = $s->getSale()->getUpdatedAt();
+                $date = $s->getSale()->getUpdatedAt();
             }
         }
 
         return $date;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getFilename()
+    public function getFilename(): string
     {
         if (empty($this->subjects)) {
-            throw new LogicException("Please add document(s) first.");
+            throw new LogicException('Call addSubject() first.');
         }
 
         if (1 < count($this->subjects)) {
@@ -63,29 +65,20 @@ class DocumentRenderer extends AbstractRenderer
         return $subject->getType();
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function supports($subject)
+    protected function supports(object $subject): bool
     {
         return $subject instanceof DocumentInterface;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function getTemplate()
+    protected function getTemplate(): string
     {
         return '@EkynaCommerce/Document/document.html.twig';
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function getParameters()
+    protected function getParameters(): array
     {
         return [
-            'date' => new \DateTime(),
+            'date' => new DateTime(),
         ];
     }
 }

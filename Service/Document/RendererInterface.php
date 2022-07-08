@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
+use DateTimeInterface;
+use Ekyna\Component\Resource\Exception\PdfException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Interface RendererInterface
@@ -13,53 +18,44 @@ interface RendererInterface
 {
     public const FORMAT_HTML = 'html';
     public const FORMAT_PDF  = 'pdf';
-    public const FORMAT_JPG  = 'jpg';
 
+    public const FORMATS = [
+        self::FORMAT_HTML,
+        self::FORMAT_PDF,
+    ];
 
     /**
      * Create the document file.
      *
-     * @param string $format
-     *
      * @return string The file path
      *
-     * @throws \Ekyna\Component\Resource\Exception\PdfException
+     * @throws PdfException
      */
-    public function create($format = RendererInterface::FORMAT_PDF);
+    public function create(string $format = RendererInterface::FORMAT_PDF): string;
 
     /**
      * Renders the document.
      *
-     * @param string $format
-     *
      * @return string The content
      *
-     * @throws \Ekyna\Component\Resource\Exception\PdfException
+     * @throws PdfException
      */
-    public function render($format = RendererInterface::FORMAT_HTML);
+    public function render(string $format = RendererInterface::FORMAT_HTML): string;
 
     /**
      * Generates a response with the document.
      *
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @throws \Ekyna\Component\Resource\Exception\PdfException
+     * @throws PdfException
      */
-    public function respond(Request $request);
+    public function respond(Request $request): Response;
 
     /**
      * Returns the document's last modification date.
-     *
-     * @return \DateTime
      */
-    public function getLastModified();
+    public function getLastModified(): ?DateTimeInterface;
 
     /**
      * Returns the document's filename.
-     *
-     * @return string
      */
-    public function getFilename();
+    public function getFilename(): string;
 }

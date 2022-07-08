@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
+
+use function count;
+use function reset;
 
 /**
  * Class InvoiceRenderer
@@ -12,13 +17,10 @@ use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
  */
 class InvoiceRenderer extends AbstractRenderer
 {
-    /**
-     * @inheritDoc
-     */
-    public function getFilename()
+    public function getFilename(): string
     {
         if (empty($this->subjects)) {
-            throw new LogicException("Please add invoice(s) first.");
+            throw new LogicException('Call addSubject() first.');
         }
 
         if (1 < count($this->subjects)) {
@@ -31,18 +33,12 @@ class InvoiceRenderer extends AbstractRenderer
         return 'invoice_' . $subject->getNumber();
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function supports($subject)
+    protected function supports(object $subject): bool
     {
         return $subject instanceof InvoiceInterface;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function getTemplate()
+    protected function getTemplate(): string
     {
         return '@EkynaCommerce/Document/invoice.html.twig';
     }

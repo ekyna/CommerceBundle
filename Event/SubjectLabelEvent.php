@@ -17,13 +17,13 @@ class SubjectLabelEvent extends Event
     public const BUILD = 'ekyna_commerce.subject.label.build';
 
     /**
-     * @var SubjectLabel[]
+     * @var array<SubjectLabel>
      */
     private array $labels;
 
 
     /**
-     * @param SubjectLabel[] $labels
+     * @param array<SubjectLabel> $labels
      */
     public function __construct(array $labels = [])
     {
@@ -40,7 +40,7 @@ class SubjectLabelEvent extends Event
     }
 
     /**
-     * @return SubjectLabel[]
+     * @return array<SubjectLabel>
      */
     public function getLabels(): array
     {
