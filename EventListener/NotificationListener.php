@@ -85,11 +85,11 @@ class NotificationListener
             ->setSentAt(new DateTime());
 
         if ($source instanceof PaymentInterface) {
-            $notification->setData('payment', $source->getNumber());
+            $notification->setDatum('payment', $source->getNumber());
         } elseif ($source instanceof ShipmentInterface) {
-            $notification->setData('shipment', $source->getNumber());
+            $notification->setDatum('shipment', $source->getNumber());
         } elseif ($source instanceof InvoiceInterface) {
-            $notification->setData('invoice', $source->getNumber());
+            $notification->setDatum('invoice', $source->getNumber());
         }
 
         $this->manager->persist($notification);
