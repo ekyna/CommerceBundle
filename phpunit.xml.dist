@@ -12,6 +12,10 @@
         <ini name="error_reporting" value="-1" />
     </php>
 
+    <extensions>
+        <extension class="Ekyna\Component\Resource\Tests\PhpUnit\DecimalExtension" />
+    </extensions>
+
     <testsuites>
         <testsuite name="Ekyna Commerce Bundle Test Suite">
             <directory>./Tests/</directory>

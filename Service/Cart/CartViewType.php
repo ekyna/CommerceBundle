@@ -98,6 +98,17 @@ class CartViewType extends AbstractViewType
         }
 
         if ($options['private']) {
+            // Sync with subject
+            if ($item->getSubjectIdentity()->hasIdentity()) {
+                $syncPath = $this->resourceUrl($item, Admin\Sale\Item\SyncSubjectAction::class);
+                $view->addAction(new View\Action($syncPath, 'fa fa-cube', [
+                    'title'         => $this->trans('sale.button.item.sync_subject', [], 'EkynaCommerce'),
+                    'confirm'       => $this->trans('sale.confirm.item.sync_subject', [], 'EkynaCommerce'),
+                    'data-sale-xhr' => null,
+                    'class'         => 'text-warning',
+                ]));
+            }
+
             // Edit action
             $editPath = $this->resourceUrl($item, Admin\Sale\Item\UpdateAction::class);
             $view->addAction(new View\Action($editPath, 'fa fa-pencil', [

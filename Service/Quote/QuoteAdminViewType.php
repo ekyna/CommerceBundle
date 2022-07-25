@@ -102,9 +102,7 @@ class QuoteAdminViewType extends AbstractViewType
         if (!$item->getSubjectIdentity()->hasIdentity()
             || (
                 !$sale->isAutoDiscount() && !$sale->isSample()
-                && !($item->isPrivate()
-                    || ($item->isCompound()
-                        && !$item->hasPrivateChildren()))
+                && !($item->isPrivate() || ($item->isCompound() && !$item->hasPrivateChildren()))
             )
         ) {
             $adjustment = current($item->getAdjustments(Common\AdjustmentTypes::TYPE_DISCOUNT)->toArray());
@@ -198,6 +196,17 @@ class QuoteAdminViewType extends AbstractViewType
                     'class'           => 'text-primary',
                 ]));
             }
+        }
+
+        // Sync with subject
+        if ($item->getSubjectIdentity()->hasIdentity()) {
+            $syncPath = $this->resourceUrl($item, Admin\Sale\Item\SyncSubjectAction::class);
+            $view->addAction(new View\Action($syncPath, 'fa fa-cube', [
+                'title'         => $this->trans('sale.button.item.sync_subject', [], 'EkynaCommerce'),
+                'confirm'       => $this->trans('sale.confirm.item.sync_subject', [], 'EkynaCommerce'),
+                'data-sale-xhr' => null,
+                'class'         => 'text-warning',
+            ]));
         }
     }
 

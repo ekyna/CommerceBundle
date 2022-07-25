@@ -42,7 +42,7 @@
             {%- if partial %}</strong>{% endif -%}
         </td>
         <td id="{{ itemId ~ 'netPrice' }}" class="text-right">
-            {{ item.netPrice|format_currency(supplierOrder.currency.code) }}
+            {{ item.netPrice|format_currency(supplierOrder.currency.code, {'fraction_digit': 5}) }}
         </td>
         <td id="{{ itemId ~ 'weight' }}" class="text-right">
             {{ item.weight|format_number }}&nbsp;kg

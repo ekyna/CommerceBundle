@@ -94,7 +94,7 @@ resources:
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\DeleteAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveDownAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveUpAction: ~
-                # TODO (?) Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\SyncSubjectAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\SyncSubjectAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\UpdateAction: ~
 
         cart_item_adjustment:

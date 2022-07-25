@@ -109,6 +109,7 @@ class SupplierProductType extends AbstractResourceType
             ->addColumn('netPrice', BType\Column\PriceType::class, [
                 'label'         => t('field.buy_net_price', [], 'EkynaCommerce'),
                 'currency_path' => 'supplier.currency.code',
+                'scale'         => 5,
                 'sortable'      => true,
                 'position'      => 30,
             ])

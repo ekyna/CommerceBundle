@@ -20,7 +20,7 @@
                 }) }}
             </div>
             <div class="col-md-6">
-                {{ show_row(supplierProduct.netPrice|format_currency(currency), 'text', {
+                {{ show_row(supplierProduct.netPrice|format_currency(currency, {'fraction_digit': 5}), 'text', {
                     'label': t('field.buy_net_price', [], 'EkynaCommerce'),
                     'label_col': 4
                 }) }}
