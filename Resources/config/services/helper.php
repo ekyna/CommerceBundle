@@ -57,7 +57,6 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.helper.subject', SubjectHelper::class)
             ->args([
                 service('ekyna_commerce.registry.subject_provider'),
-                service('event_dispatcher'),
                 service('ekyna_commerce.features'),
                 service('ekyna_resource.helper'),
                 service('form.factory'),

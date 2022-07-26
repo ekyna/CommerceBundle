@@ -18,7 +18,6 @@ use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectReferenceInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Ekyna\Component\Commerce\Subject\SubjectHelper as BaseHelper;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -34,24 +33,16 @@ use function Symfony\Component\Translation\t;
  */
 class SubjectHelper extends BaseHelper implements SubjectHelperInterface
 {
-    private ResourceHelper       $resourceHelper;
-    private FormFactoryInterface $formFactory;
-    private TranslatorInterface  $translator;
-    private array                $config;
+    private array $config;
 
     public function __construct(
-        SubjectProviderRegistryInterface $registry,
-        EventDispatcherInterface         $eventDispatcher,
-        Features                         $features,
-        ResourceHelper                   $resourceHelper,
-        FormFactoryInterface             $formFactory,
-        TranslatorInterface              $translator
+        SubjectProviderRegistryInterface      $registry,
+        Features                              $features,
+        private readonly ResourceHelper       $resourceHelper,
+        private readonly FormFactoryInterface $formFactory,
+        private readonly TranslatorInterface  $translator
     ) {
-        parent::__construct($registry, $eventDispatcher, $features);
-
-        $this->resourceHelper = $resourceHelper;
-        $this->formFactory = $formFactory;
-        $this->translator = $translator;
+        parent::__construct($registry, $features);
     }
 
     public function setConfig(array $config): void
@@ -233,7 +224,7 @@ class SubjectHelper extends BaseHelper implements SubjectHelperInterface
 
         try {
             return $this->resourceHelper->generateResourcePath($subject, ReadAction::class, [], !$path);
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             return null;
         }
     }

@@ -264,6 +264,12 @@ return static function (ContainerConfigurator $container) {
             ])
             ->tag('ekyna_resource.action')
 
+        ->set('ekyna_commerce.action.sale_item_sync_subject', Item\SyncSubjectAction::class)
+            ->args([
+                service('ekyna_commerce.helper.sale_item'),
+            ])
+            ->tag('ekyna_resource.action')
+
         // Shipment actions --------------------------------------------------------------------
 
         ->set('ekyna_commerce.action.shipment_gateway', Shipment\GatewayAction::class)

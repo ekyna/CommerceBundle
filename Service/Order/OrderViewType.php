@@ -241,7 +241,7 @@ class OrderViewType extends AbstractViewType
             || $this->shipmentCalculator->isShipped($item);
 
         // If no parent
-        if (!$item->getParent()) {
+        if (!$item->hasParent()) {
             // Move up
             if (0 < $item->getPosition()) {
                 $moveUpPath = $this->resourceUrl($item, Admin\Sale\Item\MoveUpAction::class);
@@ -287,7 +287,7 @@ class OrderViewType extends AbstractViewType
         //}
 
         // Configure action
-        if (!$locked && !$item->isImmutable() && !$item->getParent()) {
+        if (!$locked && !$item->isImmutable() && !$item->hasParent()) {
             if ($item->isConfigurable()) {
                 $configurePath = $this->resourceUrl($item, Admin\Sale\Item\ConfigureAction::class);
                 $view->addAction(new View\Action($configurePath, 'fa fa-cog', [
@@ -313,7 +313,7 @@ class OrderViewType extends AbstractViewType
         }
 
         // Sync with subject
-        if ($item->getSubjectIdentity()->hasIdentity()) {
+        if ($item->getSubjectIdentity()->hasIdentity() && !$item->hasParent()) {
             $syncPath = $this->resourceUrl($item, Admin\Sale\Item\SyncSubjectAction::class);
             $view->addAction(new View\Action($syncPath, 'fa fa-cube', [
                 'title'         => $this->trans('sale.button.item.sync_subject', [], 'EkynaCommerce'),

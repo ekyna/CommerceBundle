@@ -141,7 +141,7 @@ class QuoteAdminViewType extends AbstractViewType
         }
 
         // Abort if has parent
-        if (!$item->getParent()) {
+        if (!$item->hasParent()) {
             // Move up
             if (0 < $item->getPosition()) {
                 $moveUpPath = $this->resourceUrl($item, Admin\Sale\Item\MoveUpAction::class);
@@ -186,7 +186,7 @@ class QuoteAdminViewType extends AbstractViewType
         ]));
         //}
 
-        if (!$item->isImmutable() && !$item->getParent()) {
+        if (!$item->isImmutable() && !$item->hasParent()) {
             // Configure action
             if ($item->isConfigurable()) {
                 $configurePath = $this->resourceUrl($item, Admin\Sale\Item\ConfigureAction::class);
@@ -199,7 +199,7 @@ class QuoteAdminViewType extends AbstractViewType
         }
 
         // Sync with subject
-        if ($item->getSubjectIdentity()->hasIdentity()) {
+        if ($item->getSubjectIdentity()->hasIdentity() && !$item->hasParent()) {
             $syncPath = $this->resourceUrl($item, Admin\Sale\Item\SyncSubjectAction::class);
             $view->addAction(new View\Action($syncPath, 'fa fa-cube', [
                 'title'         => $this->trans('sale.button.item.sync_subject', [], 'EkynaCommerce'),
