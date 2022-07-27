@@ -458,6 +458,7 @@ return static function (ContainerConfigurator $container) {
         // Supplier order form type
         ->set('ekyna_commerce.form_type.supplier_order', SupplierOrderType::class)
             ->args([
+                service('ekyna_commerce.factory.formatter'),
                 param('ekyna_commerce.class.supplier_product'),
             ])
             ->tag('form.type')

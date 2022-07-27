@@ -14,13 +14,12 @@ use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceChoiceType;
 use Ekyna\Bundle\UiBundle\Form\Type\CollectionType;
 use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Model\CurrencyInterface;
+use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates as CStates;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface;
-use Locale;
-use NumberFormatter;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -34,11 +33,10 @@ use function Symfony\Component\Translation\t;
  */
 class SupplierOrderType extends AbstractResourceType
 {
-    protected string $supplierProductClass;
-
-    public function __construct(string $productClass)
-    {
-        $this->supplierProductClass = $productClass;
+    public function __construct(
+        protected readonly FormatterFactory $formatterFactory,
+        protected readonly string           $supplierProductClass
+    ) {
     }
 
     public function buildForm(Form\FormBuilderInterface $builder, array $options): void
@@ -185,14 +183,14 @@ class SupplierOrderType extends AbstractResourceType
                 ->setParameter('supplier', $supplier);
         };
 
-        $formatter = NumberFormatter::create(Locale::getDefault(), NumberFormatter::CURRENCY);
+        $formatter = $this->formatterFactory->create(null, $supplier->getCurrency()->getCode());
 
         $choiceLabel = function (SupplierProductInterface $value) use ($formatter): string {
             return sprintf(
                 '[%s] %s - %s (%s) ',
                 $value->getReference(),
                 $value->getDesignation(),
-                $formatter->formatCurrency($value->getNetPrice()->toFloat(), $value->getSupplier()->getCurrency()->getCode()),
+                $formatter->currency($value->getNetPrice(), null, 5),
                 $value->getAvailableStock()->toFixed()
             );
         };
@@ -201,7 +199,7 @@ class SupplierOrderType extends AbstractResourceType
             return [
                 'data-designation' => $value->getDesignation(),
                 'data-reference'   => $value->getReference(),
-                'data-net-price'   => $value->getNetPrice()->toFixed(2),
+                'data-net-price'   => $value->getNetPrice()->toFixed(5),
                 'data-weight'      => $value->getWeight()->toFixed(3),
                 'data-tax-group'   => $value->getTaxGroup()->getId(),
             ];

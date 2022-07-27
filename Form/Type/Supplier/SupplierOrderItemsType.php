@@ -19,12 +19,8 @@ use function Symfony\Component\Translation\t;
  */
 class SupplierOrderItemsType extends AbstractType
 {
-    private ResourceFactoryInterface $factory;
-
-
-    public function __construct(ResourceFactoryInterface $factory)
+    public function __construct(private readonly ResourceFactoryInterface $factory)
     {
-        $this->factory = $factory;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
