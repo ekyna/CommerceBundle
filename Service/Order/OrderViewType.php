@@ -312,17 +312,6 @@ class OrderViewType extends AbstractViewType
             ]));
         }
 
-        // Sync with subject
-        if ($item->getSubjectIdentity()->hasIdentity() && !$item->hasParent()) {
-            $syncPath = $this->resourceUrl($item, Admin\Sale\Item\SyncSubjectAction::class);
-            $view->addAction(new View\Action($syncPath, 'fa fa-cube', [
-                'title'         => $this->trans('sale.button.item.sync_subject', [], 'EkynaCommerce'),
-                'confirm'       => $this->trans('sale.confirm.item.sync_subject', [], 'EkynaCommerce'),
-                'data-sale-xhr' => null,
-                'class'         => 'text-warning',
-            ]));
-        }
-
         // Information
         if (!empty($assignments = $item->getStockAssignments()->toArray())) {
             $view->vars['information'] = $this->stockRenderer->renderStockAssignments($assignments, [
@@ -342,6 +331,19 @@ class OrderViewType extends AbstractViewType
                 'title'               => $this->trans('sale.button.item.information', [], 'EkynaCommerce'),
                 'data-toggle-details' => $view->getId() . '_information',
                 'class'               => $class,
+            ]));
+
+            return;
+        }
+
+        // Sync with subject
+        if ($item->getSubjectIdentity()->hasIdentity() && !$item->hasParent()) {
+            $syncPath = $this->resourceUrl($item, Admin\Sale\Item\SyncSubjectAction::class);
+            $view->addAction(new View\Action($syncPath, 'fa fa-cube', [
+                'title'         => $this->trans('sale.button.item.sync_subject', [], 'EkynaCommerce'),
+                'confirm'       => $this->trans('sale.confirm.item.sync_subject', [], 'EkynaCommerce'),
+                'data-sale-xhr' => null,
+                'class'         => 'text-warning',
             ]));
         }
     }

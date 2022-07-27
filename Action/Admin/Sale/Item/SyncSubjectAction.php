@@ -13,6 +13,7 @@ use Ekyna\Bundle\ResourceBundle\Action\ManagerTrait;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
+use Ekyna\Component\Commerce\Stock\Model\StockAssignmentsInterface;
 use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -39,8 +40,14 @@ class SyncSubjectAction extends AbstractAction implements AdminActionInterface
             throw new UnexpectedTypeException($item, SaleItemInterface::class);
         }
 
+        // Prevent if non-root item
         if ($item->getParent()) {
-            throw new UnexpectedValueException('Expected root item.');
+            throw new UnexpectedValueException('Expected root sale item.');
+        }
+
+        // Prevent if assigned to stock
+        if ($item instanceof StockAssignmentsInterface && !$item->getStockAssignments()->isEmpty()) {
+            throw new UnexpectedValueException('Expected non-assigned sale item.');
         }
 
         $this->saleItemHelper->initialize($item, null);
