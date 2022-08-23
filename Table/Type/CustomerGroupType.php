@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
-use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
-use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
 use Ekyna\Bundle\CommerceBundle\Table\Column\VatDisplayModeType;
 use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
@@ -67,10 +65,6 @@ class CustomerGroupType extends AbstractResourceType
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'resource' => $this->dataClass,
-                'actions'  => [
-                    UpdateAction::class,
-                    DeleteAction::class,
-                ],
             ])
             ->addFilter('name', CType\Filter\TextType::class, [
                 'label'    => t('field.name', [], 'EkynaUi'),

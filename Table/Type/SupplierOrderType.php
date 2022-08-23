@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
-use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
-use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
 use Ekyna\Bundle\AdminBundle\Table\Type\Filter\ConstantChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
@@ -83,10 +81,6 @@ class SupplierOrderType extends AbstractResourceType
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'resource' => $this->dataClass,
-                'actions'  => [
-                    UpdateAction::class,
-                    DeleteAction::class,
-                ],
             ])
             ->addFilter('number', CType\Filter\TextType::class, [
                 'label'    => t('field.number', [], 'EkynaUi'),

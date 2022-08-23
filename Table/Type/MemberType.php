@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
-use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
-use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
 use Ekyna\Bundle\AdminBundle\Table\Type\Column\ConstantChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\SubscriptionStatus;
 use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
@@ -37,10 +35,6 @@ class MemberType extends AbstractResourceType
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'resource' => $this->dataClass,
-                'actions'  => [
-                    UpdateAction::class,
-                    DeleteAction::class,
-                ],
             ])
             ->addFilter('email', CType\Filter\TextType::class, [
                 'label'    => t('field.email', [], 'EkynaUi'),

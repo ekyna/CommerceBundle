@@ -189,7 +189,7 @@ class OrderType extends AbstractResourceType
                 'resource' => $this->dataClass,
                 'actions'  => [
                     PrepareAction::class => [
-                        'filter' => function (RowInterface $row) {
+                        'filter' => function (RowInterface $row): bool {
                             /** @var OrderInterface $order */
                             $order = $row->getData(null);
 
@@ -198,7 +198,7 @@ class OrderType extends AbstractResourceType
                         },
                     ],
                     AbortAction::class   => [
-                        'filter' => function (RowInterface $row) {
+                        'filter' => function (RowInterface $row): bool {
                             /** @var OrderInterface $order */
                             $order = $row->getData(null);
 
@@ -207,7 +207,7 @@ class OrderType extends AbstractResourceType
                     ],
                     UpdateAction::class,
                     DeleteAction::class  => [
-                        'disable' => function (RowInterface $row) {
+                        'disable' => function (RowInterface $row): bool {
                             /** @var OrderInterface $order */
                             $order = $row->getData(null);
 

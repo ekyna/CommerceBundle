@@ -12,7 +12,7 @@ use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Common\Locking\LockChecker;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
-use Ekyna\Component\Table\Source\Row;
+use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -82,7 +82,7 @@ class OrderInvoiceType extends AbstractOrderListType
                 'position'    => 90,
             ]);
 
-        $isLocked = function (Row $row) {
+        $isLocked = function (RowInterface $row): bool {
             return $this->locking->isLocked($row->getData(null));
         };
 

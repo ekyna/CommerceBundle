@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
-use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
-use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
 use Ekyna\Bundle\AdminBundle\Table\Type as AType;
 use Ekyna\Bundle\CommerceBundle\Model\AdjustmentModes;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
@@ -106,10 +104,6 @@ class CouponType extends AbstractResourceType
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'resource' => $this->dataClass,
-                'actions'  => [
-                    UpdateAction::class,
-                    DeleteAction::class,
-                ],
             ])
             ->addFilter('code', CType\Filter\TextType::class, [
                 'label'    => t('field.code', [], 'EkynaUi'),

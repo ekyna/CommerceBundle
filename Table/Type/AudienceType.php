@@ -46,7 +46,7 @@ class AudienceType extends AbstractResourceType
                 'actions'  => [
                     Action\UpdateAction::class,
                     Action\DeleteAction::class => [
-                        'disable' => function (RowInterface $row) {
+                        'disable' => function (RowInterface $row): bool {
                             /** @var AudienceInterface $audience */
                             $audience = $row->getData(null);
 

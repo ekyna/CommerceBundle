@@ -13,12 +13,13 @@ use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Bundle\TableBundle\Extension\Type\Column\ActionsType;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
+use Ekyna\Component\Commerce\Order\Model\OrderShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
-use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function array_replace;
 use function Symfony\Component\Translation\t;
@@ -126,6 +127,11 @@ class ShipmentActionsType extends AbstractColumnType
         $view->vars['buttons'] = array_map(function (array $button): array {
             return array_replace(ActionsType::BUTTON_DEFAULTS, $button);
         }, $buttons);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefault('resource', OrderShipmentInterface::class);
     }
 
     public function getBlockPrefix(): string

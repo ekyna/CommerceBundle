@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
-use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
-use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Table as Type;
 use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
@@ -78,10 +76,6 @@ class CartType extends AbstractResourceType
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'resource' => $this->dataClass,
-                'actions'  => [
-                    UpdateAction::class,
-                    DeleteAction::class,
-                ],
             ]);
 
         if (null === $customer || $customer->hasChildren()) {

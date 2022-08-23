@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
-use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
-use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
 use Ekyna\Bundle\AdminBundle\Table\Type\Filter\ConstantChoiceType;
 use Ekyna\Bundle\CmsBundle\Table\Column\TagsType;
 use Ekyna\Bundle\CommerceBundle\Model;
@@ -20,6 +18,9 @@ use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function array_merge;
+use function Symfony\Component\Translation\t;
 
 /**
  * Class QuoteType
@@ -106,10 +107,6 @@ class QuoteType extends AbstractResourceType
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'resource' => $this->dataClass,
-                'actions'  => [
-                    UpdateAction::class,
-                    DeleteAction::class,
-                ],
             ]);
 
         if (null === $customer || $customer->hasChildren()) {
