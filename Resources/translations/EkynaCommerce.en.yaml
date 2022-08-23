@@ -1404,6 +1404,7 @@ sale:
     field:
         details: Details
         origin_customer: Salesman
+        initiator_customer: Initiator
         address_choice: Address book
         invoice_address: Billing address
         delivery_address: Shipping address

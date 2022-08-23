@@ -45,6 +45,26 @@
     </div>
     {% endif %}
 </div>
+{% if sale is not sale_cart %}
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(sale.initiatorCustomer, 'commerce_customer', {
+            'label': t('sale.field.initiator_customer', {}, 'EkynaCommerce'),
+            'id': 'sale_initiatorCustomer',
+            'label_col': 4
+        }) }}
+    </div>
+    {% if attribute(sale, 'originCustomer') is defined %}
+    <div class="col-md-6">
+        {{ show_row(sale.originCustomer, 'commerce_customer', {
+            'label': t('sale.field.origin_customer', {}, 'EkynaCommerce'),
+            'id': 'sale_originCustomer',
+            'label_col': 4
+        }) }}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
 <hr>
 {{ show_row(sale.comment, 'textarea', {
     'label': 'field.comment',

@@ -11,6 +11,7 @@ use Ekyna\Bundle\CommerceBundle\EventListener\CustomerEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\EventListener\CustomerGroupEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\EventListener\RegistrationEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\Factory\CustomerFactory;
+use Ekyna\Bundle\CommerceBundle\Service\Customer\InitiatorExporter;
 use Ekyna\Bundle\CommerceBundle\Service\Customer\SecurityCustomerProvider;
 use Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator;
 use Ekyna\Component\Commerce\Customer\Balance\BalanceBuilder;
@@ -50,6 +51,14 @@ return static function (ContainerConfigurator $container) {
             ->args([
                 service('doctrine.orm.default_entity_manager'),
                 param('ekyna_commerce.class.order'),
+            ])
+
+        // Initiator exporter
+        ->set('ekyna_commerce.exporter.initiator_customer', InitiatorExporter::class)
+            ->args([
+                service('ekyna_commerce.repository.order'),
+                service('ekyna_commerce.repository.quote'),
+                service('ekyna_commerce.helper.constants'),
             ])
 
         // Customer provider

@@ -34,7 +34,7 @@ class ConfigureAction extends AbstractFormAction
     {
         $item = $this->context->getResource();
 
-        if (!$item || !$item instanceof SaleItemInterface) {
+        if (!$item instanceof SaleItemInterface) {
             return new Response('', Response::HTTP_NOT_FOUND);
         }
 

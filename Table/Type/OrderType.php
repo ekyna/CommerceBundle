@@ -329,8 +329,12 @@ class OrderType extends AbstractResourceType
             ->addFilter('inCharge', Type\Filter\InChargeType::class, [
                 'position' => 145,
             ])
-            ->addFilter('subject', Type\Filter\SaleSubjectType::class, [
+            ->addFilter('initiatorCustomer', Type\Filter\CustomerType::class, [
+                'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
                 'position' => 150,
+            ])
+            ->addFilter('subject', Type\Filter\SaleSubjectType::class, [
+                'position' => 160,
             ]);
 
         $builder

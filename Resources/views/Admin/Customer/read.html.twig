@@ -1,5 +1,7 @@
 {% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
 
+{% import '@EkynaCommerce/Admin/Customer/_macro.html.twig' as macros %}
+
 {% block main_infos %}
     {{- customer|cms_tags({'text': false}) -}}
 {% endblock main_infos %}
@@ -16,6 +18,7 @@
         }) -}}
     {%- endif %}
     {{ admin_resource_btn(customer, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Customer\\BalanceAction') }}
+    {{ macros.initiator_export_dropdown(customer) }}
     {{ parent() }}
 {%- endblock main_actions %}
 

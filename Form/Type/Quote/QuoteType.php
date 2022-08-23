@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Quote;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\UserChoiceType;
 use Ekyna\Bundle\CmsBundle\Form\Type\TagChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerSearchType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleType;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -25,13 +26,11 @@ use function Symfony\Component\Translation\t;
  */
 class QuoteType extends SaleType
 {
-    private AuthorizationCheckerInterface $authorizationChecker;
-
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, string $defaultCurrency)
-    {
+    public function __construct(
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        string                                         $defaultCurrency
+    ) {
         parent::__construct($defaultCurrency);
-
-        $this->authorizationChecker = $authorizationChecker;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -39,6 +38,10 @@ class QuoteType extends SaleType
         parent::buildForm($builder, $options);
 
         $builder
+            ->add('initiatorCustomer', CustomerSearchType::class, [
+                'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
+                'required' => false,
+            ])
             ->add('editable', CheckboxType::class, [
                 'label'    => t('quote.field.editable', [], 'EkynaCommerce'),
                 'required' => false,

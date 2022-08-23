@@ -25,13 +25,11 @@ use function Symfony\Component\Translation\t;
  */
 class OrderType extends SaleType
 {
-    private AuthorizationCheckerInterface $authorizationChecker;
-
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, string $defaultCurrency)
-    {
+    public function __construct(
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        string                                         $defaultCurrency
+    ) {
         parent::__construct($defaultCurrency);
-
-        $this->authorizationChecker = $authorizationChecker;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -39,6 +37,10 @@ class OrderType extends SaleType
         parent::buildForm($builder, $options);
 
         $builder
+            ->add('initiatorCustomer', CustomerSearchType::class, [
+                'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
+                'required' => false,
+            ])
             ->add('originCustomer', CustomerSearchType::class, [
                 'label'    => t('sale.field.origin_customer', [], 'EkynaCommerce'),
                 'required' => false,

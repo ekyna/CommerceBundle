@@ -32,6 +32,7 @@ resources:
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Customer\CreateUserAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Customer\ExportAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Customer\ImportAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Customer\InitiatorExportAction: ~
 
         customer_address:
             driver: doctrine/orm

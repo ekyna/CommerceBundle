@@ -1,0 +1,24 @@
+{%- macro initiator_export_dropdown(customer) -%}
+    <div class="btn-group btn-group-sm">
+        <span class="btn btn-default disabled">
+            <span class="glyphicon glyphicon-barcode"></span>
+            {{- 'button.print_label'|trans({}, 'EkynaCommerce') -}}
+        </span>
+        <button type="button" class="btn btn-default dropdown-toggle"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+            {% for type in ['order', 'quote'] -%}
+                <li>
+                    <a href="{{ admin_resource_path(customer, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Customer\\InitiatorExportAction', {
+                        'type': type
+                    }, {'target': '_blank'}) }}" target="_blank">
+                        {{- (type ~ '.label.plural')|trans({}, 'EkynaCommerce') -}}
+                    </a>
+                </li>
+            {%- endfor %}
+        </ul>
+    </div>
+{%- endmacro initiator_export_dropdown -%}

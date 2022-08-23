@@ -21,9 +21,6 @@ use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use function array_merge;
-use function Symfony\Component\Translation\t;
-
 /**
  * Class QuoteType
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
@@ -195,8 +192,12 @@ class QuoteType extends AbstractResourceType
             ->addFilter('inCharge', Type\Filter\InChargeType::class, [
                 'position' => 110,
             ])
-            ->addFilter('subject', Type\Filter\SaleSubjectType::class, [
+            ->addFilter('initiatorCustomer', Type\Filter\CustomerType::class, [
+                'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
                 'position' => 150,
+            ])
+            ->addFilter('subject', Type\Filter\SaleSubjectType::class, [
+                'position' => 160,
             ]);
     }
 

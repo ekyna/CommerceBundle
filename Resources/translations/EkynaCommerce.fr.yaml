@@ -1440,6 +1440,7 @@ sale:
     field:
         details: Détail
         origin_customer: Commercial
+        initiator_customer: Rapporteur
         address_choice: Carnet d'adresses
         invoice_address: Adresse de facturation
         delivery_address: Adresse de livraison

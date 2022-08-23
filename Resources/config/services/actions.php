@@ -68,6 +68,12 @@ return static function (ContainerConfigurator $container) {
             ])
             ->tag('ekyna_resource.action')
 
+        ->set('ekyna_commerce.action.customer.initiator_export', Customer\InitiatorExportAction::class)
+            ->args([
+                service('ekyna_commerce.exporter.initiator_customer'),
+            ])
+            ->tag('ekyna_resource.action')
+
         // Customer address actions --------------------------------------------------------------------
 
         ->set('ekyna_commerce.action.customer_address.import', CustomerAddress\ImportAction::class)

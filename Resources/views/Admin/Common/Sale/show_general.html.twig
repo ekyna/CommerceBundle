@@ -26,62 +26,14 @@
         }) }}
     </div>
 </div>
-{% if sale.inCharge is defined %}
-    <div class="row">
-        <div class="col-md-6">
-            {% if sale.customer is not null %}
-                {{ show_row(sale.customer|identity, 'link', {
-                    'label': 'customer.label.singular',
-                    'label_trans_domain': 'EkynaCommerce',
-                    'path': admin_resource_path(sale.customer),
-                    'id': 'sale_customer',
-                    'label_col': 4
-                }) }}
-            {% else %}
-                {{ show_row(null, 'text', {
-                    'label': t('customer.label.singular', [], 'EkynaCommerce'),
-                    'id': 'sale_customer',
-                    'label_col': 4
-                }) }}
-            {% endif %}
-        </div>
-        {% if attribute(sale, 'originCustomer') is defined %}
-        <div class="col-md-6">
-            {% if sale.originCustomer is not null %}
-                {{ show_row(sale.originCustomer|identity, 'link', {
-                    'label': 'sale.field.origin_customer',
-                    'label_trans_domain': 'EkynaCommerce',
-                    'path': admin_resource_path(sale.originCustomer),
-                    'id': 'sale_originCustomer',
-                    'label_col': 4
-                }) }}
-            {% else %}
-                {{ show_row(null, 'text', {
-                    'label': 'sale.field.origin_customer',
-                    'label_trans_domain': 'EkynaCommerce',
-                    'id': 'sale_customer',
-                    'label_col': 4
-                }) }}
-            {% endif %}
-        </div>
-        {% endif %}
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(sale.customer, 'commerce_customer', {
+            'id': 'sale_customer',
+            'label_col': 4
+        }) }}
     </div>
-{% else %}
-    {% if sale.customer is not null %}
-        {{ show_row(sale.customer|identity, 'link', {
-            'label': 'customer.label.singular',
-            'label_trans_domain': 'EkynaCommerce',
-            'path': admin_resource_path(sale.customer),
-            'id': 'sale_customer'
-        }) }}
-    {% else %}
-        {{ show_row(null, 'text', {
-            'label': 'customer.label.singular',
-            'label_trans_domain': 'EkynaCommerce',
-            'id': 'sale_customer'
-        }) }}
-    {% endif %}
-{% endif %}
+</div>
 <div class="row">
     <div class="col-md-6">
         {{ show_row(sale|identity, 'text', {
