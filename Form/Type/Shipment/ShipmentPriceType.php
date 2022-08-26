@@ -8,6 +8,8 @@ use Decimal\Decimal;
 use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\HiddenResourceType;
 use Ekyna\Component\Commerce\Shipment\Entity\ShipmentPrice;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentZoneInterface;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -25,16 +27,6 @@ use function Symfony\Component\Translation\t;
  */
 class ShipmentPriceType extends AbstractResourceType
 {
-    private string $zoneClass;
-    private string $methodClass;
-
-
-    public function __construct(string $zoneClass, string $methodClass)
-    {
-        $this->zoneClass = $zoneClass;
-        $this->methodClass = $methodClass;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -64,8 +56,8 @@ class ShipmentPriceType extends AbstractResourceType
 
         if ('zone' === $options['filter_by']) {
             $builder->add('zone', HiddenResourceType::class, [
-                'class' => $this->zoneClass,
-                'attr'  => [
+                'resource' => ShipmentZoneInterface::class,
+                'attr'     => [
                     'class' => 'shipment-price-zone',
                 ],
             ]);
@@ -75,8 +67,8 @@ class ShipmentPriceType extends AbstractResourceType
 
         if ('method' === $options['filter_by']) {
             $builder->add('method', HiddenResourceType::class, [
-                'class' => $this->methodClass,
-                'attr'  => [
+                'resource' => ShipmentMethodInterface::class,
+                'attr'     => [
                     'class' => 'shipment-price-method',
                 ],
             ]);

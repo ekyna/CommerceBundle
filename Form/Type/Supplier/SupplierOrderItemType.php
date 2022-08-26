@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\HiddenResourceType;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface;
 use Symfony\Component\Form\Extension\Core\Type as Symfony;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,13 +21,6 @@ use function Symfony\Component\Translation\t;
  */
 class SupplierOrderItemType extends AbstractResourceType
 {
-    protected string $supplierProductClass;
-
-    public function __construct(string $supplierProductClass)
-    {
-        $this->supplierProductClass = $supplierProductClass;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -78,7 +72,7 @@ class SupplierOrderItemType extends AbstractResourceType
                 ],
             ])
             ->add('product', HiddenResourceType::class, [
-                'class'          => $this->supplierProductClass,
+                'resource'       => SupplierProductInterface::class,
                 'error_bubbling' => true,
                 'attr'           => [
                     'class' => 'order-item-product',

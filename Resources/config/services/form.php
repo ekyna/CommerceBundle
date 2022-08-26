@@ -375,14 +375,6 @@ return static function (ContainerConfigurator $container) {
                 'path'     => 'ekyna-commerce/form/shipment-pricing',
             ])
 
-        // Shipment price form type
-        ->set('ekyna_commerce.form_type.shipment_price', ShipmentPriceType::class)
-            ->args([
-                param('ekyna_commerce.class.shipment_zone'),
-                param('ekyna_commerce.class.shipment_method'),
-            ])
-            ->tag('form.type')
-
         // Shipment rule form type
         ->set('ekyna_commerce.form_type.shipment_rule', ShipmentRuleType::class)
             ->args([
@@ -475,13 +467,6 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.form_type.supplier_order_items', SupplierOrderItemsType::class)
             ->args([
                 service('ekyna_commerce.factory.supplier_order_item'),
-            ])
-            ->tag('form.type')
-
-        // Supplier order item form type
-        ->set('ekyna_commerce.form_type.supplier_order_item', SupplierOrderItemType::class)
-            ->args([
-                param('ekyna_commerce.class.supplier_product'),
             ])
             ->tag('form.type')
 

@@ -3,6 +3,7 @@ resources:
         shipment_method:
             driver: doctrine/orm
             entity:
+                # TODO interface: Ekyna\Bundle\CommerceBundle\Model\ShipmentMethodInterface
                 interface: Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface
                 class: Ekyna\Bundle\CommerceBundle\Entity\ShipmentMethod
             repository:
@@ -46,7 +47,6 @@ resources:
                 # TODO interface: ~
                 class: Ekyna\Component\Commerce\Shipment\Entity\ShipmentMessageTranslation
                 fields: [content]
-            # TODO actions:
 
         shipment_zone:
             driver: doctrine/orm
