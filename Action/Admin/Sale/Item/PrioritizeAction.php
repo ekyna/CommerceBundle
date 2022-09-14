@@ -11,6 +11,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemPrioritizeType;
 use Ekyna\Bundle\ResourceBundle\Action\AbstractAction;
 use Ekyna\Bundle\UiBundle\Model\Modal;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Stock\Prioritizer\PrioritizeCheckerInterface;
 use Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizerInterface;
 use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,11 +28,10 @@ class PrioritizeAction extends AbstractAction implements AdminActionInterface
     use XhrTrait;
     use ModalTrait;
 
-    private StockPrioritizerInterface $stockPrioritizer;
-
-    public function __construct(StockPrioritizerInterface $stockPrioritizer)
-    {
-        $this->stockPrioritizer = $stockPrioritizer;
+    public function __construct(
+        private readonly PrioritizeCheckerInterface $prioritizeChecker,
+        private readonly StockPrioritizerInterface  $stockPrioritizer,
+    ) {
     }
 
     public function __invoke(): Response
@@ -46,12 +46,13 @@ class PrioritizeAction extends AbstractAction implements AdminActionInterface
             return new Response('', Response::HTTP_NOT_FOUND);
         }
 
-        if (!$this->stockPrioritizer->canPrioritizeSaleItem($item)) {
+        if (!$this->prioritizeChecker->canPrioritizeSaleItem($item)) {
             return new Response('', Response::HTTP_NOT_FOUND);
         }
 
         $data = [
-            'quantity' => $item->getTotalQuantity(),
+            'quantity'  => $item->getTotalQuantity(),
+            'same_sale' => false,
         ];
 
         $form = $this->createForm(SaleItemPrioritizeType::class, $data, [
@@ -66,9 +67,12 @@ class PrioritizeAction extends AbstractAction implements AdminActionInterface
         $form->handleRequest($this->request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $quantity = $form->get('quantity')->getData();
+            $sameSale = $form->get('same_sale')->getData();
+
             $changed = $this
                 ->stockPrioritizer
-                ->prioritizeSaleItem($item, $form->get('quantity')->getData());
+                ->prioritizeSaleItem($item, $quantity, $sameSale);
 
             if ($changed) {
                 $this->getManager($item)->flush();

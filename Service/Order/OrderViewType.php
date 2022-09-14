@@ -14,7 +14,7 @@ use Ekyna\Component\Commerce\Order\Model as Order;
 use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentSubjectCalculatorInterface;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
-use Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizerInterface;
+use Ekyna\Component\Commerce\Stock\Prioritizer\PrioritizeCheckerInterface;
 use Exception;
 
 /**
@@ -24,16 +24,15 @@ use Exception;
  */
 class OrderViewType extends AbstractViewType
 {
-    private StockPrioritizerInterface          $stockPrioritizer;
-    private StockRenderer                      $stockRenderer;
-    private InvoiceSubjectCalculatorInterface  $invoiceCalculator;
-    private ShipmentSubjectCalculatorInterface $shipmentCalculator;
-    private ShipmentPriceResolverInterface     $shipmentPriceResolver;
+    private readonly PrioritizeCheckerInterface         $prioritizeChecker;
+    private readonly StockRenderer                      $stockRenderer;
+    private readonly InvoiceSubjectCalculatorInterface  $invoiceCalculator;
+    private readonly ShipmentSubjectCalculatorInterface $shipmentCalculator;
+    private readonly ShipmentPriceResolverInterface     $shipmentPriceResolver;
 
-
-    public function setStockPrioritizer(StockPrioritizerInterface $prioritizer): void
+    public function setPrioritizeChecker(PrioritizeCheckerInterface $prioritizeChecker): void
     {
-        $this->stockPrioritizer = $prioritizer;
+        $this->prioritizeChecker = $prioritizeChecker;
     }
 
     public function setStockRenderer(StockRenderer $renderer): void
@@ -62,7 +61,7 @@ class OrderViewType extends AbstractViewType
             return;
         }
 
-        if ($this->stockPrioritizer->canPrioritizeSale($sale)) {
+        if ($this->prioritizeChecker->canPrioritizeSale($sale)) {
             // Prioritize button
             $prioritizePath = $this->resourceUrl($sale, Admin\Order\PrioritizeAction::class);
             $view->addButton(new View\Button(
@@ -212,11 +211,11 @@ class OrderViewType extends AbstractViewType
 
                 $removePath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\DeleteAction::class);
                 $view->addAction(new View\Action($removePath, 'fa fa-percent', [
-                    'title'         => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
+                    'title'           => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
                     //'confirm'       => $this->trans('sale.confirm.adjustment.remove', [], 'EkynaCommerce'),
                     //'data-sale-xhr' => null,
                     'data-sale-modal' => null,
-                    'class'         => 'text-danger',
+                    'class'           => 'text-danger',
                 ]));
             } else {
                 // New adjustment button
@@ -267,11 +266,11 @@ class OrderViewType extends AbstractViewType
                 // Remove action
                 $removePath = $this->resourceUrl($item, Admin\Sale\Item\DeleteAction::class);
                 $view->addAction(new View\Action($removePath, 'fa fa-remove', [
-                    'title'         => $this->trans('sale.button.item.remove', [], 'EkynaCommerce'),
+                    'title'           => $this->trans('sale.button.item.remove', [], 'EkynaCommerce'),
                     //'confirm'       => $this->trans('sale.confirm.item.remove', [], 'EkynaCommerce'),
                     //'data-sale-xhr' => null,
                     'data-sale-modal' => null,
-                    'class'         => 'text-danger',
+                    'class'           => 'text-danger',
                 ]));
             }
         }
@@ -303,7 +302,7 @@ class OrderViewType extends AbstractViewType
         }
 
         // Prioritize
-        if ($this->stockPrioritizer->canPrioritizeSaleItem($item)) {
+        if ($this->prioritizeChecker->canPrioritizeSaleItem($item)) {
             $prioritizePath = $this->resourceUrl($item, Admin\Sale\Item\PrioritizeAction::class);
             $view->addAction(new View\Action($prioritizePath, 'fa fa-level-up', [
                 'title'           => $this->trans('sale.button.prioritize', [], 'EkynaCommerce'),
@@ -350,8 +349,8 @@ class OrderViewType extends AbstractViewType
 
     public function buildAdjustmentView(
         Common\AdjustmentInterface $adjustment,
-        View\LineView $view,
-        array $options
+        View\LineView              $view,
+        array                      $options
     ): void {
         if ($adjustment->isImmutable() || (!$options['editable']) || (!$options['private'])) {
             return;
@@ -374,11 +373,11 @@ class OrderViewType extends AbstractViewType
         }
         $removePath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\DeleteAction::class);
         $view->addAction(new View\Action($removePath, 'fa fa-remove', [
-            'title'         => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
+            'title'           => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
             //'confirm'       => $this->trans('sale.confirm.adjustment.remove', [], 'EkynaCommerce'),
             //'data-sale-xhr' => null,
             'data-sale-modal' => null,
-            'class'         => 'text-danger',
+            'class'           => 'text-danger',
         ]));
     }
 

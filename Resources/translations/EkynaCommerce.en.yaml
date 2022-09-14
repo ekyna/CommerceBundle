@@ -1381,6 +1381,7 @@ sale:
     abort:
         success: Shipment preparation has been canceled.
     prioritize:
+        same_sale: Allow to pick stock from this sale's previous lines.
         info: Some of this order lines can be reassigned to get available stock for shipment.
         success: Some of the products has been reassigned for shipment.
         failure: No product has been reassigned for shipment.

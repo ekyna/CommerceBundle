@@ -266,6 +266,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set('ekyna_commerce.action.sale_item_prioritize', Item\PrioritizeAction::class)
             ->args([
+                service('ekyna_commerce.prioritizer.checker'),
                 service('ekyna_commerce.prioritizer.stock'),
             ])
             ->tag('ekyna_resource.action')

@@ -106,6 +106,7 @@ return static function (ContainerConfigurator $container) {
             ->lazy(true)
             ->args([
                 service('ekyna_resource.event_dispatcher'),
+                service('ekyna_commerce.prioritizer.checker'),
                 service('ekyna_commerce.prioritizer.stock'),
                 service('ekyna_commerce.builder.shipment'),
                 service('ekyna_commerce.helper.factory'),

@@ -78,9 +78,9 @@
             <tr>
                 <td>{{ item.designation }}</td>
                 <td>{{ item.reference }}</td>
-                <td class="text-right">{{ item.netPrice|format_currency(currency, {}, locale) }}</td>
-                <td class="text-right">{{ item.quantity|format_number }}</td>{# TODO Packing format #}
-                <td class="text-right">{{ (item.netPrice * item.quantity)|format_currency(currency, {}, locale) }}</td>
+                <td class="text-right">{{ item.netPrice|format_currency(currency, {'fraction_digit': 5}, subject.locale) }}</td>
+                <td class="text-right">{{ item.quantity|format_number(locale=subject.locale) }}</td>{# TODO Packing format #}
+                <td class="text-right">{{ (item.netPrice * item.quantity)|format_currency(currency, {}, subject.locale) }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -99,7 +99,7 @@
                     <td colspan="4">
                         {{ t('supplier_order.field.shipping_cost', [], 'EkynaCommerce')|trans }}
                     </td>
-                    <td class="text-right">{{ subject.shippingCost|format_currency(currency, {}, locale) }}</td>
+                    <td class="text-right">{{ subject.shippingCost|format_currency(currency, {}, subject.locale) }}</td>
                 </tr>
             </tbody>
         {% endif %}
@@ -110,7 +110,7 @@
         <tr>
             <td colspan="3" rowspan="3">&nbsp;</td>
             <th class="text-right">{{ t('sale.field.net_total', [], 'EkynaCommerce')|trans }}</th>
-            <td class="total final text-right">{{ (total + subject.shippingCost)|format_currency(currency, {}, locale) }}</td>
+            <td class="total final text-right">{{ (total + subject.shippingCost)|format_currency(currency, {}, subject.locale) }}</td>
         </tr>
         </tbody>
     </table>

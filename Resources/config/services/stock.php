@@ -16,6 +16,7 @@ use Ekyna\Component\Commerce\Stock\Logger\StockLogger;
 use Ekyna\Component\Commerce\Stock\Manager\StockAssignmentManager;
 use Ekyna\Component\Commerce\Stock\Manager\StockUnitManager;
 use Ekyna\Component\Commerce\Stock\Overflow\OverflowHandler;
+use Ekyna\Component\Commerce\Stock\Prioritizer\PrioritizeChecker;
 use Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizer;
 use Ekyna\Component\Commerce\Stock\Provider\WarehouseProvider;
 use Ekyna\Component\Commerce\Stock\Resolver\StockUnitResolver;
@@ -124,11 +125,11 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.assigner.stock_unit', StockUnitAssigner::class)
             ->args([
                 service('ekyna_resource.orm.persistence_helper'),
-                service('ekyna_commerce.helper.subject'),
                 service('ekyna_commerce.resolver.stock_unit'),
                 service('ekyna_commerce.manager.stock_assignment'),
                 service('ekyna_commerce.updater.stock_assignment'),
                 service('ekyna_commerce.helper.factory'),
+                service('ekyna_commerce.helper.subject'),
             ])
 
         // Stock unit linker
@@ -149,9 +150,15 @@ return static function (ContainerConfigurator $container) {
                 abstract_arg('Stock subject defaults'),
             ])
 
+        // Stock prioritize checker
+        ->set('ekyna_commerce.prioritizer.checker', PrioritizeChecker::class)
+            ->args([
+                service('ekyna_commerce.helper.subject'),
+            ])
+            ->tag('twig.runtime')
+
         // Stock prioritizer
         ->set('ekyna_commerce.prioritizer.stock', StockPrioritizer::class)
-            ->lazy(true)
             ->args([
                 service('ekyna_commerce.resolver.stock_unit'),
                 service('ekyna_commerce.assigner.stock_unit'),
@@ -159,9 +166,8 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.cache.stock_unit'),
                 service('ekyna_commerce.manager.stock_assignment'),
                 service('ekyna_commerce.dispatcher.stock_assignment'),
-                service('ekyna_commerce.logger.stock'),
+                service('ekyna_commerce.prioritizer.checker'),
             ])
-            ->tag('twig.runtime') // TODO Too much deps : split twig functions
 
         // Stock renderer
         ->set('ekyna_commerce.renderer.stock', StockRenderer::class)

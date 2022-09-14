@@ -1414,6 +1414,7 @@ sale:
     abort:
         success: La préparation a bien été annulée.
     prioritize:
+        same_sale: Autoriser l'attribution de stock à partir des lignes précédentes de cette commande.
         info: >
             Certaines lignes de cette commande peuvent être réassignées pour
             tenter d'obtenir du stock disponible pour l'expédition.
