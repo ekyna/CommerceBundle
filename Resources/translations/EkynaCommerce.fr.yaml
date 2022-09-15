@@ -837,6 +837,25 @@ customer_group:
     alert:
         no_item: Aucun groupe de clients configuré
 
+customer_position:
+    label:
+        singular: Poste client
+        plural: Postes client
+    header:
+        list: Postes client <small>Liste des postes</small>
+        show: Détail du poste client <small>%name%</small>
+        new: Créer un nouveau poste client
+        edit: Modifier le poste client <small>%name%</small>
+        remove: Supprimer le poste client <small>%name%</small>
+    button:
+        list: Liste des postes
+        show: Détail du poste
+        new: Nouveau poste
+        edit: Modifier le poste
+        remove: Supprimer le poste
+    alert:
+        no_item: Aucun poste configuré
+
 gender:
     short:
         mr: Mr

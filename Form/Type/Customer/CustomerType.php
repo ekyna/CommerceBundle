@@ -18,6 +18,7 @@ use Ekyna\Bundle\CommerceBundle\Model\NotificationTypes as BNotifications;
 use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceChoiceType;
 use Ekyna\Bundle\UiBundle\Form\Type\ColorPickerType;
 use Ekyna\Bundle\UiBundle\Form\Type\PhoneNumberType;
 use Ekyna\Bundle\UiBundle\Form\Type\TinymceType;
@@ -92,6 +93,11 @@ class CustomerType extends AbstractResourceType
                 'number_attr' => [
                     'autocomplete' => 'tel-national',
                 ],
+            ])
+            ->add('customerPosition', ResourceChoiceType::class, [
+                'resource'  => 'ekyna_commerce.customer_position',
+                'required'  => false,
+                'allow_new' => true,
             ])
             ->add('state', ConstantChoiceType::class, [
                 'label'   => t('field.status', [], 'EkynaUi'),

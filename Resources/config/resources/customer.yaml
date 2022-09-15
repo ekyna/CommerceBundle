@@ -103,3 +103,12 @@ resources:
             behaviors:
                 uploadable:
                     uploader: ekyna_commerce.uploader
+
+        customer_position:
+            driver: doctrine/orm
+            entity: Ekyna\Component\Commerce\Customer\Entity\CustomerPosition
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerPositionType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\CustomerPositionType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud: ~

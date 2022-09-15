@@ -176,6 +176,10 @@ class CustomerType extends AbstractResourceType
                     'resource' => 'ekyna_commerce.customer_group',
                     'position' => 70,
                 ])
+                ->addFilter('customerPosition', ResourceType::class, [
+                    'resource' => 'ekyna_commerce.customer_position',
+                    'position' => 71,
+                ])
                 ->addFilter('creditBalance', CType\Filter\NumberType::class, [
                     'label'    => t('customer.field.credit_balance', [], 'EkynaCommerce'),
                     'position' => 80,

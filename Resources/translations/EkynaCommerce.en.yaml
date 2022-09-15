@@ -821,6 +821,25 @@ customer_group:
     alert:
         no_item: No customer group configured
 
+customer_position:
+    label:
+        singular: Customer position
+        plural: Customer positions
+    header:
+        list: Customer positions <small>List of positions</small>
+        show: Customer position details <small>%name%</small>
+        new: Create a new customer position
+        edit: Edit the customer position <small>%name%</small>
+        remove: Remove the customer position <small>%name%</small>
+    button:
+        list: Customer positions list
+        show: Customer position details
+        new: New customer position
+        edit: Edit the customer position
+        remove: Remove the customer position
+    alert:
+        no_item: No customer position configured
+
 gender:
     short:
         mr: Mr

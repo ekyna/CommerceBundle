@@ -162,8 +162,15 @@
                 }) }}
             </div>
         </div>
-        {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
         <div class="row">
+            <div class="col-md-6">
+                {{ show_row(customer.customerPosition, 'resource', {
+                    'resource': 'ekyna_commerce.customer_position',
+                    'id': 'customer_position',
+                    'label_col': 4
+                }) }}
+            </div>
+            {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
             <div class="col-md-6">
                 {{ show_row(customer.birthday, 'datetime', {
                     'label': t('field.birthday', {}, 'EkynaUi'),
@@ -172,8 +179,8 @@
                     'label_col': 4
                 }) }}
             </div>
+            {%- endif %}
         </div>
-        {%- endif %}
         {{ show_row(customer.description, 'textarea', {
             'label': t('field.description', {}, 'EkynaCommerce'),
             'id': 'customer_description'

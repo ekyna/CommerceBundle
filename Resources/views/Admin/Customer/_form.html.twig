@@ -30,13 +30,16 @@
                 {{ form_row(form.mobile, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
-        {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
         <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.customerPosition, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::BIRTHDAY')) -%}
             <div class="col-md-6">
                 {{ form_row(form.birthday, {'label_col': 4, 'widget_col': 8}) }}
             </div>
+            {%- endif %}
         </div>
-        {%- endif %}
         {{ form_row(form.description) }}
         {{ form_row(form.notifications) }}
         {{ form_row(form.tags) }}
