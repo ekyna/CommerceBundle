@@ -116,7 +116,7 @@ return static function (ContainerConfigurator $container) {
         // Order payment (resource) event listener
         ->set('ekyna_commerce.listener.order_payment', OrderPaymentEventSubscriber::class)
             ->parent('ekyna_commerce.listener.abstract_payment')
-            ->call('setLockingHelper', [service('ekyna_commerce.checker.locking')])
+            ->call('setLockChecker', [service('ekyna_commerce.checker.locking')])
             ->tag('resource.event_subscriber')
 
         // Order shipment (resource) event listener
@@ -132,19 +132,19 @@ return static function (ContainerConfigurator $container) {
         // Order invoice (resource) event listener
         ->set('ekyna_commerce.listener.order_invoice', OrderInvoiceEventSubscriber::class)
             ->parent('ekyna_commerce.listener.abstract_invoice')
-            ->call('setLockingHelper', [service('ekyna_commerce.checker.locking')])
+            ->call('setLockChecker', [service('ekyna_commerce.checker.locking')])
             ->tag('resource.event_subscriber')
 
         // Order invoice item (resource) event listener
         ->set('ekyna_commerce.listener.order_invoice_item', OrderInvoiceItemEventSubscriber::class)
             ->parent('ekyna_commerce.listener.abstract_invoice_item')
-            ->call('setLockingHelper', [service('ekyna_commerce.checker.locking')])
+            ->call('setLockChecker', [service('ekyna_commerce.checker.locking')])
             ->tag('resource.event_subscriber')
 
         // Order invoice line (resource) event listener
         ->set('ekyna_commerce.listener.order_invoice_line', OrderInvoiceLineEventSubscriber::class)
             ->parent('ekyna_commerce.listener.abstract_invoice_line')
-            ->call('setLockingHelper', [service('ekyna_commerce.checker.locking')])
+            ->call('setLockChecker', [service('ekyna_commerce.checker.locking')])
             ->tag('resource.event_subscriber')
 
         // Order stock unit (resource) event listener

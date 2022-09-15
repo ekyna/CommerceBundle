@@ -641,6 +641,7 @@ invoice:
     help:
         ignore_stock: Les avoirs d'ajustement doivent être refacturés.
     message:
+        locked_warning: Cette facture est verrouillée et ne devrait pas être modifiée.
         remove_confirm: Souhaitez-vous réellement supprimer cet facture ?
         recalculate_confirm: Êtes-vous sûr de vouloir recalculer cette facture ? (Opération non réversible).
         synchronize_confirm: >

@@ -31,18 +31,11 @@ use function Symfony\Component\Translation\t;
  */
 class InvoiceType extends AbstractResourceType
 {
-    private InvoiceBuilderInterface       $builder;
-    private LockChecker                   $lockChecker;
-    private AuthorizationCheckerInterface $authorizationChecker;
-
     public function __construct(
-        InvoiceBuilderInterface       $builder,
-        LockChecker                   $lockChecker,
-        AuthorizationCheckerInterface $authorizationChecker
+        private readonly InvoiceBuilderInterface       $builder,
+        private readonly LockChecker                   $lockChecker,
+        private readonly AuthorizationCheckerInterface $authorizationChecker
     ) {
-        $this->builder = $builder;
-        $this->lockChecker = $lockChecker;
-        $this->authorizationChecker = $authorizationChecker;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -73,12 +66,13 @@ class InvoiceType extends AbstractResourceType
                     throw new RuntimeException('Not yet supported.');
                 }
 
-                $locked = $this->lockChecker->isLocked($invoice);
+                $locked = $this->lockChecker->isLocked($invoice)
+                      && !$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
 
                 $form->add('createdAt', Type\DateTimeType::class, [
                     'label'      => t('field.date', [], 'EkynaUi'),
                     'required'   => false,
-                    'disabled'   => $locked || !$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN'),
+                    'disabled'   => $locked,
                     'empty_data' => (new DateTime())->format('d/m/Y H:i') // TODO Use the proper format !
                 ]);
 

@@ -53,32 +53,35 @@ return static function (ContainerConfigurator $container) {
         // Invoice abstract listener
         ->set('ekyna_commerce.listener.abstract_invoice', AbstractInvoiceListener::class)
             ->abstract()
-            ->lazy(true)
+            ->lazy()
             ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
             ->call('setInvoiceNumberGenerator', [service('ekyna_commerce.generator.invoice_number')])
             ->call('setCreditNumberGenerator', [service('ekyna_commerce.generator.credit_number')])
             ->call('setInvoiceBuilder', [service('ekyna_commerce.builder.invoice')])
             ->call('setInvoiceCalculator', [service('ekyna_commerce.calculator.document')])
             ->call('setInvoicePaymentResolver', [service('ekyna_commerce.resolver.invoice_payment')])
+            ->call('setAuthorizationChecker', [service('security.authorization_checker')])
 
         // Invoice line abstract listener
         ->set('ekyna_commerce.listener.abstract_invoice_line', AbstractInvoiceLineListener::class)
             ->abstract()
-            ->lazy(true)
+            ->lazy()
             ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
             ->call('setStockUnitAssigner', [service('ekyna_commerce.assigner.stock_unit')])
+            ->call('setAuthorizationChecker', [service('security.authorization_checker')])
 
         // Invoice item abstract listener
         ->set('ekyna_commerce.listener.abstract_invoice_item', AbstractInvoiceItemListener::class)
             ->abstract()
-            ->lazy(true)
+            ->lazy()
             ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
             ->call('setContextProvider', [service('ekyna_commerce.provider.context')])
             ->call('setTaxResolver', [service('ekyna_commerce.resolver.tax')])
+            ->call('setAuthorizationChecker', [service('security.authorization_checker')])
 
         // Invoice builder
         ->set('ekyna_commerce.builder.invoice', InvoiceBuilder::class)
-            ->lazy(true)
+            ->lazy()
             ->args([
                 service('ekyna_commerce.helper.factory'),
                 service('ekyna_commerce.factory.resolver.invoice_availability'),

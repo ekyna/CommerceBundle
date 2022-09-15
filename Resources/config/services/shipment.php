@@ -93,7 +93,7 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.calculator.document'),
                 service('ekyna_resource.orm.persistence_helper'),
             ])
-            ->call('setLockingHelper', [service('ekyna_commerce.checker.locking')])
+            ->call('setLockChecker', [service('ekyna_commerce.checker.locking')])
 
         // Shipment availability resolver factory
         ->set('ekyna_commerce.factory.resolver.shipment_availability', AvailabilityResolverFactory::class)

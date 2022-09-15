@@ -8,8 +8,13 @@
 
 {% block side %}
     {{ parent() }}
+    {% if resource is commerce_locked and is_granted('ROLE_SUPER_ADMIN') %}
+    <div class="alert alert-danger">
+        <i class="fa fa-warning fa-3x pull-left"></i>
+        <p>{{ 'invoice.message.locked_warning'|trans({}, 'EkynaCommerce') }}</p>
+    </div>
+    {% endif %}
     {% if resource.sale is not null %}
         {% include '@EkynaCommerce/Admin/Common/Sale/Side/sale.html.twig' with {'sale': resource.sale} %}
     {% endif %}
 {% endblock side %}
-
