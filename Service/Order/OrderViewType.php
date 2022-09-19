@@ -61,6 +61,8 @@ class OrderViewType extends AbstractViewType
             return;
         }
 
+        $view->vars['attr']['data-type'] = 'order';
+
         if ($this->prioritizeChecker->canPrioritizeSale($sale)) {
             // Prioritize button
             $prioritizePath = $this->resourceUrl($sale, Admin\Order\PrioritizeAction::class);

@@ -101,7 +101,15 @@
         }
 
         tbody {
+
             tr {
+                &.drop-before {
+                    td { border-top: 1px solid dodgerblue; }
+                }
+                &.drop-after {
+                    td { border-bottom: 1px solid dodgerblue; }
+                }
+
                 background-color: transparent;
 
                 /*&:hover {

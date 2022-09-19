@@ -240,7 +240,7 @@ return static function (ContainerConfigurator $container) {
 
         // Sale Item actions --------------------------------------------------------------------
 
-        ->set('ekyna_commerce.action.sale_item_add', Item\AddAction::class)
+        ->set('ekyna_commerce.action.sale_item.add', Item\AddAction::class)
             ->args([
                 service('ekyna_commerce.form_flow.sale_item_add'),
                 service('ekyna_commerce.provider.context'),
@@ -250,13 +250,13 @@ return static function (ContainerConfigurator $container) {
             ])
             ->tag('ekyna_resource.action')
 
-        ->set('ekyna_commerce.action.sale_item_configure', Item\ConfigureAction::class)
+        ->set('ekyna_commerce.action.sale_item.configure', Item\ConfigureAction::class)
             ->args([
                 service('event_dispatcher'),
             ])
             ->tag('ekyna_resource.action')
 
-        ->set('ekyna_commerce.action.sale_item_create', Item\CreateAction::class)
+        ->set('ekyna_commerce.action.sale_item.create', Item\CreateAction::class)
             ->args([
                 service('ekyna_commerce.provider.context'),
                 service('ekyna_commerce.helper.factory'),
@@ -264,14 +264,20 @@ return static function (ContainerConfigurator $container) {
             ])
             ->tag('ekyna_resource.action')
 
-        ->set('ekyna_commerce.action.sale_item_prioritize', Item\PrioritizeAction::class)
+        ->set('ekyna_commerce.action.sale_item.move', Item\MoveAction::class)
+            ->args([
+                service('ekyna_resource.orm.listener_toggler'),
+            ])
+            ->tag('ekyna_resource.action')
+
+        ->set('ekyna_commerce.action.sale_item.prioritize', Item\PrioritizeAction::class)
             ->args([
                 service('ekyna_commerce.prioritizer.checker'),
                 service('ekyna_commerce.prioritizer.stock'),
             ])
             ->tag('ekyna_resource.action')
 
-        ->set('ekyna_commerce.action.sale_item_sync_subject', Item\SyncSubjectAction::class)
+        ->set('ekyna_commerce.action.sale_item.sync_subject', Item\SyncSubjectAction::class)
             ->args([
                 service('ekyna_commerce.helper.sale_item'),
             ])

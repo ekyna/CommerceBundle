@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
 use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
@@ -18,47 +20,20 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class SaleViewType extends AbstractViewType
 {
-    /**
-     * @var LocaleProviderInterface
-     */
-    private $localeProvider;
+    private readonly LocaleProviderInterface       $localeProvider;
+    private readonly AmountCalculatorFactory       $amountCalculatorFactory;
+    private readonly AuthorizationCheckerInterface $authorizationChecker;
 
-    /**
-     * @var AmountCalculatorFactory
-     */
-    private $amountCalculatorFactory;
-
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authorizationChecker;
-
-
-    /**
-     * Sets the locale provider.
-     *
-     * @param LocaleProviderInterface $provider
-     */
     public function setLocaleProvider(LocaleProviderInterface $provider): void
     {
         $this->localeProvider = $provider;
     }
 
-    /**
-     * Sets the amount calculator factory.
-     *
-     * @param AmountCalculatorFactory $amountCalculatorFactory
-     */
     public function setAmountCalculatorFactory(AmountCalculatorFactory $amountCalculatorFactory): void
     {
         $this->amountCalculatorFactory = $amountCalculatorFactory;
     }
 
-    /**
-     * Sets the authorization checker.
-     *
-     * @param AuthorizationCheckerInterface $authorizationChecker
-     */
     public function setAuthorizationChecker(AuthorizationCheckerInterface $authorizationChecker): void
     {
         $this->authorizationChecker = $authorizationChecker;
@@ -97,6 +72,12 @@ class SaleViewType extends AbstractViewType
      */
     public function buildSaleView(Model\SaleInterface $sale, View\SaleView $view, array $options): void
     {
+        $view->vars['attr']['class'] = 'sale-view';
+
+        if ($options['private'] && $options['editable']) {
+            $view->vars['attr']['data-id'] = $sale->getId();
+        }
+
         $view->setTranslations([
             'designation'    => $this->trans('field.designation', [], 'EkynaUi'),
             'reference'      => $this->trans('field.reference', [], 'EkynaUi'),
@@ -126,6 +107,13 @@ class SaleViewType extends AbstractViewType
      */
     public function buildItemView(Model\SaleItemInterface $item, LineView $view, array $options): void
     {
+        $view->addClass('sale-detail-item');
+
+        if ($options['private'] && $options['editable'] && !$item->hasParent()) {
+            $view->vars['attr']['data-id'] = $item->getId();
+            $view->vars['attr']['draggable'] = 'true';
+        }
+
         if (!$item->hasSubjectIdentity()) {
             return;
         }
@@ -149,8 +137,11 @@ class SaleViewType extends AbstractViewType
     /**
      * @inheritDoc
      */
-    public function buildAdjustmentView(Model\AdjustmentInterface $adjustment, View\LineView $view, array $options): void
-    {
+    public function buildAdjustmentView(
+        Model\AdjustmentInterface $adjustment,
+        View\LineView             $view,
+        array                     $options
+    ): void {
         if (!empty($adjustment->getDesignation())) {
             return;
         }

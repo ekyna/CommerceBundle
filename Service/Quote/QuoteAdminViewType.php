@@ -31,6 +31,8 @@ class QuoteAdminViewType extends AbstractViewType
             return;
         }
 
+        $view->vars['attr']['data-type'] = 'quote';
+
         // Refresh button
         $refreshPath = $this->resourceUrl($sale, Admin\Sale\RefreshAction::class);
         $view->addButton(new View\Button(

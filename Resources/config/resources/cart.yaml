@@ -92,6 +92,7 @@ resources:
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\ConfigureAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\CreateAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\DeleteAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveDownAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveUpAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\SyncSubjectAction: ~
