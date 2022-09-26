@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Quote;
 
 use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
@@ -63,7 +65,7 @@ class QuoteAccountViewType extends AbstractViewType
             return;
         }
 
-        // Abort if has parent
+        // Abort if item has parent
         if ($item->getParent()) {
             return;
         }
@@ -133,9 +135,6 @@ class QuoteAccountViewType extends AbstractViewType
         return $sale instanceof Quote\QuoteInterface && $sale->isEditable();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getName(): string
     {
         return 'ekyna_commerce_quote_account';

@@ -316,7 +316,7 @@ class OrderViewType extends AbstractViewType
         // Information
         if (!empty($assignments = $item->getStockAssignments()->toArray())) {
             $view->vars['information'] = $this->stockRenderer->renderStockAssignments($assignments, [
-                'prefix' => $view->getId() . '_su',
+                'prefix' => $view->id . '_su',
                 'class'  => 'table-alt',
             ]);
 
@@ -330,7 +330,7 @@ class OrderViewType extends AbstractViewType
 
             $view->addAction(new View\Action('javascript: void(0)', 'fa fa-tasks', [
                 'title'               => $this->trans('sale.button.item.information', [], 'EkynaCommerce'),
-                'data-toggle-details' => $view->getId() . '_information',
+                'data-toggle-details' => $view->id . '_information',
                 'class'               => $class,
             ]));
 

@@ -142,7 +142,7 @@ class QuoteAdminViewType extends AbstractViewType
             }
         }
 
-        // Abort if has parent
+        // Abort if item has parent
         if (!$item->hasParent()) {
             // Move up
             if (0 < $item->getPosition()) {

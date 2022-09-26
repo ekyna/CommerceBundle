@@ -82,11 +82,8 @@ class CheckoutController extends AbstractController
             }
 
             // Default shipment method and price message
-            if (null !== $shipmentLine = $view->getShipment()) {
-                $shipmentLine->setDesignation(
-                    $shipmentLine->getDesignation() .
-                    '&nbsp;<sup class="text-danger">&starf;</sup>'
-                );
+            if (null !== $view->shipment) {
+                $view->shipment->designation .='&nbsp;<sup class="text-danger">&starf;</sup>';
                 $view->addMessage($this->translate('checkout.message.shipment_defaults', [], 'EkynaCommerce'));
             }
 

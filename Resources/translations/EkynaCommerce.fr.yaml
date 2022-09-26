@@ -1503,6 +1503,8 @@ sale:
         gross_totals: Sous-total
         deposit_total: Acompte TTC
         margin: Marge
+        commercial_margin: Marge<br>commerciale
+        profit_margin: Marge<br>bénéficiaire
         weight_total: Poids total
         preparation_note: Note préparation
         document_comment: Commentaire documents

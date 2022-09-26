@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
@@ -45,17 +47,11 @@ class SaleViewPrivacyType extends AbstractViewType
             || $sale instanceof QuoteInterface;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getName(): string
     {
         return 'ekyna_commerce_sale_privacy';
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getPriority(): int
     {
         return 1024;

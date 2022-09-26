@@ -74,7 +74,7 @@ class SaleRenderer
     public function renderSaleView(SaleView $view, string $template = null): string
     {
         if (empty($template)) {
-            $template = $view->getTemplate();
+            $template = $view->template;
         }
 
         return $this->twig->load($template)->renderBlock('sale', ['view' => $view]);

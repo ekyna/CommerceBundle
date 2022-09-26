@@ -79,26 +79,28 @@ class SaleViewType extends AbstractViewType
         }
 
         $view->setTranslations([
-            'designation'    => $this->trans('field.designation', [], 'EkynaUi'),
-            'reference'      => $this->trans('field.reference', [], 'EkynaUi'),
-            'availability'   => $this->trans('sale.field.availability', [], 'EkynaCommerce'),
-            'unit_net_price' => $this->trans('sale.field.net_unit', [], 'EkynaCommerce'),
-            'unit_ati_price' => $this->trans('sale.field.ati_unit', [], 'EkynaCommerce'),
-            'quantity'       => $this->trans('field.quantity', [], 'EkynaUi'),
+            'designation'       => $this->trans('field.designation', [], 'EkynaUi'),
+            'reference'         => $this->trans('field.reference', [], 'EkynaUi'),
+            'availability'      => $this->trans('sale.field.availability', [], 'EkynaCommerce'),
+            'unit_net_price'    => $this->trans('sale.field.net_unit', [], 'EkynaCommerce'),
+            'unit_ati_price'    => $this->trans('sale.field.ati_unit', [], 'EkynaCommerce'),
+            'quantity'          => $this->trans('field.quantity', [], 'EkynaUi'),
 
-            'net_gross'      => $this->trans('sale.field.net_gross', [], 'EkynaCommerce'),
-            'ati_gross'      => $this->trans('sale.field.ati_gross', [], 'EkynaCommerce'),
-            'discount'       => $this->trans('sale.field.discount', [], 'EkynaCommerce'),
+            'net_gross'         => $this->trans('sale.field.net_gross', [], 'EkynaCommerce'),
+            'ati_gross'         => $this->trans('sale.field.ati_gross', [], 'EkynaCommerce'),
+            'discount'          => $this->trans('sale.field.discount', [], 'EkynaCommerce'),
 
-            'tax_rate'       => $this->trans('sale.field.tax_rate', [], 'EkynaCommerce'),
-            'tax_name'       => $this->trans('sale.field.tax_name', [], 'EkynaCommerce'),
-            'tax_amount'     => $this->trans('sale.field.tax_amount', [], 'EkynaCommerce'),
+            'tax_rate'          => $this->trans('sale.field.tax_rate', [], 'EkynaCommerce'),
+            'tax_name'          => $this->trans('sale.field.tax_name', [], 'EkynaCommerce'),
+            'tax_amount'        => $this->trans('sale.field.tax_amount', [], 'EkynaCommerce'),
 
-            'gross_totals'   => $this->trans('sale.field.gross_totals', [], 'EkynaCommerce'),
-            'net_total'      => $this->trans('sale.field.net_total', [], 'EkynaCommerce'),
-            'tax_total'      => $this->trans('sale.field.tax_total', [], 'EkynaCommerce'),
-            'ati_total'      => $this->trans('sale.field.ati_total', [], 'EkynaCommerce'),
-            'margin'         => $this->trans('sale.field.margin', [], 'EkynaCommerce'),
+            'gross_totals'      => $this->trans('sale.field.gross_totals', [], 'EkynaCommerce'),
+            'net_total'         => $this->trans('sale.field.net_total', [], 'EkynaCommerce'),
+            'tax_total'         => $this->trans('sale.field.tax_total', [], 'EkynaCommerce'),
+            'ati_total'         => $this->trans('sale.field.ati_total', [], 'EkynaCommerce'),
+            'margin'            => $this->trans('sale.field.margin', [], 'EkynaCommerce'),
+            'commercial_margin' => $this->trans('sale.field.commercial_margin', [], 'EkynaCommerce'),
+            'profit_margin'     => $this->trans('sale.field.profit_margin', [], 'EkynaCommerce'),
         ]);
     }
 
@@ -146,12 +148,10 @@ class SaleViewType extends AbstractViewType
             return;
         }
 
-        $designation = $this->trans('adjustment.type.discount', [], 'EkynaCommerce');
+        $view->designation = $this->trans('adjustment.type.discount', [], 'EkynaCommerce');
         if ($adjustment->getMode() === Model\AdjustmentModes::MODE_PERCENT) {
-            $designation .= ' ' . $this->formatter->percent($adjustment->getAmount());
+            $view->designation .= ' ' . $this->formatter->percent($adjustment->getAmount());
         }
-
-        $view->setDesignation($designation);
     }
 
     /**
@@ -163,20 +163,18 @@ class SaleViewType extends AbstractViewType
 
         if (0 >= $result->getTotal()) {
             $free = $this->trans('checkout.shipment.free_shipping', [], 'EkynaCommerce');
-            $view->setBase($free);
-            $view->setTotal($free);
+            $view->base = $free;
+            $view->total = $free;
         }
 
         if (!empty($sale->getShipmentLabel()) || !is_null($sale->getShipmentMethod())) {
             return;
         }
 
-        $designation = $this->trans('sale.field.shipping_cost', [], 'EkynaCommerce');
+        $view->designation = $this->trans('sale.field.shipping_cost', [], 'EkynaCommerce');
 
         // Shipment weight
-        $designation .= ' (' . $this->formatter->number($sale->getShipmentWeight() ?? $sale->getWeightTotal()) . ' kg)';
-
-        $view->setDesignation($designation);
+        $view->designation .= ' (' . $this->formatter->number($sale->getShipmentWeight() ?? $sale->getWeightTotal()) . ' kg)';
     }
 
     /**
@@ -187,9 +185,6 @@ class SaleViewType extends AbstractViewType
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getName(): string
     {
         return 'ekyna_commerce_sale';
