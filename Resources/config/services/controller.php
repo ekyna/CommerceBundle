@@ -404,6 +404,7 @@ return static function (ContainerConfigurator $container) {
             ->args([
                 service('ekyna_ui.modal.renderer'),
                 service('ekyna_commerce.helper.cart'),
+                service('ekyna_commerce.helper.subject'),
             ])
             ->alias(AddToCartController::class, 'ekyna_commerce.controller.subject.add_to_cart')->public()
 

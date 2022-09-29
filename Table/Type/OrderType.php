@@ -133,13 +133,18 @@ class OrderType extends AbstractResourceType
             ])
             ->addColumn('createdAt', CType\Column\DateTimeType::class, [
                 'label'       => t('field.date', [], 'EkynaUi'),
-                'position'    => 30,
+                'position'    => 20,
                 'time_format' => 'none',
             ])
-            ->addColumn('paidAt', Type\Column\SalePaymentCompletedAtType::class, [
-                'position'    => 35,
+            /*->addColumn('acceptedAt', CType\Column\DateTimeType::class, [
+                'label'       => t('sale.field.accepted_at', [], 'EkynaCommerce'),
+                'position'    => 21,
                 'time_format' => 'none',
-            ])
+            ])*/
+            /*->addColumn('paidAt', Type\Column\SalePaymentCompletedAtType::class, [
+                'position'    => 22,
+                'time_format' => 'none',
+            ])*/
             ->addColumn('title', CType\Column\TextType::class, [
                 'label'    => t('field.title', [], 'EkynaUi'),
                 'position' => 40,
@@ -235,6 +240,11 @@ class OrderType extends AbstractResourceType
             ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                 'label'    => t('field.created_at', [], 'EkynaUi'),
                 'position' => 20,
+                'time'     => false,
+            ])
+            ->addFilter('acceptedAt', CType\Filter\DateTimeType::class, [
+                'label'    => t('sale.field.accepted_at', [], 'EkynaCommerce'),
+                'position' => 21,
                 'time'     => false,
             ])
             ->addFilter('customer', Type\Filter\CustomerType::class, [

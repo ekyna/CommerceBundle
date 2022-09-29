@@ -37,7 +37,13 @@
             border-right-color: #ddd;
         }
 
+        .sale-detail-select {
+            padding: 6px 0;
+            text-align: left;
+        }
+
         .sale-detail-number {
+            text-align: right;
             color: lighten(@text-color, 30%);
         }
 
@@ -49,6 +55,7 @@
         .sale-detail-total {
             color: darken(@text-color, 30%);
             font-weight: 700;
+            /*border-right: 1px solid #ddd;*/
         }
 
         .sale-detail-actions {
@@ -333,7 +340,7 @@
         text-align: center;
         vertical-align: middle;
 
-        > a {
+        > a, > button {
             margin-right: 10px;
 
             &:last-child {

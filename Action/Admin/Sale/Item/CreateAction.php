@@ -6,7 +6,6 @@ namespace Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item;
 
 use Ekyna\Bundle\AdminBundle\Action\CreateAction as BaseAction;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\XhrTrait;
-use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
 use Ekyna\Component\Commerce\Common\Context\ContextProvider;
 use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
@@ -27,18 +26,10 @@ class CreateAction extends BaseAction
 {
     use XhrTrait;
 
-    private ContextProvider        $contextProvider;
-    private FactoryHelperInterface $factoryHelper;
-    private SaleHelper             $saleHelper;
-
     public function __construct(
-        ContextProvider        $contextProvider,
-        FactoryHelperInterface $factoryHelper,
-        SaleHelper             $saleHelper
+        private readonly ContextProvider        $contextProvider,
+        private readonly FactoryHelperInterface $factoryHelper
     ) {
-        $this->contextProvider = $contextProvider;
-        $this->factoryHelper = $factoryHelper;
-        $this->saleHelper = $saleHelper;
     }
 
     protected function createResource(): ResourceInterface

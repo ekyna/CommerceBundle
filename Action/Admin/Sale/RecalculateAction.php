@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Action\Admin\Sale;
 
-use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Updater\SaleUpdaterInterface;
 use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\Form\FormError;
@@ -19,12 +18,9 @@ class RecalculateAction extends AbstractSaleAction
 {
     use XhrTrait;
 
-    private SaleUpdaterInterface $saleUpdater;
-
-
-    public function __construct(SaleUpdaterInterface $saleUpdater)
-    {
-        $this->saleUpdater = $saleUpdater;
+    public function __construct(
+        private readonly SaleUpdaterInterface $saleUpdater
+    ) {
     }
 
     public function __invoke(): Response

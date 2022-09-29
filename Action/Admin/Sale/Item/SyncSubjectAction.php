@@ -11,6 +11,7 @@ use Ekyna\Bundle\ResourceBundle\Action\AbstractAction;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
 use Ekyna\Bundle\ResourceBundle\Action\ManagerTrait;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Exception\IllegalOperationException;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
 use Ekyna\Component\Commerce\Stock\Model\StockAssignmentsInterface;
@@ -28,8 +29,9 @@ class SyncSubjectAction extends AbstractAction implements AdminActionInterface
     use ManagerTrait;
     use XhrTrait;
 
-    public function __construct(private readonly SaleItemHelper $saleItemHelper)
-    {
+    public function __construct(
+        private readonly SaleItemHelper $saleItemHelper
+    ) {
     }
 
     public function __invoke(): Response
@@ -45,15 +47,14 @@ class SyncSubjectAction extends AbstractAction implements AdminActionInterface
             throw new UnexpectedValueException('Expected root sale item.');
         }
 
-        // Prevent if assigned to stock
-        if ($item instanceof StockAssignmentsInterface && !$item->getStockAssignments()->isEmpty()) {
-            throw new UnexpectedValueException('Expected non-assigned sale item.');
+        try {
+            $this->saleItemHelper->initialize($item, null);
+            $this->saleItemHelper->build($item);
+
+            $this->getManager()->update($item);
+        } catch (IllegalOperationException) {
+            // TODO Add error message to sale view
         }
-
-        $this->saleItemHelper->initialize($item, null);
-        $this->saleItemHelper->build($item);
-
-        $this->getManager()->update($item);
 
         if ($this->request->isXmlHttpRequest()) {
             return $this->buildXhrSaleViewResponse($item->getRootSale());

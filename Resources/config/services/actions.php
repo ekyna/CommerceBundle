@@ -162,6 +162,14 @@ return static function (ContainerConfigurator $container) {
 
         // Sale actions --------------------------------------------------------------------
 
+        ->set('ekyna_commerce.action.sale.batch', Sale\BatchAction::class)
+            ->args([
+                service('ekyna_commerce.helper.sale'),
+                service('ekyna_commerce.helper.sale_item'),
+                service('ekyna_commerce.updater.sale'),
+            ])
+            ->tag('ekyna_resource.action')
+
         ->set('ekyna_commerce.action.sale.document_generate', Sale\DocumentGenerateAction::class)
             ->args([
                 service('ekyna_commerce.generator.document'),
@@ -260,7 +268,6 @@ return static function (ContainerConfigurator $container) {
             ->args([
                 service('ekyna_commerce.provider.context'),
                 service('ekyna_commerce.helper.factory'),
-                service('ekyna_commerce.helper.sale'),
             ])
             ->tag('ekyna_resource.action')
 

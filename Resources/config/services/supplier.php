@@ -11,7 +11,6 @@ use Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\EventListener\SupplierOrderItemEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierOrderExporter;
 use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierOrderItemExporter;
-use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\SupplierProductEventSubscriber;
 use Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator;
 use Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculator;
 use Ekyna\Component\Commerce\Supplier\EventListener\AbstractListener;

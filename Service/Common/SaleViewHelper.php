@@ -61,13 +61,15 @@ class SaleViewHelper
 
         $view = $this->viewBuilder->buildSaleView($sale, $options);
 
-        if ($options['editable']) {
-            if (null === $form) {
-                $form = $this->buildQuantitiesForm($sale); // TODO action
-            }
-
-            $view->vars['quantities_form'] = $form->createView();
+        if (!$options['editable']) {
+            return $view;
         }
+
+        if (null === $form) {
+            $form = $this->buildQuantitiesForm($sale); // TODO action
+        }
+
+        $view->vars['quantities_form'] = $form->createView();
 
         return $view;
     }

@@ -292,14 +292,6 @@ class AbstractController
     }
 
     /**
-     * Returns the sale helper.
-     */
-    protected function getFactoryHelper(): FactoryHelperInterface
-    {
-        return $this->getSaleHelper()->getFactoryHelper();
-    }
-
-    /**
      * Returns the form factory.
      *
      * @deprecated

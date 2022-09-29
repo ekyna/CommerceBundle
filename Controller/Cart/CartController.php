@@ -522,7 +522,7 @@ class CartController extends AbstractController
         $parameters['cart'] = $cart = $this->getCart();
 
         if (null !== $cart) {
-            $view = $this->getCartHelper()->buildView($cart, ['editable' => true]);
+            $view = $this->getCartHelper()->buildView($cart);
 
             $view->vars['quantities_form'] = $quantities
                 ? $quantities->createView()

@@ -1375,6 +1375,8 @@ sale:
             sync_subject: Sync with product
             information: Show information
             detail: Show details
+            batch_remove: Removes lines
+            batch_synchronize: Synchronize lines
         item_adjustment:
             new: Add a new line discount
             edit: Edit the line discount
@@ -1389,9 +1391,13 @@ sale:
         transform: Confirm transformation into <strong>%target%</strong> ?
         duplicate: Confirm duplication ?
         item:
-            remove: Are you sure you want to remove this product ?
+            remove: Are you sure you want to remove this line ? (Non-reversible operation).
             sync_subject: >
                 Are you sure you want to update this line data from the associated product ?
+                (Non-reversible operation).
+            batch_remove: Are you sure you want to remove the selected lines ? (Non-reversible operation).
+            batch_synchronize: >
+                Are you sure you want to update the selected lines data from the associated products ?
                 (Non-reversible operation).
         adjustment:
             remove: Are you sure you want to remove this discount ?
@@ -1461,6 +1467,7 @@ sale:
         outstanding_limit: Outstanding limit
         outstanding_date: Limit Date
         paid_at: Paid at
+        accepted_at: Accepted at
         coupon_code: Coupon code
         voucher_number: Voucher number
         origin_number: Origin number

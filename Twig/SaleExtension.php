@@ -40,7 +40,8 @@ class SaleExtension extends AbstractExtension
             new TwigTest('sale_cart', [$this, 'isCart']),
             new TwigTest('sale_quote', [$this, 'isQuote']),
             new TwigTest('sale_order', [$this, 'isOrder']),
-            new TwigTest('sale_stockable_state', [$this, 'isSaleStockableSale']),
+            new TwigTest('sale_item', [$this, 'isSaleItem']),
+            new TwigTest('sale_stockable_state', [$this, 'isSaleStockable']),
             new TwigTest('sale_preparable', [$this, 'isSalePreparable']),
             new TwigTest('sale_preparing', [$this, 'isSalePreparing']),
             new TwigTest('sale_with_payment', [$this, 'isSaleWithPayment']),
@@ -120,10 +121,15 @@ class SaleExtension extends AbstractExtension
         return $subject instanceof Order\OrderInterface;
     }
 
+    public function isSaleItem(object $subject): bool
+    {
+        return $subject instanceof Common\SaleItemInterface;
+    }
+
     /**
      * Returns whether the sale is in a stockable state.
      */
-    public function isSaleStockableSale(Common\SaleInterface $sale): bool
+    public function isSaleStockable(Common\SaleInterface $sale): bool
     {
         if ($sale instanceof Order\OrderInterface) {
             return Order\OrderStates::isStockableState($sale->getState());
@@ -165,14 +171,10 @@ class SaleExtension extends AbstractExtension
     }
 
     /**
-     * Returns whether or not the sale has at least one payment (which is not 'new').
+     * Returns whether the sale has at least one payment (which is not 'new').
      */
     public function isSaleWithPayment(Common\SaleInterface $sale): bool
     {
-        if (!$sale instanceof Payment\PaymentSubjectInterface) {
-            return false;
-        }
-
         foreach ($sale->getPayments(true) as $payment) {
             if ($payment->getState() !== Payment\PaymentStates::STATE_NEW) {
                 return true;
@@ -183,14 +185,10 @@ class SaleExtension extends AbstractExtension
     }
 
     /**
-     * Returns whether or not the sale has at least one refund (which is not 'new').
+     * Returns whether the sale has at least one refund (which is not 'new').
      */
     public function isSaleWithRefund(Common\SaleInterface $sale): bool
     {
-        if (!$sale instanceof Payment\PaymentSubjectInterface) {
-            return false;
-        }
-
         foreach ($sale->getPayments(false) as $payment) {
             if ($payment->getState() !== Payment\PaymentStates::STATE_NEW) {
                 return true;
@@ -201,7 +199,7 @@ class SaleExtension extends AbstractExtension
     }
 
     /**
-     * Returns whether or not the sale has at least one shipment (which is not 'new' or a return).
+     * Returns whether the sale has at least one shipment (which is not 'new' or a return).
      */
     public function isSaleWithShipment(Common\SaleInterface $sale): bool
     {
@@ -219,7 +217,7 @@ class SaleExtension extends AbstractExtension
     }
 
     /**
-     * Returns whether or not the sale has at least one return shipment (which is not 'new').
+     * Returns whether the sale has at least one return shipment (which is not 'new').
      */
     public function isSaleWithReturn(Common\SaleInterface $sale): bool
     {
@@ -237,7 +235,7 @@ class SaleExtension extends AbstractExtension
     }
 
     /**
-     * Returns whether or not the sale has at least one invoice (which is not a credit).
+     * Returns whether the sale has at least one invoice (which is not a credit).
      */
     public function isSaleWithInvoice(Common\SaleInterface $sale): bool
     {
@@ -249,7 +247,7 @@ class SaleExtension extends AbstractExtension
     }
 
     /**
-     * Returns whether or not the sale has at least one credit invoice.
+     * Returns whether the sale has at least one credit invoice.
      */
     public function isSaleWithCredit(Common\SaleInterface $sale): bool
     {
@@ -261,7 +259,7 @@ class SaleExtension extends AbstractExtension
     }
 
     /**
-     * Returns whether or not the sale has at least one attachment (which is not internal).
+     * Returns whether the sale has at least one attachment (which is not internal).
      */
     public function isSaleWithAttachment(Common\SaleInterface $sale): bool
     {
@@ -317,14 +315,10 @@ class SaleExtension extends AbstractExtension
     /**
      * Returns the sale's payments (which are not 'new').
      *
-     * @return Payment\PaymentInterface[]
+     * @return array<Payment\PaymentInterface>
      */
     public function getSalePayments(Common\SaleInterface $sale): array
     {
-        if (!$sale instanceof Payment\PaymentSubjectInterface) {
-            return [];
-        }
-
         return $sale->getPayments()->filter(function (Payment\PaymentInterface $payment) {
             return $payment->getState() !== Payment\PaymentStates::STATE_NEW;
         })->toArray();
@@ -333,7 +327,7 @@ class SaleExtension extends AbstractExtension
     /**
      * Returns the sale's shipments (which are not 'new' or returns).
      *
-     * @return Shipment\ShipmentInterface[]
+     * @return array<Shipment\ShipmentInterface>
      */
     public function getSaleShipments(Common\SaleInterface $sale): array
     {
@@ -349,7 +343,7 @@ class SaleExtension extends AbstractExtension
     /**
      * Returns the sale's returns (which are not 'new').
      *
-     * @return Shipment\ShipmentInterface[]
+     * @return array<Shipment\ShipmentInterface>
      */
     public function getSaleReturns(Common\SaleInterface $sale): array
     {
@@ -365,7 +359,7 @@ class SaleExtension extends AbstractExtension
     /**
      * Returns the sale's attachments (which are not internal).
      *
-     * @return Common\SaleAttachmentInterface[]
+     * @return array<Common\SaleAttachmentInterface>
      */
     public function getSaleAttachments(Common\SaleInterface $sale): array
     {

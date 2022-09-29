@@ -1,17 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service;
 
+use Decimal\Decimal;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleCouponType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleQuantitiesType;
-use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
-use Ekyna\Component\Commerce\Common\Model;
+use Ekyna\Component\Commerce\Common\Model\AdjustmentInterface as Adjustment;
+use Ekyna\Component\Commerce\Common\Model\SaleAdjustmentInterface as SaleAdjustment;
+use Ekyna\Component\Commerce\Common\Model\SaleAttachmentInterface as SaleAttachment;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface as Sale;
+use Ekyna\Component\Commerce\Common\Model\SaleItemInterface as SaleItem;
 use Ekyna\Component\Commerce\Common\Updater\SaleUpdaterInterface;
-use Ekyna\Component\Commerce\Common\View\ViewBuilder;
-use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+use Throwable;
 
 /**
  * Class SaleHelper
@@ -20,122 +26,45 @@ use Symfony\Component\Form\FormInterface;
  */
 class SaleHelper
 {
-    /**
-     * @var SubjectHelperInterface
-     */
-    private $subjectHelper;
-
-    /**
-     * @var FactoryHelperInterface
-     */
-    private $factoryHelper;
-
-    /**
-     * @var SaleUpdaterInterface
-     */
-    private $saleUpdater;
-
-    /**
-     * @var ViewBuilder
-     */
-    private $viewBuilder;
-
-    /**
-     * @var FormFactoryInterface
-     */
-    private $formFactory;
-
     public function __construct(
-        SubjectHelperInterface $subjectHelper,
-        FactoryHelperInterface $factoryHelper,
-        SaleUpdaterInterface   $saleUpdater,
-        ViewBuilder            $viewBuilder,
-        FormFactoryInterface   $formFactory
+        private readonly FactoryHelperInterface $factoryHelper,
+        private readonly SaleUpdaterInterface   $saleUpdater,
+        private readonly FormFactoryInterface   $formFactory
     ) {
-        $this->subjectHelper = $subjectHelper;
-        $this->factoryHelper = $factoryHelper;
-        $this->saleUpdater = $saleUpdater;
-        $this->viewBuilder = $viewBuilder;
-        $this->formFactory = $formFactory;
     }
 
     /**
-     * Returns the subject helper.
-     *
-     * @return SubjectHelperInterface
+     * @deprecated
      */
-    public function getSubjectHelper()
-    {
-        return $this->subjectHelper;
-    }
-
-    /**
-     * Returns the view builder.
-     *
-     * @return ViewBuilder
-     */
-    public function getViewBuilder()
-    {
-        return $this->viewBuilder;
-    }
-
-    /**
-     * Returns the sale factory.
-     *
-     * @return FactoryHelperInterface
-     */
-    public function getFactoryHelper()
+    public function getFactoryHelper(): FactoryHelperInterface
     {
         return $this->factoryHelper;
     }
 
     /**
-     * Returns the form factory.
-     *
-     * @return FormFactoryInterface
      * @deprecated
      */
-    public function getFormFactory()
+    public function getFormFactory(): FormFactoryInterface
     {
         return $this->formFactory;
     }
 
     /**
-     * Recalculate the whole sale.
-     *
-     * @param Model\SaleInterface $sale
+     * Recalculate the sale.
      *
      * @return bool Whether the sale has been changed or not.
      */
-    public function recalculate(Model\SaleInterface $sale)
+    public function recalculate(Sale $sale): bool
     {
         return $this->saleUpdater->recalculate($sale);
     }
 
     /**
-     * Builds the sale view.
-     *
-     * @param Model\SaleInterface $sale
-     * @param array               $options
-     *
-     * @return \Ekyna\Component\Commerce\Common\View\SaleView
-     * @deprecated Use SaleViewHelper
-     */
-    public function buildView(Model\SaleInterface $sale, array $options = [])
-    {
-        return $this->viewBuilder->buildSaleView($sale, $options);
-    }
-
-    /**
      * Creates the items quantities form.
      *
-     * @param Model\SaleInterface $sale
-     * @param array               $options
-     *
-     * @return FormInterface
      * @deprecated Use SaleViewHelper
      */
-    public function createQuantitiesForm(Model\SaleInterface $sale, array $options = [])
+    public function createQuantitiesForm(Sale $sale, array $options = []): FormInterface
     {
         return $this->formFactory->create(SaleQuantitiesType::class, $sale, $options);
     }
@@ -143,11 +72,9 @@ class SaleHelper
     /**
      * Creates the coupon code form.
      *
-     * @param array $options
-     *
-     * @return FormInterface
+     * @deprecated Use CouponHelper
      */
-    public function createCouponForm(array $options = [])
+    public function createCouponForm(array $options = []): FormInterface
     {
         return $this->formFactory->create(SaleCouponType::class, null, $options);
     }
@@ -155,12 +82,9 @@ class SaleHelper
     /**
      * Adds the given item to the given sale (or merges with same item).
      *
-     * @param Model\SaleInterface     $sale
-     * @param Model\SaleItemInterface $item
-     *
-     * @return Model\SaleItemInterface The resulting item (eventually the 'merged in' one)
+     * @return SaleItem The resulting item (possibly the 'merged in' item)
      */
-    public function addItem(Model\SaleInterface $sale, Model\SaleItemInterface $item)
+    public function addItem(Sale $sale, SaleItem $item): SaleItem
     {
         $hash = $item->getHash();
 
@@ -179,34 +103,29 @@ class SaleHelper
 
     /**
      * Finds the item by its id.
-     *
-     * @param Model\SaleInterface|Model\SaleItemInterface $saleOrItem
-     * @param int                                         $itemId
-     *
-     * @return Model\SaleItemInterface|null
      */
-    public function findItemById($saleOrItem, $itemId)
+    public function findItemById(Sale|SaleItem $saleOrItem, int $itemId, bool $rootOnly = false): ?SaleItem
     {
-        if ($saleOrItem instanceof Model\SaleInterface) {
-            foreach ($saleOrItem->getItems() as $item) {
-                if ($itemId == $item->getId()) {
-                    return $item;
-                }
-                if (null !== $result = $this->findItemById($item, $itemId)) {
-                    return $result;
-                }
-            }
-        } elseif ($saleOrItem instanceof Model\SaleItemInterface) {
-            foreach ($saleOrItem->getChildren() as $item) {
-                if ($itemId == $item->getId()) {
-                    return $item;
-                }
-                if (null !== $result = $this->findItemById($item, $itemId)) {
-                    return $result;
-                }
-            }
+        if ($saleOrItem instanceof Sale) {
+            $list = $saleOrItem->getItems();
+        } elseif ($rootOnly) {
+            return null;
         } else {
-            throw new InvalidArgumentException('Expected sale or sale item.');
+            $list = $saleOrItem->getChildren();
+        }
+
+        foreach ($list as $item) {
+            if ($itemId == $item->getId()) {
+                return $item;
+            }
+
+            if ($rootOnly) {
+                continue;
+            }
+
+            if (null !== $child = $this->findItemById($item, $itemId, false)) {
+                return $child;
+            }
         }
 
         return null;
@@ -214,13 +133,8 @@ class SaleHelper
 
     /**
      * Finds the sale adjustment by its id.
-     *
-     * @param Model\SaleInterface $sale
-     * @param int                 $adjustmentId
-     *
-     * @return Model\AdjustmentInterface|null
      */
-    public function findAdjustmentById(Model\SaleInterface $sale, $adjustmentId)
+    public function findAdjustmentById(Sale $sale, int $adjustmentId): ?SaleAdjustment
     {
         foreach ($sale->getAdjustments() as $adjustment) {
             if ($adjustmentId == $adjustment->getId()) {
@@ -233,13 +147,8 @@ class SaleHelper
 
     /**
      * Finds the sale attachment by its id.
-     *
-     * @param Model\SaleInterface $sale
-     * @param int                 $attachmentId
-     *
-     * @return Model\SaleAttachmentInterface|null
      */
-    public function findAttachmentById(Model\SaleInterface $sale, $attachmentId)
+    public function findAttachmentById(Sale $sale, int $attachmentId): ?SaleAttachment
     {
         foreach ($sale->getAttachments() as $attachment) {
             if ($attachmentId == $attachment->getId()) {
@@ -252,33 +161,29 @@ class SaleHelper
 
     /**
      * Finds the sale item adjustment by its id.
-     *
-     * @param Model\SaleInterface|Model\SaleItemInterface $saleOrItem
-     * @param int                                         $adjustmentId
-     *
-     * @return Model\AdjustmentInterface|null
      */
-    public function findItemAdjustmentById($saleOrItem, $adjustmentId)
+    public function findItemAdjustmentById(Sale|SaleItem $saleOrItem, int $adjustmentId): ?Adjustment
     {
-        if ($saleOrItem instanceof Model\SaleInterface) {
+        if ($saleOrItem instanceof Sale) {
             foreach ($saleOrItem->getItems() as $item) {
                 if (null !== $result = $this->findItemAdjustmentById($item, $adjustmentId)) {
                     return $result;
                 }
             }
-        } elseif ($saleOrItem instanceof Model\SaleItemInterface) {
-            foreach ($saleOrItem->getAdjustments() as $adjustment) {
-                if ($adjustmentId == $adjustment->getId()) {
-                    return $adjustment;
-                }
+
+            return null;
+        }
+
+        foreach ($saleOrItem->getAdjustments() as $adjustment) {
+            if ($adjustmentId == $adjustment->getId()) {
+                return $adjustment;
             }
-            foreach ($saleOrItem->getChildren() as $item) {
-                if (null !== $result = $this->findItemAdjustmentById($item, $adjustmentId)) {
-                    return $result;
-                }
+        }
+
+        foreach ($saleOrItem->getChildren() as $item) {
+            if (null !== $result = $this->findItemAdjustmentById($item, $adjustmentId)) {
+                return $result;
             }
-        } else {
-            throw new InvalidArgumentException('Expected sale or sale item.');
         }
 
         return null;
@@ -286,36 +191,35 @@ class SaleHelper
 
     /**
      * Removes the item by its id.
-     *
-     * @param Model\SaleInterface|Model\SaleItemInterface $saleOrItem
-     * @param int                                         $itemId
-     *
-     * @return bool
      */
-    public function removeItemById($saleOrItem, $itemId)
+    public function removeItemById(Sale|SaleItem $saleOrItem, int $itemId): bool
     {
-        if ($saleOrItem instanceof Model\SaleInterface) {
-            foreach ($saleOrItem->getItems() as $item) {
-                if ($itemId == $item->getId()) {
-                    $saleOrItem->removeItem($item);
+        $list = $saleOrItem instanceof Sale
+            ? $saleOrItem->getItems()
+            : $saleOrItem->getChildren();
 
+        foreach ($list as $item) {
+            if ($itemId !== $item->getId()) {
+                if ($this->removeItemById($item, $itemId)) {
                     return true;
                 }
-                if ((!$item->isImmutable()) && $this->removeItemById($item, $itemId)) {
-                    return true;
-                }
-            }
-        } elseif ($saleOrItem instanceof Model\SaleItemInterface) {
-            foreach ($saleOrItem->getChildren() as $item) {
-                if ($itemId == $item->getId()) {
-                    $saleOrItem->removeChild($item);
 
-                    return true;
-                }
-                if ((!$item->isImmutable()) && $this->removeItemById($item, $itemId)) {
-                    return true;
-                }
+                continue;
             }
+
+            if ($item->isImmutable()) {
+                return false;
+            }
+
+            // TODO Prevent if invoiced or shipped
+
+            if ($saleOrItem instanceof Sale) {
+                $saleOrItem->removeItem($item);
+            } else {
+                $saleOrItem->removeChild($item);
+            }
+
+            return true;
         }
 
         return false;
@@ -323,43 +227,37 @@ class SaleHelper
 
     /**
      * Removes the sale adjustment by its id.
-     *
-     * @param Model\SaleInterface $sale
-     * @param int                 $adjustmentId
-     *
-     * @return bool
      */
-    public function removeAdjustmentById(Model\SaleInterface $sale, $adjustmentId)
+    public function removeAdjustmentById(Sale $sale, int $adjustmentId): bool
     {
-        if (null !== $adjustment = $this->findAdjustmentById($sale, $adjustmentId)) {
-            if (!$adjustment->isImmutable()) {
-                $sale->removeAdjustment($adjustment);
-
-                return true;
-            }
+        if (null === $adjustment = $this->findAdjustmentById($sale, $adjustmentId)) {
+            return false;
         }
 
-        return false;
+        if ($adjustment->isImmutable()) {
+            return false;
+        }
+
+        $sale->removeAdjustment($adjustment);
+
+        return true;
     }
 
     /**
      * Removes the sale attachment by its id.
-     *
-     * @param Model\SaleInterface $sale
-     * @param int                 $attachmentId
-     *
-     * @return bool
      */
-    public function removeAttachmentById(Model\SaleInterface $sale, $attachmentId)
+    public function removeAttachmentById(Sale $sale, int $attachmentId): bool
     {
-        if (null !== $attachment = $this->findAttachmentById($sale, $attachmentId)) {
-            if (!$attachment->isInternal()) {
-                $sale->removeAttachment($attachment);
-
-                return true;
-            }
+        if (null === $attachment = $this->findAttachmentById($sale, $attachmentId)) {
+            return false;
         }
 
-        return false;
+        if ($attachment->isInternal()) {
+            return false;
+        }
+
+        $sale->removeAttachment($attachment);
+
+        return true;
     }
 }

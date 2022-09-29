@@ -97,21 +97,20 @@ return static function (ContainerConfigurator $container) {
 
         // Sale helper
         ->set('ekyna_commerce.helper.sale', SaleHelper::class)
-            ->lazy(true)
             ->args([
-                service('ekyna_commerce.helper.subject'),
                 service('ekyna_commerce.helper.factory'),
                 service('ekyna_commerce.updater.sale'),
-                service('ekyna_commerce.builder.view'),
                 service('form.factory'),
             ])
             ->alias(SaleHelper::class, 'ekyna_commerce.helper.sale')
 
-        // Sale Item helper
+        // Sale item helper
         ->set('ekyna_commerce.helper.sale_item', SaleItemHelper::class)
             ->args([
-                service('ekyna_commerce.helper.subject'),
                 service('event_dispatcher'),
+                service('ekyna_commerce.helper.subject'),
+                service('ekyna_commerce.calculator.shipment_subject'),
+                service('ekyna_commerce.calculator.invoice_subject'),
             ])
 
         // Sale view helper
@@ -122,6 +121,7 @@ return static function (ContainerConfigurator $container) {
                 service('form.factory'),
             ])
             ->tag('twig.runtime')
+            ->alias(SaleViewHelper::class, 'ekyna_commerce.helper.sale_view')
 
         // Sale renderer
         ->set('ekyna_commerce.renderer.sale', SaleRenderer::class)
@@ -136,9 +136,11 @@ return static function (ContainerConfigurator $container) {
 
         // Cart helper
         ->set('ekyna_commerce.helper.cart', CartHelper::class)
-            ->lazy(true)
             ->args([
                 service('ekyna_commerce.helper.sale'),
+                service('ekyna_commerce.helper.subject'),
+                service('ekyna_commerce.helper.sale_view'),
+                service('ekyna_commerce.helper.factory'),
                 service('ekyna_commerce.provider.cart'),
                 service('ekyna_ui.modal.renderer'),
                 service('event_dispatcher'),

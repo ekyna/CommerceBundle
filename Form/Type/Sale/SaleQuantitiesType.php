@@ -62,7 +62,7 @@ class SaleQuantitiesType extends AbstractType
                 }
             });
 
-        $builder->add('submit', SubmitType::class, [
+        $builder->add('recalculate', SubmitType::class, [
             'label' => t('button.recalculate', [], 'EkynaUi'),
             'attr'  => [
                 'class' => 'btn-sm',

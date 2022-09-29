@@ -19,7 +19,7 @@ class ActionAutoConfigurePass extends BasePass
     {
         return [
             XhrTrait::class => [
-                'setViewBuilder' => 'ekyna_commerce.builder.view',
+                'setSaleViewHelper' => 'ekyna_commerce.helper.sale_view',
             ],
             ArchiverTrait::class => [
                 'setInvoiceArchiver' => 'ekyna_commerce.archiver.invoice',

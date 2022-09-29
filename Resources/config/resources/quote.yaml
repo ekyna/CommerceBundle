@@ -29,6 +29,7 @@ resources:
                         expose: true
                 admin_toggle:
                     properties: [autoDiscount,autoShipping,autoNotify]
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\BatchAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DocumentGenerateAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DocumentRenderAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DuplicateAction: ~

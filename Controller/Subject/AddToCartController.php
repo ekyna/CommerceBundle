@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Controller\Subject;
 
 use Ekyna\Bundle\CommerceBundle\Service\Cart\CartHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use Ekyna\Bundle\UiBundle\Model\Modal;
 use Ekyna\Bundle\UiBundle\Service\Modal\ModalRenderer;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,13 +19,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class AddToCartController
 {
-    private ModalRenderer $modalRenderer;
-    private CartHelper    $cartHelper;
-
-    public function __construct(ModalRenderer $modalRenderer, CartHelper $cartHelper)
-    {
-        $this->modalRenderer = $modalRenderer;
-        $this->cartHelper = $cartHelper;
+    public function __construct(
+        private readonly ModalRenderer $modalRenderer,
+        private readonly CartHelper $cartHelper,
+        private readonly SubjectHelperInterface $subjectHelper
+    ) {
     }
 
     public function __invoke(Request $request): Response
@@ -32,7 +31,7 @@ class AddToCartController
         $provider = $request->attributes->get('provider');
         $identifier = $request->attributes->getInt('identifier');
 
-        $subject = $this->cartHelper->getSaleHelper()->getSubjectHelper()->find($provider, $identifier);
+        $subject = $this->subjectHelper->find($provider, $identifier);
 
         if (null === $subject) {
             throw new NotFoundHttpException('Subject not found.');

@@ -34,6 +34,7 @@ resources:
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Order\PrepareAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Order\PrioritizeAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Order\ReleaseAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\BatchAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DocumentGenerateAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DocumentRenderAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DuplicateAction: ~

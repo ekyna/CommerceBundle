@@ -6,13 +6,15 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Cart;
 
 use Ekyna\Bundle\CommerceBundle\Event\AddToCartEvent;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemConfigureType;
+use Ekyna\Bundle\CommerceBundle\Service\Common\SaleViewHelper;
 use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use Ekyna\Bundle\UiBundle\Model\Modal;
 use Ekyna\Bundle\UiBundle\Service\Modal\ModalRenderer;
-use Ekyna\Component\Commerce\Cart\Entity\Cart;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartItemInterface;
 use Ekyna\Component\Commerce\Cart\Provider\CartProviderInterface;
+use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
 use Ekyna\Component\Commerce\Common\View\SaleView;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -21,6 +23,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
+use function array_replace;
+
 /**
  * Class CartHelper
  * @package Ekyna\Bundle\CommerceBundle\Service\Cart
@@ -28,25 +32,16 @@ use Throwable;
  */
 class CartHelper
 {
-    protected SaleHelper               $saleHelper;
-    protected CartProviderInterface    $cartProvider;
-    protected ModalRenderer            $modalRenderer;
-    protected EventDispatcherInterface $eventDispatcher;
-    protected string                   $cartItemClass;
-    protected bool                     $debug;
-
     public function __construct(
-        SaleHelper               $saleHelper,
-        CartProviderInterface    $cartProvider,
-        ModalRenderer            $modalRenderer,
-        EventDispatcherInterface $eventDispatcher,
-        bool                     $debug
+        private readonly SaleHelper               $saleHelper,
+        private readonly SubjectHelperInterface   $subjectHelper,
+        private readonly SaleViewHelper           $saleViewHelper,
+        private readonly FactoryHelperInterface   $factoryHelper,
+        private readonly CartProviderInterface    $cartProvider,
+        private readonly ModalRenderer            $modalRenderer,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly bool                     $debug
     ) {
-        $this->saleHelper = $saleHelper;
-        $this->cartProvider = $cartProvider;
-        $this->modalRenderer = $modalRenderer;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->debug = $debug;
     }
 
     public function getSaleHelper(): SaleHelper
@@ -62,13 +57,13 @@ class CartHelper
     /**
      * Builds the cart view.
      */
-    public function buildView(CartInterface $cart, array $options = []): SaleView
+    public function buildView(CartInterface $cart): SaleView
     {
-        if (!isset($options['taxes_view'])) {
-            $options['taxes_view'] = false;
-        }
-
-        return $this->saleHelper->buildView($cart, $options);
+        return $this->saleViewHelper->buildSaleView($cart, [
+            'private'    => false,
+            'taxes_view' => false,
+            'editable'   => true,
+        ]);
     }
 
     /**
@@ -93,9 +88,10 @@ class CartHelper
     public function createAddSubjectToCartForm(SubjectInterface $subject, array $options = []): FormInterface
     {
         /** @var CartItemInterface $item */
-        $item = $this->getSaleHelper()->getFactoryHelper()->createItemForSale(new Cart());
+        $cartClass = $this->cartProvider->getCartClass();
+        $item = $this->factoryHelper->createItemForSale(new $cartClass());
 
-        $this->getSaleHelper()->getSubjectHelper()->assign($item, $subject);
+        $this->subjectHelper->assign($item, $subject);
 
         $options = array_replace([
             'extended'      => true,
@@ -105,7 +101,7 @@ class CartHelper
             ],
         ], $options);
 
-        $action = $this->getSaleHelper()->getSubjectHelper()->generateAddToCartUrl($subject);
+        $action = $this->subjectHelper->generateAddToCartUrl($subject);
         $action .= '?ex=' . ($options['extended'] ? 1 : 0) . '&sb=' . ($options['submit_button'] ? 1 : 0);
 
         if ($options['submit_button']) {
@@ -134,7 +130,7 @@ class CartHelper
             /** @var CartItemInterface $item */
             $item = $form->getData();
             /** @var SubjectInterface $subject */
-            $subject = $this->getSaleHelper()->getSubjectHelper()->resolve($item);
+            $subject = $this->subjectHelper->resolve($item);
 
             $event = new AddToCartEvent($subject, $modal, $item);
 

@@ -20,6 +20,7 @@ use Ekyna\Component\Commerce\Stat\Calculator\StatCalculatorInterface;
 use Ekyna\Component\Commerce\Stat\Calculator\StatFilter;
 use Ekyna\Component\Commerce\Stock\Entity\AbstractStockUnit;
 use Ekyna\Component\Commerce\Stock\Model\StockUnitStates;
+use Ekyna\Component\Resource\Doctrine\ORM\Hydrator\IdHydrator;
 use LogicException;
 
 /**

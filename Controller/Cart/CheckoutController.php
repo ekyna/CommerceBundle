@@ -73,7 +73,7 @@ class CheckoutController extends AbstractController
                 }
             }
 
-            $view = $this->getCartHelper()->buildView($cart, ['editable' => true]);
+            $view = $this->getCartHelper()->buildView($cart);
 
             $view->vars['quantities_form'] = $form->createView();
 

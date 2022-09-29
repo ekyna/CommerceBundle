@@ -1408,6 +1408,8 @@ sale:
             remove: Supprimer la ligne
             information: Afficher les information
             detail: Afficher le détail
+            batch_remove: Supprimer les lignes
+            batch_synchronize: Synchroniser les articles
         item_adjustment:
             new: Ajouter une remise de ligne
             edit: Modifier la remise de ligne
@@ -1422,10 +1424,14 @@ sale:
         transform: Confirmer la transformation en <strong>%target%</strong> ?
         duplicate: Confirmer la duplication ?
         item:
-            remove: Souhaitez-vous réellement supprimer cette article ?
+            remove: Souhaitez-vous réellement supprimer cette ligne ? (Opération non réversible).
             sync_subject: >
-                Souhaitez-vous réellement mettre à jour cette ligne d'après les données de l'article associé ?
-                (Opération non réversible).
+                Souhaitez-vous réellement mettre à jour cette ligne d'après 
+                les données de l'article associé ? (Opération non réversible).
+            batch_remove: Souhaitez-vous réellement supprimer les lignes sélectionnées ? (Opération non réversible).
+            batch_synchronize: >
+                Souhaitez-vous réellement mettre à jour les lignes sélectionnées d'après 
+                les données de l'article associé ? (Opération non réversible).
         adjustment:
             remove: Souhaitez-vous réellement supprimer cette remise ?
     prepare:
@@ -1496,6 +1502,7 @@ sale:
         outstanding_expired: Encours expiré
         outstanding_limit: Limite d'encours
         outstanding_date: Date limite
+        accepted_at: Acceptée le
         paid_at: Réglé le
         coupon_code: Code promotion
         voucher_number: N° bon d'achat
