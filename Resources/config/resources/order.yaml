@@ -147,6 +147,9 @@ resources:
             entity:
                 interface: Ekyna\Component\Commerce\Order\Model\OrderItemInterface
                 class: Ekyna\Component\Commerce\Order\Entity\OrderItem
+            manager:
+                interface: Ekyna\Component\Commerce\Order\Manager\OrderItemManagerInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Manager\OrderItemManager
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderItemType
             parent: ekyna_commerce.order
             trans_prefix: sale_item

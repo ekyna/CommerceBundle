@@ -119,7 +119,6 @@ class AntiFraudEventSubscriber implements EventSubscriberInterface
         }
 
         // Set event's payment as null
-        $event->setPayment(null);
         $event->stopPropagation();
     }
 

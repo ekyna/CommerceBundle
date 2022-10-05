@@ -134,7 +134,8 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.resolver.state.payment_subject', PaymentSubjectStateResolver::class)
             ->args([
                 service('ekyna_commerce.calculator.payment'),
-                service('ekyna_commerce.converter.currency'),
+                service('ekyna_commerce.calculator.invoice_subject'),
+                param('ekyna_commerce.default.currency'),
             ])
     ;
 };

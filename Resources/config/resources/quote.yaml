@@ -94,6 +94,9 @@ resources:
             entity:
                 interface: Ekyna\Component\Commerce\Quote\Model\QuoteItemInterface
                 class: Ekyna\Component\Commerce\Quote\Entity\QuoteItem
+            manager:
+                interface: Ekyna\Component\Commerce\Quote\Manager\QuoteItemManagerInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Manager\QuoteItemManager
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteItemType
             parent: ekyna_commerce.quote
             trans_prefix: sale_item

@@ -84,6 +84,9 @@ resources:
             entity:
                 interface: Ekyna\Component\Commerce\Cart\Model\CartItemInterface
                 class: Ekyna\Component\Commerce\Cart\Entity\CartItem
+            manager:
+                interface: Ekyna\Component\Commerce\Cart\Manager\CartItemManagerInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Manager\CartItemManager
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartItemType
             parent: ekyna_commerce.cart
             trans_prefix: sale_item

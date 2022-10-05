@@ -28,6 +28,7 @@ return static function (ContainerConfigurator $container) {
             ->args([
                 service('ekyna_commerce.repository.loyalty_log'),
                 service('ekyna_resource.orm.persistence_helper'),
+                service('doctrine.orm.default_entity_manager'),
             ])
 
         // Loyalty logger

@@ -49,6 +49,9 @@ resources:
             factory:
                 interface: Ekyna\Component\Commerce\Supplier\Factory\SupplierProductFactoryInterface
                 class: Ekyna\Component\Commerce\Supplier\Factory\SupplierProductFactory
+            manager:
+                interface: Ekyna\Component\Commerce\Supplier\Manager\SupplierProductManagerInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Manager\SupplierProductManager
             normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SupplierProductNormalizer
             search:
                 class: Ekyna\Bundle\CommerceBundle\Service\Search\SupplierProductRepository
@@ -121,6 +124,9 @@ resources:
             repository:
                 interface: Ekyna\Component\Commerce\Supplier\Repository\SupplierOrderItemRepositoryInterface
                 class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\SupplierOrderItemRepository
+            manager:
+                interface: Ekyna\Component\Commerce\Supplier\Manager\SupplierOrderItemManagerInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Manager\SupplierOrderItemManager
             normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SupplierOrderItemNormalizer
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderItemType
             parent: ekyna_commerce.supplier_order
