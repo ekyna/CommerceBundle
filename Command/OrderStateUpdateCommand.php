@@ -16,6 +16,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+use function is_string;
+use function sprintf;
+
 /**
  * Class OrderStateUpdateCommand
  * @package Ekyna\Bundle\CommerceBundle\Command
@@ -23,26 +26,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class OrderStateUpdateCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:order:update-state';
-
-    private OrderRepositoryInterface $repository;
-    private OrderStateResolver       $resolver;
-    private ResourceManagerInterface $operator;
-    private TranslatorInterface      $translator;
-
+    protected static $defaultName        = 'ekyna:commerce:order:state-update';
+    protected static $defaultDescription = 'Update the order states.';
 
     public function __construct(
-        OrderRepositoryInterface $repository,
-        OrderStateResolver $resolver,
-        ResourceManagerInterface $manager,
-        TranslatorInterface $translator
+        private readonly OrderRepositoryInterface $repository,
+        private readonly OrderStateResolver       $resolver,
+        private readonly ResourceManagerInterface $manager,
+        private readonly TranslatorInterface      $translator
     ) {
         parent::__construct();
-
-        $this->repository = $repository;
-        $this->resolver = $resolver;
-        $this->operator = $manager;
-        $this->translator = $translator;
     }
 
     protected function configure(): void
@@ -91,7 +84,7 @@ class OrderStateUpdateCommand extends Command
         $previousState = $order->getState();
 
         if ($this->resolver->resolve($order)) {
-            $event = $this->operator->update($order);
+            $event = $this->manager->update($order);
             if ($event->hasErrors()) {
                 foreach ($event->getErrors() as $error) {
                     $output->writeln('<error>' . $error->trans($this->translator) . '</error>');

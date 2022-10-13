@@ -17,23 +17,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CartPurgeCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:cart:purge';
+    protected static $defaultName        = 'ekyna:commerce:cart:purge';
+    protected static $defaultDescription = 'Removes the expired carts.';
 
-    private CartRepositoryInterface  $repository;
-    private ResourceManagerInterface $manager;
-
-
-    public function __construct(CartRepositoryInterface $repository, ResourceManagerInterface $manager)
-    {
+    public function __construct(
+        private readonly CartRepositoryInterface  $repository,
+        private readonly ResourceManagerInterface $manager
+    ) {
         parent::__construct();
-
-        $this->repository = $repository;
-        $this->manager = $manager;
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription('Removes the expired carts.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -50,7 +41,8 @@ class CartPurgeCommand extends Command
         foreach ($expiredCarts as $cart) {
             $number = $cart->getNumber();
 
-            $debug && $output->write(sprintf(
+            $debug
+            && $output->write(sprintf(
                 '- <comment>%s</comment> %s ',
                 $number,
                 str_pad('.', 44 - mb_strlen($number), '.', STR_PAD_LEFT)

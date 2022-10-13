@@ -21,14 +21,10 @@ class NewsletterSynchronizeCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:newsletter:synchronize';
 
-    private SynchronizerRegistry $registry;
-
-
-    public function __construct(SynchronizerRegistry $registry)
-    {
+    public function __construct(
+        private readonly SynchronizerRegistry $registry
+    ) {
         parent::__construct();
-
-        $this->registry = $registry;
     }
 
     protected function configure(): void

@@ -31,6 +31,9 @@ use const DIRECTORY_SEPARATOR;
  */
 class CustomerBalanceIntegrityCommand extends Command
 {
+    protected static $defaultName = 'ekyna:commerce:customer:balance-integrity';
+    protected static $defaultDescription = 'Checks the customer balances integrity.';
+
     private Connection      $connection;
     private MailerInterface $mailer;
     private string          $email;
@@ -58,8 +61,6 @@ class CustomerBalanceIntegrityCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('ekyna:commerce:customer:balance-integrity')
-            ->setDescription('Checks the customer balances integrity.')
             ->addOption('outstanding', 'o', InputOption::VALUE_NONE, 'Check outstanding balances only')
             ->addOption('credit', 'c', InputOption::VALUE_NONE, 'Check credit balances only')
             ->addOption('fix', 'f', InputOption::VALUE_NONE, 'To fix balances')

@@ -19,30 +19,15 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class OrderWatchCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:order:watch';
-
-    private OrderRepositoryInterface         $repository;
-    private ResourceEventDispatcherInterface $dispatcher;
-    private EntityManagerInterface           $manager;
-
+    protected static $defaultName        = 'ekyna:commerce:order:watch';
+    protected static $defaultDescription = 'Dispatches a \'ORDER_COMPLETED\' event for all orders completed yesterday. Do not run more than once per day.';
 
     public function __construct(
-        OrderRepositoryInterface         $repository,
-        ResourceEventDispatcherInterface $dispatcher,
-        EntityManagerInterface           $manager
+        private readonly OrderRepositoryInterface         $repository,
+        private readonly ResourceEventDispatcherInterface $dispatcher,
+        private readonly EntityManagerInterface           $manager
     ) {
         parent::__construct();
-
-        $this->repository = $repository;
-        $this->dispatcher = $dispatcher;
-        $this->manager = $manager;
-    }
-
-    protected function configure()
-    {
-        $this->setDescription(
-            "Dispatches a 'ORDER_COMPLETED' event for all orders completed yesterday. Do not run more than once per day."
-        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

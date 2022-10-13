@@ -26,31 +26,21 @@ use function count;
  */
 class InvoiceRecalculateCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:invoice:recalculate';
-
-    private OrderInvoiceRepositoryInterface $invoiceRepository;
-    private DocumentCalculatorInterface     $invoiceCalculator;
-    private EntityManagerInterface          $invoiceManager;
-    private LockChecker                     $lockChecker;
+    protected static $defaultName        = 'ekyna:commerce:invoice:recalculate';
+    protected static $defaultDescription = 'Recalculates the invoices created the given month.';
 
     public function __construct(
-        OrderInvoiceRepositoryInterface $invoiceRepository,
-        DocumentCalculatorInterface     $invoiceCalculator,
-        EntityManagerInterface          $invoiceManager,
-        LockChecker                     $lockChecker
+        private readonly OrderInvoiceRepositoryInterface $invoiceRepository,
+        private readonly DocumentCalculatorInterface     $invoiceCalculator,
+        private readonly EntityManagerInterface          $invoiceManager,
+        private readonly LockChecker                     $lockChecker
     ) {
         parent::__construct();
-
-        $this->invoiceRepository = $invoiceRepository;
-        $this->invoiceCalculator = $invoiceCalculator;
-        $this->invoiceManager = $invoiceManager;
-        $this->lockChecker = $lockChecker;
     }
 
     protected function configure(): void
     {
         $this
-            ->setDescription('Recalculates the invoices created the given month.')
             ->addOption('id', 'i', InputOption::VALUE_REQUIRED, 'The invoice id.')
             ->addOption('month', 'm', InputOption::VALUE_REQUIRED, 'The month date as `Y-m`.')
             ->addOption('force', null, InputOption::VALUE_NONE, 'Whether to force update');

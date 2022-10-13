@@ -20,7 +20,7 @@
 {% if order.sample -%}
     <span class="label label-info" style="margin-left:6px;">{{ 'field.sample'|trans({}, 'EkynaCommerce') }}</span>
 {%- endif %}
-{% if app.debug -%}
+{% if is_granted('ROLE_SUPER_ADMIN') -%}
     <a href="{{ admin_resource_path(order, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Sale\\UpdateStateAction') }}"
        class="btn btn-xs btn-link">{# TODO XHR #}
         <i class="fa fa-refresh text-muted"></i>

@@ -28,44 +28,30 @@ use Throwable;
  */
 class StockIntegrityCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:stock:integrity';
-
-    private Connection $connection;
-    private StockSubjectUpdaterInterface $subjectUpdater;
-    private EntityManagerInterface $entityManager;
-    private OverflowHandlerInterface $overflowHandler;
-    private MailerInterface $mailer;
-    private string $email;
-
+    protected static $defaultName        = 'ekyna:commerce:stock:integrity';
+    protected static $defaultDescription = 'Performs various stock integrity checks.';
 
     public function __construct(
-        Connection $connection,
-        StockSubjectUpdaterInterface $subjectUpdater,
-        EntityManagerInterface $entityManager,
-        OverflowHandlerInterface $overflowHandler,
-        MailerInterface $mailer,
-        string $email
+        private readonly Connection                   $connection,
+        private readonly StockSubjectUpdaterInterface $subjectUpdater,
+        private readonly EntityManagerInterface       $entityManager,
+        private readonly OverflowHandlerInterface     $overflowHandler,
+        private readonly MailerInterface              $mailer,
+        private readonly string                       $email
     ) {
         parent::__construct();
-
-        $this->connection = $connection;
-        $this->subjectUpdater = $subjectUpdater;
-        $this->entityManager = $entityManager;
-        $this->overflowHandler = $overflowHandler;
-        $this->mailer = $mailer;
-        $this->email = $email;
     }
 
     protected function configure(): void
     {
         $this
-            ->setDescription('Checks the stock integrity.')
             ->addOption('fix', 'f', InputOption::VALUE_NONE, 'Whether to apply fixes')
             ->addOption('report', 'r', InputOption::VALUE_NONE, 'Whether to send email report');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        /** @var array<int, Integrity\CheckerInterface> $checkers */
         $checkers = [
             new Integrity\UnitOrderedChecker(),
             new Integrity\UnitReceivedChecker(),

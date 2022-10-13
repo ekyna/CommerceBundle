@@ -21,33 +21,23 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  */
 class InvoicePaidTotalUpdateCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:invoice:update-paid-total';
-
-    private InvoicePaymentResolverInterface $resolver;
-    private EntityManagerInterface          $manager;
-    private string                          $invoiceClass;
+    protected static $defaultName        = 'ekyna:commerce:invoice:update-paid-total';
+    protected static $defaultDescription = 'Updates the invoices paid total';
 
     private Statement $updateTotal;
     private Statement $updateRealTotal;
 
-
     public function __construct(
-        InvoicePaymentResolverInterface $resolver,
-        EntityManagerInterface          $manager,
-        string                          $invoiceClass
+        private readonly InvoicePaymentResolverInterface $resolver,
+        private readonly EntityManagerInterface          $manager,
+        private readonly string                          $invoiceClass
     ) {
         parent::__construct();
-
-        $this->resolver = $resolver;
-        $this->manager = $manager;
-        $this->invoiceClass = $invoiceClass;
     }
 
     protected function configure(): void
     {
-        $this
-            ->setDescription('Updates the invoices paid total')
-            ->addArgument('id', InputArgument::OPTIONAL, 'To update a single order\'s invoices', 0);
+        $this->addArgument('id', InputArgument::OPTIONAL, 'To update a single order\'s invoices', 0);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

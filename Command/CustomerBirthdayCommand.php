@@ -19,28 +19,15 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CustomerBirthdayCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:customer:birthday';
-
-    private CustomerRepositoryInterface $repository;
-    private ResourceEventDispatcherInterface $dispatcher;
-    private EntityManagerInterface $manager;
-
+    protected static $defaultName        = 'ekyna:commerce:customer:birthday';
+    protected static $defaultDescription = 'Dispatches the customer birthday event. Do not run more than once per day.';
 
     public function __construct(
-        CustomerRepositoryInterface $repository,
-        ResourceEventDispatcherInterface $dispatcher,
-        EntityManagerInterface $manager
+        private readonly CustomerRepositoryInterface      $repository,
+        private readonly ResourceEventDispatcherInterface $dispatcher,
+        private readonly EntityManagerInterface           $manager
     ) {
         parent::__construct();
-
-        $this->repository = $repository;
-        $this->dispatcher = $dispatcher;
-        $this->manager = $manager;
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription("Dispatches the customer birthday event.\nDo not run more than once per day.");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

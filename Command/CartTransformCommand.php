@@ -29,30 +29,20 @@ use Symfony\Component\Console\Question\Question;
  */
 class CartTransformCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:cart:transform';
-
-    private CartRepositoryInterface  $cartRepository;
-    private OrderFactory             $orderFactory;
-    private SaleTransformerInterface $saleTransformer;
-
+    protected static $defaultName        = 'ekyna:commerce:cart:transform';
+    protected static $defaultDescription = 'Transforms the cart to an order.';
 
     public function __construct(
-        CartRepositoryInterface  $cartRepository,
-        OrderFactory             $orderFactory,
-        SaleTransformerInterface $saleTransformer
+        private readonly CartRepositoryInterface  $cartRepository,
+        private readonly OrderFactory             $orderFactory,
+        private readonly SaleTransformerInterface $saleTransformer
     ) {
         parent::__construct();
-
-        $this->cartRepository = $cartRepository;
-        $this->orderFactory = $orderFactory;
-        $this->saleTransformer = $saleTransformer;
     }
 
     protected function configure(): void
     {
-        $this
-            ->setDescription('Transforms the cart to an order.')
-            ->addArgument('number', InputArgument::REQUIRED, 'The cart number');
+        $this->addArgument('number', InputArgument::REQUIRED, 'The cart number');
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void

@@ -26,24 +26,19 @@ use Throwable;
  */
 class StatCalculateCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:stat:calculate';
+    protected static $defaultName        = 'ekyna:commerce:stat:calculate';
+    protected static $defaultDescription = 'Calculates and displays the sales statistics';
 
-    private StatCalculatorInterface $calculator;
-    private EntityManagerInterface  $manager;
-
-
-    public function __construct(StatCalculatorInterface $calculator, EntityManagerInterface $manager)
-    {
+    public function __construct(
+        private readonly StatCalculatorInterface $calculator,
+        private readonly EntityManagerInterface  $manager
+    ) {
         parent::__construct();
-
-        $this->calculator = $calculator;
-        $this->manager = $manager;
     }
 
     protected function configure(): void
     {
         $this
-            ->setDescription('Calculates the statistics')
             ->addArgument('date', InputArgument::REQUIRED, "The date int the 'Y-m' format")
             ->addOption('subject', 's', InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Subject.')
             ->addOption('exclude', null, InputOption::VALUE_NONE, 'Whether to exclude subjects.')
@@ -78,7 +73,7 @@ class StatCalculateCommand extends Command
         $date = $input->getArgument('date');
         try {
             $date = new DateTime($date);
-        } catch (Throwable $exception) {
+        } catch (Throwable) {
             throw new Exception('Please provide a valid date');
         }
 
@@ -86,7 +81,7 @@ class StatCalculateCommand extends Command
         $subjects = $input->getOption('subject');
         foreach ($subjects as $subject) {
             [$provider, $id] = explode(':', $subject);
-            $filter->addSubject((string)$provider, (int)$id);
+            $filter->addSubject($provider, (int)$id);
         }
         $filter->setExcludeSubjects($input->getOption('exclude'));
 

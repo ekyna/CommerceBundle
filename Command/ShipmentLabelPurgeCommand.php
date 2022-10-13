@@ -19,22 +19,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ShipmentLabelPurgeCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:shipment:purge-label';
+    protected static $defaultName        = 'ekyna:commerce:shipment:purge-label';
+    protected static $defaultDescription = 'Purges outdated shipment labels.';
 
-    private EntityManagerInterface $manager;
-    private string                 $retention;
-
-    public function __construct(EntityManagerInterface $manager, string $retention = '6 months')
-    {
-        $this->manager = $manager;
-        $this->retention = $retention;
-
+    public function __construct(
+        private readonly EntityManagerInterface $manager,
+        private readonly string                 $retention = '6 months'
+    ) {
         parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription('Purges old labels.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

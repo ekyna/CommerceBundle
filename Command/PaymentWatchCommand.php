@@ -24,37 +24,18 @@ use Symfony\Component\Mime\Email;
  */
 class PaymentWatchCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:payment:watch';
-
-    private OutstandingWatcher              $watcher;
-    private OrderPaymentRepositoryInterface $orderPaymentRepository;
-    private QuotePaymentRepositoryInterface $quotePaymentRepository;
-    private EntityManagerInterface          $manager;
-    private SettingManagerInterface         $setting;
-    private MailerInterface                 $mailer;
-
+    protected static $defaultName        = 'ekyna:commerce:payment:watch';
+    protected static $defaultDescription = 'Watches the payment states (outstanding).';
 
     public function __construct(
-        OutstandingWatcher              $watcher,
-        OrderPaymentRepositoryInterface $orderPaymentRepository,
-        QuotePaymentRepositoryInterface $quotePaymentRepository,
-        EntityManagerInterface          $manager,
-        SettingManagerInterface         $setting,
-        MailerInterface                 $mailer
+        private readonly OutstandingWatcher              $watcher,
+        private readonly OrderPaymentRepositoryInterface $orderPaymentRepository,
+        private readonly QuotePaymentRepositoryInterface $quotePaymentRepository,
+        private readonly EntityManagerInterface          $manager,
+        private readonly SettingManagerInterface         $setting,
+        private readonly MailerInterface                 $mailer
     ) {
         parent::__construct();
-
-        $this->watcher = $watcher;
-        $this->orderPaymentRepository = $orderPaymentRepository;
-        $this->quotePaymentRepository = $quotePaymentRepository;
-        $this->manager = $manager;
-        $this->setting = $setting;
-        $this->mailer = $mailer;
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription('Watches the payment states (outstanding).');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

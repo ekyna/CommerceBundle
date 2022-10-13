@@ -34,21 +34,12 @@ class PaymentStateChangeCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:payment:change-state';
 
-    private RepositoryFactoryInterface $repositoryFactory;
-    private ManagerFactoryInterface    $managerFactory;
-    private LockChecker                $lockChecker;
-
-
     public function __construct(
-        RepositoryFactoryInterface $repositoryFactory,
-        ManagerFactoryInterface    $managerFactory,
-        LockChecker                $lockChecker
+        private readonly RepositoryFactoryInterface $repositoryFactory,
+        private readonly ManagerFactoryInterface    $managerFactory,
+        private readonly LockChecker                $lockChecker
     ) {
         parent::__construct();
-
-        $this->repositoryFactory = $repositoryFactory;
-        $this->managerFactory = $managerFactory;
-        $this->lockChecker = $lockChecker;
     }
 
     protected function configure(): void

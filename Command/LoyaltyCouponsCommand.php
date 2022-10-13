@@ -17,23 +17,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class LoyaltyCouponsCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:loyalty:coupons';
+    protected static $defaultName        = 'ekyna:commerce:loyalty:coupons';
+    protected static $defaultDescription = 'Generates coupon rewards for customer loyalty.';
 
-    private CouponGenerator $generator;
-    private Mailer          $mailer;
-
-
-    public function __construct(CouponGenerator $generator, Mailer $mailer)
-    {
+    public function __construct(
+        private readonly CouponGenerator $generator,
+        private readonly Mailer          $mailer
+    ) {
         parent::__construct();
-
-        $this->generator = $generator;
-        $this->mailer = $mailer;
-    }
-
-    protected function configure()
-    {
-        $this->setDescription('Generates coupon rewards for customer loyalty.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

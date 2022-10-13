@@ -966,7 +966,7 @@ notify:
         quote_remind:
             label: Rappel devis proche expiration
         payment_authorized:
-            label: Paiement (hors ligne) authorisé
+            label: Paiement (hors ligne) autorisé
             subject: Réglement de votre commande %number%
             message: >
                 Nous avons bien reçu le réglement de votre commande.

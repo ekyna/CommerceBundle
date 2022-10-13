@@ -21,15 +21,11 @@ class FixVoucherNumberCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:order:fix_voucher_number';
 
-    private ManagerRegistry $registry;
-    private string          $orderClass;
-
-    public function __construct(ManagerRegistry $registry, string $orderClass)
-    {
+    public function __construct(
+        private readonly ManagerRegistry $registry,
+        private readonly string          $orderClass
+    ) {
         parent::__construct();
-
-        $this->registry = $registry;
-        $this->orderClass = $orderClass;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

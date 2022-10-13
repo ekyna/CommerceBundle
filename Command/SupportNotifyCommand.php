@@ -20,30 +20,16 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SupportNotifyCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:support:notify';
-
-    private TicketMessageRepository $messageRepository;
-    private UserRepositoryInterface $adminRepository;
-    private EntityManagerInterface  $messageManager;
-    private Mailer                  $mailer;
+    protected static $defaultName        = 'ekyna:commerce:support:notify';
+    protected static $defaultDescription = 'Sends emails to customers and administrators about created or updated ticket messages.';
 
     public function __construct(
-        TicketMessageRepository $messageRepository,
-        UserRepositoryInterface $adminRepository,
-        EntityManagerInterface $messageManager,
-        Mailer $mailer
+        private readonly TicketMessageRepository $messageRepository,
+        private readonly UserRepositoryInterface $adminRepository,
+        private readonly EntityManagerInterface  $messageManager,
+        private readonly Mailer                  $mailer
     ) {
-        $this->messageRepository = $messageRepository;
-        $this->adminRepository = $adminRepository;
-        $this->messageManager = $messageManager;
-        $this->mailer = $mailer;
-
         parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription('Sends emails to customers and administrators about created or updated ticket messages.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

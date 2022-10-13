@@ -21,28 +21,15 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InvoiceDueDateUpdateCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:invoice:update-due-date';
-
-    private OrderInvoiceRepositoryInterface $repository;
-    private DueDateResolverInterface        $resolver;
-    private EntityManagerInterface          $manager;
-
+    protected static $defaultName        = 'ekyna:commerce:invoice:update-due-date';
+    protected static $defaultDescription = 'Updates the invoices due date';
 
     public function __construct(
-        OrderInvoiceRepositoryInterface $repository,
-        DueDateResolverInterface $resolver,
-        EntityManagerInterface $manager
+        private readonly OrderInvoiceRepositoryInterface $repository,
+        private readonly DueDateResolverInterface        $resolver,
+        private readonly EntityManagerInterface          $manager
     ) {
         parent::__construct();
-
-        $this->repository = $repository;
-        $this->resolver = $resolver;
-        $this->manager = $manager;
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription('Updates the invoices due date');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

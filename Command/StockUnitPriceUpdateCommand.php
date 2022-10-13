@@ -18,20 +18,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class StockUnitPriceUpdateCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:stock-unit:price-update';
-
-    private SupplierOrderCalculatorInterface $calculator;
-    private EntityManagerInterface $manager;
-
+    protected static $defaultName        = 'ekyna:commerce:stock-unit:price-update';
+    protected static $defaultDescription = 'Updates the stock units prices';
 
     public function __construct(
-        SupplierOrderCalculatorInterface $calculator,
-        EntityManagerInterface $manager
+        private readonly SupplierOrderCalculatorInterface $calculator,
+        private readonly EntityManagerInterface           $manager
     ) {
         parent::__construct();
-
-        $this->calculator = $calculator;
-        $this->manager = $manager;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

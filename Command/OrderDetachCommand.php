@@ -23,20 +23,12 @@ class OrderDetachCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:order:detach';
 
-    private OrderRepositoryInterface   $orderRepository;
-    private EntityManagerInterface     $orderManager;
-    private StockUnitAssignerInterface $stockAssigner;
-
     public function __construct(
-        OrderRepositoryInterface   $orderRepository,
-        EntityManagerInterface     $orderManager,
-        StockUnitAssignerInterface $stockAssigner
+        private readonly OrderRepositoryInterface   $orderRepository,
+        private readonly EntityManagerInterface     $orderManager,
+        private readonly StockUnitAssignerInterface $stockAssigner
     ) {
         parent::__construct();
-
-        $this->orderRepository = $orderRepository;
-        $this->orderManager = $orderManager;
-        $this->stockAssigner = $stockAssigner;
     }
 
     protected function configure(): void

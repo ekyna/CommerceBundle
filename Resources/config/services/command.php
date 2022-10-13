@@ -15,6 +15,7 @@ use Ekyna\Bundle\CommerceBundle\Command\InvoicePaidTotalUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceRecalculateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderDateModifyCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderDetachCommand;
+use Ekyna\Bundle\CommerceBundle\Command\OrdersStateCheckCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderStateUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderUpdateTotalsCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderWatchCommand;
@@ -125,6 +126,15 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.repository.order'),
                 service('doctrine.orm.default_entity_manager'),
                 service('ekyna_commerce.assigner.stock_unit'),
+            ])
+            ->tag('console.command')
+
+        // Order state update command
+        ->set('ekyna_commerce.command.order_state_check', OrdersStateCheckCommand::class)
+            ->args([
+                service('ekyna_commerce.resolver.state.order'),
+                service('doctrine.orm.default_entity_manager'),
+                param('ekyna_commerce.class.order'),
             ])
             ->tag('console.command')
 

@@ -22,15 +22,11 @@ class AddressMigrateCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:address:migrate';
 
-    private Connection      $connection;
-    private PhoneNumberUtil $phoneNumberUtil;
-
-    public function __construct(Connection $connection, PhoneNumberUtil $phoneNumberUtil)
-    {
+    public function __construct(
+        private readonly Connection      $connection,
+        private readonly PhoneNumberUtil $phoneNumberUtil
+    ) {
         parent::__construct();
-
-        $this->connection = $connection;
-        $this->phoneNumberUtil = $phoneNumberUtil;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

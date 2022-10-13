@@ -23,39 +23,26 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class StatUpdateCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:stat:update';
-
-    private StatUpdaterInterface     $statUpdater;
-    private OrderUpdaterInterface    $orderUpdater;
-    private OrderRepositoryInterface $orderRepository;
-    private EntityManagerInterface   $manager;
-    private string                   $orderClass;
+    protected static $defaultName        = 'ekyna:commerce:stat:update';
+    protected static $defaultDescription = 'Updates the sales statistics';
 
     private bool $force;
     private bool $flush;
     private bool $debug;
 
     public function __construct(
-        StatUpdaterInterface     $statUpdater,
-        OrderUpdaterInterface    $orderUpdater,
-        OrderRepositoryInterface $orderRepository,
-        EntityManagerInterface   $manager,
-        string                   $orderClass
+        private readonly StatUpdaterInterface     $statUpdater,
+        private readonly OrderUpdaterInterface    $orderUpdater,
+        private readonly OrderRepositoryInterface $orderRepository,
+        private readonly EntityManagerInterface   $manager,
+        private readonly string                   $orderClass
     ) {
         parent::__construct();
-
-        $this->statUpdater = $statUpdater;
-        $this->orderUpdater = $orderUpdater;
-        $this->orderRepository = $orderRepository;
-        $this->manager = $manager;
-        $this->orderClass = $orderClass;
     }
 
     protected function configure(): void
     {
-        $this
-            ->setDescription('Updates the statistics')
-            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Whether to force the order statistics update.');
+        $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Whether to force the order statistics update.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -85,7 +72,8 @@ class StatUpdateCommand extends Command
     private function updateStockStat(OutputInterface $output): void
     {
         $name = 'Stock';
-        $this->debug && $output->write(sprintf(
+        $this->debug
+        && $output->write(sprintf(
             '- %s %s ',
             $name,
             str_pad('.', 32 - mb_strlen($name), '.', STR_PAD_LEFT)
@@ -132,7 +120,8 @@ class StatUpdateCommand extends Command
             }
 
             $name = $order->getNumber();
-            $this->debug && $output->write(sprintf(
+            $this->debug
+            && $output->write(sprintf(
                 '- %s %s ',
                 $name,
                 str_pad('.', 32 - mb_strlen($name), '.', STR_PAD_LEFT)
@@ -185,7 +174,8 @@ class StatUpdateCommand extends Command
 
         foreach ($orderDates as $date => $updated) {
             $name = $date;
-            $this->debug && $output->write(sprintf(
+            $this->debug
+            && $output->write(sprintf(
                 '- %s %s ',
                 $name,
                 str_pad('.', 32 - mb_strlen($name), '.', STR_PAD_LEFT)
@@ -215,7 +205,8 @@ class StatUpdateCommand extends Command
         /** ---------------------------- Month stats ---------------------------- */
 
         foreach ($updatedMonths as $month) {
-            $this->debug && $output->write(sprintf(
+            $this->debug
+            && $output->write(sprintf(
                 '- %s %s ',
                 $month,
                 str_pad('.', 32 - mb_strlen($month), '.', STR_PAD_LEFT)
@@ -240,7 +231,8 @@ class StatUpdateCommand extends Command
         /** ---------------------------- Year stats ---------------------------- */
 
         foreach ($updatedYears as $year) {
-            $this->debug && $output->write(sprintf(
+            $this->debug
+            && $output->write(sprintf(
                 '- %s %s ',
                 $year,
                 str_pad('.', 32 - mb_strlen($year), '.', STR_PAD_LEFT)

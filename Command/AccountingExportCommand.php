@@ -24,27 +24,18 @@ class AccountingExportCommand extends Command
 {
     protected static $defaultName = 'ekyna:commerce:accounting:export';
 
-    protected AccountingExporterInterface $exporter;
-    protected SettingManagerInterface     $settings;
-    protected MailerInterface             $mailer;
-
-
     public function __construct(
-        AccountingExporterInterface $exporter,
-        SettingManagerInterface $settings,
-        MailerInterface $mailer
+        private readonly AccountingExporterInterface $exporter,
+        private readonly SettingManagerInterface     $settings,
+        private readonly MailerInterface             $mailer
     ) {
         parent::__construct();
-
-        $this->exporter = $exporter;
-        $this->settings = $settings;
-        $this->mailer = $mailer;
     }
 
     /**
      * @inheritDoc
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument('date', InputArgument::REQUIRED, 'The date formatted as \'Y\' or \'Y-m\'.')
@@ -54,7 +45,7 @@ class AccountingExportCommand extends Command
     /**
      * @inheritDoc
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $date = $input->getArgument('date');
 
@@ -93,5 +84,7 @@ class AccountingExportCommand extends Command
             );
 
         $this->mailer->send($message);
+
+        return Command::SUCCESS;
     }
 }

@@ -27,45 +27,33 @@ use function sprintf;
  */
 class OrderUpdateTotalsCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:order:update-totals';
-
-    private EntityManagerInterface $manager;
-    private SaleUpdaterInterface   $saleUpdater;
-    private OrderUpdaterInterface  $orderUpdater;
-    private NotifyQueue            $notifyQueue;
-    private string                 $orderClass;
+    protected static $defaultName        = 'ekyna:commerce:order:update-totals';
+    protected static $defaultDescription = 'Recalculates and updates order totals.';
 
     private ?Query $nextOrderQuery = null;
-    private int   $lastId;
-    private bool  $amount;
-    private bool  $payment;
-    private bool  $invoice;
-    private bool  $margin;
-    private bool  $dryRun;
-    private int   $totalCount   = 0;
-    private int   $updatedCount = 0;
+    private int    $lastId;
+    private bool   $amount;
+    private bool   $payment;
+    private bool   $invoice;
+    private bool   $margin;
+    private bool   $dryRun;
+    private int    $totalCount     = 0;
+    private int    $updatedCount   = 0;
 
 
     public function __construct(
-        EntityManagerInterface $manager,
-        SaleUpdaterInterface   $saleUpdater,
-        OrderUpdaterInterface  $orderUpdater,
-        NotifyQueue            $notifyQueue,
-        string                 $orderClass
+        private readonly EntityManagerInterface $manager,
+        private readonly SaleUpdaterInterface   $saleUpdater,
+        private readonly OrderUpdaterInterface  $orderUpdater,
+        private readonly NotifyQueue            $notifyQueue,
+        private readonly string                 $orderClass
     ) {
         parent::__construct();
-
-        $this->manager = $manager;
-        $this->saleUpdater = $saleUpdater;
-        $this->orderUpdater = $orderUpdater;
-        $this->notifyQueue = $notifyQueue;
-        $this->orderClass = $orderClass;
     }
 
     protected function configure(): void
     {
         $this
-            ->setDescription('Recalculates and updates order totals.')
             ->addOption('id', null, InputOption::VALUE_REQUIRED, 'Update single order having this ID')
             ->addOption('from', null, InputOption::VALUE_REQUIRED, 'Update orders starting to this ID', 0)
             ->addOption('amount', 'a', InputOption::VALUE_NONE, 'To update only amount totals')

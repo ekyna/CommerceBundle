@@ -28,23 +28,19 @@ use Symfony\Component\Console\Question\Question;
  */
 class OrderDateModifyCommand extends Command
 {
-    protected static $defaultName = 'ekyna:commerce:order:modify-date';
+    protected static $defaultName        = 'ekyna:commerce:order:modify-date';
+    protected static $defaultDescription = 'Modify the order dates.';
 
-    private OrderRepositoryInterface $repository;
-    private EntityManagerInterface   $manager;
-
-    public function __construct(OrderRepositoryInterface $repository, EntityManagerInterface $manager)
-    {
+    public function __construct(
+        private readonly OrderRepositoryInterface $repository,
+        private readonly EntityManagerInterface   $manager
+    ) {
         parent::__construct();
-
-        $this->repository = $repository;
-        $this->manager = $manager;
     }
 
     protected function configure(): void
     {
         $this
-            ->setDescription('Modify the order dates.')
             ->addArgument('number', InputArgument::REQUIRED, 'The order number')
             ->addArgument('modifier', InputArgument::REQUIRED, 'The dates modifier');
     }
