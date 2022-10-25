@@ -47,8 +47,7 @@ class ReportGenerateCommand extends Command
             ->addArgument('email', InputArgument::REQUIRED, 'The email to send to report to.')
             ->addArgument('from', InputArgument::REQUIRED, 'The date to report stat from.')
             ->addArgument('to', InputArgument::OPTIONAL, 'The date to report stat to (default now).')
-            ->addOption('section', 's', InputOption::VALUE_REQUIRED
-                | InputOption::VALUE_IS_ARRAY, 'The sections to report')
+            ->addOption('section', 's', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'The sections to report')
             ->addOption('test', 't', InputOption::VALUE_NONE, 'Test mode');
     }
 

@@ -23,6 +23,7 @@ use Ekyna\Bundle\CommerceBundle\Command\PaymentStateChangeCommand;
 use Ekyna\Bundle\CommerceBundle\Command\PaymentWatchCommand;
 use Ekyna\Bundle\CommerceBundle\Command\AddressMigrateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\ReportGenerateCommand;
+use Ekyna\Bundle\CommerceBundle\Command\ReportRequestPurgeCommand;
 use Ekyna\Bundle\CommerceBundle\Command\ShipmentLabelPurgeCommand;
 use Ekyna\Bundle\CommerceBundle\Command\StatCalculateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\StatUpdateCommand;
@@ -195,6 +196,15 @@ return static function (ContainerConfigurator $container) {
             ->args([
                 service('ekyna_commerce.report.mailer'),
                 service('ekyna_commerce.report.registry'),
+            ])
+            ->tag('console.command')
+
+        // Report request purge command
+        ->set('ekyna_commerce.command.report_request_purge', ReportRequestPurgeCommand::class)
+            ->args([
+                service('ekyna_admin.repository.user'),
+                service('ekyna_commerce.repository.report_request'),
+                service('doctrine.orm.default_entity_manager'),
             ])
             ->tag('console.command')
 

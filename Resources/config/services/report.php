@@ -8,12 +8,14 @@ use Ekyna\Bundle\CommerceBundle\MessageHandler\SendSalesReportHandler;
 use Ekyna\Bundle\CommerceBundle\Repository\ReportRequestRepository;
 use Ekyna\Bundle\CommerceBundle\Service\Report\ReportMailer;
 use Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\ReportRegistryPass;
+use Ekyna\Component\Commerce\Report\Fetcher\InvoiceFetcher;
 use Ekyna\Component\Commerce\Report\Fetcher\OrderFetcher;
 use Ekyna\Component\Commerce\Report\Fetcher\SupplierOrderFetcher;
 use Ekyna\Component\Commerce\Report\ReportGenerator;
 use Ekyna\Component\Commerce\Report\ReportRegistry;
 use Ekyna\Component\Commerce\Report\Section\CustomerGroupsSection;
 use Ekyna\Component\Commerce\Report\Section\CustomersSection;
+use Ekyna\Component\Commerce\Report\Section\InvoicesSection;
 use Ekyna\Component\Commerce\Report\Section\OrdersSection;
 use Ekyna\Component\Commerce\Report\Section\SupplierOrdersSection;
 use Ekyna\Component\Commerce\Report\Util\OrderUtil;
@@ -29,6 +31,14 @@ return static function (ContainerConfigurator $container) {
                 service('doctrine'),
             ])
             ->tag('doctrine.repository_service')
+
+        // Invoice fetcher
+        ->set('ekyna_commerce.report.fetcher.invoice', InvoiceFetcher::class)
+            ->args([
+                service('ekyna_commerce.repository.order_invoice'),
+                service('ekyna_commerce.manager.order_invoice'),
+            ])
+            ->tag(ReportRegistryPass::FETCHER_TAG)
 
         // Order fetcher
         ->set('ekyna_commerce.report.fetcher.order', OrderFetcher::class)
@@ -59,6 +69,10 @@ return static function (ContainerConfigurator $container) {
             ->args([
                 service('ekyna_commerce.report.util.order'),
             ])
+            ->tag(ReportRegistryPass::SECTION_TAG)
+
+        // Invoices section
+        ->set('ekyna_commerce.report.section.order_invoicess', InvoicesSection::class)
             ->tag(ReportRegistryPass::SECTION_TAG)
 
         // Orders section
