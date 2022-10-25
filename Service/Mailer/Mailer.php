@@ -38,6 +38,8 @@ use Symfony\Component\Mime\Email;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
+use function file_get_contents;
+
 /**
  * Class Mailer
  * @package Ekyna\Bundle\CommerceBundle\Service\Mailer
@@ -46,7 +48,7 @@ use Twig\Environment;
 class Mailer
 {
     protected MailerInterface         $mailer;
-    protected Environment             $templating;
+    protected Environment             $twig;
     protected TranslatorInterface     $translator;
     protected SettingManagerInterface $settingsManager;
     protected RendererFactory         $rendererFactory;
@@ -69,7 +71,7 @@ class Mailer
         FilesystemOperator      $filesystem
     ) {
         $this->mailer = $mailer;
-        $this->templating = $templating;
+        $this->twig = $templating;
         $this->translator = $translator;
         $this->settingsManager = $settingsManager;
         $this->rendererFactory = $rendererFactory;
@@ -84,7 +86,7 @@ class Mailer
      */
     public function sendAdminFraudsterAlert(CustomerInterface $customer): bool
     {
-        $body = $this->templating->render('@EkynaCommerce/Email/admin_fraudster_alert.html.twig', [
+        $body = $this->twig->render('@EkynaCommerce/Email/admin_fraudster_alert.html.twig', [
             'customer' => $customer,
         ]);
 
@@ -98,7 +100,7 @@ class Mailer
      */
     public function sendAdminCustomerRegistration(CustomerInterface $customer): bool
     {
-        $body = $this->templating->render('@EkynaCommerce/Email/admin_customer_registration.html.twig', [
+        $body = $this->twig->render('@EkynaCommerce/Email/admin_customer_registration.html.twig', [
             'customer' => $customer,
         ]);
 
@@ -127,7 +129,7 @@ class Mailer
             ->translator
             ->trans('notify.type.balance.subject', [], 'EkynaCommerce', $locale);
 
-        $body = $this->templating->render('@EkynaCommerce/Email/customer_balance.html.twig', [
+        $body = $this->twig->render('@EkynaCommerce/Email/customer_balance.html.twig', [
             'subject'  => $subject,
             'locale'   => $locale,
             'customer' => $customer,
@@ -211,7 +213,7 @@ class Mailer
             '%site_name%' => $this->settingsManager->getParameter('general.site_name'),
         ], 'EkynaCommerce', $locale);
 
-        $body = $this->templating->render('@EkynaCommerce/Email/customer_ticket_message.html.twig', [
+        $body = $this->twig->render('@EkynaCommerce/Email/customer_ticket_message.html.twig', [
             'subject' => $subject,
             'message' => $message,
             'locale'  => $locale,
@@ -243,7 +245,7 @@ class Mailer
         $subject = $this->translator->trans("ticket_message.notify.$type.subject", [], 'EkynaCommerce');
         $content = $this->translator->trans("ticket_message.notify.$type.content", [], 'EkynaCommerce');
 
-        $body = $this->templating->render('@EkynaCommerce/Email/admin_ticket_message.html.twig', [
+        $body = $this->twig->render('@EkynaCommerce/Email/admin_ticket_message.html.twig', [
             'subject'  => $subject,
             'content'  => $content,
             'messages' => $messages,
@@ -276,7 +278,7 @@ class Mailer
             '%site_name%' => $this->settingsManager->getParameter('general.site_name'),
         ], 'EkynaCommerce', $locale);
 
-        $body = $this->templating->render('@EkynaCommerce/Email/customer_coupons.html.twig', [
+        $body = $this->twig->render('@EkynaCommerce/Email/customer_coupons.html.twig', [
             'subject' => $subject,
             'coupons' => $coupons,
             'locale'  => $locale,
@@ -336,7 +338,7 @@ class Mailer
             $renderer = $this->rendererFactory->createRenderer($invoice);
             try {
                 $content = $renderer->render(RendererInterface::FORMAT_PDF);
-            } catch (PdfException $e) {
+            } catch (PdfException) {
                 $notify->setError(true);
                 $report .= "ERROR: failed to generate PDF for invoice {$invoice->getNumber()}\n";
                 continue;
@@ -355,7 +357,7 @@ class Mailer
             $renderer = $this->rendererFactory->createRenderer($shipment, CDocumentTypes::TYPE_SHIPMENT_BILL);
             try {
                 $content = $renderer->render(RendererInterface::FORMAT_PDF);
-            } catch (PdfException $e) {
+            } catch (PdfException) {
                 $notify->setError(true);
                 $report .= "ERROR: failed to generate PDF for shipment {$shipment->getNumber()}\n";
                 continue;
@@ -377,7 +379,7 @@ class Mailer
             $content = null;
             try {
                 $content = $this->shipmentLabelRenderer->render($notify->getLabels(), true);
-            } catch (PdfException $e) {
+            } catch (PdfException) {
                 $notify->setError(true);
                 $report .= "ERROR: failed to generate PDF for labels\n";
             }
@@ -433,7 +435,7 @@ class Mailer
                 $renderer = $this->rendererFactory->createRenderer($source);
                 try {
                     $content = $renderer->render(RendererInterface::FORMAT_PDF);
-                } catch (PdfException $e) {
+                } catch (PdfException) {
                     $notify->setError(true);
                     $report .= "ERROR: failed to generate PDF for supplier order {$source->getNumber()}\n";
                 }
@@ -449,24 +451,24 @@ class Mailer
             }
 
             try {
-                $content = $this->templating->render('@EkynaCommerce/Email/supplier_order_notify.html.twig', [
+                $content = $this->twig->render('@EkynaCommerce/Email/supplier_order_notify.html.twig', [
                     'notify'      => $notify,
                     'order'       => $source,
                     'attachments' => $attachments,
                 ]);
-            } catch (\RuntimeException $e) {
+            } catch (\RuntimeException) {
                 $notify->setError(true);
                 $report .= "ERROR: failed to generate HTML message for supplier order {$source->getNumber()}\n";
             }
         } else {
             $sale = $this->getNotifySale($notify);
             try {
-                $content = $this->templating->render('@EkynaCommerce/Email/sale_notify.html.twig', [
+                $content = $this->twig->render('@EkynaCommerce/Email/sale_notify.html.twig', [
                     'notify'      => $notify,
                     'sale'        => $sale,
                     'attachments' => $attachments,
                 ]);
-            } catch (\RuntimeException $e) {
+            } catch (\RuntimeException) {
                 $notify->setError(true);
                 $report .= "ERROR: failed to generate HTML message for sale {$sale->getNumber()}\n";
             }
@@ -506,15 +508,12 @@ class Mailer
 
     /**
      * Sends the email.
-     *
-     * @param string|array      $to
-     * @param string|array|bool $from
      */
     protected function createMessage(
-        string $subject,
-        string $body,
-               $to = null,
-               $from = null
+        string            $subject,
+        string            $body,
+        Address|string|array      $to = null,
+        Address|string|array|bool $from = null
     ): Email {
         if (empty($to)) {
             $to = $this->settingsManager->getParameter('notification.to_emails');
@@ -594,7 +593,7 @@ class Mailer
     {
         try {
             $this->mailer->send($email);
-        } catch (TransportExceptionInterface $e) {
+        } catch (TransportExceptionInterface) {
             return false;
         }
 

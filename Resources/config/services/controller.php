@@ -332,6 +332,21 @@ return static function (ContainerConfigurator $container) {
             ])
             ->alias(Admin\ShipmentPlatformController::class, 'ekyna_commerce.controller.admin.shipment_platform')->public()
 
+        // Admin shipment platform controller
+        ->set('ekyna_commerce.controller.admin.report', Admin\Report\ReportController::class)
+            ->args([
+                service('ekyna_commerce.repository.report_request'),
+                service('doctrine.orm.default_entity_manager'),
+                service('ekyna_resource.provider.locale'),
+                service('ekyna_admin.provider.user'),
+                service('form.factory'),
+                service('router'),
+                service('twig'),
+                service('messenger.bus.default'),
+                service('ekyna_ui.helper.flash'),
+            ])
+            ->alias(Admin\Report\ReportController::class, 'ekyna_commerce.controller.admin.report')->public()
+
         // Api customer controller
         ->set('ekyna_commerce.controller.api.customer', Api\CustomerController::class)
             ->args([

@@ -270,6 +270,7 @@ dashboard:
         title: Exports
         due_orders: Commandes échues
         sample_order_items: Commandes d'échantillons
+        sales_report: Rapport de ventes
         field:
             due_amount: Montant dû
     debt:
@@ -1367,6 +1368,22 @@ return:
         new: Nouveau retour
         edit: Modifier le retour
         remove: Supprimer le retour
+
+report:
+    title: Rapport sur les statistiques de ventes
+    writer:
+        xls: Feuilles de calcul Excel
+    message:
+        throttle: >
+            Veuillez patienter <strong>{minutes} minutes</strong> avant de demander un nouveau rapport.
+        pending: >
+            Le rapport est en cours de génération et vous sera envoyé 
+            à l'adresse email {email} dans quelques minutes.
+    email:
+        subject: Rapport de ventes
+        body: >
+            <p>Veuillez trouver en pièce jointe votre rapport 
+            concernant {sections} sur la période du {start} au {end}.</p>
 
 sale:
     label:

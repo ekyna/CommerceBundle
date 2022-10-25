@@ -1,0 +1,4 @@
+admin_ekyna_commerce_report_index:
+    path: ''
+    methods: [GET, POST]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Report\ReportController

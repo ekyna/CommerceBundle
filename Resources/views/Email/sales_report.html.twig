@@ -1,0 +1,12 @@
+{% extends "email.html.twig" %}
+
+{% block subject %}
+    {{- subject|raw -}}
+{% endblock subject %}
+
+{% block body %}
+{% apply spaceless %}
+    {{ message|raw }}
+    {{- admin_email_signature(null, locale) -}}
+{% endapply %}
+{% endblock body %}

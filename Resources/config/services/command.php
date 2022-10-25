@@ -22,6 +22,7 @@ use Ekyna\Bundle\CommerceBundle\Command\OrderWatchCommand;
 use Ekyna\Bundle\CommerceBundle\Command\PaymentStateChangeCommand;
 use Ekyna\Bundle\CommerceBundle\Command\PaymentWatchCommand;
 use Ekyna\Bundle\CommerceBundle\Command\AddressMigrateCommand;
+use Ekyna\Bundle\CommerceBundle\Command\ReportGenerateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\ShipmentLabelPurgeCommand;
 use Ekyna\Bundle\CommerceBundle\Command\StatCalculateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\StatUpdateCommand;
@@ -186,6 +187,14 @@ return static function (ContainerConfigurator $container) {
                 service('doctrine.orm.default_entity_manager'),
                 service('ekyna_setting.manager'),
                 service('mailer.mailer'),
+            ])
+            ->tag('console.command')
+
+        // Report generate command
+        ->set('ekyna_commerce.command.report_generate', ReportGenerateCommand::class)
+            ->args([
+                service('ekyna_commerce.report.mailer'),
+                service('ekyna_commerce.report.registry'),
             ])
             ->tag('console.command')
 

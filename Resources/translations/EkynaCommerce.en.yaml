@@ -256,6 +256,7 @@ dashboard:
         title: Export
         due_orders: Due orders
         sample_order_items: Sample orders
+        sales_report: Sales report
         field:
             due_amount: Due amount
     debt:
@@ -1334,6 +1335,19 @@ return:
         new: New return
         edit: Edit the return
         remove: Remove the return
+
+report:
+    title: Sales statistics report
+    writer:
+        xls: Excel spreadsheet
+    message:
+        throttle: >
+            Please wait at least <strong>{minutes} minutes</strong> before requesting a new report.
+        pending: >
+            Report is being generated and will be sent to email address {email} in a few minutes.
+    email:
+        subject: Sales report
+        body: <p>Please find attached to this email your sales report about {sections} from {start} to {end}.</p>
 
 sale:
     label:

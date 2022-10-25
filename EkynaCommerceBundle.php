@@ -28,6 +28,7 @@ class EkynaCommerceBundle extends Bundle
         // Before \Payum\Bundle\PayumBundle\DependencyInjection\Compiler\BuildConfigsPass
         $container->addCompilerPass(new ComponentPass\PayumBuilderPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 1);
         $container->addCompilerPass(new ComponentPass\ShipmentGatewayRegistryPass());
+        $container->addCompilerPass(new ComponentPass\ReportRegistryPass());
         $container->addCompilerPass(new ComponentPass\NewsletterRegistriesPass());
         $container->addCompilerPass(new ComponentPass\TwigPathCompilerPass());
 

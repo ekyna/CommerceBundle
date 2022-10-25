@@ -38,6 +38,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\PriceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\TaxGroupChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Report\ReportConfigType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleAddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemConfigureType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemCreateFlow;
@@ -49,14 +50,12 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodFactoryChoiceTy
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodPickType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentPlatformChoiceType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentPriceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentPricingType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentRuleType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Stock\WarehouseType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Subject\SubjectChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierDeliveryType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderItemsType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderItemType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderSubmitType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierProductType;
@@ -286,6 +285,15 @@ return static function (ContainerConfigurator $container) {
                 'selector' => '.commerce-sale',
                 'path'     => 'ekyna-commerce/form/sale',
             ])
+
+        // Report config form type
+        ->set('ekyna_commerce.form_type.report_config', ReportConfigType::class)
+            ->args([
+                service('ekyna_commerce.report.registry'),
+                service('translator'),
+                param('kernel.environment'),
+            ])
+            ->tag('form.type')
 
         // Checkout payment balance form type
         ->set('ekyna_commerce.form_type.checkout_payment_balance', BalancePaymentType::class)

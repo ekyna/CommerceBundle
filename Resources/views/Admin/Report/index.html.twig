@@ -1,0 +1,24 @@
+{% extends '@EkynaAdmin/Entity/sided.html.twig' %}
+
+{% block page_title %}{{ 'report.title'|trans({}, 'EkynaCommerce')|raw }}{% endblock page_title %}
+
+{% block title %}
+    <h1>{{ 'report.title'|trans({}, 'EkynaCommerce')|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}{% endblock actions %}
+
+{% block main %}
+    {{ bootstrap_set_style('horizontal') }}
+    {{ bootstrap_set_col_size('md') }}
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+    <div class="form-body">
+        {% if form.test is defined %}{{ form_row(form.test, {'attr': {'align_with_widget': true}}) }}{% endif %}
+        {{ form_row(form.email) }}
+        {{ form_row(form.range, {'widget_col': 12}) }}
+        {{ form_row(form.writer) }}
+        {{ form_row(form.sections) }}
+        {{ form_row(form.actions) }}
+    </div>
+    {{ form_end(form) }}
+{% endblock main %}

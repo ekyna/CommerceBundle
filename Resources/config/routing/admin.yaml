@@ -18,6 +18,10 @@ admin_ekyna_commerce_export:
     resource: "admin/export.yaml"
     prefix:   /export
 
+admin_ekyna_commerce_report:
+    resource: "admin/report.yaml"
+    prefix:   /report
+
 admin_ekyna_commerce_payment_status:
     path: /payment/status
     controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\PaymentStatusController
