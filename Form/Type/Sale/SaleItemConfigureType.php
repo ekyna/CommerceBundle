@@ -53,6 +53,7 @@ class SaleItemConfigureType extends AbstractType
         $view->vars['attr']['id'] = $view->vars['id'];
         $view->vars['submit_button'] = $options['submit_button'];
         $view->vars['extended'] = $options['extended'];
+        $view->vars['inner_extra_fields'] = [];
 
         $this->saleItemHelper->buildFormView($form->getData(), $form, $view);
     }
