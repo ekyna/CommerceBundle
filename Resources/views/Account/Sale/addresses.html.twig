@@ -12,7 +12,7 @@
             <div class="panel-body">
                 <p id="account-sale-invoice">{{ sale.invoiceAddress|address }}</p>
                 {% if sale is sale_quote and sale.editable -%}
-                <p><a href="{{ path('ekyna_commerce_account_quote_invoice_address', {'number': sale.number}) }}"
+                <p><a href="{{ path('ekyna_commerce_account_quote_address_invoice', {'number': sale.number}) }}"
                       id="account-sale-invoice-button" class="btn btn-xs btn-primary" data-account-modal>
                     {{- 'button.edit'|trans({}, 'EkynaUi') -}}
                 </a></p>
@@ -30,7 +30,7 @@
             <div class="panel-body">
                 <p id="account-sale-delivery">{{ macros.sale_delivery_address(sale) }}</p>
                 {% if sale is sale_quote and sale.editable -%}
-                <p><a href="{{ path('ekyna_commerce_account_quote_delivery_address', {'number': sale.number}) }}"
+                <p><a href="{{ path('ekyna_commerce_account_quote_address_delivery', {'number': sale.number}) }}"
                       id="account-sale-delivery-button" class="btn btn-xs btn-primary" data-account-modal>
                     {{- 'button.edit'|trans({}, 'EkynaUi') -}}
                 </a></p>

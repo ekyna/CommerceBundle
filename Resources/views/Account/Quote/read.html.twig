@@ -82,7 +82,7 @@
     {%- endif -%}
 
     {# Attachments #}
-    {%- if quote is sale_with_attachment -%}
+    {%- if quote.editable or quote is sale_with_attachment -%}
         {%- include '@EkynaCommerce/Account/Sale/attachments.html.twig' with {
             'sale': quote, 'route_prefix': route_prefix
         } only -%}

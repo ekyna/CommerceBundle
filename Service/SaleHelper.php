@@ -123,7 +123,7 @@ class SaleHelper
                 continue;
             }
 
-            if (null !== $child = $this->findItemById($item, $itemId, false)) {
+            if (null !== $child = $this->findItemById($item, $itemId)) {
                 return $child;
             }
         }

@@ -102,7 +102,7 @@ class QuoteAccountViewType extends AbstractViewType
         }
 
         // Remove action
-        $removePath = $this->generateUrl('ekyna_commerce_account_quote_item_remove', [
+        $removePath = $this->generateUrl('ekyna_commerce_account_quote_item_delete', [
             'number' => $item->getRootSale()->getNumber(),
             'id'     => $item->getId(),
         ]);

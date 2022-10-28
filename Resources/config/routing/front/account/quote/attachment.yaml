@@ -1,0 +1,63 @@
+ekyna_commerce_account_quote_attachment_generate:
+    path:
+        en: /{type}/generate
+        fr: /{type}/generer
+        es: /{type}/generar
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Attachment\GenerateController
+    requirements:
+        number: "[a-zA-Z0-9]+"
+        type: "[a-z]+"
+    methods: [ GET ]
+    options:
+        ekyna_i18n: ~
+
+ekyna_commerce_account_quote_attachment_create:
+    path:
+        en: /create
+        fr: /creer
+        es: /crear
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Attachment\CreateController
+    requirements:
+        number: "[a-zA-Z0-9]+"
+    methods: [ GET, POST ]
+    options:
+        ekyna_i18n: ~
+
+ekyna_commerce_account_quote_attachment_download:
+    path:
+        en: /{id}/download
+        fr: /{id}/telecharger
+        es: /{id}/descargar
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Attachment\DownloadController
+    requirements:
+        number: "[a-zA-Z0-9]+"
+        id: \d+
+    methods: [ GET ]
+    options:
+        ekyna_i18n: ~
+
+ekyna_commerce_account_quote_attachment_refresh:
+    path:
+        en: /{id}/refresh
+        fr: /{id}/recharger
+        es: /{id}/actualizar
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Attachment\RefreshController
+    requirements:
+        number: "[a-zA-Z0-9]+"
+        id: \d+
+    methods: [ GET ]
+    options:
+        ekyna_i18n: ~
+
+ekyna_commerce_account_quote_attachment_delete:
+    path:
+        en: /{id}/delete
+        fr: /{id}/supprimer
+        es: /{id}/borrar
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Attachment\DeleteController
+    requirements:
+        number: "[a-zA-Z0-9]+"
+        id: \d+
+    methods: [ GET ]
+    options:
+        ekyna_i18n: ~

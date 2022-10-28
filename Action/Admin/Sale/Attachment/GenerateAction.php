@@ -25,6 +25,8 @@ use function Symfony\Component\Translation\t;
  * Class GenerateAction
  * @package Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Attachment
  * @author  Étienne Dauvergne <contact@ekyna.com>
+ *
+ * @TODO Rename Refresh and move DocumentGenerateAction (rename to GenerateAction) into this folder.
  */
 class GenerateAction extends AbstractAction implements AdminActionInterface
 {

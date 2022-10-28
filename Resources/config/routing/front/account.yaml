@@ -42,7 +42,7 @@ ekyna_commerce_account_quote:
 
 ekyna_commerce_account_payment_status:
     path: /payment/status
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\PaymentController
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\PaymentStatusController
     methods: GET
     options:
         ekyna_i18n: ~

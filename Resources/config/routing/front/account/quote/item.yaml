@@ -1,0 +1,42 @@
+ekyna_commerce_account_quote_item_add:
+    path: /add
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Item\AddController
+    methods: [ GET, POST ]
+    options:
+        expose: true
+
+ekyna_commerce_account_quote_item_configure:
+    path: /{id}/configure
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Item\ConfigureController
+    requirements:
+        id: \d+
+    methods: [ GET, POST ]
+    options:
+        expose: true
+
+ekyna_commerce_account_quote_item_move_up:
+    path: /{id}/move-up
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Item\MoveController::up
+    requirements:
+        id: \d+
+    methods: [ GET ]
+    options:
+        expose: true
+
+ekyna_commerce_account_quote_item_move_down:
+    path: /{id}/move-down
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Item\MoveController::down
+    requirements:
+        id: \d+
+    methods: [ GET ]
+    options:
+        expose: true
+
+ekyna_commerce_account_quote_item_delete:
+    path: /{id}/delete
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Item\DeleteController
+    requirements:
+        id: \d+
+    methods: [ GET, POST ]
+    options:
+        expose: true

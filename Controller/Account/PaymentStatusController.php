@@ -14,20 +14,16 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Class PaymentController
+ * Class PaymentStatusController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class PaymentController
+class PaymentStatusController
 {
-    private PaymentHelper $paymentHelper;
-    private UrlGeneratorInterface $urlGenerator;
-
-
-    public function __construct(PaymentHelper $paymentHelper, UrlGeneratorInterface $urlGenerator)
-    {
-        $this->paymentHelper = $paymentHelper;
-        $this->urlGenerator = $urlGenerator;
+    public function __construct(
+        private readonly PaymentHelper         $paymentHelper,
+        private readonly UrlGeneratorInterface $urlGenerator
+    ) {
     }
 
     public function __invoke(Request $request): RedirectResponse

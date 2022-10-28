@@ -1,8 +1,17 @@
 {% apply spaceless %}
 <div class="panel panel-default">
     <div class="panel-heading">
+        {% if sale is sale_quote and sale.editable -%}
+            {% for type in sale|sale_editable_document_types -%}
+            <a href="{{ path(route_prefix ~ '_attachment_generate', {'number': sale.number, 'type': type}) }}"
+                class="btn btn-xs btn-default pull-right" style="margin-left:6px;">
+                {{- 'attachment.button.create'|trans({}, 'EkynaCommerce') }}
+                {{ ('document.type.' ~ type)|trans({}, 'EkynaCommerce') -}}
+            </a>&nbsp;
+            {%- endfor %}
+        {%- endif %}
         <a href="{{ path(route_prefix ~ '_attachment_create', {'number': sale.number}) }}"
-            class="btn btn-xs btn-success pull-right">
+            class="btn btn-xs btn-success pull-right" style="margin-left:6px;">
             {{ 'button.add'|trans({}, 'EkynaUi') }}
         </a>
         {{ 'account.attachment.title'|trans({}, 'EkynaCommerce')|raw }}
@@ -32,6 +41,28 @@
                         <a href="{{ path }}" target="_blank" class="btn btn-primary btn-xs">
                             {{- 'button.download'|trans({}, 'EkynaUi') -}}
                         </a>
+                        {% if sale is sale_quote and sale.editable -%}
+                            {% if attachment.type is not empty and sale|sale_support_document_type(attachment.type) -%}
+                                &nbsp;<a href="{{ path(route_prefix ~ '_attachment_refresh', {'number': sale.number, 'id': attachment.id}) }}"
+                                   class="btn btn-warning btn-xs"
+                                   onclick="return confirm('{{ 'attachment.message.update_confirm'|trans({}, 'EkynaCommerce')|escape('js') }}')"
+                                   title="{{ 'button.generate'|trans({}, 'EkynaUi') }}">
+                                    <span class="fa fa-refresh"></span>
+                                </a>
+                            {%- endif %}
+                            &nbsp;<a href="{{ path(route_prefix ~ '_attachment_delete', {'number': sale.number, 'id': attachment.id}) }}"
+                               class="btn btn-danger btn-xs"
+                               onclick="return confirm('{{ 'attachment.message.remove_confirm'|trans({}, 'EkynaCommerce')|escape('js') }}')"
+                               title="{{ 'button.generate'|trans({}, 'EkynaUi') }}">
+                                <span class="fa fa-trash"></span>
+                            </a>
+                        {%- endif %}
+                    </td>
+                </tr>
+            {%- else -%}
+                <tr>
+                    <td colspan="3">
+                        <em>{{ 'attachment.alert.no_item'|trans({}, 'EkynaCommerce') }}</em>
                     </td>
                 </tr>
             {%- endfor -%}

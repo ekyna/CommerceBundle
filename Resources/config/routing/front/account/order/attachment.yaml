@@ -1,0 +1,24 @@
+ekyna_commerce_account_order_attachment_create:
+    path:
+        en: /create
+        fr: /creer
+        es: /crear
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Order\Attachment\CreateController
+    requirements:
+        number: "[a-zA-Z0-9]+"
+    methods: [ GET, POST ]
+    options:
+        ekyna_i18n: ~
+
+ekyna_commerce_account_order_attachment_download:
+    path:
+        en: /{id}/download
+        fr: /{id}/telecharger
+        es: /{id}/descargar
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Order\Attachment\DownloadController
+    requirements:
+        number: "[a-zA-Z0-9]+"
+        id: \d+
+    methods: [ GET ]
+    options:
+        ekyna_i18n: ~

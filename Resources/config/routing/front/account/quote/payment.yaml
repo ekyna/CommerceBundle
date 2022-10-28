@@ -1,0 +1,24 @@
+ekyna_commerce_account_quote_payment_create:
+    path:
+        en: /create
+        fr: /creer
+        es: /crear
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Payment\CreateController
+    requirements:
+        number: "[a-zA-Z0-9]+"
+    methods: [ GET, POST ]
+    options:
+        ekyna_i18n: ~
+
+ekyna_commerce_account_quote_payment_cancel:
+    path:
+        en: /{key}/cancel
+        fr: /{key}/annuler
+        es: /{key}/cancelar
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Payment\CancelController
+    requirements:
+        number: "[a-zA-Z0-9]+"
+        key: "[a-zA-Z0-9]+"
+    methods: [ GET, POST ]
+    options:
+        ekyna_i18n: ~

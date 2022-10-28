@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
+namespace Ekyna\Bundle\CommerceBundle\Service\Account;
 
 use Ekyna\Bundle\CommerceBundle\Service\Common\SaleViewHelper;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\View\SaleView;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
-use Ekyna\Component\Resource\Manager\ManagerFactoryInterface;
-use Ekyna\Component\Resource\Repository\RepositoryFactoryInterface;
+use Ekyna\Component\Resource\Manager\ResourceManagerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -18,19 +17,21 @@ use Twig\Environment;
 use function is_null;
 
 /**
- * Trait QuoteTrait
- * @package Ekyna\Bundle\CommerceBundle\Controller\Account
+ * Class QuoteViewHelper
+ * @package Ekyna\Bundle\CommerceBundle\Service\Account
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-trait QuoteTrait
+class QuoteViewHelper
 {
-    protected RepositoryFactoryInterface $repositoryFactory;
-    protected ManagerFactoryInterface    $managerFactory;
-    protected SaleViewHelper             $saleViewHelper;
-    protected UrlGeneratorInterface      $urlGenerator;
-    protected Environment                $twig;
+    public function __construct(
+        private readonly ResourceManagerInterface $quoteManager,
+        private readonly SaleViewHelper           $saleViewHelper,
+        private readonly UrlGeneratorInterface    $urlGenerator,
+        private readonly Environment              $twig,
+    ) {
+    }
 
-    protected function buildQuantitiesForm(SaleInterface $sale): FormInterface
+    public function buildQuantitiesForm(SaleInterface $sale): FormInterface
     {
         return $this->saleViewHelper->buildQuantitiesForm($sale, [
             'action' => $this->urlGenerator->generate('ekyna_commerce_account_quote_recalculate', [
@@ -39,7 +40,7 @@ trait QuoteTrait
         ]);
     }
 
-    protected function buildSaleView(QuoteInterface $quote, FormInterface $form = null): SaleView
+    public function buildSaleView(QuoteInterface $quote, FormInterface $form = null): SaleView
     {
         if (is_null($form) && $quote->isEditable()) {
             $form = $this->buildQuantitiesForm($quote);
@@ -52,11 +53,11 @@ trait QuoteTrait
         ], $form);
     }
 
-    protected function buildXhrSaleViewResponse(QuoteInterface $quote, FormInterface $form = null): Response
+    public function buildXhrSaleViewResponse(QuoteInterface $quote, FormInterface $form = null): Response
     {
         // We need to refresh the sale to get proper "id/position indexed" collections.
         // TODO move to resource listener : refresh all collections indexed by "id" or "position"
-        $this->managerFactory->getManager(QuoteInterface::class)->refresh($quote);
+        $this->quoteManager->refresh($quote);
 
         $content = $this->twig->render('@EkynaCommerce/Account/Sale/response.xml.twig', [
             'sale'      => $quote,

@@ -1,6 +1,6 @@
 ekyna_commerce_account_order_index:
     path: ''
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\OrderController::index
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Order\IndexController
     methods: [GET]
     options:
         ekyna_i18n: ~
@@ -16,7 +16,7 @@ ekyna_commerce_account_order_index:
 
 ekyna_commerce_account_order_read:
     path: /{number}
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\OrderController::read
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Order\ReadController
     requirements:
         number: "[a-zA-Z0-9]+"
     methods: GET
@@ -28,7 +28,7 @@ ekyna_commerce_account_order_export:
         en: /{number}/export.{_format}
         fr: /{number}/exporter.{_format}
         es: /{number}/exportar.{_format}
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\OrderController::export
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Order\ExportController
     requirements:
         number: "[a-zA-Z0-9]+"
         _format: "csv|xls"
@@ -36,37 +36,19 @@ ekyna_commerce_account_order_export:
     options:
         ekyna_i18n: ~
 
-ekyna_commerce_account_order_payment_create:
-    path:
-        en: /{number}/payments/create
-        fr: /{number}/paiments/creer
-        es: /{number}/pagos/crear
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\OrderController::paymentCreate
-    requirements:
-        number: "[a-zA-Z0-9]+"
-    methods: [GET, POST]
-    options:
-        ekyna_i18n: ~
-
-ekyna_commerce_account_order_payment_cancel:
-    path:
-        en: /{number}/payments/{key}/cancel
-        fr: /{number}/paiments/{key}/annuler
-        es: /{number}/pagos/{key}/cancelar
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\OrderController::paymentCancel
-    requirements:
-        number: "[a-zA-Z0-9]+"
-        key: "[a-zA-Z0-9]+"
-    methods: [GET, POST]
-    options:
-        ekyna_i18n: ~
+ekyna_commerce_account_order_payment:
+    resource: order/payment.yaml
+    prefix:
+        en: /{number}/payments
+        fr: /{number}/paiments
+        es: /{number}/pagos
 
 ekyna_commerce_account_order_shipment_download:
     path:
         en: /{number}/shipments/{id}/download.{_format}
         fr: /{number}/expeditions/{id}/telecharger.{_format}
         es: /{number}/envios/{id}/descargar.{_format}
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\OrderController::shipmentDownload
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Order\Shipment\DownloadController
     defaults:
         _format: pdf
     requirements:
@@ -82,7 +64,7 @@ ekyna_commerce_account_order_invoice_download:
         en: /{number}/invoices/{id}/download.{_format}
         fr: /{number}/factures/{id}/telecharger.{_format}
         es: /{number}/facturas/{id}/descargar.{_format}
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\OrderController::invoiceDownload
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Order\Invoice\DownloadController
     defaults:
         _format: pdf
     requirements:
@@ -93,27 +75,9 @@ ekyna_commerce_account_order_invoice_download:
     options:
         ekyna_i18n: ~
 
-ekyna_commerce_account_order_attachment_create:
-    path:
-        en: /{number}/documents/create
-        fr: /{number}/documents/creer
-        es: /{number}/documentos/crear
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\OrderController::attachmentCreate
-    requirements:
-        number: "[a-zA-Z0-9]+"
-    methods: [GET, POST]
-    options:
-        ekyna_i18n: ~
-
-ekyna_commerce_account_order_attachment_download:
-    path:
-        en: /{number}/documents/{id}/download
-        fr: /{number}/documents/{id}/telecharger
-        es: /{number}/documentos/{id}/descargar
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\OrderController::attachmentDownload
-    requirements:
-        number: "[a-zA-Z0-9]+"
-        id: \d+
-    methods: [GET]
-    options:
-        ekyna_i18n: ~
+ekyna_commerce_account_order_attachment:
+    resource: order/attachment.yaml
+    prefix:
+        en: /{number}/documents
+        fr: /{number}/documents
+        es: /{number}/documentos

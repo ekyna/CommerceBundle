@@ -1,0 +1,27 @@
+ekyna_commerce_account_quote_address_invoice:
+    path:
+        en: /invoice-address
+        fr: /adresse-de-facturation
+        es: /direccion-de-facturacion
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Address\UpdateController
+    defaults:
+        type: invoice
+    requirements:
+        number: "[a-zA-Z0-9]+"
+    methods: [ GET, POST ]
+    options:
+        ekyna_i18n: ~
+
+ekyna_commerce_account_quote_address_delivery:
+    path:
+        en: /delivery-address
+        fr: /adresse-de-livraison
+        es: /direccion-de-entrega
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Address\UpdateController
+    defaults:
+        type: delivery
+    requirements:
+        number: "[a-zA-Z0-9]+"
+    methods: [ GET, POST ]
+    options:
+        ekyna_i18n: ~

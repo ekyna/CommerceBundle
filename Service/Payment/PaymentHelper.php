@@ -89,7 +89,7 @@ class PaymentHelper
         if (!$this->debug && $this->cache->hasItem($key)) {
             try {
                 return $this->cache->getItem($key)->get();
-            } catch (CacheException $e) {
+            } catch (CacheException) {
             }
         }
 

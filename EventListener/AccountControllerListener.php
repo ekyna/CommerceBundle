@@ -20,18 +20,11 @@ use function is_array;
  */
 class AccountControllerListener
 {
-    private UserProviderInterface     $userProvider;
-    private CustomerProviderInterface $customerProvider;
-    private UrlGeneratorInterface     $urlGenerator;
-
     public function __construct(
-        UserProviderInterface     $userProvider,
-        CustomerProviderInterface $customerProvider,
-        UrlGeneratorInterface     $urlGenerator
+        private readonly UserProviderInterface     $userProvider,
+        private readonly CustomerProviderInterface $customerProvider,
+        private readonly UrlGeneratorInterface     $urlGenerator
     ) {
-        $this->userProvider = $userProvider;
-        $this->customerProvider = $customerProvider;
-        $this->urlGenerator = $urlGenerator;
     }
 
     public function onController(ControllerEvent $event): void
