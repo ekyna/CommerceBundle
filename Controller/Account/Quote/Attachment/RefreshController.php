@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Attachment;
 
+use Ekyna\Bundle\CommerceBundle\Controller\Account\ControllerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Account\QuoteResourceHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
@@ -24,7 +25,7 @@ use function Symfony\Component\Translation\t;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Document
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class RefreshController
+class RefreshController implements ControllerInterface
 {
     public function __construct(
         private readonly QuoteResourceHelper      $resourceHelper,

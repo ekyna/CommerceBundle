@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account\Order\Invoice;
 
+use Ekyna\Bundle\CommerceBundle\Controller\Account\ControllerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Account\OrderResourceHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
@@ -20,7 +21,7 @@ use function Symfony\Component\Translation\t;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account\Order\Invoice
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class DownloadController
+class DownloadController implements ControllerInterface
 {
     public function __construct(
         private readonly OrderResourceHelper   $resourceHelper,

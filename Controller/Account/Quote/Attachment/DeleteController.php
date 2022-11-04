@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Attachment;
 
+use Ekyna\Bundle\CommerceBundle\Controller\Account\ControllerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Account\QuoteResourceHelper;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
-use Ekyna\Component\Commerce\Document\Util\DocumentUtil;
 use Ekyna\Component\Resource\Manager\ResourceManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Attachment
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class DeleteController
+class DeleteController implements ControllerInterface
 {
     public function __construct(
         private readonly QuoteResourceHelper      $resourceHelper,

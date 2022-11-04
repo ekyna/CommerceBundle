@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account\Order;
 
+use Ekyna\Bundle\CommerceBundle\Controller\Account\ControllerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Account\OrderResourceHelper;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
 use Ekyna\Component\Commerce\Common\Export\SaleCsvExporter;
@@ -23,7 +24,7 @@ use function Symfony\Component\Translation\t;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account\Order
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class ExportController
+class ExportController implements ControllerInterface
 {
     public function __construct(
         private readonly OrderResourceHelper   $resourceHelper,

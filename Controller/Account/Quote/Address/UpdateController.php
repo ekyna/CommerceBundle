@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Address;
 
+use Ekyna\Bundle\CommerceBundle\Controller\Account\ControllerInterface;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAddressType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleAddressType;
 use Ekyna\Bundle\CommerceBundle\Service\Account\QuoteResourceHelper;
@@ -26,7 +27,7 @@ use function array_replace;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Address
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class UpdateController
+class UpdateController implements ControllerInterface
 {
     public function __construct(
         private readonly QuoteResourceHelper      $resourceHelper,

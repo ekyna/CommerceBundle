@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account\Quote;
 
+use Ekyna\Bundle\CommerceBundle\Controller\Account\ControllerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Account\QuoteResourceHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Account\QuoteViewHelper;
 use Ekyna\Component\Commerce\Common\Updater\SaleUpdaterInterface;
@@ -18,7 +19,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account\Quote
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class RecalculateController
+class RecalculateController implements ControllerInterface
 {
     public function __construct(
         private readonly QuoteResourceHelper      $resourceHelper,

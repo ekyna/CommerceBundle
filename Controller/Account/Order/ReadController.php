@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account\Order;
 
+use Ekyna\Bundle\CommerceBundle\Controller\Account\ControllerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Account\OrderResourceHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +15,7 @@ use Twig\Environment;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account\Order
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class ReadController
+class ReadController implements ControllerInterface
 {
     public function __construct(
         private readonly OrderResourceHelper $resourceHelper,

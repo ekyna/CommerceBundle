@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account\Order\Payment;
 
+use Ekyna\Bundle\CommerceBundle\Controller\Account\ControllerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Account\OrderResourceHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
 use Ekyna\Bundle\UiBundle\Form\Type\ConfirmType;
@@ -21,7 +22,7 @@ use function Symfony\Component\Translation\t;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account\Order\Payment
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class CancelController
+class CancelController implements ControllerInterface
 {
     public function __construct(
         private readonly OrderResourceHelper   $resourceHelper,

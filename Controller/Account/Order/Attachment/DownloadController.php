@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account\Order\Attachment;
 
+use Ekyna\Bundle\CommerceBundle\Controller\Account\ControllerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Account\OrderResourceHelper;
 use Ekyna\Bundle\ResourceBundle\Service\Filesystem\FilesystemHelper;
 use League\Flysystem\Filesystem;
@@ -16,7 +17,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account\Order\Attachment
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class DownloadController
+class DownloadController implements ControllerInterface
 {
     public function __construct(
         private readonly OrderResourceHelper $resourceHelper,

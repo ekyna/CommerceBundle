@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Item;
 
+use Ekyna\Bundle\CommerceBundle\Controller\Account\ControllerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Account\QuoteResourceHelper;
 use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
@@ -17,7 +18,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Item
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-abstract class AbstractItemController
+abstract class AbstractItemController implements ControllerInterface
 {
     protected readonly QuoteResourceHelper $resourceHelper;
     protected readonly SaleHelper          $saleHelper;

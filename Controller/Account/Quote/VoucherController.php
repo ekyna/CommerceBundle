@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account\Quote;
 
+use Ekyna\Bundle\CommerceBundle\Controller\Account\ControllerInterface;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Account\QuoteVoucherType;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes as BDocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteVoucher;
@@ -28,7 +29,7 @@ use function Symfony\Component\Translation\t;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account\Quote
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class VoucherController
+class VoucherController implements ControllerInterface
 {
     public function __construct(
 

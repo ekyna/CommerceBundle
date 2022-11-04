@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account\Order\Attachment;
 
+use Ekyna\Bundle\CommerceBundle\Controller\Account\ControllerInterface;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderAttachmentType;
 use Ekyna\Bundle\CommerceBundle\Service\Account\OrderResourceHelper;
 use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
@@ -23,7 +24,7 @@ use Twig\Environment;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account\Order\Attachment
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class CreateController
+class CreateController implements ControllerInterface
 {
     public function __construct(
         private readonly OrderResourceHelper      $resourceHelper,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account\Quote;
 
+use Ekyna\Bundle\CommerceBundle\Controller\Account\ControllerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Account\QuoteResourceHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Account\QuoteViewHelper;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,11 +16,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account\Quote
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class RefreshController
+class RefreshController implements ControllerInterface
 {
     public function __construct(
         private readonly QuoteResourceHelper $resourceHelper,
-        private readonly QuoteViewHelper $viewHelper,
+        private readonly QuoteViewHelper     $viewHelper,
     ) {
     }
 

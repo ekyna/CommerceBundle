@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Payment;
 
+use Ekyna\Bundle\CommerceBundle\Controller\Account\ControllerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Account\QuoteResourceHelper;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\CheckoutManager;
@@ -25,7 +26,7 @@ use function Symfony\Component\Translation\t;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Account\Quote\Payment
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class CreateController
+class CreateController implements ControllerInterface
 {
     public function __construct(
         private readonly QuoteResourceHelper        $resourceHelper,
