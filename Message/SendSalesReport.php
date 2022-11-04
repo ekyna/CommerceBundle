@@ -23,6 +23,7 @@ class SendSalesReport
             $config->getSections(),
             $config->locale,
             $config->email,
+            $config->test,
         );
     }
 
@@ -38,6 +39,7 @@ class SendSalesReport
         }
         $config->locale = $this->locale;
         $config->email = $this->email;
+        $config->test = $this->test;
 
         return $config;
     }
@@ -48,7 +50,8 @@ class SendSalesReport
         public readonly string  $writer,
         public readonly array   $sections,
         public readonly string  $locale,
-        public readonly ?string $email,
+        public readonly ?string $email = null,
+        public readonly bool $test = false,
     ) {
     }
 }

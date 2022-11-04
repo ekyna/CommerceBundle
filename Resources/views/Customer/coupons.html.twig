@@ -12,7 +12,9 @@
     <tbody>
     {% for coupon in coupons %}
         <tr>
-            <td data-clipboard-copy="{{ coupon.code }}">{{ coupon.code }}</td>
+            <td>
+                {{ coupon.code|ui_clipboard_copy }}
+            </td>
             <td>
                 {%- if coupon.mode == constant('Ekyna\\Component\\Commerce\\Common\\Model\\AdjustmentModes::MODE_PERCENT') -%}
                     -{{ (coupon.amount / 100)|format_number(style='percent') }}
