@@ -42,14 +42,16 @@ class QuoteViewHelper
 
     public function buildSaleView(QuoteInterface $quote, FormInterface $form = null): SaleView
     {
-        if (is_null($form) && $quote->isEditable()) {
+        $editable = $quote->isEditable() && !$quote->isExpired();
+
+        if (is_null($form) && $editable) {
             $form = $this->buildQuantitiesForm($quote);
         }
 
         return $this->saleViewHelper->buildSaleView($quote, [
             'taxes_view' => false,
             'private'    => false,
-            'editable'   => $quote->isEditable(),
+            'editable'   => $editable,
         ], $form);
     }
 

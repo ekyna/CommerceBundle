@@ -40,12 +40,12 @@ class RendererFactory
     /**
      * Returns a new renderer.
      *
-     * @param mixed       $subjects The subjects
-     * @param string|null $type     The document type
+     * @param object|array $subjects The subjects
+     * @param string|null  $type     The document type
      *
      * @return RendererInterface
      */
-    public function createRenderer($subjects, string $type = null): RendererInterface
+    public function createRenderer(object|array $subjects, string $type = null): RendererInterface
     {
         if (is_object($subjects)) {
             $subject = $subjects;

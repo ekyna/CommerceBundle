@@ -21,6 +21,7 @@
         <span class="text-alt">{{ 'field.date'|trans({}, 'EkynaUi') }}</span>
         {{- '&nbsp;' -}}
         <strong>{{ date|format_datetime('long', 'none', locale=subject.locale) }}</strong>.
+        {{ macro.render_expires_at(subject) }}
         {% if subject.sale.customer is not null -%}
             <span class="text-alt">{{ 'customer.label.singular'|trans({}, 'EkynaCommerce') }}</span>
             {{- '&nbsp;' -}}

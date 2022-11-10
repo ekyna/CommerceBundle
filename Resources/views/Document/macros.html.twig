@@ -115,6 +115,20 @@
 {%- endmacro -%}
 
 
+{%- macro render_expires_at(subject) -%}
+    {% if subject.type == constant('Ekyna\\Component\\Commerce\\Document\\Model\\DocumentTypes::TYPE_QUOTE') %}
+        {% if subject.sale is sale_quote %}
+            {% set date = subject.sale.expiresAt %}
+        {% else %}
+            {% set date = date('+2 months') %}{# TODO Use ekyna_commerce.default.expiration.quote parameter #}
+        {% endif %}
+        <span class="text-alt">{{ 'field.valid_until'|trans({}, 'EkynaUi') }}</span>
+        {{- '&nbsp;' -}}
+        <strong>{{ date|format_datetime('long', 'none', locale=subject.locale) }}</strong>.
+    {%- endif -%}
+{%- endmacro -%}
+
+
 {%- macro render_invoice_payments(subject) -%}
 {%- apply spaceless -%}
     {% set payments = subject|invoice_payments(false) -%}
