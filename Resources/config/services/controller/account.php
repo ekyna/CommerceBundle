@@ -169,6 +169,36 @@ return static function (ContainerConfigurator $container) {
         ])
         ->public();
 
+    // ---------------------------- Order Payment ----------------------------
+
+    // Account order payment create controller
+    $services
+        ->set(Account\Order\Payment\CreateController::class)
+        ->args([
+            service('ekyna_commerce.account.order_resource_helper'),
+            service('router'),
+            service('ekyna_commerce.helper.constants'),
+            service('ekyna_ui.helper.flash'),
+            service('ekyna_commerce.validator.sale_step'),
+            service('ekyna_commerce.manager.payment_checkout'),
+            service('ekyna_commerce.manager.order'),
+            service('ekyna_commerce.helper.payment'),
+            service('twig'),
+        ])
+        ->public();
+
+    // Account order payment cancel controller
+    $services
+        ->set(Account\Order\Payment\CancelController::class)
+        ->args([
+            service('ekyna_commerce.account.order_resource_helper'),
+            service('router'),
+            service('ekyna_commerce.helper.payment'),
+            service('form.factory'),
+            service('twig'),
+        ])
+        ->public();
+
     // ---------------------------- Payment ----------------------------
 
     // Account payment controller
