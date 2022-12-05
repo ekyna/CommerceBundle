@@ -50,6 +50,7 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.renderer.common'),
                 service('ekyna_commerce.resolver.tax'),
                 service('ekyna_commerce.helper.subject'),
+                service('event_dispatcher'),
                 abstract_arg('Document helper configuration'),
                 param('kernel.default_locale'),
             ])

@@ -12,6 +12,8 @@ use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
 use Ekyna\Component\Commerce\Common\Model\MentionSubjectInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Document\Event\SaleItemMentionEvent;
+use Ekyna\Component\Commerce\Document\Event\SaleMentionEvent;
 use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentLineTypes;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
@@ -21,8 +23,15 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use OzdemirBurak\Iris\Color\Hex;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 use function array_merge;
+use function array_push;
+use function implode;
+use function in_array;
+use function sprintf;
+use function strip_tags;
+use function strtr;
 
 /**
  * Class DocumentHelper
@@ -31,36 +40,20 @@ use function array_merge;
  */
 class DocumentHelper
 {
-    private SettingManagerInterface $settings;
-    private Filesystem              $fileSystem;
-    private UrlGeneratorInterface   $urlGenerator;
-    private CommonRenderer          $commonRenderer;
-    private TaxResolverInterface    $taxResolver;
-    private SubjectHelperInterface  $subjectHelper;
-    private array                   $config;
-    private string                  $defaultLocale;
     /** @var array<string, DocumentDesign> */
     private array $defaultDesigns = [];
 
-
     public function __construct(
-        SettingManagerInterface $settings,
-        Filesystem              $fileSystem,
-        UrlGeneratorInterface   $urlGenerator,
-        CommonRenderer          $commonRenderer,
-        TaxResolverInterface    $taxResolver,
-        SubjectHelperInterface  $subjectHelper,
-        array                   $config,
-        string                  $defaultLocale
+        private readonly SettingManagerInterface  $settings,
+        private readonly Filesystem               $fileSystem,
+        private readonly UrlGeneratorInterface    $urlGenerator,
+        private readonly CommonRenderer           $commonRenderer,
+        private readonly TaxResolverInterface     $taxResolver,
+        private readonly SubjectHelperInterface   $subjectHelper,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly array                    $config,
+        private readonly string                   $defaultLocale
     ) {
-        $this->settings = $settings;
-        $this->fileSystem = $fileSystem;
-        $this->urlGenerator = $urlGenerator;
-        $this->commonRenderer = $commonRenderer;
-        $this->taxResolver = $taxResolver;
-        $this->subjectHelper = $subjectHelper;
-        $this->config = $config;
-        $this->defaultLocale = $defaultLocale;
     }
 
     /**
@@ -168,11 +161,17 @@ class DocumentHelper
      */
     public function getSaleMentions(SaleInterface $sale, string $type, string $locale = null): array
     {
+        $this->eventDispatcher->dispatch($event = new SaleMentionEvent($sale, $type, $locale));
+
+        $mentions = $event->getMentions();
+
         if (!$method = $sale->getPaymentMethod()) {
-            return [];
+            return $mentions;
         }
 
-        return $this->getMentions($method, $type, $locale);
+        array_push($mentions, ...$this->getMentions($method, $type, $locale));
+
+        return $mentions;
     }
 
     /**
@@ -186,15 +185,21 @@ class DocumentHelper
      */
     public function getSaleItemMentions(SaleItemInterface $item, string $type, string $locale = null): array
     {
+        $this->eventDispatcher->dispatch($event = new SaleItemMentionEvent($item, $type, $locale));
+
+        $mentions = $event->getMentions();
+
         if (null === $subject = $this->subjectHelper->resolve($item, false)) {
-            return [];
+            return $mentions;
         }
 
         if (!$subject instanceof MentionSubjectInterface) {
-            return [];
+            return $mentions;
         }
 
-        return $this->getMentions($subject, $type, $locale);
+        array_push($mentions, ...$this->getMentions($subject, $type, $locale));
+
+        return $mentions;
     }
 
     /**
@@ -240,7 +245,7 @@ class DocumentHelper
         }
 
         $logoPath = $this->config['logo_path'];
-        if (0 !== strpos($logoPath, '/')) { // TODO !str_starts_with()
+        if (!str_starts_with($logoPath, '/')) {
             $logoPath = '/' . $logoPath;
         }
 
@@ -304,7 +309,7 @@ class DocumentHelper
             if (!$this->fileSystem->fileExists($logo->getPath())) {
                 return;
             }
-        } catch (FilesystemException $exception) {
+        } catch (FilesystemException) {
             return;
         }
 
@@ -349,7 +354,7 @@ class DocumentHelper
      *
      * @param object $document
      *
-     * @return string|null
+     * @return string
      */
     protected function getLocale(object $document): string
     {

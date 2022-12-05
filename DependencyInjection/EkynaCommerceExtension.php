@@ -149,7 +149,7 @@ class EkynaCommerceExtension extends Extension implements PrependExtensionInterf
     {
         $container
             ->getDefinition('ekyna_commerce.helper.document')
-            ->replaceArgument(6, array_replace([
+            ->replaceArgument(7, array_replace([
                 'logo_path' => '%ekyna_commerce.default.company_logo%',
             ], $config));
 
