@@ -20,11 +20,11 @@ use function Symfony\Component\Translation\t;
  */
 class FormHelper
 {
-    /**
-     * @param FormInterface|FormBuilderInterface $form
-     */
-    public static function addQuantityType($form, string $unit, array $options = []): void
-    {
+    public static function addQuantityType(
+        FormInterface|FormBuilderInterface $form,
+        string                             $unit = Units::PIECE,
+        array                              $options = []
+    ): void {
         $options = array_replace_recursive([
             'label'   => t('field.quantity', [], 'EkynaUi'),
             'decimal' => true,

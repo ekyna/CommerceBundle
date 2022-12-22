@@ -10,7 +10,7 @@ use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
 use Ekyna\Component\Commerce\Common\Model\Units;
 use Ekyna\Component\Commerce\Stock\Model\StockAdjustmentInterface;
-use Symfony\Component\Form\Extension\Core\Type;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -26,7 +26,7 @@ class StockAdjustmentType extends AbstractResourceType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             /** @var StockAdjustmentInterface $adjustment */
             $adjustment = $event->getData();
 
@@ -41,7 +41,7 @@ class StockAdjustmentType extends AbstractResourceType
                 'placeholder' => t('value.choose', [], 'EkynaUi'),
                 'class'       => StockAdjustmentReasons::class,
             ])
-            ->add('note', Type\TextType::class, [
+            ->add('note', TextType::class, [
                 'label'    => t('field.comment', [], 'EkynaUi'),
                 'required' => false,
             ]);

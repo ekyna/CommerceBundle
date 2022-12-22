@@ -17,10 +17,10 @@ use Ekyna\Bundle\ResourceBundle\Action\RoutingActionInterface;
 use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use Ekyna\Bundle\UiBundle\Model\Modal;
 use Ekyna\Component\Commerce\Exception\StockLogicException;
-use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
 use Ekyna\Component\Commerce\Stock\Model\StockAdjustmentInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
 use Ekyna\Component\Resource\Action\Permission;
+use Ekyna\Component\Resource\Exception\UnexpectedTypeException;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -49,7 +49,7 @@ class UpdateAdjustmentAction extends AbstractAction implements AdminActionInterf
 
         $stockUnit = $this->context->getResource();
         if (!$stockUnit instanceof StockUnitInterface) {
-            throw new UnexpectedValueException($stockUnit, StockUnitInterface::class);
+            throw new UnexpectedTypeException($stockUnit, StockUnitInterface::class);
         }
 
         /** @var StockAdjustmentInterface $stockAdjustment */
@@ -90,8 +90,8 @@ class UpdateAdjustmentAction extends AbstractAction implements AdminActionInterf
                 }
 
                 FormUtil::addErrorsFromResourceEvent($form, $event);
-            } catch (StockLogicException $e) {
-                $form->addError(new FormError($e->getMessage()));
+            } catch (StockLogicException $exception) {
+                $form->addError(new FormError($exception->getMessage()));
             }
         }
 
