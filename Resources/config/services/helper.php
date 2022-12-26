@@ -24,6 +24,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetRenderer;
+use Ekyna\Component\Commerce\Stock\Helper\AdjustHelper;
 use Ekyna\Component\Commerce\Stock\Helper\AvailabilityHelperInterface;
 use Ekyna\Component\Commerce\Stock\Helper\StockSubjectQuantityHelper;
 
@@ -66,6 +67,14 @@ return static function (ContainerConfigurator $container) {
             ->tag('twig.runtime')
 
         ->alias(SubjectHelperInterface::class, 'ekyna_commerce.helper.subject')
+
+        // Adjust helper
+        ->set('ekyna_commerce.helper.adjust', AdjustHelper::class)
+            ->args([
+                service('ekyna_resource.factory.factory'),
+                service('ekyna_resource.repository.factory'),
+                service('ekyna_resource.manager.factory'),
+            ])
 
         // Availability helper
         ->set('ekyna_commerce.helper.availability', AvailabilityHelper::class)
