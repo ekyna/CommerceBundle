@@ -68,6 +68,8 @@ resources:
                     update: { serialization: Ticket }
                     delete: { serialization: Ticket }
                     expose: true
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Attachment\DownloadAction:
+                    expose: true
             behaviors:
                 uploadable:
                     uploader: ekyna_commerce.uploader
