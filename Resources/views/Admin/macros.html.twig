@@ -31,7 +31,7 @@
             {{- label|default('mention.label.plural')|trans({}, 'EkynaCommerce') -}}
         </div>
         <div class="col-md-10">
-            <div class="show-widget">
+            <div class="show-widget show-widget-block">
             {% for mention in subject.mentions -%}
                 {{- show_row(mention.documentTypes, 'constant_choice', {
                     'label': t('document.label.plural', [], 'EkynaCommerce'),

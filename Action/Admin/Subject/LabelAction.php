@@ -6,8 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Action\Admin\Subject;
 
 use Ekyna\Bundle\AdminBundle\Action\AdminActionInterface;
 use Ekyna\Bundle\AdminBundle\Action\ListAction;
-use Ekyna\Bundle\CommerceBundle\Model\SubjectLabel;
-use Ekyna\Bundle\CommerceBundle\Service\Subject\LabelRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectLabelRenderer;
 use Ekyna\Bundle\ResourceBundle\Action\AbstractAction;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
 use Ekyna\Bundle\ResourceBundle\Action\RepositoryTrait;
@@ -29,11 +28,9 @@ class LabelAction extends AbstractAction implements AdminActionInterface, Routin
     use RepositoryTrait;
     use HelperTrait;
 
-    private LabelRenderer $labelRenderer;
-
-    public function __construct(LabelRenderer $labelRenderer)
-    {
-        $this->labelRenderer = $labelRenderer;
+    public function __construct(
+        private readonly SubjectLabelRenderer $labelRenderer
+    ) {
     }
 
     public function __invoke(): Response
@@ -52,9 +49,7 @@ class LabelAction extends AbstractAction implements AdminActionInterface, Routin
 
         $subjects = (array)$this->getRepository()->findBy(['id' => $ids]);
 
-        $labels = $this->labelRenderer->buildLabels($subjects);
-
-        $pdf = $this->labelRenderer->render($labels, $format);
+        $pdf = $this->labelRenderer->render($format, $subjects);
 
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
@@ -82,6 +77,6 @@ class LabelAction extends AbstractAction implements AdminActionInterface, Routin
 
     public static function buildRoute(Route $route, array $options): void
     {
-        $route->setDefault('format', SubjectLabel::FORMAT_LARGE);
+        $route->setDefault('format', SubjectLabelRenderer::FORMAT_LARGE);
     }
 }

@@ -4,103 +4,45 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
+use ArrayAccess;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
+
+use function array_key_exists;
 
 /**
  * Class SubjectLabel
  * @package Ekyna\Bundle\CommerceBundle\Model
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SubjectLabel
+class SubjectLabel implements ArrayAccess
 {
-    public const FORMAT_SMALL = 'small';
-    public const FORMAT_LARGE = 'large';
+    public ?string $designation = null;
+    public ?string $reference   = null;
+    public ?string $barcode     = null;
+    public ?string $geocode     = null;
+    private array  $data        = [];
 
-    private ?string $designation = null;
-    private ?string $reference   = null;
-    private ?string $barcode     = null;
-    private ?string $geocode     = null;
-    private ?string $extra       = null;
-
-    public function __construct(private readonly SubjectInterface $subject)
+    public function __construct(public readonly SubjectInterface $subject)
     {
     }
 
-    public function getSubject(): SubjectInterface
+    public function offsetExists(mixed $offset): bool
     {
-        return $this->subject;
+        return array_key_exists($offset, $this->data);
     }
 
-    public function getDesignation(): ?string
+    public function offsetGet(mixed $offset): mixed
     {
-        return $this->designation;
+        return $this->data[$offset] ?? null;
     }
 
-    public function setDesignation(?string $designation): SubjectLabel
+    public function offsetSet(mixed $offset, mixed $value): void
     {
-        $this->designation = $designation;
-
-        return $this;
+        $this->data[$offset] = $value;
     }
 
-    public function getReference(): ?string
+    public function offsetUnset(mixed $offset): void
     {
-        return $this->reference;
-    }
-
-    public function setReference(?string $reference): SubjectLabel
-    {
-        $this->reference = $reference;
-
-        return $this;
-    }
-
-    public function getBarcode(): ?string
-    {
-        return $this->barcode;
-    }
-
-    public function setBarcode(?string $barcode): SubjectLabel
-    {
-        $this->barcode = $barcode;
-
-        return $this;
-    }
-
-    public function getGeocode(): ?string
-    {
-        return $this->geocode;
-    }
-
-    public function setGeocode(?string $geocode): SubjectLabel
-    {
-        $this->geocode = $geocode;
-
-        return $this;
-    }
-
-    public function getExtra(): ?string
-    {
-        return $this->extra;
-    }
-
-    public function setExtra(?string $extra): SubjectLabel
-    {
-        $this->extra = $extra;
-
-        return $this;
-    }
-
-    /**
-     * Returns the label formats.
-     *
-     * @return array<int, string>
-     */
-    public static function getFormats(): array
-    {
-        return [
-            self::FORMAT_LARGE,
-            self::FORMAT_SMALL,
-        ];
+        unset($this->data[$offset]);
     }
 }

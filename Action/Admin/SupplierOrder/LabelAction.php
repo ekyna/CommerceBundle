@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Action\Admin\SupplierOrder;
 
 use Ekyna\Bundle\AdminBundle\Action\AdminActionInterface;
-use Ekyna\Bundle\CommerceBundle\Service\Subject\LabelRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectLabelRenderer;
 use Ekyna\Bundle\ResourceBundle\Action\AbstractAction;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Resource\Action\Permission;
@@ -14,10 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 use function array_filter;
 use function array_map;
-use function count;
 use function in_array;
 use function intval;
-use function sprintf;
 
 /**
  * Class LabelAction
@@ -26,13 +24,10 @@ use function sprintf;
  */
 class LabelAction extends AbstractAction implements AdminActionInterface
 {
-    private SubjectHelperInterface $subjectHelper;
-    private LabelRenderer          $labelRenderer;
-
-    public function __construct(SubjectHelperInterface $subjectHelper, LabelRenderer $labelRenderer)
-    {
-        $this->subjectHelper = $subjectHelper;
-        $this->labelRenderer = $labelRenderer;
+    public function __construct(
+        private readonly SubjectHelperInterface $subjectHelper,
+        private readonly SubjectLabelRenderer $labelRenderer
+    ) {
     }
 
     public function __invoke(): Response
@@ -65,19 +60,10 @@ class LabelAction extends AbstractAction implements AdminActionInterface
             return new Response('', Response::HTTP_NO_CONTENT);
         }
 
-        $labels = $this->labelRenderer->buildLabels($subjects);
-
-        if (1 === count($labels) && !empty($geocode = $this->request->query->get('geocode'))) {
-            $labels[0]->setGeocode($geocode);
-        }
-
-        $date = $resource->getOrderedAt() ?? new \DateTime();
-        $extra = sprintf('%s (%s)', $resource->getNumber(), $date->format('Y-m-d'));
-        foreach ($labels as $label) {
-            $label->setExtra($extra);
-        }
-
-        $pdf = $this->labelRenderer->render($labels);
+        $pdf = $this->labelRenderer->render(SubjectLabelRenderer::FORMAT_LARGE, $subjects, [
+            'supplierOrder' => $resource,
+            'geocode'       => $this->request->query->get('geocode'),
+        ]);
 
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',

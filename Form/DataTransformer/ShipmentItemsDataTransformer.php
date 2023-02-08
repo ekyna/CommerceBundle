@@ -28,7 +28,7 @@ class ShipmentItemsDataTransformer implements DataTransformerInterface
     /**
      * Transforms the flat shipment items collection into a tree shipment items collection.
      *
-     * @param Collection<ShipmentItemInterface> $value
+     * @param Collection<int, ShipmentItemInterface> $value
      *
      * @return Collection
      */
@@ -49,7 +49,7 @@ class ShipmentItemsDataTransformer implements DataTransformerInterface
     /**
      * Transforms the tree shipment items collection into a flat shipment items collection.
      *
-     * @param Collection<ShipmentItemInterface> $value
+     * @param Collection<int, ShipmentItemInterface> $value
      *
      * @return Collection
      */

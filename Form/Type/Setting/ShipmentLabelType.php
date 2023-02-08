@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Setting;
 
-use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentLabelRenderer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -25,7 +25,7 @@ class ShipmentLabelType extends AbstractType
         $builder
             ->add('size', ChoiceType::class, [
                 'label'                     => t('setting.shipment_label.size', [], 'EkynaCommerce'),
-                'choices'                   => LabelRenderer::getSizes(),
+                'choices'                   => ShipmentLabelRenderer::getSizes(),
                 'choice_translation_domain' => false,
                 'required'                  => false,
                 'select2'                   => false,

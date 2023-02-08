@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Action;
 
-use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentLabelRenderer;
 use Ekyna\Component\Commerce\Exception\ShipmentGatewayException;
 use Ekyna\Component\Commerce\Shipment\Entity\AbstractShipmentLabel;
 use Ekyna\Component\Commerce\Shipment\Gateway\GatewayActions;
@@ -30,18 +30,11 @@ use function Symfony\Component\Translation\t;
  */
 class ShipmentPrintLabelActionType extends AbstractActionType
 {
-    private GatewayRegistryInterface $gatewayRegistry;
-    private PersisterInterface       $shipmentPersister;
-    private LabelRenderer            $labelRenderer;
-
     public function __construct(
-        GatewayRegistryInterface $gatewayRegistry,
-        PersisterInterface       $shipmentPersister,
-        LabelRenderer            $labelRenderer
+        private readonly GatewayRegistryInterface $gatewayRegistry,
+        private readonly PersisterInterface $shipmentPersister,
+        private readonly ShipmentLabelRenderer $labelRenderer
     ) {
-        $this->gatewayRegistry = $gatewayRegistry;
-        $this->shipmentPersister = $shipmentPersister;
-        $this->labelRenderer = $labelRenderer;
     }
 
     /**

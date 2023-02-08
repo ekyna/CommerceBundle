@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Ekyna\Bundle\CommerceBundle\Service\Subject\LabelRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectLabelRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectOrderExporter;
 use Ekyna\Component\Commerce\Subject\Guesser\PurchaseCostGuesser;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistry;
@@ -18,7 +18,7 @@ return static function (ContainerConfigurator $container) {
 
         // Subject purchase cost
         ->set('ekyna_commerce.guesser.subject_purchase_cost', PurchaseCostGuesser::class)
-            ->lazy(true)
+            ->lazy()
             ->args([
                 service('ekyna_resource.repository.factory'),
                 service('ekyna_commerce.converter.currency'),
@@ -35,11 +35,13 @@ return static function (ContainerConfigurator $container) {
             ])
 
         // Subject label renderer
-        ->set('ekyna_commerce.renderer.subject_label', LabelRenderer::class)
+        ->set('ekyna_commerce.renderer.subject_label', SubjectLabelRenderer::class)
             ->args([
                 service('event_dispatcher'),
                 service('twig'),
                 service('ekyna_resource.generator.pdf'),
+                service('translator'),
             ])
+            ->tag('twig.runtime')
     ;
 };

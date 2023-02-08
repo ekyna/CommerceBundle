@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use DateTime;
-use Ekyna\Bundle\CommerceBundle\Model\SubjectLabel;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectLabelRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
@@ -65,7 +65,7 @@ class SubjectExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('subject_label_formats', [SubjectLabel::class, 'getFormats']),
+            new TwigFunction('subject_label_formats', [SubjectLabelRenderer::class, 'getFormatChoices']),
         ];
     }
 

@@ -12,26 +12,17 @@ use Symfony\Contracts\EventDispatcher\Event;
  * @package Ekyna\Bundle\CommerceBundle\Event
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SubjectLabelEvent extends Event
+class BuildSubjectLabels extends Event
 {
-    public const BUILD = 'ekyna_commerce.subject.label.build';
-
     /**
-     * @var array<SubjectLabel>
+     * @var array<int, SubjectLabel>
      */
-    private array $labels;
+    private array $labels = [];
 
-
-    /**
-     * @param array<SubjectLabel> $labels
-     */
-    public function __construct(array $labels = [])
-    {
-        $this->labels = [];
-
-        foreach ($labels as $label) {
-            $this->addLabel($label);
-        }
+    public function __construct(
+        public readonly string $format,
+        public readonly array $parameters
+    ) {
     }
 
     public function addLabel(SubjectLabel $label): void
@@ -40,7 +31,7 @@ class SubjectLabelEvent extends Event
     }
 
     /**
-     * @return array<SubjectLabel>
+     * @return array<int, SubjectLabel>
      */
     public function getLabels(): array
     {

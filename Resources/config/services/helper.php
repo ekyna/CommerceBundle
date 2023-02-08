@@ -14,7 +14,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
 use Ekyna\Bundle\CommerceBundle\Service\SaleItemHelper;
-use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentLabelRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper;
@@ -218,7 +218,7 @@ return static function (ContainerConfigurator $container) {
             ->tag('twig.runtime')
 
         // Shipment label renderer
-        ->set('ekyna_commerce.renderer.shipment_label', LabelRenderer::class)
+        ->set('ekyna_commerce.renderer.shipment_label', ShipmentLabelRenderer::class)
             ->lazy(true)
             ->args([
                 service('twig'),

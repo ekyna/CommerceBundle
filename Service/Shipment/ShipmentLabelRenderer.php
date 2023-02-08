@@ -21,19 +21,19 @@ use function sys_get_temp_dir;
 use function unlink;
 
 /**
- * Class LabelRenderer
+ * Class ShipmentLabelRenderer
  * @package Ekyna\Bundle\CommerceBundle\Service\Shipment
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class LabelRenderer
+class ShipmentLabelRenderer
 {
     public const SIZE_A4 = 'A4';
     public const SIZE_A5 = 'A5';
     public const SIZE_A6 = 'A6';
 
     public function __construct(
-        private readonly Environment             $twig,
-        private readonly PdfGenerator            $generator,
+        private readonly Environment $twig,
+        private readonly PdfGenerator $generator,
         private readonly SettingManagerInterface $setting
     ) {
     }

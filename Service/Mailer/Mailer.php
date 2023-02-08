@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Mailer;
 
-use DateTime;
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes as BDocumentTypes;
@@ -13,9 +12,9 @@ use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
 use Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererInterface;
-use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer as ShipmentLabelRenderer;
-use Ekyna\Bundle\CommerceBundle\Service\Subject\LabelRenderer as SubjectLabelRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentLabelRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectLabelRenderer;
 use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
 use Ekyna\Component\Commerce\Common\Model\CouponInterface;
 use Ekyna\Component\Commerce\Common\Model\Notify;
@@ -39,6 +38,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 use function file_get_contents;
+use function sprintf;
 
 /**
  * Class Mailer
@@ -47,38 +47,19 @@ use function file_get_contents;
  */
 class Mailer
 {
-    protected MailerInterface         $mailer;
-    protected Environment             $twig;
-    protected TranslatorInterface     $translator;
-    protected SettingManagerInterface $settingsManager;
-    protected RendererFactory         $rendererFactory;
-    protected ShipmentLabelRenderer   $shipmentLabelRenderer;
-    protected SubjectLabelRenderer    $subjectLabelRenderer;
-    protected SubjectHelperInterface  $subjectHelper;
-    protected FilesystemOperator      $filesystem;
-
     private ?Address $notificationSender = null;
 
     public function __construct(
-        MailerInterface         $mailer,
-        Environment             $templating,
-        TranslatorInterface     $translator,
-        SettingManagerInterface $settingsManager,
-        RendererFactory         $rendererFactory,
-        ShipmentLabelRenderer   $shipmentLabelRenderer,
-        SubjectLabelRenderer    $subjectLabelRenderer,
-        SubjectHelperInterface  $subjectHelper,
-        FilesystemOperator      $filesystem
+        protected readonly MailerInterface $mailer,
+        protected readonly Environment $twig,
+        protected readonly TranslatorInterface $translator,
+        protected readonly SettingManagerInterface $settingsManager,
+        protected readonly RendererFactory $rendererFactory,
+        protected readonly ShipmentLabelRenderer $shipmentLabelRenderer,
+        protected readonly SubjectLabelRenderer $subjectLabelRenderer,
+        protected readonly SubjectHelperInterface $subjectHelper,
+        protected readonly FilesystemOperator $filesystem
     ) {
-        $this->mailer = $mailer;
-        $this->twig = $templating;
-        $this->translator = $translator;
-        $this->settingsManager = $settingsManager;
-        $this->rendererFactory = $rendererFactory;
-        $this->shipmentLabelRenderer = $shipmentLabelRenderer;
-        $this->subjectLabelRenderer = $subjectLabelRenderer;
-        $this->subjectHelper = $subjectHelper;
-        $this->filesystem = $filesystem;
     }
 
     /**
@@ -172,16 +153,12 @@ class Mailer
                 $subjects[] = $this->subjectHelper->resolve($item);
             }
 
-            $labels = $this->subjectLabelRenderer->buildLabels($subjects);
-
-            $date = $order->getOrderedAt() ?? new DateTime();
-            $extra = sprintf('%s (%s)', $order->getNumber(), $date->format('Y-m-d'));
-            foreach ($labels as $label) {
-                $label->setExtra($extra);
-            }
+            $pdf = $this->subjectLabelRenderer->render(SubjectLabelRenderer::FORMAT_LARGE, $subjects, [
+                'supplierOrder' => $order,
+            ]);
 
             $message->attach(
-                $this->subjectLabelRenderer->render($labels),
+                $pdf,
                 'labels.pdf',
                 'application/pdf'
             );
@@ -369,7 +346,8 @@ class Mailer
 
             $attachments[$filename] = $this->translator->trans(
                 'document.type.' . ($shipment->isReturn() ? 'return' : 'shipment') . '_bill',
-                [], 'EkynaCommerce'
+                [],
+                'EkynaCommerce'
             );
             $report .= "Attachment: $filename\n";
         }
@@ -391,7 +369,8 @@ class Mailer
 
                 $attachments[$filename] = $this->translator->trans(
                     'shipment_label.label.' . (1 < $notify->getLabels()->count() ? 'plural' : 'singular'),
-                    [], 'EkynaCommerce'
+                    [],
+                    'EkynaCommerce'
                 );
                 $report .= "Attachment: $filename\n";
             }
@@ -510,9 +489,9 @@ class Mailer
      * Sends the email.
      */
     protected function createMessage(
-        string            $subject,
-        string            $body,
-        Address|string|array      $to = null,
+        string $subject,
+        string $body,
+        Address|string|array $to = null,
         Address|string|array|bool $from = null
     ): Email {
         if (empty($to)) {

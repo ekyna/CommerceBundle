@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Action\Admin\Shipment;
 
 use Ekyna\Bundle\AdminBundle\Action\AdminActionInterface;
-use Ekyna\Bundle\CommerceBundle\Service\Shipment\LabelRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentLabelRenderer;
 use Ekyna\Bundle\ResourceBundle\Action\AbstractAction;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
 use Ekyna\Bundle\ResourceBundle\Action\RoutingActionInterface;
@@ -35,21 +35,12 @@ class GatewayAction extends AbstractAction implements AdminActionInterface, Rout
     use FlashTrait;
     use HelperTrait;
 
-    private GatewayRegistryInterface $gatewayRegistry;
-    private PersisterInterface       $shipmentPersister;
-    private LabelRenderer            $labelRenderer;
-    private bool                     $debug;
-
     public function __construct(
-        GatewayRegistryInterface $gatewayRegistry,
-        PersisterInterface       $shipmentPersister,
-        LabelRenderer            $labelRenderer,
-        bool                     $debug
+        private readonly GatewayRegistryInterface $gatewayRegistry,
+        private readonly PersisterInterface $shipmentPersister,
+        private readonly ShipmentLabelRenderer $labelRenderer,
+        private readonly bool $debug
     ) {
-        $this->gatewayRegistry = $gatewayRegistry;
-        $this->shipmentPersister = $shipmentPersister;
-        $this->labelRenderer = $labelRenderer;
-        $this->debug = $debug;
     }
 
     public function __invoke(): Response

@@ -29,7 +29,7 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
     /**
      * Transforms the flat invoice lines collection into a tree invoice lines collection.
      *
-     * @param Collection<InvoiceLineInterface> $value
+     * @param Collection<int, InvoiceLineInterface> $value
      *
      * @return Collection
      */
@@ -58,7 +58,7 @@ class InvoiceLinesDataTransformer implements DataTransformerInterface
     /**
      * Transforms the tree invoice lines collection into a flat invoice lines collection.
      *
-     * @param Collection<InvoiceLineInterface> $value
+     * @param Collection<int, InvoiceLineInterface> $value
      *
      * @return Collection
      */
