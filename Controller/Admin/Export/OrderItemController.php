@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin\Export;
 
+use Ekyna\Bundle\CommerceBundle\Service\Export\ExportFormHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Order\OrderItemExporter;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Ekyna\Component\Resource\Exception\UnexpectedTypeException;
+use Ekyna\Component\Resource\Model\DateRange;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Throwable;
 
 /**
@@ -18,41 +20,50 @@ use Throwable;
  */
 class OrderItemController
 {
-    private OrderItemExporter     $orderItemExporter;
-    private UrlGeneratorInterface $urlGenerator;
-    private FlashHelper           $flashHelper;
-    private bool                  $debug;
-
     public function __construct(
-        OrderItemExporter     $orderItemExporter,
-        UrlGeneratorInterface $urlGenerator,
-        FlashHelper           $flashHelper,
-        bool                  $debug
+        private readonly ExportFormHelper $formHelper,
+        private readonly OrderItemExporter $orderItemExporter,
+        private readonly FlashHelper $flashHelper,
+        private readonly bool $debug
     ) {
-        $this->orderItemExporter = $orderItemExporter;
-        $this->urlGenerator = $urlGenerator;
-        $this->flashHelper = $flashHelper;
-        $this->debug = $debug;
     }
 
     /**
      * Sample order's items export.
      */
-    public function samples(): Response
+    public function __invoke(Request $request): Response
     {
+        $redirect = $this->formHelper->createDashboardRedirect();
+
+        $form = $this->formHelper->createRangeForm('admin_ekyna_commerce_export_sample_order_items');
+
+        $form->handleRequest($request);
+        if (!($form->isSubmitted() && $form->isValid())) {
+            return $redirect;
+        }
+
+        $range = $form->getData();
+        if (!$range instanceof DateRange) {
+            throw new UnexpectedTypeException($range, DateRange::class);
+        }
+
+        $start = $form->get('start')->getData();
+        $end = $form->get('end')->getData();
+
         try {
-            return $this
+            $file = $this
                 ->orderItemExporter
-                ->exportSamples()
-                ->download();
+                ->exportSamples($start, $end);
         } catch (Throwable $e) {
             if ($this->debug) {
                 throw $e;
             }
 
             $this->flashHelper->addFlash($e->getMessage(), 'danger');
+
+            return $redirect;
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
+        return $file->download();
     }
 }

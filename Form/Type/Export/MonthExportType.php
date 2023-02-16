@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ekyna\Bundle\CommerceBundle\Form\Type\Accounting;
+namespace Ekyna\Bundle\CommerceBundle\Form\Type\Export;
 
 use DateInterval;
 use DatePeriod;
@@ -22,11 +22,11 @@ use function Symfony\Component\Translation\t;
 use const MB_CASE_TITLE;
 
 /**
- * Class ExportType
+ * Class MonthExportType
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Accounting
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class ExportType extends AbstractType
+class MonthExportType extends AbstractType
 {
     private static ?array $yearChoices = null;
     private static ?array $monthChoices = null;

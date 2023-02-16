@@ -254,6 +254,7 @@ audience:
 dashboard:
     export:
         title: Export
+        costs: Coûts
         due_orders: Due orders
         sample_order_items: Sample orders
         sales_report: Sales report

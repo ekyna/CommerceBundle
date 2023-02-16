@@ -32,9 +32,8 @@ return static function (ContainerConfigurator $container) {
     // Admin export accounting controller
     $services->set(Admin\Export\AccountingController::class)
         ->args([
+            service('ekyna_commerce.helper.export_form'),
             service('ekyna_commerce.exporter.accounting'),
-            service('form.factory'),
-            service('router'),
             service('ekyna_ui.helper.flash'),
             param('kernel.debug'),
         ])
@@ -43,9 +42,8 @@ return static function (ContainerConfigurator $container) {
     // Admin export invoice cost controller
     $services->set(Admin\Export\CostController::class)
         ->args([
+            service('ekyna_commerce.helper.export_form'),
             service('ekyna_commerce.exporter.cost'),
-            service('form.factory'),
-            service('router'),
             service('ekyna_ui.helper.flash'),
             param('kernel.debug'),
         ])
@@ -74,8 +72,8 @@ return static function (ContainerConfigurator $container) {
     // Admin export order item controller
     $services->set('ekyna_commerce.controller.admin.export.order_item', Admin\Export\OrderItemController::class)
         ->args([
+            service('ekyna_commerce.helper.export_form'),
             service('ekyna_commerce.exporter.order_item'),
-            service('router'),
             service('ekyna_ui.helper.flash'),
             param('kernel.debug'),
         ])

@@ -1,49 +1,56 @@
 {% apply spaceless %}
-<div class="row">
-    <div class="col-md-4">
-        <div class="commerce-export">
-            <div class="commerce-panel">
-                <h3>{{ 'dashboard.export.title'|trans({}, 'EkynaCommerce') }}</h3>
-                {{ form_start(accounting_form) }}
-                <table style="width:100%">
-                    <tr>
-                        <td style="width:20%">{{ 'accounting.label.plural'|trans({}, 'EkynaCommerce') }}</td>
-                        <td>{{ form_widget(accounting_form.year) }}</td>
-                        <td>{{ form_widget(accounting_form.month) }}</td>
-                        <td>{{ form_widget(accounting_form.submit) }}</td>
-                    </tr>
-                </table>
-                {{ form_end(accounting_form) }}
-                {{ form_start(costs_form) }}
-                <table style="width:100%">
-                    <tr>
-                        <td style="width:20%">Coûts</td>
-                        <td>{{ form_widget(costs_form.year) }}</td>
-                        <td>{{ form_widget(costs_form.month) }}</td>
-                        <td>{{ form_widget(costs_form.submit) }}</td>
-                    </tr>
-                </table>
-                {{ form_end(costs_form) }}
-                <hr>
-                <p>
-                    <a href="{{ path('admin_ekyna_commerce_export_due_orders') }}"
-                       class="btn btn-sm btn-default">
-                        <span class="glyphicon glyphicon-download"></span>
-                        {{- 'dashboard.export.due_orders'|trans({}, 'EkynaCommerce') -}}
-                    </a>
-                    <a href="{{ path('admin_ekyna_commerce_export_sample_order_items') }}"
-                       class="btn btn-sm btn-default">
-                        <span class="glyphicon glyphicon-download"></span>
-                        {{- 'dashboard.export.sample_order_items'|trans({}, 'EkynaCommerce') -}}
-                    </a>
-                    <a href="{{ path('admin_ekyna_commerce_report_index') }}"
-                       class="btn btn-sm btn-default">
-                        <span class="glyphicon glyphicon-download"></span>
-                        {{- 'dashboard.export.sales_report'|trans({}, 'EkynaCommerce') -}}
-                    </a>
-                </p>
-            </div>
-        </div>
+<div class="commerce-export">
+    <div class="commerce-panel">
+        <h3>{{ 'dashboard.export.title'|trans({}, 'EkynaCommerce') }}</h3>
+        {{ bootstrap_set_sizing('sm') }}
+        {{ form_start(accounting_form) }}
+        <table style="width:100%">
+            <tr>
+                <td style="width:20%">{{ 'accounting.label.plural'|trans({}, 'EkynaCommerce') }}</td>
+                <td>{{ form_widget(accounting_form.year) }}</td>
+                <td>{{ form_widget(accounting_form.month) }}</td>
+                <td>{{ form_widget(accounting_form.submit) }}</td>
+            </tr>
+        </table>
+        {{ form_end(accounting_form) }}
+        {{ form_start(costs_form) }}
+        <table style="width:100%">
+            <tr>
+                <td style="width:20%">{{ 'dashboard.export.costs'|trans({}, 'EkynaCommerce') }}</td>
+                <td>{{ form_widget(costs_form.year) }}</td>
+                <td>{{ form_widget(costs_form.month) }}</td>
+                <td>{{ form_widget(costs_form.submit) }}</td>
+            </tr>
+        </table>
+        {{ form_end(costs_form) }}
+        {{ form_start(samples_form) }}
+        <table style="width:100%">
+            <tr>
+                <td style="width:20%">{{ 'dashboard.export.sample_order_items'|trans({}, 'EkynaCommerce') }}</td>
+                <td>{{ form_widget(samples_form.start) }}</td>
+                <td>{{ form_widget(samples_form.end) }}</td>
+                <td>{{ form_widget(samples_form.submit) }}</td>
+            </tr>
+        </table>
+        {{ form_end(samples_form) }}
+        <hr>
+        <p>
+            <a href="{{ path('admin_ekyna_commerce_export_due_orders') }}"
+               class="btn btn-sm btn-default">
+                <span class="glyphicon glyphicon-download"></span>
+                {{- 'dashboard.export.due_orders'|trans({}, 'EkynaCommerce') -}}
+            </a>
+            {#<a href="{{ path('admin_ekyna_commerce_export_sample_order_items') }}"
+               class="btn btn-sm btn-default">
+                <span class="glyphicon glyphicon-download"></span>
+                {{- 'dashboard.export.sample_order_items'|trans({}, 'EkynaCommerce') -}}
+            </a>#}
+            <a href="{{ path('admin_ekyna_commerce_report_index') }}"
+               class="btn btn-sm btn-default">
+                <span class="glyphicon glyphicon-download"></span>
+                {{- 'dashboard.export.sales_report'|trans({}, 'EkynaCommerce') -}}
+            </a>
+        </p>
     </div>
 </div>
 {% endapply %}

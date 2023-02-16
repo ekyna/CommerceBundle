@@ -8,6 +8,11 @@ admin_ekyna_commerce_export_invoice_costs:
     methods: [POST]
     controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\CostController
 
+admin_ekyna_commerce_export_sample_order_items:
+    path: /sample-order-item
+    methods: [POST]
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\OrderItemController
+
 admin_ekyna_commerce_export_due_invoices:
     path: /due-invoices
     methods: [GET]
@@ -52,11 +57,6 @@ admin_ekyna_commerce_export_outstanding_pending_due_orders:
     path: /outstanding-pending-due-orders
     methods: [GET]
     controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\OrderController::outstandingPendingDueOrders
-
-admin_ekyna_commerce_export_sample_order_items:
-    path: /sample-order-item
-    methods: [GET]
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\OrderItemController::samples
 
 admin_ekyna_commerce_export_suppliers_expired_due_orders:
     path: /suppliers-expired-due-orders

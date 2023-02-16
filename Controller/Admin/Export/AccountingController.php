@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin\Export;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\Accounting\ExportType;
+use Ekyna\Bundle\CommerceBundle\Service\Export\ExportFormHelper;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
 use Ekyna\Component\Commerce\Accounting\Export\AccountingExporterInterface;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Resource\Helper\File\File;
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use function is_null;
 use function sprintf;
@@ -25,31 +22,19 @@ use function sprintf;
  */
 class AccountingController
 {
-    private AccountingExporterInterface $accountingExporter;
-    private FormFactoryInterface        $formFactory;
-    private UrlGeneratorInterface       $urlGenerator;
-    private FlashHelper                 $flashHelper;
-    private bool                        $debug;
-
     public function __construct(
-        AccountingExporterInterface $accountingExporter,
-        FormFactoryInterface        $formFactory,
-        UrlGeneratorInterface       $urlGenerator,
-        FlashHelper                 $flashHelper,
-        bool                        $debug
+        private readonly ExportFormHelper $formHelper,
+        private readonly AccountingExporterInterface $accountingExporter,
+        private readonly FlashHelper $flashHelper,
+        private readonly bool $debug
     ) {
-        $this->accountingExporter = $accountingExporter;
-        $this->formFactory = $formFactory;
-        $this->urlGenerator = $urlGenerator;
-        $this->flashHelper = $flashHelper;
-        $this->debug = $debug;
     }
 
     public function __invoke(Request $request): Response
     {
-        $redirect = new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
+        $redirect = $this->formHelper->createDashboardRedirect();
 
-        $form = $this->formFactory->create(ExportType::class);
+        $form = $this->formHelper->createMonthForm('admin_ekyna_commerce_export_accounting');
 
         $form->handleRequest($request);
 
@@ -60,20 +45,20 @@ class AccountingController
         $year = $form->get('year')->getData();
         $month = $form->get('month')->getData();
 
-        // TODO if month is null, schedule background task
         if (is_null($month)) {
+            // TODO if month is null, schedule background task
         }
 
         try {
             $path = $this
                 ->accountingExporter
                 ->export($year, $month);
-        } catch (CommerceExceptionInterface $e) {
+        } catch (CommerceExceptionInterface $exception) {
             if ($this->debug) {
-                throw $e;
+                throw $exception;
             }
 
-            $this->flashHelper->addFlash($e->getMessage(), 'danger');
+            $this->flashHelper->addFlash($exception->getMessage(), 'danger');
 
             return $redirect;
         }
