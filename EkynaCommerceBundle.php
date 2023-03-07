@@ -35,6 +35,8 @@ class EkynaCommerceBundle extends Bundle
         $container->addCompilerPass(new BundlePass\ActionAutoConfigurePass());
         $container->addCompilerPass(new BundlePass\AccountPass());
         $container->addCompilerPass(new BundlePass\AdminMenuPass());
+        // Before resource's \Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass
+        $container->addCompilerPass(new BundlePass\GeocodingPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 1);
         // Before \Payum\Bundle\PayumBundle\DependencyInjection\Compiler\BuildConfigsPass
         $container->addCompilerPass(new BundlePass\PayumPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 1);
         $container->addCompilerPass(new BundlePass\SwapPass());

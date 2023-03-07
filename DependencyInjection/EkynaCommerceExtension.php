@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\DependencyInjection;
 
-use Ekyna\Bundle\CommerceBundle\EventListener\AddressEventSubscriber;
 use Ekyna\Bundle\ResourceBundle\DependencyInjection\PrependBundleConfigTrait;
 use Ekyna\Component\Commerce\Bridge\Doctrine\DependencyInjection\DoctrineBundleMapping;
 use Ekyna\Component\Commerce\Cart;
@@ -19,7 +18,6 @@ use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
 
 use function array_replace;
 use function class_exists;
@@ -97,7 +95,6 @@ class EkynaCommerceExtension extends Extension implements PrependExtensionInterf
         $this->configureCache($config['cache'], $container);
         $this->configureDocument($config['document'], $container);
         $this->configureFeatures($config['feature'], $container, $loader);
-        $this->configureGoogle($container);
         $this->configureNotify($config['default'], $container);
         $this->configureLocking($config['default'], $container);
         $this->configurePricing($config['pricing'], $container);
@@ -180,22 +177,6 @@ class EkynaCommerceExtension extends Extension implements PrependExtensionInterf
 
         $this->configureMailchimp($config[Features::NEWSLETTER]['mailchimp'], $container, $loader);
         $this->configureSendInBlue($config[Features::NEWSLETTER]['sendinblue'], $container, $loader);
-    }
-
-    private function configureGoogle(ContainerBuilder $container): void
-    {
-        if (!$container->has('ivory.google_map.geocoder')) {
-            return;
-        }
-
-        // Address event listener (geocoding)
-        $container
-            ->register('ekyna_commerce.listener.address', AddressEventSubscriber::class)
-            ->setArguments([
-                new Reference('ekyna_resource.orm.persistence_helper'),
-                new Reference('ivory.google_map.geocoder'),
-            ])
-            ->addTag('resource.event_subscriber');
     }
 
     private function configureNotify(array $config, ContainerBuilder $container): void

@@ -30,7 +30,8 @@
         "tecnickcom/tc-lib-barcode": "^1.17"
     },
     "suggest" : {
-        "symfony/messenger": "To make this bundle send messages about order state change, customer registration, etc"
+        "symfony/messenger": "To make this bundle send messages about order state change, customer registration, etc",
+        "willdurand/geocoder-bundle": "To enable addresses geocoding"
     },
     "autoload": {
         "psr-4": {
