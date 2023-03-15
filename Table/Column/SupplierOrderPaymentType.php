@@ -7,7 +7,6 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Component\Commerce\Common\Util\FormatterAwareTrait;
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Table\Column\AbstractColumnType;
-use Ekyna\Component\Table\Column\ColumnBuilderInterface;
 use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Extension\Core\Type\Column\PropertyType;
 use Ekyna\Component\Table\Source\RowInterface;
@@ -33,11 +32,6 @@ class SupplierOrderPaymentType extends AbstractColumnType
     {
         $this->formatterFactory = $formatterFactory;
         $this->translator = $translator;
-    }
-
-    public function buildColumn(ColumnBuilderInterface $builder, array $options): void
-    {
-        $builder->setSortable(false);
     }
 
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void

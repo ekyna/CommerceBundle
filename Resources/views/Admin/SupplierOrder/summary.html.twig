@@ -3,6 +3,7 @@
 <thead>
     <tr>
         <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
         <th>{{ 'field.buy_net_price'|trans({}, 'EkynaCommerce') }}</th>
         <th>{{ 'stock_unit.field.ordered_quantity'|trans({}, 'EkynaCommerce') }}</th>
         <th>{{ 'stock_unit.field.received_quantity'|trans({}, 'EkynaCommerce') }}</th>
@@ -12,6 +13,7 @@
 {% for item in items %}
     <tr>
         <td>{{ item.designation }}</td>
+        <td>{{ item.reference }}</td>
         <td>{{ item.net_price }}</td>
         <td>{{ item.ordered }}</td>
         <td>{{ item.received }}</td>

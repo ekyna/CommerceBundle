@@ -39,8 +39,9 @@ class SupplierOrderType extends AbstractResourceType
                 'position'    => 20,
             ])
             ->addColumn('supplier', DType\Column\EntityType::class, [
-                'label'    => t('supplier.label.singular', [], 'EkynaCommerce'),
-                'position' => 30,
+                'label'        => t('supplier.label.singular', [], 'EkynaCommerce'),
+                'entity_label' => 'name',
+                'position'     => 30,
             ])
             ->addColumn('carrier', DType\Column\EntityType::class, [
                 'label'    => t('supplier_carrier.label.singular', [], 'EkynaCommerce'),
