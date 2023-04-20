@@ -20,7 +20,7 @@ final class OrderStates extends AbstractConstants
 
         return [
             States::STATE_NEW       => [$prefix . States::STATE_NEW,       'brown',      false],
-            States::STATE_PENDING   => [$prefix . States::STATE_PENDING,   'purple',      true],
+            States::STATE_PENDING   => [$prefix . States::STATE_PENDING,   'orange',      true],
             States::STATE_REFUSED   => [$prefix . States::STATE_REFUSED,   'red',         false],
             States::STATE_ACCEPTED  => [$prefix . States::STATE_ACCEPTED,  'light-green', true],
             States::STATE_COMPLETED => [$prefix . States::STATE_COMPLETED, 'teal',        true],
