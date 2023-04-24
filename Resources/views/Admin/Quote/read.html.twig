@@ -72,6 +72,7 @@
 
 {% block main_contents -%}
 <div class="tab-pane active" id="quote-general">
+    {% block general_pane -%}
     {% include '@EkynaCommerce/Admin/Common/Sale/show_general.html.twig' with {
         'sale': quote
     } %}
@@ -96,16 +97,22 @@
     {{ show_row(quote, 'tags', {
         'id': 'quote_tags'
     }) }}
+    {%- endblock general_pane %}
 </div>
 <div class="tab-pane" id="quote-addresses">
+    {% block addresses_pane -%}
     {% include '@EkynaCommerce/Admin/Common/Sale/show_addresses.html.twig' with {
         'sale': quote
     } %}
+    {%- endblock addresses_pane %}
 </div>
 <div class="tab-pane" id="quote-details">
+    {% block details_pane -%}
     {{- render_sale_view(quote|sale_view) -}}
+    {%- endblock details_pane %}
 </div>
 <div class="tab-pane" id="quote-payments">
+    {% block payments_pane -%}
     {# --------------- PAYMENTS --------------- #}
     {% if is_granted('create', 'ekyna_commerce.quote_payment') -%}
     <div class="actions">
@@ -122,8 +129,10 @@
         'payments': quote.getPayments(true),
         'prefix': 'payment'
     } %}
+    {%- endblock payments_pane %}
     <hr>
     {# --------------- REFUNDS --------------- #}
+    {% block refunds_pane -%}
     {% if is_granted('create', 'ekyna_commerce.order_payment') -%}
     <div class="actions">
         <a href="{{ admin_resource_path('ekyna_commerce.quote_payment', 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Payment\\CreateAction', {'refund': 1}) }}"
@@ -139,13 +148,17 @@
         'payments': quote.getPayments(false),
         'prefix': 'refund'
     } %}
+    {%- endblock refunds_pane %}
     <hr>
+    {% block payment_fields_pane -%}
     {# --------------- PAYMENT FIELDS --------------- #}
     {% include '@EkynaCommerce/Admin/Common/Sale/Fragment/payment_fields.html.twig' with {
         'sale': quote
     } %}
+    {%- endblock payment_fields_pane %}
 </div>
 <div class="tab-pane" id="quote-attachments">
+    {% block attachments_pane -%}
     <div class="actions">
         {% for type in quote|sale_editable_document_types -%}
         <a href="{{ admin_resource_path(quote, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Sale\\DocumentGenerateAction', {'type': type}) }}"
@@ -168,8 +181,10 @@
         'sale': quote,
         'attachments': quote.attachments
     } %}
+    {%- endblock attachments_pane %}
 </div>
 <div class="tab-pane" id="quote-information">
+    {% block information_pane -%}
     {% include '@EkynaCommerce/Admin/Common/Sale/show_information.html.twig' with {'sale': quote} %}
     <h4 class="sub-header">
         {{- 'notification.label.plural'|trans({}, 'EkynaCommerce') -}}
@@ -178,13 +193,16 @@
         'sale': quote,
         'notifications': quote.notifications
     } %}
+    {%- endblock information_pane %}
 </div>
 {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
 <div class="tab-pane" id="quote-tickets">
+    {% block tickets_pane -%}
     {{- support_tickets(quote, {
         'admin': true,
         'new': admin_resource_path('ekyna_commerce.ticket', 'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction', {'quote': quote.number})
     }) -}}
+    {%- endblock tickets_pane %}
 </div>
 {%- endif %}
 {%- endblock main_contents %}

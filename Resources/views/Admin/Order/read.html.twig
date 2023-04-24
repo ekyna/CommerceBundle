@@ -107,6 +107,7 @@
 
 {% block main_contents -%}
 <div class="tab-pane active" id="order-general">
+    {% block general_pane -%}
     {% include '@EkynaCommerce/Admin/Common/Sale/show_general.html.twig' with {
         'sample': true,
         'sale': order
@@ -114,17 +115,23 @@
     {{ show_row(order, 'tags', {
         'id': 'order_tags'
     }) }}
+    {%- endblock general_pane %}
 </div>
 <div class="tab-pane" id="order-addresses">
+    {% block addresses_pane -%}
     {% include '@EkynaCommerce/Admin/Common/Sale/show_addresses.html.twig' with {
         'sale': order
     } %}
+    {%- endblock addresses_pane %}
 </div>
 <div class="tab-pane" id="order-details">
+    {% block details_pane -%}
     {{- render_sale_view(order|sale_view) -}}
+    {%- endblock details_pane %}
 </div>
 {% if not order.sample -%}
 <div class="tab-pane" id="order-payments">
+    {% block payments_pane -%}
     {# --------------- PAYMENTS --------------- #}
     {% if is_granted('create', 'ekyna_commerce.order_payment') -%}
     <div class="actions">
@@ -141,8 +148,10 @@
         'payments': order.getPayments(true),
         'prefix': 'payment'
     } %}
+    {%- endblock payments_pane %}
     <hr>
     {# --------------- REFUNDS --------------- #}
+    {% block refunds_pane -%}
     {% if is_granted('create', 'ekyna_commerce.order_payment') -%}
     <div class="actions">
         <a href="{{ admin_resource_path('ekyna_commerce.order_payment', 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Payment\\CreateAction', {'refund': 1}) }}"
@@ -158,14 +167,18 @@
         'payments': order.getPayments(false),
         'prefix': 'refund'
     } %}
+    {%- endblock refunds_pane %}
     <hr>
     {# --------------- PAYMENT FIELDS --------------- #}
+    {% block payment_fields_pane -%}
     {% include '@EkynaCommerce/Admin/Common/Sale/Fragment/payment_fields.html.twig' with {
         'sale': order
     } %}
+    {%- endblock payment_fields_pane %}
 </div>
 {%- endif %}
 <div class="tab-pane" id="order-shipments">
+    {% block shipments_pane -%}
     {# --------------- SHIPMENTS --------------- #}
     {% if is_granted('create', 'ekyna_commerce.order_shipment') -%}
     <div class="actions">
@@ -184,7 +197,9 @@
         'shipments': order.getShipments(true),
         'prefix': 'shipment'
     } %}
+    {%- endblock shipments_pane %}
     <hr>
+    {% block returns_pane -%}
     {# --------------- RETURNS --------------- #}
     {% if is_granted('create', 'ekyna_commerce.order_shipment') -%}
     <div class="actions">
@@ -203,14 +218,18 @@
         'shipments': order.getShipments(false),
         'prefix': 'return'
     } %}
+    {%- endblock returns_pane %}
     <hr>
+    {% block shipment_fields_pane -%}
     {# --------------- SHIPMENT FIELDS --------------- #}
     {% include '@EkynaCommerce/Admin/Common/Sale/Fragment/shipment_fields.html.twig' with {
         'sale': order
     } %}
+    {%- endblock shipment_fields_pane %}
 </div>
 {% if not order.sample -%}
 <div class="tab-pane" id="order-invoices">
+    {% block invoices_pane -%}
     {# --------------- INVOICES --------------- #}
     {% if is_granted('create', 'ekyna_commerce.order_invoice') -%}
     <div class="actions">
@@ -230,7 +249,9 @@
         'invoices': order.getInvoices(true),
         'prefix': 'invoice'
     } %}
+    {%- endblock invoices_pane %}
     <hr>
+    {% block credits_pane -%}
     {# --------------- CREDITS --------------- #}
     {% if is_granted('create', 'ekyna_commerce.order_invoice') -%}
     <div class="actions">
@@ -250,14 +271,18 @@
         'invoices': order.getInvoices(false),
         'prefix': 'credit'
     } %}
+    {%- endblock credits_pane %}
     <hr>
+    {% block invoice_fields_pane -%}
     {# --------------- INVOICE FIELDS --------------- #}
     {% include '@EkynaCommerce/Admin/Common/Sale/Fragment/invoice_fields.html.twig' with {
         'sale': order
     } %}
+    {%- endblock invoice_fields_pane %}
 </div>
 {%- endif %}
 <div class="tab-pane" id="order-attachments">
+    {% block attachments_pane -%}
     <div class="actions">
         {% for type in order|sale_editable_document_types -%}
         <a href="{{ admin_resource_path(order, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Sale\\DocumentGenerateAction', {'type': type}) }}"
@@ -280,8 +305,10 @@
         'sale': order,
         'attachments': order.attachments
     } %}
+    {%- endblock attachments_pane %}
 </div>
 <div class="tab-pane" id="order-information">
+    {% block information_pane -%}
     {% include '@EkynaCommerce/Admin/Common/Sale/show_information.html.twig' with {
         'sale': order
     } %}
@@ -292,13 +319,16 @@
         'sale': order,
         'notifications': order.notifications
     } %}
+    {%- endblock information_pane %}
 </div>
 {% if commerce_feature(constant('Ekyna\\Component\\Commerce\\Features::SUPPORT')) -%}
 <div class="tab-pane" id="order-tickets">
+    {% block tickets_pane -%}
     {{- support_tickets(order, {
         'admin': true,
         'new': admin_resource_path('ekyna_commerce.ticket', 'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction', {'order': order.number})
     }) -}}
+    {%- endblock tickets_pane %}
 </div>
 {%- endif %}
 {%- endblock main_contents %}
