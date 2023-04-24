@@ -20,6 +20,21 @@
                 }) }}
             </div>
             <div class="col-md-6">
+                {{ show_row(supplierProduct.weight, 'number', {
+                    'label': t('field.weight', [], 'EkynaUi'),
+                    'label_col': 4,
+                    'append': ' Kg'
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(supplierProduct.taxGroup, 'resource', {
+                    'resource': 'ekyna_commerce.tax_group',
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
                 {{ show_row(supplierProduct.netPrice|format_currency(currency, {'fraction_digit': 5}), 'text', {
                     'label': t('field.buy_net_price', [], 'EkynaCommerce'),
                     'label_col': 4
@@ -34,17 +49,16 @@
                 }) }}
             </div>
             <div class="col-md-6">
-                {{ show_row(supplierProduct.weight, 'number', {
-                    'label': t('field.weight', [], 'EkynaUi'),
-                    'label_col': 4,
-                    'append': ' Kg'
+                {{ show_row(supplierProduct.orderedStock, 'number', {
+                    'label': t('supplier_product.field.ordered_stock', [], 'EkynaCommerce'),
+                    'label_col': 4
                 }) }}
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                {{ show_row(supplierProduct.orderedStock, 'number', {
-                    'label': t('supplier_product.field.ordered_stock', [], 'EkynaCommerce'),
+                {{ show_row(supplierProduct.packing, 'number', {
+                    'label': t('field.packing', [], 'EkynaCommerce'),
                     'label_col': 4
                 }) }}
             </div>

@@ -8,6 +8,14 @@
                 {{ form_row(form.reference, {'label_col': 4, 'widget_col': 8}) }}
             </div>
             <div class="col-md-6">
+                {{ form_row(form.weight, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.taxGroup, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
                 {{ form_row(form.netPrice, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
@@ -16,16 +24,17 @@
                 {{ form_row(form.availableStock, {'label_col': 4, 'widget_col': 8}) }}
             </div>
             <div class="col-md-6">
-                {{ form_row(form.weight, {'label_col': 4, 'widget_col': 8}) }}
+                {{ form_row(form.orderedStock, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                {{ form_row(form.orderedStock, {'label_col': 4, 'widget_col': 8}) }}
+                {{ form_row(form.packing, {'label_col': 4, 'widget_col': 8}) }}
             </div>
             <div class="col-md-6">
                 {{ form_row(form.estimatedDateOfArrival, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
+        {{ form_row(form.subjectIdentity) }}
     </div>
 {%- endblock main_contents %}

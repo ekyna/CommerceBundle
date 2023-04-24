@@ -9,7 +9,7 @@
             <th>{{ 'field.status'|trans({}, 'EkynaUi') }}</th>
             <th>{{ 'field.weight'|trans({}, 'EkynaUi') }}</th>
             <th>{{ 'shipment.field.tracking_number'|trans({}, 'EkynaCommerce') }}</th>
-            <th>{{ 'field.created_at'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'shipment.field.shipped_at'|trans({}, 'EkynaCommerce') }}</th>
             <th>{{ 'invoice.label.singular'|trans({}, 'EkynaCommerce') }}</th>
             <th></th>
         </tr>
@@ -46,7 +46,11 @@
                     {%- endif -%}
                 </td>
                 <td id="{{ shipmentId }}_trackingNumber">{{ display_shipment_tracking(shipment) }}</td>
-                <td id="{{ shipmentId }}_createdAt">{{ shipment.createdAt|format_datetime('short', 'short') }}</td>
+                <td id="{{ shipmentId }}_createdAt">
+                    {% if shipment.shippedAt is not null -%}
+                        {{ shipment.shippedAt|format_datetime('short', 'short') }}
+                    {%- endif %}
+                </td>
                 <td id="{{ shipmentId }}_invoice">
                     {%- if shipment.invoice is not null %}{{ shipment.invoice.number }}{% endif -%}
                 </td>

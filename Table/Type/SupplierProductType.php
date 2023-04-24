@@ -14,12 +14,14 @@ use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
 use Ekyna\Component\Table\Exception\InvalidArgumentException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
+use Ekyna\Component\Table\Util\ColumnSort;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function Symfony\Component\Translation\t;
 
 /**
  * Class SupplierProductType
+ *
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
@@ -31,17 +33,19 @@ class SupplierProductType extends AbstractResourceType
     private function buildForSubject(TableBuilderInterface $builder, SubjectInterface $subject): void
     {
         $source = $builder->getSource();
-        if ($source instanceof EntitySource) {
-            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, string $alias) use ($subject): void {
-                $qb
-                    ->andWhere($qb->expr()->eq($alias . '.subjectIdentity.provider', ':provider'))
-                    ->andWhere($qb->expr()->eq($alias . '.subjectIdentity.identifier', ':identifier'))
-                    ->setParameter('provider', $subject::getProviderName())
-                    ->setParameter('identifier', $subject->getId());
-            });
-
-            $builder->setPerPageChoices([100]);
+        if (!$source instanceof EntitySource) {
+            return;
         }
+
+        $source->setQueryBuilderInitializer(function (QueryBuilder $qb, string $alias) use ($subject): void {
+            $qb
+                ->andWhere($qb->expr()->eq($alias . '.subjectIdentity.provider', ':provider'))
+                ->andWhere($qb->expr()->eq($alias . '.subjectIdentity.identifier', ':identifier'))
+                ->setParameter('provider', $subject::getProviderName())
+                ->setParameter('identifier', $subject->getId());
+        });
+
+        $builder->setPerPageChoices([100]);
     }
 
     /**
@@ -52,13 +56,15 @@ class SupplierProductType extends AbstractResourceType
         $builder->setExportable(true);
 
         $source = $builder->getSource();
-        if ($source instanceof EntitySource) {
-            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, string $alias) use ($supplier): void {
-                $qb
-                    ->andWhere($qb->expr()->eq($alias . '.supplier', ':supplier'))
-                    ->setParameter('supplier', $supplier);
-            });
+        if (!$source instanceof EntitySource) {
+            return;
         }
+
+        $source->setQueryBuilderInitializer(function (QueryBuilder $qb, string $alias) use ($supplier): void {
+            $qb
+                ->andWhere($qb->expr()->eq($alias . '.supplier', ':supplier'))
+                ->setParameter('supplier', $supplier);
+        });
     }
 
     public function buildTable(TableBuilderInterface $builder, array $options): void
@@ -99,10 +105,12 @@ class SupplierProductType extends AbstractResourceType
         }
 
         $builder
+            ->addDefaultSort('id', ColumnSort::DESC)
             ->addColumn('reference', CType\Column\TextType::class, [
-                'label'    => t('field.reference', [], 'EkynaUi'),
-                'sortable' => true,
-                'position' => 20,
+                'label'          => t('field.reference', [], 'EkynaUi'),
+                'clipboard_copy' => true,
+                'sortable'       => true,
+                'position'       => 20,
             ])
             ->addColumn('netPrice', BType\Column\PriceType::class, [
                 'label'         => t('field.buy_net_price', [], 'EkynaCommerce'),
@@ -122,23 +130,29 @@ class SupplierProductType extends AbstractResourceType
                 'sortable'  => true,
                 'position'  => 50,
             ])
+            ->addColumn('packing', CType\Column\NumberType::class, [
+                'label'     => t('field.packing', [], 'EkynaCommerce'),
+                'precision' => 0,
+                'sortable'  => true,
+                'position'  => 60,
+            ])
             ->addColumn('availableStock', CType\Column\NumberType::class, [
                 'label'     => t('supplier_product.field.available', [], 'EkynaCommerce'),
                 'precision' => 0,
                 'sortable'  => true,
-                'position'  => 60,
+                'position'  => 70,
             ])
             ->addColumn('orderedStock', CType\Column\NumberType::class, [
                 'label'     => t('supplier_product.field.ordered', [], 'EkynaCommerce'),
                 'precision' => 0,
                 'sortable'  => true,
-                'position'  => 70,
+                'position'  => 80,
             ])
             ->addColumn('estimatedDateOfArrival', CType\Column\DateTimeType::class, [
                 'label'       => t('supplier_product.field.eda', [], 'EkynaCommerce'),
                 'time_format' => 'none',
                 'sortable'    => true,
-                'position'    => 80,
+                'position'    => 90,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'resource' => $this->dataClass,
@@ -160,17 +174,21 @@ class SupplierProductType extends AbstractResourceType
                 'label'    => t('field.weight', [], 'EkynaUi'),
                 'position' => 50,
             ])
+            ->addFilter('packing', CType\Filter\NumberType::class, [
+                'label'    => t('field.packing', [], 'EkynaCommerce'),
+                'position' => 60,
+            ])
             ->addFilter('availableStock', CType\Filter\NumberType::class, [
                 'label'    => t('field.available_stock', [], 'EkynaCommerce'),
-                'position' => 60,
+                'position' => 70,
             ])
             ->addFilter('orderedStock', CType\Filter\NumberType::class, [
                 'label'    => t('supplier_product.field.ordered_stock', [], 'EkynaCommerce'),
-                'position' => 70,
+                'position' => 80,
             ])
             ->addFilter('estimatedDateOfArrival', CType\Filter\DateTimeType::class, [
                 'label'    => t('field.replenishment_eda', [], 'EkynaCommerce'),
-                'position' => 80,
+                'position' => 90,
             ]);
     }
 

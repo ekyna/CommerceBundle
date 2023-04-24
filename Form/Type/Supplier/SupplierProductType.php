@@ -52,6 +52,11 @@ class SupplierProductType extends AbstractResourceType
                 'decimal' => true,
                 'scale'   => 3, // TODO Packaging format
             ])
+            ->add('packing', Symfony\NumberType::class, [
+                'label'   => t('field.packing', [], 'EkynaCommerce'),
+                'decimal' => true,
+                'scale'   => 3, // TODO Packaging format
+            ])
             ->add('estimatedDateOfArrival', Symfony\DateType::class, [
                 'label'    => t('field.replenishment_eda', [], 'EkynaCommerce'),
                 'required' => false,

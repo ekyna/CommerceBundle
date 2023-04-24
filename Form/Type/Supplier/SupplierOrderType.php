@@ -14,6 +14,7 @@ use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceChoiceType;
 use Ekyna\Bundle\UiBundle\Form\Type\CollectionType;
 use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Common\Model\CurrencyInterface;
+use Ekyna\Component\Commerce\Common\Model\Units;
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierInterface;
@@ -28,6 +29,7 @@ use function Symfony\Component\Translation\t;
 
 /**
  * Class SupplierOrderType
+ *
  * @package Ekyna\Bundle\CommerceBundle\Form\Type\Supplier
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
@@ -196,11 +198,14 @@ class SupplierOrderType extends AbstractResourceType
         };
 
         $choiceAttributes = function (SupplierProductInterface $value): array {
+            $unit = $value->getUnit();
+
             return [
                 'data-designation' => $value->getDesignation(),
                 'data-reference'   => $value->getReference(),
                 'data-net-price'   => $value->getNetPrice()->toFixed(5),
                 'data-weight'      => $value->getWeight()->toFixed(3),
+                'data-packing'     => Units::round($value->getPacking(), $unit),
                 'data-tax-group'   => $value->getTaxGroup()->getId(),
             ];
         };

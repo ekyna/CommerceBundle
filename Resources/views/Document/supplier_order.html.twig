@@ -67,14 +67,10 @@
         </tr>
         </thead>
 
-        {% set total = 0 %}
-
         {# GOODS #}
         <tbody class="stripped">
         {% for item in subject.items %}
             {% set line_total = item.netPrice * item.quantity %}
-            {% set total = total + line_total %}
-
             <tr>
                 <td>{{ item.designation }}</td>
                 <td>{{ item.reference }}</td>
@@ -106,12 +102,23 @@
 
         {# TOTALS #}
         {{ block('spacer') }}
+        {% set tax = subject|supplier_order_tax %}
         <tbody class="totals">
         <tr>
-            <td colspan="3" rowspan="3">&nbsp;</td>
-            <th class="text-right">{{ t('sale.field.net_total', [], 'EkynaCommerce')|trans }}</th>
-            <td class="total final text-right">{{ (total + subject.shippingCost)|format_currency(currency, {}, subject.locale) }}</td>
+            <td colspan="2"{% if 0 < tax %} rowspan="3"{% endif %}>&nbsp;</td>
+            <th colspan="2" class="text-right">{{ t('sale.field.net_total', [], 'EkynaCommerce')|trans }}</th>
+            <td class="total final text-right">{{ (subject|supplier_order_items_total + subject.shippingCost)|format_currency(currency, {}, subject.locale) }}</td>
         </tr>
+        {% if 0 < tax -%}
+        <tr>
+            <th colspan="2" class="text-right">{{ t('sale.field.tax_total', [], 'EkynaCommerce')|trans }}</th>
+            <td class="total final text-right">{{ tax|format_currency(currency, {}, subject.locale) }}</td>
+        </tr>
+        <tr>
+            <th colspan="2" class="text-right">{{ t('sale.field.ati_total', [], 'EkynaCommerce')|trans }}</th>
+            <td class="total final text-right">{{ subject|supplier_order_total|format_currency(currency, {}, subject.locale) }}</td>
+        </tr>
+        {%- endif %}
         </tbody>
     </table>
 {% endblock doc_lines %}

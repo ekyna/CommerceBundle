@@ -55,6 +55,14 @@ class SupplierExtension extends AbstractExtension
                 [SupplierHelper::class, 'calculateItemsTotal']
             ),
             new TwigFilter(
+                'supplier_order_tax',
+                [SupplierHelper::class, 'calculateTax']
+            ),
+            new TwigFilter(
+                'supplier_order_total',
+                [SupplierHelper::class, 'calculateTotal']
+            ),
+            new TwigFilter(
                 'supplier_order_item_received_quantity',
                 [SupplierUtil::class, 'calculateReceivedQuantity']
             ),

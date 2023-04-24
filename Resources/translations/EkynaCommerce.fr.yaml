@@ -13,6 +13,7 @@ field:
     tax_group: Groupe
     private: Masqué
     max_quantity: Quantité max
+    packing: Conditionnement
     net_price: Prix HT
     buy_net_price: Prix d'achat HT
     buy_net_price_including_shipping: Prix d'achat HT port inclus
@@ -1927,7 +1928,9 @@ supplier_order_item:
 
 supplier_order_attachment:
     type:
+        quote: Devis
         form: Bon de commande
+        invoice: Facture
         proforma: Facture proforma
         payment: Justificatif payment
         forwarder: Facture transitaire

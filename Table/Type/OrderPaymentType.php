@@ -16,6 +16,7 @@ use function Symfony\Component\Translation\t;
 
 /**
  * Class OrderPaymentType
+ *
  * @package Ekyna\Bundle\CommerceBundle\Table\Type
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
@@ -28,8 +29,9 @@ class OrderPaymentType extends AbstractOrderListType
         $builder
             ->addDefaultSort('createdAt', ColumnSort::DESC)
             ->addColumn('number', CType\Column\TextType::class, [
-                'label'    => t('field.number', [], 'EkynaUi'),
-                'position' => 10,
+                'label'          => t('field.number', [], 'EkynaUi'),
+                'clipboard_copy' => true,
+                'position'       => 10,
             ])
             ->addColumn('refund', CType\Column\BooleanType::class, [
                 'label'       => t('field.type', [], 'EkynaUi'),

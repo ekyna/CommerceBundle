@@ -1267,18 +1267,19 @@
         </div>
     {%- endif -%}
     <div {{ block('widget_container_attributes') }}>
-        <table class="ekyna-collection-child-container table">
+        <table class="ekyna-collection-child-container table" style="table-layout: fixed">
 
             {# Header #}
             <thead>
                 <tr>
-                    <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
-                    <th style="width:13%">{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
-                    <th style="width:10%">{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
-                    <th style="width:10%">{{ 'field.buy_net_price'|trans({}, 'EkynaCommerce') }}</th>
-                    <th style="width:10%">{{ 'field.weight'|trans({}, 'EkynaUi') }}</th>
-                    <th style="width:14%">{{ 'tax_group.label.singular'|trans({}, 'EkynaCommerce') }}</th>
-                    <th></th>
+                    <th style="width:33%">{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+                    <th style="width:12%">{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+                    <th style="width:9%">{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
+                    <th style="width:9%">{{ 'field.packing'|trans({}, 'EkynaCommerce') }}</th>
+                    <th style="width:12%">{{ 'field.buy_net_price'|trans({}, 'EkynaCommerce') }}</th>
+                    <th style="width:9%">{{ 'field.weight'|trans({}, 'EkynaUi') }}</th>
+                    <th style="width:13%">{{ 'tax_group.label.singular'|trans({}, 'EkynaCommerce') }}</th>
+                    <th style="width:5%"></th>
                 </tr>
             </thead>
 
@@ -1324,9 +1325,10 @@
     {%- endif -%}
     <tbody {{ block('widget_container_attributes') }}>
         <tr>
-            <td>{{ form_widget(form.designation) }}</td>
-            <td>{{ form_widget(form.reference) }}</td>
-            <td>{{ form_widget(form.quantity) }}</td>
+            <td>{{- form_widget(form.designation) -}}</td>
+            <td>{{- form_widget(form.reference) -}}</td>
+            <td>{{- form_widget(form.quantity) -}}</td>
+            <td>{{- form_widget(form.packing) -}}</td>
             <td>{{- form_widget(form.netPrice) -}}</td>
             <td>{{- form_widget(form.weight) -}}</td>
             <td>{{- form_widget(form.taxGroup) -}}</td>
@@ -1337,7 +1339,7 @@
         </tr>
         {%- if errors|length > 0 -%}
             <tr>
-                <td colspan="6">
+                <td colspan="8">
                     {{- form_errors(form) -}}
                 </td>
             </tr>

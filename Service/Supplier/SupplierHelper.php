@@ -37,4 +37,20 @@ class SupplierHelper
     {
         return $this->calculator->calculateItemsTotal($order);
     }
+
+    /**
+     * @see SupplierOrderCalculatorInterface::calculatePaymentTax()
+     */
+    public function calculateTax(SupplierOrderInterface $order): Decimal
+    {
+        return $this->calculator->calculatePaymentTax($order);
+    }
+
+    /**
+     * @see SupplierOrderCalculatorInterface::calculatePaymentTotal()
+     */
+    public function calculateTotal(SupplierOrderInterface $order): Decimal
+    {
+        return $this->calculator->calculatePaymentTotal($order);
+    }
 }

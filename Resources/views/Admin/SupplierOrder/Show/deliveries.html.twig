@@ -44,6 +44,9 @@
             </td>
             <td id="{{ itemId ~ 'quantity' }}" class="text-right">
                 {{ item.quantity|format_number }}{# TODO packaging format #}
+                {% if 1 != item.orderItem.packing -%}
+                    ({{ (item.quantity.mul(item.orderItem.packing))|format_number }})
+                {%- endif %}
             </td>
         </tr>
         {% endfor %}

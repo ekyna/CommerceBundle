@@ -8,6 +8,7 @@ use Ekyna\Bundle\AdminBundle\Action\CreateAction as BaseAction;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Subject\SubjectHelperInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierProductInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -48,6 +49,11 @@ class CreateAction extends BaseAction
         $this->subjectHelper->assign($resource, $subject);
 
         return parent::onInit();
+    }
+
+    protected function getRedirectPath(FormInterface $form): string
+    {
+        return $this->generateResourcePath($this->context->getResource());
     }
 
     public static function configureAction(): array

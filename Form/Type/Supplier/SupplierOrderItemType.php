@@ -71,6 +71,15 @@ class SupplierOrderItemType extends AbstractResourceType
                     'class' => 'order-item-quantity',
                 ],
             ])
+            ->add('packing', Symfony\NumberType::class, [
+                'label'          => t('field.packing', [], 'EkynaUi'),
+                'decimal'        => true,
+                'scale'          => 3, // TODO Packaging format
+                'error_bubbling' => true,
+                'attr'           => [
+                    'class' => 'order-item-packing',
+                ],
+            ])
             ->add('product', HiddenResourceType::class, [
                 'resource'       => SupplierProductInterface::class,
                 'error_bubbling' => true,

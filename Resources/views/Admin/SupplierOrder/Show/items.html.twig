@@ -35,11 +35,17 @@
         </td>
         <td id="{{ itemId ~ 'quantity' }}" class="text-right">
             {{ item.quantity|format_number }}
+            {% if 1 != item.packing -%}
+                ({{ (item.quantity.mul(item.packing))|format_number }})
+            {%- endif %}
         </td>
         <td id="{{ itemId ~ 'receivedQuantity' }}" class="text-right">
             {%- if partial %}<strong class="text-danger">{% endif -%}
                 {{ received|format_number }}
-            {%- if partial %}</strong>{% endif -%}
+            {%- if partial %}</strong>{% endif %}
+            {% if 1 != item.packing -%}
+                ({{ (received.mul(item.packing))|format_number }})
+            {%- endif %}
         </td>
         <td id="{{ itemId ~ 'netPrice' }}" class="text-right">
             {{ item.netPrice|format_currency(supplierOrder.currency.code, {'fraction_digit': 5}) }}
