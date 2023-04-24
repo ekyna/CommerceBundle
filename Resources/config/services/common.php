@@ -51,7 +51,7 @@ return static function (ContainerConfigurator $container) {
         // Key generator
         ->set('ekyna_commerce.generator.key', KeyGenerator::class)
             ->args([
-                service('doctrine.orm.default_entity_manager'),
+                service('doctrine'),
             ])
 
         // Region provider

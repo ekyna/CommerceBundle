@@ -19,117 +19,126 @@ use Ekyna\Component\Commerce\Customer\Export\CustomerExporter;
 use Ekyna\Component\Commerce\Customer\Updater\CustomerUpdater;
 
 return static function (ContainerConfigurator $container) {
-    $container
-        ->services()
+    $services = $container->services();
 
-        // Customer number generator
+    // Customer number generator
+    $services
         ->set('ekyna_commerce.generator.customer_number', DateNumberGenerator::class)
-            ->args([
-                expr("parameter('kernel.project_dir')~'/var/data/customer_number'"),
-                10,
-                '\C\Uym',
-                param('kernel.debug'),
-            ])
+        ->args([10, '\C\Uym', param('kernel.debug')])
+        ->call('setStorage', [
+            expr("parameter('kernel.project_dir')~'/var/data/customer_number'"),
+        ]);
 
-        // Customer updater
+    // Customer updater
+    $services
         ->set('ekyna_commerce.updater.customer', CustomerUpdater::class)
-            ->args([
-                service('ekyna_resource.orm.persistence_helper'),
-            ])
+        ->args([
+            service('ekyna_resource.orm.persistence_helper'),
+        ]);
 
-        // Customer balance builder
+    // Customer balance builder
+    $services
         ->set('ekyna_commerce.builder.customer_balance', BalanceBuilder::class)
-            ->args([
-                service('ekyna_commerce.repository.order_invoice'),
-                service('ekyna_commerce.repository.order_payment'),
-                service('ekyna_commerce.converter.currency'),
-                service('ekyna_commerce.resolver.due_date'),
-            ])
+        ->args([
+            service('ekyna_commerce.repository.order_invoice'),
+            service('ekyna_commerce.repository.order_payment'),
+            service('ekyna_commerce.converter.currency'),
+            service('ekyna_commerce.resolver.due_date'),
+        ]);
 
-        // Customer exporter
+    // Customer exporter
+    $services
         ->set('ekyna_commerce.exporter.customer', CustomerExporter::class)
-            ->args([
-                service('doctrine.orm.default_entity_manager'),
-                param('ekyna_commerce.class.order'),
-            ])
+        ->args([
+            service('doctrine.orm.default_entity_manager'),
+            param('ekyna_commerce.class.order'),
+        ]);
 
-        // Initiator exporter
+    // Initiator exporter
+    $services
         ->set('ekyna_commerce.exporter.initiator_customer', InitiatorExporter::class)
-            ->args([
-                service('ekyna_commerce.repository.order'),
-                service('ekyna_commerce.repository.quote'),
-                service('ekyna_commerce.helper.constants'),
-            ])
+        ->args([
+            service('ekyna_commerce.repository.order'),
+            service('ekyna_commerce.repository.quote'),
+            service('ekyna_commerce.helper.constants'),
+        ]);
 
-        // Customer provider
+    // Customer provider
+    $services
         ->set('ekyna_commerce.provider.customer', SecurityCustomerProvider::class)
-            ->args([
-                service('ekyna_commerce.repository.customer_group'),
-                service('ekyna_commerce.repository.customer'),
-                service('ekyna_user.provider.user'),
-            ])
+        ->args([
+            service('ekyna_commerce.repository.customer_group'),
+            service('ekyna_commerce.repository.customer'),
+            service('ekyna_user.provider.user'),
+        ]);
 
-        // Customer factory
+    // Customer factory
+    $services
         ->set('ekyna_commerce.factory.customer', CustomerFactory::class)
-            ->args([
-                service('ekyna_commerce.provider.currency'),
-                service('ekyna_resource.provider.locale'),
-                service('ekyna_commerce.repository.customer_group'),
-                service('ekyna_commerce.resolver.in_charge'),
-            ])
+        ->args([
+            service('ekyna_commerce.provider.currency'),
+            service('ekyna_resource.provider.locale'),
+            service('ekyna_commerce.repository.customer_group'),
+            service('ekyna_commerce.resolver.in_charge'),
+        ]);
 
-        // Customer (resource) event listener
+    // Customer (resource) event listener
+    $services
         ->set('ekyna_commerce.listener.customer', CustomerEventSubscriber::class)
-            ->args([
-                service('ekyna_resource.orm.persistence_helper'),
-                service('ekyna_commerce.generator.customer_number'),
-                service('ekyna_commerce.generator.key'),
-                service('ekyna_commerce.updater.pricing'),
-                service('ekyna_resource.event_dispatcher'),
-            ])
-            ->tag('resource.event_subscriber')
+        ->args([
+            service('ekyna_resource.orm.persistence_helper'),
+            service('ekyna_commerce.generator.customer_number'),
+            service('ekyna_commerce.generator.key'),
+            service('ekyna_commerce.updater.pricing'),
+            service('ekyna_resource.event_dispatcher'),
+        ])
+        ->tag('resource.event_subscriber');
 
-        // Customer address (resource) event listener
+    // Customer address (resource) event listener
+    $services
         ->set('ekyna_commerce.listener.customer_address', CustomerAddressEventSubscriber::class)
-            ->args([
-                service('ekyna_resource.orm.persistence_helper'),
-                service('ekyna_commerce.repository.customer_address'),
-            ])
-            ->tag('resource.event_subscriber')
+        ->args([
+            service('ekyna_resource.orm.persistence_helper'),
+            service('ekyna_commerce.repository.customer_address'),
+        ])
+        ->tag('resource.event_subscriber');
 
-        // Customer group (resource) event listener
+    // Customer group (resource) event listener
+    $services
         ->set('ekyna_commerce.listener.customer_group', CustomerGroupEventSubscriber::class)
-            ->args([
-                service('ekyna_resource.orm.persistence_helper'),
-                service('ekyna_commerce.repository.customer_group'),
-            ])
-            ->tag('resource.event_subscriber')
+        ->args([
+            service('ekyna_resource.orm.persistence_helper'),
+            service('ekyna_commerce.repository.customer_group'),
+        ])
+        ->tag('resource.event_subscriber');
 
-        // Account menu event listener
+    // Account menu event listener
+    $services
         ->set('ekyna_commerce.listener.account_menu', AccountMenuSubscriber::class)
-            ->args([
-                service('ekyna_commerce.provider.customer'),
-                service('ekyna_commerce.features'),
-            ])
-            ->tag('kernel.event_subscriber')
+        ->args([
+            service('ekyna_commerce.provider.customer'),
+            service('ekyna_commerce.features'),
+        ])
+        ->tag('kernel.event_subscriber');
 
-        // Account dashboard event listener
+    // Account dashboard event listener
+    $services
         ->set('ekyna_commerce.listener.account_dashboard', AccountDashboardSubscriber::class)
-            ->args([
-                service('ekyna_commerce.provider.customer'),
-                service('ekyna_commerce.repository.quote'),
-                service('ekyna_commerce.repository.order'),
-                service('ekyna_commerce.repository.order_invoice'),
-            ])
-            ->tag('kernel.event_subscriber')
+        ->args([
+            service('ekyna_commerce.provider.customer'),
+            service('ekyna_commerce.repository.quote'),
+            service('ekyna_commerce.repository.order'),
+            service('ekyna_commerce.repository.order_invoice'),
+        ])
+        ->tag('kernel.event_subscriber');
 
-        // Registration event listener
+    // Registration event listener
+    $services
         ->set('ekyna_commerce.listener.registration', RegistrationEventSubscriber::class)
-            ->args([
-                service('ekyna_commerce.mailer'),
-                service('translator'),
-                service('ekyna_commerce.helper.newsletter_subscription')->nullOnInvalid(),
-            ])
-            ->tag('kernel.event_subscriber')
-    ;
+        ->args([
+            service('ekyna_commerce.mailer'),
+            service('translator'),
+            service('ekyna_commerce.helper.newsletter_subscription')->nullOnInvalid(),
+        ])
+        ->tag('kernel.event_subscriber');
 };

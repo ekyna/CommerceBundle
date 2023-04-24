@@ -16,61 +16,66 @@ use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Quote\Resolver\QuoteStateResolver;
 
 return static function (ContainerConfigurator $container) {
-    $container
-        ->services()
+    $services = $container->services();
 
-        // Quote factory
+    // Quote factory
+    $services
         ->set('ekyna_commerce.factory.quote', QuoteFactory::class)
-            ->parent('ekyna_commerce.factory.abstract_sale')
-            ->call('setInChargeResolver', [service('ekyna_commerce.resolver.in_charge')])
-            ->call('setExpirationDelay', [param('ekyna_commerce.default.expiration.quote')])
+        ->parent('ekyna_commerce.factory.abstract_sale')
+        ->call('setInChargeResolver', [service('ekyna_commerce.resolver.in_charge')])
+        ->call('setExpirationDelay', [param('ekyna_commerce.default.expiration.quote')]);
 
-        // Quote number generator
+    // Quote number generator
+    $services
         ->set('ekyna_commerce.generator.quote_number', DateNumberGenerator::class)
-            ->args([
-                expr("parameter('kernel.project_dir')~'/var/data/quote_number'"),
-                10,
-                '\Qym',
-                param('kernel.debug')
-            ])
+        ->args([10, '\Qym', param('kernel.debug')])
+        ->call('setStorage', [
+            expr("parameter('kernel.project_dir')~'/var/data/quote_number'"),
+        ]);
 
-        // Quote state resolver
+    // Quote state resolver
+    $services
         ->set('ekyna_commerce.resolver.quote_state', QuoteStateResolver::class)
-            ->factory([service('ekyna_commerce.factory.sale_state_resolver'), 'getResolver'])
-            ->args([QuoteInterface::class])
+        ->factory([service('ekyna_commerce.factory.sale_state_resolver'), 'getResolver'])
+        ->args([QuoteInterface::class]);
 
-        // Quote resource event listener
+    // Quote resource event listener
+    $services
         ->set('ekyna_commerce.listener.quote', QuoteEventSubscriber::class)
-            ->parent('ekyna_commerce.listener.abstract_sale')
-            ->call('setNumberGenerator', [service('ekyna_commerce.generator.quote_number')])
-            ->call('setStateResolver', [service('ekyna_commerce.resolver.quote_state')])
-            ->call('setSubjectHelper', [service('ekyna_commerce.helper.subject')])
-            ->call('setInChargeResolver', [service('ekyna_commerce.resolver.in_charge')])
-            ->tag('resource.event_subscriber')
+        ->parent('ekyna_commerce.listener.abstract_sale')
+        ->call('setNumberGenerator', [service('ekyna_commerce.generator.quote_number')])
+        ->call('setStateResolver', [service('ekyna_commerce.resolver.quote_state')])
+        ->call('setSubjectHelper', [service('ekyna_commerce.helper.subject')])
+        ->call('setInChargeResolver', [service('ekyna_commerce.resolver.in_charge')])
+        ->tag('resource.event_subscriber');
 
-        // Quote address resource event listener
+    // Quote address resource event listener
+    $services
         ->set('ekyna_commerce.listener.quote_address', QuoteAddressEventSubscriber::class)
-            ->parent('ekyna_commerce.listener.abstract_sale_address')
-            ->tag('resource.event_subscriber')
+        ->parent('ekyna_commerce.listener.abstract_sale_address')
+        ->tag('resource.event_subscriber');
 
-        // Quote item resource event listener
+    // Quote item resource event listener
+    $services
         ->set('ekyna_commerce.listener.quote_item', QuoteItemEventSubscriber::class)
-            ->parent('ekyna_commerce.listener.abstract_sale_item')
-            ->tag('resource.event_subscriber')
+        ->parent('ekyna_commerce.listener.abstract_sale_item')
+        ->tag('resource.event_subscriber');
 
-        // Quote item adjustment resource event listener
+    // Quote item adjustment resource event listener
+    $services
         ->set('ekyna_commerce.listener.quote_item_adjustment', QuoteItemAdjustmentEventSubscriber::class)
-            ->parent('ekyna_commerce.listener.abstract_sale_adjustment')
-            ->tag('resource.event_subscriber')
+        ->parent('ekyna_commerce.listener.abstract_sale_adjustment')
+        ->tag('resource.event_subscriber');
 
-        // Quote adjustment resource event listener
+    // Quote adjustment resource event listener
+    $services
         ->set('ekyna_commerce.listener.quote_adjustment', QuoteAdjustmentEventSubscriber::class)
-            ->parent('ekyna_commerce.listener.abstract_sale_adjustment')
-            ->tag('resource.event_subscriber')
+        ->parent('ekyna_commerce.listener.abstract_sale_adjustment')
+        ->tag('resource.event_subscriber');
 
-        // Quote payment resource event listener
+    // Quote payment resource event listener
+    $services
         ->set('ekyna_commerce.listener.quote_payment', QuotePaymentEventSubscriber::class)
-            ->parent('ekyna_commerce.listener.abstract_payment')
-            ->tag('resource.event_subscriber')
-    ;
+        ->parent('ekyna_commerce.listener.abstract_payment')
+        ->tag('resource.event_subscriber');
 };

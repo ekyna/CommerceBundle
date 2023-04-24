@@ -9,9 +9,12 @@ use Ekyna\Bundle\AdminBundle\Action\ReadAction;
 use Ekyna\Bundle\AdminBundle\Action\SummaryAction;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Order\Model\OrderShipmentInterface;
+use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
+use Ekyna\Component\Table\Context\ActiveSort;
 use Ekyna\Component\Table\Extension\Core\Type\Column\ColumnType;
+use Ekyna\Component\Table\Source\AdapterInterface;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\Options;
@@ -77,6 +80,27 @@ class OrderShipmentType extends AbstractColumnType
         }
 
         $view->vars['value'] = $output;
+    }
+
+    public function applySort(
+        AdapterInterface $adapter,
+        ColumnInterface $column,
+        ActiveSort $activeSort,
+        array $options
+    ): bool {
+        if (!$adapter instanceof EntityAdapter) {
+            return false;
+        }
+
+        $property = $column->getConfig()->getPropertyPath();
+        $property .= empty($property) ? 'number' : '.number';
+        $property = $adapter->getQueryBuilderPath($property);
+
+        $adapter
+            ->getQueryBuilder()
+            ->addOrderBy($property, $activeSort->getDirection());
+
+        return true;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

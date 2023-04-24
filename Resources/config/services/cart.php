@@ -19,91 +19,99 @@ use Ekyna\Component\Commerce\Cart\Resolver\CartStateResolver;
 use Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator;
 
 return static function (ContainerConfigurator $container) {
-    $container
-        ->services()
+    $services = $container->services();
 
-        // Cart factory
+    // Cart factory
+    $services
         ->set('ekyna_commerce.factory.cart', CartFactory::class)
-            ->parent('ekyna_commerce.factory.abstract_sale')
-            ->call('setExpirationDelay', [param('ekyna_commerce.default.expiration.cart')])
+        ->parent('ekyna_commerce.factory.abstract_sale')
+        ->call('setExpirationDelay', [param('ekyna_commerce.default.expiration.cart')]);
 
-        // Add to cart event subscriber
+    // Add to cart event subscriber
+    $services
         ->set('ekyna_commerce.listener.add_to_cart', AddToCartEventSubscriber::class)
-            ->args([
-                service('ekyna_commerce.helper.subject'),
-                service('translator'),
-                service('router'),
-            ])
-            ->tag('kernel.event_subscriber')
+        ->args([
+            service('ekyna_commerce.helper.subject'),
+            service('translator'),
+            service('router'),
+        ])
+        ->tag('kernel.event_subscriber');
 
-        // Google tracking event subscriber
-        // TODO If GoogleBundle is available
+    // Google tracking event subscriber
+    // TODO If GoogleBundle is available
+    $services
         ->set('ekyna_commerce.listener.google_tracking', GoogleTrackingEventSubscriber::class)
-            ->args([
-                service('ekyna_google.tracking.pool'),
-                service('ekyna_commerce.factory.amount_calculator'),
-                param('ekyna_commerce.default.currency'),
-            ])
-            ->tag('kernel.event_subscriber')
+        ->args([
+            service('ekyna_google.tracking.pool'),
+            service('ekyna_commerce.factory.amount_calculator'),
+            param('ekyna_commerce.default.currency'),
+        ])
+        ->tag('kernel.event_subscriber');
 
-        // Cart session provider
+    // Cart session provider
+    $services
         ->set('ekyna_commerce.provider.cart', SessionCartProvider::class)
-            ->lazy(true)
-            ->args([
-                service('ekyna_commerce.factory.cart'),
-                service('ekyna_commerce.repository.cart'),
-                service('ekyna_commerce.manager.cart'),
-                service('ekyna_commerce.provider.customer'),
-                service('ekyna_commerce.provider.currency'),
-                service('ekyna_resource.provider.locale'),
-                service('request_stack'),
-            ])
+        ->lazy(true)
+        ->args([
+            service('ekyna_commerce.factory.cart'),
+            service('ekyna_commerce.repository.cart'),
+            service('ekyna_commerce.manager.cart'),
+            service('ekyna_commerce.provider.customer'),
+            service('ekyna_commerce.provider.currency'),
+            service('ekyna_resource.provider.locale'),
+            service('request_stack'),
+        ]);
 
-        // Cart number generator
+    // Cart number generator
+    $services
         ->set('ekyna_commerce.generator.cart_number', DateNumberGenerator::class)
-            ->args([
-                expr("parameter('kernel.project_dir')~'/var/data/cart_number'"),
-                10,
-                '\Cym',
-                param('kernel.debug')
-            ])
+        ->args([10, '\Cym', param('kernel.debug')])
+        ->call('setStorage', [
+            expr("parameter('kernel.project_dir')~'/var/data/cart_number'"),
+        ]);
 
-        // Cart state resolver
+    // Cart state resolver
+    $services
         ->set('ekyna_commerce.resolver.cart_state', CartStateResolver::class)
-            ->factory([service('ekyna_commerce.factory.sale_state_resolver'), 'getResolver'])
-            ->args([CartInterface::class])
+        ->factory([service('ekyna_commerce.factory.sale_state_resolver'), 'getResolver'])
+        ->args([CartInterface::class]);
 
-        // Cart resource event listener
+    // Cart resource event listener
+    $services
         ->set('ekyna_commerce.listener.cart', CartEventSubscriber::class)
-            ->parent('ekyna_commerce.listener.abstract_sale')
-            ->call('setNumberGenerator', [service('ekyna_commerce.generator.cart_number')])
-            ->call('setStateResolver', [service('ekyna_commerce.resolver.cart_state')])
-            ->call('setExpirationDelay', [param('ekyna_commerce.default.expiration.cart')])
-            ->tag('resource.event_subscriber')
+        ->parent('ekyna_commerce.listener.abstract_sale')
+        ->call('setNumberGenerator', [service('ekyna_commerce.generator.cart_number')])
+        ->call('setStateResolver', [service('ekyna_commerce.resolver.cart_state')])
+        ->call('setExpirationDelay', [param('ekyna_commerce.default.expiration.cart')])
+        ->tag('resource.event_subscriber');
 
-        // Cart address resource event listener
+    // Cart address resource event listener
+    $services
         ->set('ekyna_commerce.listener.cart_address', CartAddressEventSubscriber::class)
-            ->parent('ekyna_commerce.listener.abstract_sale_address')
-            ->tag('resource.event_subscriber')
+        ->parent('ekyna_commerce.listener.abstract_sale_address')
+        ->tag('resource.event_subscriber');
 
-        // Cart item resource event listener
+    // Cart item resource event listener
+    $services
         ->set('ekyna_commerce.listener.cart_item', CartItemEventSubscriber::class)
-            ->parent('ekyna_commerce.listener.abstract_sale_item')
-            ->tag('resource.event_subscriber')
+        ->parent('ekyna_commerce.listener.abstract_sale_item')
+        ->tag('resource.event_subscriber');
 
-        // Cart item adjustment resource event listener
+    // Cart item adjustment resource event listener
+    $services
         ->set('ekyna_commerce.listener.cart_item_adjustment', CartItemAdjustmentEventSubscriber::class)
-            ->parent('ekyna_commerce.listener.abstract_sale_adjustment')
-            ->tag('resource.event_subscriber')
+        ->parent('ekyna_commerce.listener.abstract_sale_adjustment')
+        ->tag('resource.event_subscriber');
 
-        // Cart adjustment resource event listener
+    // Cart adjustment resource event listener
+    $services
         ->set('ekyna_commerce.listener.cart_adjustment', CartAdjustmentEventSubscriber::class)
-            ->parent('ekyna_commerce.listener.abstract_sale_adjustment')
-            ->tag('resource.event_subscriber')
+        ->parent('ekyna_commerce.listener.abstract_sale_adjustment')
+        ->tag('resource.event_subscriber');
 
-        // Cart payment resource event listener
+    // Cart payment resource event listener
+    $services
         ->set('ekyna_commerce.listener.cart_payment', CartPaymentEventSubscriber::class)
-            ->parent('ekyna_commerce.listener.abstract_payment')
-            ->tag('resource.event_subscriber')
-    ;
+        ->parent('ekyna_commerce.listener.abstract_payment')
+        ->tag('resource.event_subscriber');
 };

@@ -11,6 +11,7 @@ use Ekyna\Bundle\CommerceBundle\Command\CustomerBalanceIntegrityCommand;
 use Ekyna\Bundle\CommerceBundle\Command\CustomerBirthdayCommand;
 use Ekyna\Bundle\CommerceBundle\Command\FixVoucherNumberCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceDueDateUpdateCommand;
+use Ekyna\Bundle\CommerceBundle\Command\InvoiceNumberIntegrityCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoicePaidTotalUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceRecalculateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderDateModifyCommand;
@@ -92,6 +93,14 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.repository.order_invoice'),
                 service('ekyna_commerce.resolver.due_date'),
                 service('doctrine.orm.default_entity_manager'),
+            ])
+            ->tag('console.command')
+
+        // Invoice number integrity command
+        ->set('ekyna_commerce.command.invoice_number_integrity', InvoiceNumberIntegrityCommand::class)
+            ->args([
+                service('doctrine'),
+                param('ekyna_commerce.class.order_invoice'),
             ])
             ->tag('console.command')
 
