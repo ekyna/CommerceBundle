@@ -8,6 +8,6 @@
 </p>
 <p>{{ customer.defaultInvoiceAddress|address }}</p>
 <p>
-    <a href="mailto: {{ customer.email }}">{{ customer.email }}</a><br>
-    <a href="{{ path('ekyna_commerce_customer_admin_show', {'customerId': customer.id}) }}" target="_blank">Fiche</a>
+    <a href="mailto:{{ customer.email }}">{{ customer.email }}</a><br>
+    <a href="{{ admin_resource_path(customer, 'Ekyna\\Bundle\\AdminBundle\\Action\\ReadAction') }}" target="_blank">Fiche</a>
 </p>

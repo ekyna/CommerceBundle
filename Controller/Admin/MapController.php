@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Twig\Environment;
 
+use function json_encode;
+
 /**
  * Class MapController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Admin
@@ -62,9 +64,13 @@ class MapController
      */
     public function data(Request $request): Response
     {
-        return (new JsonResponse([
+        $data = [
             'locations' => $this->mapBuilder->buildLocations($request),
-        ]))->setPrivate();
+        ];
+
+        $json = json_encode($data, JSON_NUMERIC_CHECK);
+
+        return (new JsonResponse($json, Response::HTTP_OK, [], true))->setPrivate();
     }
 
     /**
@@ -78,10 +84,11 @@ class MapController
             $customer = $this->customerRepository->find($customerId);
         }
 
-        if (!$customer) {
+        if (!$customer instanceof CustomerInterface) {
             throw new NotFoundHttpException('Customer not found');
         }
 
+        /** @var CustomerInterface $customer */
         $content = $this->twig->render('@EkynaCommerce/Admin/Map/info.html.twig', [
             'customer' => $customer,
         ]);
