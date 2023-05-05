@@ -28,13 +28,16 @@ class BalanceController implements ControllerInterface
 {
     use CustomerTrait;
 
-    private FormFactoryInterface               $formFactory;
-    private UrlGeneratorInterface              $urlGenerator;
-    private BalanceBuilder $balanceBuilder;
-    private SerializerInterface $serializer;
-    private Environment                        $twig;
+    public function __construct(
+        private readonly FormFactoryInterface  $formFactory,
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly BalanceBuilder        $balanceBuilder,
+        private readonly SerializerInterface   $serializer,
+        private readonly Environment           $twig,
+    ) {
+    }
 
-    public function index(Request $request): Response
+    public function __invoke(Request $request): Response
     {
         $customer = $this->getCustomer();
 

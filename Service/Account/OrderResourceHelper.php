@@ -44,6 +44,10 @@ class OrderResourceHelper
         $repository = $this->repositoryFactory->getRepository(OrderInterface::class);
 
         if ($customer->hasParent()) {
+            if ($customer->isCanReadParentOrders()) {
+                return $repository->findByCustomer($customer->getParent());
+            }
+
             return $repository->findByOriginCustomer($customer);
         }
 

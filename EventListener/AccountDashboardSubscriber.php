@@ -90,7 +90,7 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
     {
         $states = [QuoteStates::STATE_NEW, QuoteStates::STATE_PENDING, QuoteStates::STATE_ACCEPTED];
 
-        $quotes = $this->quoteRepository->findByCustomer($customer, $states);
+        $quotes = $this->quoteRepository->findByCustomer($customer, $states, limit: 10);
 
         if (empty($quotes)) {
             return;
@@ -103,12 +103,14 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
                 'quotes'   => $quotes,
             ])
             ->setPriority(800)
-            ->addButton(new DashboardWidgetButton(
-                t('account.quote.all', [], 'EkynaCommerce'),
-                'ekyna_commerce_account_quote_index',
-                [],
-                'primary'
-            ));
+            ->addButton(
+                new DashboardWidgetButton(
+                    t('account.quote.all', [], 'EkynaCommerce'),
+                    'ekyna_commerce_account_quote_index',
+                    [],
+                    'primary'
+                )
+            );
 
         $event->addWidget($widget);
     }
@@ -116,8 +118,17 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
     private function addOrdersWidget(DashboardEvent $event, CustomerInterface $customer): void
     {
         $states = [OrderStates::STATE_PENDING, OrderStates::STATE_ACCEPTED];
+        $limit = 10;
 
-        $orders = $this->orderRepository->findByCustomer($customer, $states);
+        if ($customer->hasParent()) {
+            if ($customer->isCanReadParentOrders()) {
+                $orders = $this->orderRepository->findByCustomer($customer->getParent(), $states, limit: $limit);
+            } else {
+                $orders = $this->orderRepository->findByOriginCustomer($customer, $states, $limit);
+            }
+        } else {
+            $orders = $this->orderRepository->findByCustomer($customer, $states, limit: $limit);
+        }
 
         if (empty($orders)) {
             return;
@@ -130,12 +141,14 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
                 'orders'   => $orders,
             ])
             ->setPriority(700)
-            ->addButton(new DashboardWidgetButton(
-                t('account.order.all', [], 'EkynaCommerce'),
-                'ekyna_commerce_account_order_index',
-                [],
-                'primary'
-            ));
+            ->addButton(
+                new DashboardWidgetButton(
+                    t('account.order.all', [], 'EkynaCommerce'),
+                    'ekyna_commerce_account_order_index',
+                    [],
+                    'primary'
+                )
+            );
 
         $event->addWidget($widget);
     }
@@ -159,12 +172,14 @@ class AccountDashboardSubscriber implements EventSubscriberInterface
                 'invoices' => $invoices,
             ])
             ->setPriority(600)
-            ->addButton(new DashboardWidgetButton(
-                t('account.invoice.all', [], 'EkynaCommerce'),
-                'ekyna_commerce_account_invoice_index',
-                [],
-                'primary'
-            ));
+            ->addButton(
+                new DashboardWidgetButton(
+                    t('account.invoice.all', [], 'EkynaCommerce'),
+                    'ekyna_commerce_account_invoice_index',
+                    [],
+                    'primary'
+                )
+            );
 
         $event->addWidget($widget);
     }

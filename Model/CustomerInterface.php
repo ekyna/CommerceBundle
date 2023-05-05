@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\CmsBundle\Model\TagsSubjectInterface;
+use Ekyna\Bundle\CommerceBundle\Entity\Customer;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface as BaseInterface;
 
@@ -18,4 +19,15 @@ interface CustomerInterface extends BaseInterface, InChargeSubjectInterface, Tag
     public function getUser(): ?UserInterface;
 
     public function setUser(?UserInterface $user): CustomerInterface;
+
+    /**
+     * @return bool
+     */
+    public function isCanReadParentOrders(): bool;
+
+    /**
+     * @param bool $canReadParentOrders
+     * @return CustomerInterface
+     */
+    public function setCanReadParentOrders(bool $canReadParentOrders): CustomerInterface;
 }

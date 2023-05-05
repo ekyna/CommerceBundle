@@ -6,8 +6,10 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Account\Order\Payment;
 
 use Ekyna\Bundle\CommerceBundle\Controller\Account\ControllerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Account\OrderResourceHelper;
+use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Payment\PaymentHelper;
 use Ekyna\Bundle\UiBundle\Form\Type\ConfirmType;
+use Ekyna\Bundle\UiBundle\Service\FlashHelper;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +29,8 @@ class CancelController implements ControllerInterface
     public function __construct(
         private readonly OrderResourceHelper   $resourceHelper,
         private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly ConstantsHelper       $constantsHelper,
+        private readonly FlashHelper           $flashHelper,
         private readonly PaymentHelper         $paymentHelper,
         private readonly FormFactoryInterface  $formFactory,
         private readonly Environment           $twig,
@@ -45,6 +49,16 @@ class CancelController implements ControllerInterface
             'number' => $order->getNumber(),
         ]);
 
+        if ($customer->hasParent()) {
+            $message = t('account.order.message.payment_denied', [
+                '{identity}' => $this->constantsHelper->renderIdentity($customer->getParent()),
+            ], 'EkynaCommerce');
+
+            $this->flashHelper->addFlash($message, 'warning');
+
+            return new RedirectResponse($redirect);
+        }
+
         if (!$this->paymentHelper->isUserCancellable($payment)) {
             return new RedirectResponse($redirect);
         }
@@ -60,7 +74,9 @@ class CancelController implements ControllerInterface
 
         if ($form->isSubmitted() && $form->isValid()) {
             $statusUrl = $this->urlGenerator->generate(
-                'ekyna_commerce_account_payment_status', [], UrlGeneratorInterface::ABSOLUTE_URL
+                'ekyna_commerce_account_payment_status',
+                [],
+                UrlGeneratorInterface::ABSOLUTE_URL
             );
 
             return $this->paymentHelper->cancel($payment, $statusUrl);

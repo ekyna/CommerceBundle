@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
+use Ekyna\Bundle\AdminBundle\Table\Type\Column\ResourceType;
 use Ekyna\Bundle\AdminBundle\Table\Type\Filter\ConstantChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\TicketStates;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\CommerceBundle\Table\Filter;
 use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
@@ -56,7 +58,11 @@ class TicketType extends AbstractResourceType
                 'multiple' => true,
                 'position' => 60,
             ])
-            ->addColumn('customer', Column\CustomerType::class, [
+            ->addColumn('customer', ResourceType::class, [
+                'label'    => t('customer.label.singular', [], 'EkynaCommerce'),
+                'resource' => CustomerInterface::class,
+                'summary'  => true,
+                'sortable' => false,
                 'position' => 70,
             ])
             ->addColumn('inCharge', Column\InChargeType::class, [

@@ -27,6 +27,19 @@ return static function (ContainerConfigurator $container) {
             'method' => 'onController',
         ]);
 
+    // Account balance controller
+    $services
+        ->set('ekyna_commerce.controller.account.balance', Account\BalanceController::class)
+        ->args([
+            service('form.factory'),
+            service('router'),
+            service('ekyna_commerce.builder.customer_balance'),
+            service('serializer'),
+            service('twig'),
+        ])
+        ->call('setCustomerProvider', [service('ekyna_commerce.provider.customer')])
+        ->alias(Account\BalanceController::class, 'ekyna_commerce.controller.account.balance')->public();
+
     // Account contact controller
     $services
         ->set('ekyna_commerce.controller.account.contact', Account\ContactController::class)

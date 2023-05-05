@@ -1,6 +1,6 @@
 ekyna_commerce_account_balance_index:
     path: ''
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\BalanceController::index
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Account\BalanceController
     methods: [GET, POST]
     options:
         ekyna_i18n: ~

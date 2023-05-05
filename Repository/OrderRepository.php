@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Repository;
 
+use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderRepository as BaseRepository;
+use Ekyna\Component\Commerce\Customer\Model\CustomerInterface as ComponentCustomer;
+use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 
 /**
  * Class OrderRepository
@@ -14,6 +17,43 @@ use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderRepository as B
 class OrderRepository extends BaseRepository
 {
     // TODO location / weight
+
+    public function findOneByCustomerAndNumber(ComponentCustomer $customer, string $number): ?OrderInterface
+    {
+        $qb = $this->createQueryBuilder('o');
+
+        $owner = $qb->expr()->orX(
+            $qb->expr()->eq('c', ':customer'),
+            $qb->expr()->eq('c.parent', ':customer'),
+            $qb->expr()->eq('o.originCustomer', ':customer')
+        );
+
+        $parameters = [
+            'customer' => $customer,
+            'number'   => $number,
+        ];
+
+        if ($customer instanceof CustomerInterface && $customer->isCanReadParentOrders()) {
+            $owner->add($qb->expr()->eq('c', ':parent'));
+            $parameters['parent'] = $customer->getParent();
+        }
+
+        $sale = $qb
+            ->join('o.customer', 'c')
+            ->andWhere($owner)
+            ->andWhere($qb->expr()->eq('o.number', ':number'))
+            ->getQuery()
+            ->setParameters($parameters)
+            ->getOneOrNullResult();
+
+        if (null !== $sale) {
+            $this
+                ->loadLines($sale)
+                ->loadPayments($sale);
+        }
+
+        return $sale;
+    }
 
     /**
      * Finds map locations.

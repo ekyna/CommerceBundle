@@ -710,6 +710,7 @@ customer:
         company_number: N° Siret
         in_charge: Responsable
         children: Commerciaux
+        can_read_parent_orders: Accès à toutes les commandes du compte service achat
         outstanding_overflow: Dépassement d'encours autorisé
         outstanding_balance: Solde d'encours
         credit_balance: Solde avoirs
@@ -739,6 +740,8 @@ customer:
         payment_methods: >
             Restreint les modes de paiement utilisables.
             Le mode de paiement par défaut sélectionné ci-dessus est inclus dans ces restrictions.
+        can_read_parent_orders: >
+            Par défaut, un commercial n'a accès qu'aux commandes dont il est le client d'origine.
     notify:
         admin_link: Voir la fiche client dans l'administration
         registration:

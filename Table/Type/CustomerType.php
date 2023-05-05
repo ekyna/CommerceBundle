@@ -70,6 +70,7 @@ class CustomerType extends AbstractResourceType
             ->addDefaultSort('createdAt', ColumnSort::DESC)
             ->addColumn('number', BType\Column\AnchorType::class, [
                 'label'    => t('field.number', [], 'EkynaUi'),
+                // TODO 'summary' => true,
                 'position' => 10,
             ])
             ->addColumn('name', CType\Column\TextType::class, [

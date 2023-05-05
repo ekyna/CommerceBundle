@@ -261,6 +261,19 @@
                 }) }}
             </div>
         </div>
+        {% if customer.hasParent() -%}
+        <div class="row">
+            <div class="col-md-12">
+                {{ show_row(customerSource.canReadParentOrders, 'boolean', {
+                    'label': t('customer.field.can_read_parent_orders', {}, 'EkynaCommerce'),
+                    'id': 'can_read_parent_orders',
+                    'color': true,
+                    'true_class': 'label label-warning',
+                    'false_class': 'label label-success'
+                }) }}
+            </div>
+        </div>
+        {%- endif %}
         {% include '@EkynaCommerce/Admin/Common/Pricing/_show_vat_fields.html.twig' with {
             'subject': customerSource, 'prefix': 'customer'
         } %}

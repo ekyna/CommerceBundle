@@ -12,6 +12,12 @@
             <unique-constraint columns="user_id" name="unique_commerce_customer_user"/>
         </unique-constraints>
 
+        <field name="canReadParentOrders" type="boolean" column="read_parent_orders">
+            <options>
+                <option name="default">0</option>
+            </options>
+        </field>
+
         <many-to-one target-entity="Ekyna\Bundle\UserBundle\Model\UserInterface" field="user">
             <join-column name="user_id" referenced-column-name="id" on-delete="RESTRICT" nullable="true"/>
         </many-to-one>

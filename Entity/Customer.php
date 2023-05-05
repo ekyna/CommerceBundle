@@ -20,6 +20,7 @@ class Customer extends BaseCustomer implements Model\CustomerInterface
     use Model\InChargeSubjectTrait;
 
     protected ?UserInterface $user = null;
+    protected bool $canReadParentOrders = false;
 
     public function __construct()
     {
@@ -36,6 +37,18 @@ class Customer extends BaseCustomer implements Model\CustomerInterface
     public function setUser(?UserInterface $user): Model\CustomerInterface
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function isCanReadParentOrders(): bool
+    {
+        return $this->canReadParentOrders;
+    }
+
+    public function setCanReadParentOrders(bool $canReadParentOrders): Model\CustomerInterface
+    {
+        $this->canReadParentOrders = $canReadParentOrders;
 
         return $this;
     }

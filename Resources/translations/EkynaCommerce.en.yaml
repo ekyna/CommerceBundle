@@ -695,6 +695,7 @@ customer:
         company_number: Registry number
         in_charge: In charge
         children: Sales manager
+        can_read_parent_orders: Can read all orders in accountable service
         outstanding_balance: Outstanding balance
         outstanding_overflow: Outstanding overflow allowed
         credit_balance: Credit balance
@@ -723,6 +724,8 @@ customer:
             Used to determine document mention and footer
         payment_methods: >
             Restrict allowed payment methods. The default payment selected above is included in this restriction.
+        can_read_parent_orders: >
+            By default, a sales representative only has access to orders for which he is the original customer.
     notify:
         admin_link: See the customer sheet in backoffice
         registration:

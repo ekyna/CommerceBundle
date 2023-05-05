@@ -158,14 +158,14 @@ class CustomerType extends AbstractResourceType
 
         $formModifier = function (FormInterface $form, CustomerInterface $customer, $hasParent): void {
             $form
+                ->add('customerGroup', CustomerGroupChoiceType::class, [
+                    'allow_new' => true,
+                    'disabled'  => $hasParent,
+                ])
                 ->add('companyNumber', Type\TextType::class, [
                     'label'    => t('customer.field.company_number', [], 'EkynaCommerce'),
                     'required' => false,
                     'disabled' => $hasParent,
-                ])
-                ->add('customerGroup', CustomerGroupChoiceType::class, [
-                    'allow_new' => true,
-                    'disabled'  => $hasParent,
                 ])
                 ->add('vatNumber', VatNumberType::class, [
                     'disabled' => $hasParent,
@@ -219,6 +219,20 @@ class CustomerType extends AbstractResourceType
                         'help_text'         => t('customer.help.outstanding_overflow', [], 'EkynaCommerce'),
                     ],
                 ]);
+
+            if (!$hasParent) {
+                return;
+            }
+
+            $form->add('canReadParentOrders', Type\CheckboxType::class, [
+                'label'    => t('customer.field.can_read_parent_orders', [], 'EkynaCommerce'),
+                'required' => false,
+                'disabled' => !$hasParent,
+                'attr'     => [
+                    'align_with_widget' => true,
+                    'help_text'         => t('customer.help.can_read_parent_orders', [], 'EkynaCommerce'),
+                ],
+            ]);
         };
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($formModifier): void {
