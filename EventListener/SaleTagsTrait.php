@@ -36,20 +36,16 @@ trait SaleTagsTrait
 
         // Remove unexpected tags
         foreach ($current as $tag) {
-            if ($expected->contains($tag)) {
-                continue;
+            if (!$expected->contains($tag)) {
+                $current->removeElement($tag);
             }
-
-            $current->removeElement($tag);
         }
 
         // Add new tags
         foreach ($expected as $tag) {
-            if ($current->contains($tag)) {
-                continue;
+            if (!$current->contains($tag)) {
+                $current->add($tag);
             }
-
-            $current->removeElement($tag);
         }
     }
 
