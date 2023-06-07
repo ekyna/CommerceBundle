@@ -67,7 +67,6 @@ trait TaggedSaleTrait
         return $this->itemsTags;
     }
 
-
     public function getAllTags(): Collection
     {
         $tags = new ArrayCollection($this->tags->getValues());
