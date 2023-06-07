@@ -93,6 +93,7 @@ return static function (ContainerConfigurator $container) {
         ->call('setCouponRepository', [service('ekyna_commerce.repository.coupon')])
         ->call('setInvoicePaymentResolver', [service('ekyna_commerce.resolver.invoice_payment')])
         ->call('setOrderUpdater', [service('ekyna_commerce.updater.order')])
+        ->call('setSubjectHelper', [service('ekyna_commerce.helper.subject')])
         ->call('setInChargeResolver', [service('ekyna_commerce.resolver.in_charge')])
         ->tag('resource.event_subscriber');
 

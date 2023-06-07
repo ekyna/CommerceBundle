@@ -45,6 +45,7 @@ return static function (ContainerConfigurator $container) {
         ->parent('ekyna_commerce.listener.abstract_sale')
         ->call('setNumberGenerator', [service('ekyna_commerce.generator.quote_number')])
         ->call('setStateResolver', [service('ekyna_commerce.resolver.quote_state')])
+        ->call('setSubjectHelper', [service('ekyna_commerce.helper.subject')])
         ->call('setInChargeResolver', [service('ekyna_commerce.resolver.in_charge')])
         ->tag('resource.event_subscriber');
 
