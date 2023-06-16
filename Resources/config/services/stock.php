@@ -136,10 +136,9 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.linker.stock_unit', StockUnitLinker::class)
             ->args([
                 service('ekyna_resource.orm.persistence_helper'),
-                service('ekyna_commerce.calculator.supplier_order'),
+                service('ekyna_commerce.calculator.supplier_order_item'),
                 service('ekyna_commerce.updater.stock_unit'),
                 service('ekyna_commerce.resolver.stock_unit'),
-                service('ekyna_commerce.converter.currency'),
             ])
 
         // Stock subject updater

@@ -18,115 +18,100 @@ use Ekyna\Component\Commerce\Report\Section\CustomersSection;
 use Ekyna\Component\Commerce\Report\Section\InvoicesSection;
 use Ekyna\Component\Commerce\Report\Section\OrdersSection;
 use Ekyna\Component\Commerce\Report\Section\SupplierOrdersSection;
-use Ekyna\Component\Commerce\Report\Util\OrderUtil;
 use Ekyna\Component\Commerce\Report\Writer\XlsWriter;
 
 return static function (ContainerConfigurator $container) {
-    $container
-        ->services()
+    $services = $container->services();
 
-        // Report request repository
+    // Report request repository
+    $services
         ->set('ekyna_commerce.repository.report_request', ReportRequestRepository::class)
-            ->args([
-                service('doctrine'),
-            ])
-            ->tag('doctrine.repository_service')
+        ->args([
+            service('doctrine'),
+        ])
+        ->tag('doctrine.repository_service');
 
-        // Invoice fetcher
+    // Invoice fetcher
+    $services
         ->set('ekyna_commerce.report.fetcher.invoice', InvoiceFetcher::class)
-            ->args([
-                service('ekyna_commerce.repository.order_invoice'),
-                service('ekyna_commerce.manager.order_invoice'),
-            ])
-            ->tag(ReportRegistryPass::FETCHER_TAG)
+        ->args([
+            service('ekyna_commerce.repository.order_invoice'),
+            service('ekyna_commerce.manager.order_invoice'),
+        ])
+        ->tag(ReportRegistryPass::FETCHER_TAG);
 
-        // Order fetcher
+    // Order fetcher
+    $services
         ->set('ekyna_commerce.report.fetcher.order', OrderFetcher::class)
-            ->args([
-                service('ekyna_commerce.repository.order'),
-                service('ekyna_commerce.manager.order'),
-                service('ekyna_commerce.report.util.order'),
-            ])
-            ->tag(ReportRegistryPass::FETCHER_TAG)
+        ->args([
+            service('ekyna_commerce.repository.order'),
+            service('ekyna_commerce.manager.order'),
+        ])
+        ->tag(ReportRegistryPass::FETCHER_TAG);
 
-        // Supplier order fetcher
+    // Supplier order fetcher
+    $services
         ->set('ekyna_commerce.report.fetcher.supplier_order', SupplierOrderFetcher::class)
-            ->args([
-                service('ekyna_commerce.repository.supplier_order'),
-                service('ekyna_commerce.manager.supplier_order'),
-            ])
-            ->tag(ReportRegistryPass::FETCHER_TAG)
+        ->args([
+            service('ekyna_commerce.repository.supplier_order'),
+            service('ekyna_commerce.manager.supplier_order'),
+        ])
+        ->tag(ReportRegistryPass::FETCHER_TAG);
 
-        // Customer groups section
+    // Customer groups section
+    $services
         ->set('ekyna_commerce.report.section.customer_groups', CustomerGroupsSection::class)
-            ->args([
-                service('ekyna_commerce.report.util.order'),
-            ])
-            ->tag(ReportRegistryPass::SECTION_TAG)
+        ->tag(ReportRegistryPass::SECTION_TAG);
 
-        // Customers section
+    // Customers section
+    $services
         ->set('ekyna_commerce.report.section.customers', CustomersSection::class)
-            ->args([
-                service('ekyna_commerce.report.util.order'),
-            ])
-            ->tag(ReportRegistryPass::SECTION_TAG)
+        ->tag(ReportRegistryPass::SECTION_TAG);
 
-        // Invoices section
-        ->set('ekyna_commerce.report.section.order_invoicess', InvoicesSection::class)
-            ->tag(ReportRegistryPass::SECTION_TAG)
+    // Invoices section
+    $services
+        ->set('ekyna_commerce.report.section.order_invoices', InvoicesSection::class)
+        ->tag(ReportRegistryPass::SECTION_TAG);
 
-        // Orders section
+    // Orders section
+    $services
         ->set('ekyna_commerce.report.section.orders', OrdersSection::class)
-            ->args([
-                service('ekyna_commerce.report.util.order'),
-            ])
-            ->tag(ReportRegistryPass::SECTION_TAG)
+        ->tag(ReportRegistryPass::SECTION_TAG);
 
-        // Supplier orders section
+    // Supplier orders section
+    $services
         ->set('ekyna_commerce.report.section.supplier_order', SupplierOrdersSection::class)
-            ->args([
-                service('ekyna_commerce.helper.stock_subject_quantity'),
-                service('ekyna_commerce.report.util.order'),
-            ])
-            ->tag(ReportRegistryPass::SECTION_TAG)
+        ->args([
+            service('ekyna_commerce.helper.stock_subject_quantity'),
+            service('ekyna_commerce.factory.margin_calculator'),
+        ])
+        ->tag(ReportRegistryPass::SECTION_TAG);
 
-        // Order margin util
-        ->set('ekyna_commerce.report.util.order', OrderUtil::class)
-            ->args([
-                service('ekyna_commerce.factory.margin_calculator'),
-                param('ekyna_commerce.default.currency'),
-            ])
-
-        // XLS writer
+    // XLS writer
+    $services
         ->set('ekyna_commerce.report.writer.xls', XlsWriter::class)
-            ->tag(ReportRegistryPass::WRITER_TAG)
+        ->tag(ReportRegistryPass::WRITER_TAG);
 
-        // Registry
-        ->set('ekyna_commerce.report.registry', ReportRegistry::class)
+    // Registry
+    $services->set('ekyna_commerce.report.registry', ReportRegistry::class);
 
-        // Generator
+    // Generator
+    $services
         ->set('ekyna_commerce.report.generator', ReportGenerator::class)
-            ->args([
-                service('ekyna_commerce.report.registry'),
-            ])
+        ->args([
+            service('ekyna_commerce.report.registry'),
+        ]);
 
-        // Mailer
+    // Mailer
+    $services
         ->set('ekyna_commerce.report.mailer', ReportMailer::class)
-            ->args([
-                service('ekyna_commerce.report.generator'),
-                service('ekyna_commerce.report.registry'),
-                service('ekyna_setting.manager'),
-                service('ekyna_commerce.factory.formatter'),
-                service('translator'),
-                service('twig'),
-                service('mailer.mailer'),
-            ])
-
-        // Message handler
-        ->set('ekyna_commerce.message_handler.report', SendSalesReportHandler::class)
-            ->args([
-                service('ekyna_commerce.report.mailer'),
-            ])
-            ->tag('messenger.message_handler')
-    ;
+        ->args([
+            service('ekyna_commerce.report.generator'),
+            service('ekyna_commerce.report.registry'),
+            service('ekyna_setting.manager'),
+            service('ekyna_commerce.factory.formatter'),
+            service('translator'),
+            service('twig'),
+            service('mailer.mailer'),
+        ]);
 };

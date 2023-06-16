@@ -99,8 +99,8 @@ class SaleViewType extends AbstractViewType
             'tax_total'                 => $this->trans('sale.field.tax_total', [], 'EkynaCommerce'),
             'ati_total'                 => $this->trans('sale.field.ati_total', [], 'EkynaCommerce'),
             'margin'                    => $this->trans('sale.field.margin', [], 'EkynaCommerce'),
-            'commercial_margin'         => $this->trans('sale.field.commercial_margin', [], 'EkynaCommerce'),
-            'profit_margin'             => $this->trans('sale.field.profit_margin', [], 'EkynaCommerce'),
+            'margin_net'                => $this->trans('sale.field.margin_net', [], 'EkynaCommerce'),
+            'margin_gross'              => $this->trans('sale.field.margin_gross', [], 'EkynaCommerce'),
 
             'btn_batch_remove'          => $this->trans('sale.button.item.batch_remove', [], 'EkynaCommerce'),
             'btn_batch_synchronize'     => $this->trans('sale.button.item.batch_synchronize', [], 'EkynaCommerce'),

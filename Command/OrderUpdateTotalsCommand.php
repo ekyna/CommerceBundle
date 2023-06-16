@@ -178,11 +178,9 @@ class OrderUpdateTotalsCommand extends Command
                 $changes['credit'][1] = $order->getCreditTotal()->toFixed(2);
             }
             if ($this->margin) {
-                $changes['margin'] = [$order->getMarginTotal()->toFixed(2)];
-                $changes['revenue'] = [$order->getRevenueTotal()->toFixed(2)];
-                $changed = $this->orderUpdater->updateMarginTotals($order) || $changed;
-                $changes['margin'][1] = $order->getMarginTotal()->toFixed(2);
-                $changes['revenue'][1] = $order->getRevenueTotal()->toFixed(2);
+                $changes['margin'] = [$order->getMargin()->getTotal(false)->toFixed(2)];
+                $changed = $this->orderUpdater->updateMargin($order) || $changed;
+                $changes['margin'][1] = $order->getMargin()->getTotal(false)->toFixed(2);
             }
 
             if ($changed) {

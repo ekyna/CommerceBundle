@@ -6,7 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Stock\Entity\AbstractStockUnit;
-use Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculatorInterface;
+use Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderItemCalculatorInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,8 +22,8 @@ class StockUnitPriceUpdateCommand extends Command
     protected static $defaultDescription = 'Updates the stock units prices';
 
     public function __construct(
-        private readonly SupplierOrderCalculatorInterface $calculator,
-        private readonly EntityManagerInterface           $manager
+        private readonly SupplierOrderItemCalculatorInterface $calculator,
+        private readonly EntityManagerInterface               $manager
     ) {
         parent::__construct();
     }
@@ -49,11 +49,11 @@ class StockUnitPriceUpdateCommand extends Command
             $id = $unit->getId();
             $item = $unit->getSupplierOrderItem();
 
-            $output->write('Unit #' . $id . ':');
+            $output->write('Unit #'.$id.':');
 
             $changed = false;
 
-            $netPrice = $this->calculator->calculateStockUnitNetPrice($item);
+            $netPrice = $this->calculator->calculateItemProductPrice($item);
             if (!$unit->getNetPrice()->equals($netPrice)) {
                 $unit->setNetPrice($netPrice);
                 $changed = true;
@@ -62,7 +62,7 @@ class StockUnitPriceUpdateCommand extends Command
                 $output->write(' <comment>price</comment>');
             }
 
-            $shippingPrice = $this->calculator->calculateStockUnitShippingPrice($item);
+            $shippingPrice = $this->calculator->calculateItemShippingPrice($item);
             if (!$unit->getShippingPrice()->equals($shippingPrice)) {
                 $unit->setShippingPrice($shippingPrice);
                 $changed = true;

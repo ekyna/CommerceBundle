@@ -8,9 +8,9 @@ use Ekyna\Bundle\AdminBundle\Action\AdminActionInterface;
 use Ekyna\Bundle\ResourceBundle\Action\AbstractAction;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
 use Ekyna\Bundle\ResourceBundle\Action\ManagerTrait;
-use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculatorInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilderInterface;
+use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculatorInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Shipment\Builder\InvoiceSynchronizerInterface;
 use Ekyna\Component\Resource\Action\Permission;
@@ -27,18 +27,11 @@ class RecalculateAction extends AbstractAction implements AdminActionInterface
     use HelperTrait;
     use ManagerTrait;
 
-    private InvoiceSynchronizerInterface $invoiceSynchronizer;
-    private InvoiceBuilderInterface      $invoiceBuilder;
-    private DocumentCalculatorInterface  $documentCalculator;
-
     public function __construct(
-        InvoiceSynchronizerInterface $invoiceSynchronizer,
-        InvoiceBuilderInterface $invoiceBuilder,
-        DocumentCalculatorInterface $documentCalculator
+        private readonly InvoiceSynchronizerInterface $invoiceSynchronizer,
+        private readonly InvoiceBuilderInterface      $invoiceBuilder,
+        private readonly InvoiceCalculatorInterface   $invoiceCalculator
     ) {
-        $this->invoiceSynchronizer = $invoiceSynchronizer;
-        $this->invoiceBuilder = $invoiceBuilder;
-        $this->documentCalculator = $documentCalculator;
     }
 
     public function __invoke(): Response
@@ -70,7 +63,7 @@ class RecalculateAction extends AbstractAction implements AdminActionInterface
         $this->invoiceBuilder->update($invoice);
 
         // Recalculate
-        $this->documentCalculator->calculate($invoice);
+        $this->invoiceCalculator->calculate($invoice);
 
         // Persist
         $event = $this->getManager()->save($invoice);

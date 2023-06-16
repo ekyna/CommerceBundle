@@ -89,14 +89,14 @@ return static function (ContainerConfigurator $container) {
             ->args([
                 service('ekyna_commerce.synchronizer.shipment_invoice'),
                 service('ekyna_commerce.builder.invoice'),
-                service('ekyna_commerce.calculator.document'),
+                service('ekyna_commerce.calculator.invoice'),
             ])
             ->tag('ekyna_resource.action')
 
         ->set('ekyna_commerce.action.invoice.render', Invoice\RenderAction::class)
             ->args([
                 service('ekyna_commerce.factory.document_renderer'),
-                service('ekyna_commerce.calculator.document'),
+                service('ekyna_commerce.calculator.invoice'),
             ])
             ->tag('ekyna_resource.action')
 

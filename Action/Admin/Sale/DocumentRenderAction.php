@@ -9,9 +9,9 @@ use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
 use Ekyna\Bundle\ResourceBundle\Action\RoutingActionInterface;
 use Ekyna\Bundle\UiBundle\Action\FlashTrait;
 use Ekyna\Component\Commerce\Document\Builder\DocumentBuilderInterface;
-use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculatorInterface;
 use Ekyna\Component\Commerce\Document\Model\Document;
 use Ekyna\Component\Commerce\Document\Util\DocumentUtil;
+use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculatorInterface;
 use Ekyna\Component\Resource\Action\Permission;
 use Ekyna\Component\Resource\Exception\PdfException;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,19 +30,11 @@ class DocumentRenderAction extends AbstractSaleAction implements RoutingActionIn
     use HelperTrait;
     use FlashTrait;
 
-    private DocumentBuilderInterface    $documentBuilder;
-    private DocumentCalculatorInterface $documentCalculator;
-    private RendererFactory             $rendererFactory;
-
-
     public function __construct(
-        DocumentBuilderInterface    $documentBuilder,
-        DocumentCalculatorInterface $documentCalculator,
-        RendererFactory             $rendererFactory
+        private readonly DocumentBuilderInterface    $documentBuilder,
+        private readonly DocumentCalculatorInterface $documentCalculator,
+        private readonly RendererFactory             $rendererFactory
     ) {
-        $this->documentBuilder = $documentBuilder;
-        $this->documentCalculator = $documentCalculator;
-        $this->rendererFactory = $rendererFactory;
     }
 
     public function __invoke(): Response

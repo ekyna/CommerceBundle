@@ -6,7 +6,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectLabelRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectOrderExporter;
-use Ekyna\Component\Commerce\Subject\Guesser\PurchaseCostGuesser;
+use Ekyna\Component\Commerce\Subject\Guesser\SubjectCostGuesser;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistry;
 
 return static function (ContainerConfigurator $container) {
@@ -16,11 +16,12 @@ return static function (ContainerConfigurator $container) {
         // Subject provider registry
         ->set('ekyna_commerce.registry.subject_provider', SubjectProviderRegistry::class)
 
-        // Subject purchase cost
-        ->set('ekyna_commerce.guesser.subject_purchase_cost', PurchaseCostGuesser::class)
+        // Subject cost guesser
+        ->set('ekyna_commerce.guesser.subject_cost', SubjectCostGuesser::class)
             ->lazy()
             ->args([
                 service('ekyna_resource.repository.factory'),
+                service('ekyna_commerce.calculator.supplier_order_item'),
                 service('ekyna_commerce.converter.currency'),
             ])
             ->tag('twig.runtime')

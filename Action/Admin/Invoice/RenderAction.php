@@ -10,13 +10,12 @@ use Ekyna\Bundle\ResourceBundle\Action\AbstractAction;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
 use Ekyna\Bundle\ResourceBundle\Action\RoutingActionInterface;
 use Ekyna\Bundle\UiBundle\Action\FlashTrait;
-use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculatorInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
+use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculatorInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Resource\Action\Permission;
 use Ekyna\Component\Resource\Exception\PdfException;
 use Symfony\Component\HttpFoundation\Response;
-
 use Symfony\Component\Routing\Route;
 
 use function strtolower;
@@ -33,13 +32,10 @@ class RenderAction extends AbstractAction implements AdminActionInterface, Routi
     use HelperTrait;
     use FlashTrait;
 
-    private RendererFactory             $rendererFactory;
-    private DocumentCalculatorInterface $documentCalculator;
-
-    public function __construct(RendererFactory $rendererFactory, DocumentCalculatorInterface $documentCalculator)
-    {
-        $this->rendererFactory = $rendererFactory;
-        $this->documentCalculator = $documentCalculator;
+    public function __construct(
+        private readonly RendererFactory            $rendererFactory,
+        private readonly InvoiceCalculatorInterface $invoiceCalculator
+    ) {
     }
 
     public function __invoke(): Response
@@ -63,7 +59,7 @@ class RenderAction extends AbstractAction implements AdminActionInterface, Routi
             if ($currency != $invoice->getCurrency()) {
                 $invoice->setCurrency($currency);
 
-                $this->documentCalculator->calculate($invoice);
+                $this->invoiceCalculator->calculate($invoice);
             }
         }
 
@@ -80,7 +76,7 @@ class RenderAction extends AbstractAction implements AdminActionInterface, Routi
 
         try {
             return $renderer->respond($this->request);
-        } catch (PdfException $e) {
+        } catch (PdfException) {
             $this->addFlash(t('document.message.failed_to_generate', [], 'EkynaCommerce'), 'danger');
 
             return $this->redirectToReferer($this->generateResourcePath($invoice->getSale()));

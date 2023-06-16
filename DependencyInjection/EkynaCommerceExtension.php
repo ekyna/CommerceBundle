@@ -66,6 +66,7 @@ class EkynaCommerceExtension extends Extension implements PrependExtensionInterf
         $loader->load('services/invoice.php');
         $loader->load('services/loyalty.php');
         $loader->load('services/map.php');
+        $loader->load('services/message.php');
         $loader->load('services/notify.php');
         $loader->load('services/order.php');
         $loader->load('services/payment.php');

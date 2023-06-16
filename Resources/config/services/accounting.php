@@ -21,7 +21,7 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.repository.accounting'),
                 service('ekyna_commerce.converter.currency'),
                 service('ekyna_commerce.factory.amount_calculator'),
-                service('ekyna_commerce.calculator.document'),
+                service('ekyna_commerce.calculator.invoice'),
                 service('ekyna_commerce.resolver.invoice_payment'),
                 service('ekyna_commerce.resolver.tax'),
                 abstract_arg('Accounting exporter configuration'),
@@ -34,7 +34,7 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.repository.order_invoice'),
                 service('ekyna_commerce.repository.stock_adjustment'),
                 service('ekyna_commerce.converter.currency'),
-                service('ekyna_commerce.calculator.document'),
+                service('ekyna_commerce.calculator.invoice'),
                 service('ekyna_commerce.calculator.invoice_cost'),
                 param('kernel.debug'),
             ])

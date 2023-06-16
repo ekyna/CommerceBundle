@@ -9,7 +9,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectLabelRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
-use Ekyna\Component\Commerce\Subject\Guesser\PurchaseCostGuesserInterface;
+use Ekyna\Component\Commerce\Subject\Guesser\SubjectCostGuesserInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -57,7 +57,7 @@ class SubjectExtension extends AbstractExtension
             ),
             new TwigFilter(
                 'subject_purchase_cost',
-                [PurchaseCostGuesserInterface::class, 'guess']
+                [SubjectCostGuesserInterface::class, 'guess']
             ),
         ];
     }

@@ -180,7 +180,7 @@ class GoogleTrackingEventSubscriber implements EventSubscriberInterface
             return $this->amountCalculator;
         }
 
-        return $this->amountCalculator = $this->calculatorFactory->create($this->defaultCurrency);
+        return $this->amountCalculator = $this->calculatorFactory->create();
     }
 
     /**

@@ -8,7 +8,7 @@ use DateTime;
 use Decimal\Decimal;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Common\Locking\LockChecker;
-use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculatorInterface;
+use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculatorInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
 use Symfony\Component\Console\Command\Command;
@@ -20,18 +20,18 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use function count;
 
 /**
- * Class InvoiceRecalculateCommand
+ * Class InvoiceUpdateTotalsCommand
  * @package Ekyna\Bundle\CommerceBundle\Command
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class InvoiceRecalculateCommand extends Command
+class InvoiceUpdateTotalsCommand extends Command
 {
-    protected static $defaultName        = 'ekyna:commerce:invoice:recalculate';
-    protected static $defaultDescription = 'Recalculates the invoices created the given month.';
+    protected static $defaultName        = 'ekyna:commerce:invoice:update:totals';
+    protected static $defaultDescription = 'Updates the invoices totals.';
 
     public function __construct(
         private readonly OrderInvoiceRepositoryInterface $invoiceRepository,
-        private readonly DocumentCalculatorInterface     $invoiceCalculator,
+        private readonly InvoiceCalculatorInterface     $invoiceCalculator,
         private readonly EntityManagerInterface          $invoiceManager,
         private readonly LockChecker                     $lockChecker
     ) {

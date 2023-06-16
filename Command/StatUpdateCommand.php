@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use DateTime;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityManagerInterface;
-use Ekyna\Component\Commerce\Order\Model\OrderInterface;
-use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
-use Ekyna\Component\Commerce\Order\Updater\OrderUpdaterInterface;
 use Ekyna\Component\Commerce\Stat\Updater\StatUpdaterInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,11 +27,8 @@ class StatUpdateCommand extends Command
     private bool $debug;
 
     public function __construct(
-        private readonly StatUpdaterInterface     $statUpdater,
-        private readonly OrderUpdaterInterface    $orderUpdater,
-        private readonly OrderRepositoryInterface $orderRepository,
-        private readonly EntityManagerInterface   $manager,
-        private readonly string                   $orderClass
+        private readonly StatUpdaterInterface   $updater,
+        private readonly EntityManagerInterface $manager
     ) {
         parent::__construct();
     }
@@ -54,8 +47,6 @@ class StatUpdateCommand extends Command
         $this->manager->getConnection()->getConfiguration()->setSQLLogger();
 
         $this->updateStockStat($output);
-
-        $this->updateOrders($output);
 
         $this->updateOrderStat($output);
 
@@ -79,7 +70,7 @@ class StatUpdateCommand extends Command
             str_pad('.', 32 - mb_strlen($name), '.', STR_PAD_LEFT)
         ));
 
-        if ($this->statUpdater->updateStockStat()) {
+        if ($this->updater->updateStockStat()) {
             $this->debug && $output->writeln("<info>created</info>\n");
 
             $this->flush = true;
@@ -88,61 +79,6 @@ class StatUpdateCommand extends Command
         }
 
         $this->debug && $output->writeln("<comment>up-to-date</comment>\n");
-    }
-
-    /**
-     * Updates the orders revenue and margin totals.
-     */
-    private function updateOrders(OutputInterface $output): void
-    {
-        $this->debug && $output->writeln('Updating orders margin total');
-
-        if (empty($ids = $this->orderRepository->findWithNullRevenueOrMargin())) {
-            $this->debug && $output->writeln("<comment>all up-to-date</comment>\n");
-
-            return;
-        }
-
-        $qb = $this->manager->createQueryBuilder();
-        $update = $qb
-            ->update($this->orderClass, 'o')
-            ->set('o.revenueTotal', ':revenue')
-            ->set('o.marginTotal', ':margin')
-            ->set('o.updatedAt', ':date')
-            ->where($qb->expr()->eq('o.id', ':id'))
-            ->getQuery()
-            ->setMaxResults(1);
-
-        foreach ($ids as $id) {
-            /** @var OrderInterface $order */
-            if (!$order = $this->orderRepository->find($id)) {
-                continue;
-            }
-
-            $name = $order->getNumber();
-            $this->debug
-            && $output->write(sprintf(
-                '- %s %s ',
-                $name,
-                str_pad('.', 32 - mb_strlen($name), '.', STR_PAD_LEFT)
-            ));
-
-            if (!$this->orderUpdater->updateMarginTotals($order)) {
-                $this->debug && $output->writeln('<comment>up-to-date</comment>');
-                continue;
-            }
-
-            $update
-                ->setParameter('revenue', $order->getRevenueTotal())
-                ->setParameter('margin', $order->getMarginTotal())
-                ->setParameter('date', new DateTime(), Types::DATETIME_MUTABLE)
-                ->setParameter('id', $id)
-                ->execute();
-
-            $this->manager->clear();
-
-            $this->debug && $output->writeln('<info>updated</info>');
-        }
     }
 
     /**
@@ -187,7 +123,7 @@ class StatUpdateCommand extends Command
             }
 
             $d = new DateTime($date);
-            if ($this->statUpdater->updateDayOrderStat($d, $this->force)) {
+            if ($this->updater->updateDayOrderStat($d, $this->force)) {
                 $this->debug && $output->writeln('<info>updated</info>');
 
                 $month = $d->format('Y-m');
@@ -213,7 +149,7 @@ class StatUpdateCommand extends Command
             ));
 
             $d = new DateTime($month . '-01');
-            if ($this->statUpdater->updateMonthOrderStat($d, $this->force)) {
+            if ($this->updater->updateMonthOrderStat($d, $this->force)) {
                 $this->debug && $output->writeln('<info>updated</info>');
 
                 $year = $d->format('Y');
@@ -239,7 +175,7 @@ class StatUpdateCommand extends Command
             ));
 
             $d = new DateTime($year . '-01-01');
-            if ($this->statUpdater->updateYearOrderStat($d, $this->force)) {
+            if ($this->updater->updateYearOrderStat($d, $this->force)) {
                 $this->debug && $output->writeln('<info>updated</info>');
 
                 $this->flush = true;

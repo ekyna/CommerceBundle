@@ -59,3 +59,17 @@
 </div>
 {% endif %}
 {% endapply %}
+{% if margin is not empty -%}
+    <dl class="dl-horizontal">
+        <dt>{{ 'sale.field.margin_gross'|trans({}, 'EkynaCommerce') }}</dt>
+        <dd>
+            {{ margin.gross.total|format_currency(commerce_default_currency) }} /
+            {{ (margin.gross.percent / 100)|format_number(style='percent') }}
+        </dd>
+        <dt>{{ 'sale.field.margin_net'|trans({}, 'EkynaCommerce') }}</dt>
+        <dd>
+            {{ margin.net.total|format_currency(commerce_default_currency) }} /
+            {{ (margin.net.percent / 100)|format_number(style='percent') }}
+        </dd>
+    </dl>
+{%- endif %}

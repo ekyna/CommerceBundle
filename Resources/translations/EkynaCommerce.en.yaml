@@ -1493,8 +1493,8 @@ sale:
         gross_totals: Gross total
         deposit_total: Deposit
         margin: Margin
-        commercial_margin: Commercial<br>margin
-        profit_margin: Profit<br>margin
+        margin_net: Net margin
+        margin_gross: Gross margin
         weight_total: Total weight
         preparation_note: Preparation note
         document_comment: Documents comment

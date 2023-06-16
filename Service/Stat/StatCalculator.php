@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Service\Stat;
 
 use DateTimeInterface;
+use Decimal\Decimal;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query;
@@ -12,6 +13,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory;
 use Ekyna\Component\Commerce\Common\Calculator\MarginCalculatorFactory;
+use Ekyna\Component\Commerce\Common\Model\Margin;
 use Ekyna\Component\Commerce\Common\Model\SaleSources;
 use Ekyna\Component\Commerce\Order\Model\OrderItemInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
@@ -127,7 +129,7 @@ class StatCalculator implements StatCalculatorInterface
         return [
             'revenue'  => '0',
             'shipping' => '0',
-            'margin'   => '0',
+            'cost'     => '0',
             'orders'   => '0',
             'items'    => '0',
             'average'  => '0',
@@ -151,18 +153,35 @@ class StatCalculator implements StatCalculatorInterface
         if ($filter && !empty($filter->getSubjects())) {
             $data = $this->calculateOrders($query->getResult(IdHydrator::NAME), $filter);
         } elseif (null !== $data = $query->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR)) {
-            $data = array_map(static fn($val) => $val + .0, $data);
+            $data = array_map(static fn($val) => new Decimal((string)($val ?? 0)), $data);
         }
 
         if ($data) {
-            /** @var array{revenue: float, shipping: float, margin: float, orders: int, items: int, average: float} $result */
+            /**
+             * @var array{
+             *     revenue: Decimal,
+             *     shipping: Decimal,
+             *     margin: Decimal,
+             *     orders: Decimal,
+             *     items: Decimal,
+             *     average: Decimal
+             * } $result
+             */
+            $margin = new Margin(
+                $data['revenue_product'],
+                $data['revenue_shipping'],
+                $data['cost_product'],
+                $data['cost_supply'],
+                $data['cost_shipment'],
+            );
+
             $result = [
-                'revenue'  => (string)round($data['revenue'] - $data['shipping'], 3),
-                'shipping' => (string)round($data['shipping'], 3),
-                'margin'   => (string)round($data['margin'], 3),
-                'orders'   => (string)$data['orders'],
-                'items'    => (string)$data['items'],
-                'average'  => (string)round($data['average'], 3),
+                'revenue'  => $margin->getRevenueProduct()->toFixed(3),
+                'shipping' => $margin->getRevenueShipment()->toFixed(3),
+                'cost'     => $margin->getCostTotal(false)->toFixed(3),
+                'orders'   => $data['orders']->toFixed(),
+                'items'    => $data['items']->toFixed(),
+                'average'  => $data['average']->toFixed(3),
                 'details'  => [],
             ];
 
@@ -203,20 +222,20 @@ class StatCalculator implements StatCalculatorInterface
         $repository = $manager->getRepository($this->orderClass);
 
         $data = [
-            'revenue'  => 0,
-            'shipping' => 0,
-            'margin'   => 0,
-            'orders'   => 0,
-            'items'    => 0,
-            'average'  => 0,
+            'revenue_product'  => new Decimal(0),
+            'revenue_shipping' => new Decimal(0),
+            'cost_product'     => new Decimal(0),
+            'cost_supply'      => new Decimal(0),
+            'cost_shipment'    => new Decimal(0),
+            'orders'           => new Decimal(0),
+            'items'            => new Decimal(0),
+            'average'          => new Decimal(0),
         ];
 
         if (!$this->skipMode) {
-            $amountCalculator = $this->amountCalculatorFactory->create($this->defaultCurrency, true, $filter);
-            $marginCalculator = $this->marginCalculatorFactory->create($this->defaultCurrency, true, $filter);
+            $marginCalculator = $this->marginCalculatorFactory->create(filter: $filter);
         } else {
-            $amountCalculator = $this->amountCalculatorFactory->create($this->defaultCurrency, true);
-            $marginCalculator = $this->marginCalculatorFactory->create($this->defaultCurrency, true);
+            $marginCalculator = $this->marginCalculatorFactory->create();
         }
 
         foreach ($orders as $id) {
@@ -229,27 +248,29 @@ class StatCalculator implements StatCalculatorInterface
                 continue;
             }
 
-            $amountCalculator->clear();
-
-            // TODO calculate revenue based on sold quantities (assignments)
-            $result = $amountCalculator->calculateSale($order, true);
+            $margin = $marginCalculator->calculateSale($order);
 
             // Ignore order if not skip mode and gross amount equals to zero
-            if (!$this->skipMode && $result->getGross()->isZero()) {
+            if (!$this->skipMode && $margin->getRevenueProduct()->isZero()) {
                 $manager->clear();
                 continue;
             }
 
-            $data['revenue'] += $result->getBase();
-            $data['shipping'] += $amountCalculator->calculateSaleShipment($order)->getGross();
-
-            if ($margin = $marginCalculator->calculateSale($order)) {
-                $data['margin'] += $margin->getAmount();
-            }
+            $data['revenue_product'] += $margin->getRevenueProduct();
+            $data['revenue_shipping'] += $margin->getRevenueShipment();
+            $data['cost_product'] += $margin->getCostProduct();
+            $data['cost_supply'] += $margin->getCostSupply();
+            $data['cost_shipment'] += $margin->getCostShipment();
 
             $data['orders'] += 1;
+            $data['items'] += $order->getItemsCount();
+            $data['average'] += $order->getNetTotal();
 
             $manager->clear(); // TODO Dangerous
+        }
+
+        if (0 < $data['orders']) {
+            $data['average'] /= $data['orders'];
         }
 
         return $data;
@@ -297,9 +318,11 @@ class StatCalculator implements StatCalculatorInterface
             $qb->select('o.id');
         } else {
             $qb->select([
-                'SUM(o.revenueTotal) as revenue',
-                'SUM(o.shipmentAmount) as shipping',
-                'SUM(o.marginTotal) as margin',
+                'SUM(o.margin.revenueProduct) as revenue_product',
+                'SUM(o.margin.revenueShipment) as revenue_shipping',
+                'SUM(o.margin.costProduct) as cost_product',
+                'SUM(o.margin.costSupply) as cost_supply',
+                'SUM(o.margin.costShipment) as cost_shipment',
                 'COUNT(o.id) as orders',
                 'SUM(o.itemsCount) as items',
                 'AVG(o.netTotal) as average',

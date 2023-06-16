@@ -15,6 +15,7 @@ use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\ShipmentMethodEventSub
 use Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator;
 use Ekyna\Component\Commerce\Shipment\Builder\InvoiceSynchronizer;
 use Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilder;
+use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCostCalculator;
 use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentSubjectCalculator;
 use Ekyna\Component\Commerce\Shipment\Calculator\WeightCalculator;
 use Ekyna\Component\Commerce\Shipment\EventListener\AbstractShipmentItemListener;
@@ -56,6 +57,16 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.calculator.shipment_weight', WeightCalculator::class);
 
+    // Shipment cost calculator
+    $services
+        ->set('ekyna_commerce.calculator.shipment_cost', ShipmentCostCalculator::class)
+        ->args([
+            service('ekyna_commerce.resolver.shipment_address'),
+            service('ekyna_commerce.calculator.shipment_weight'),
+            service('ekyna_commerce.resolver.shipment_price'),
+            service('ekyna_commerce.converter.currency'),
+        ]);
+
     // Abstract shipment event listener
     $services
         ->set('ekyna_commerce.listener.abstract_shipment', AbstractShipmentListener::class)
@@ -96,7 +107,7 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('ekyna_commerce.builder.invoice'),
             service('ekyna_commerce.calculator.invoice_subject'),
-            service('ekyna_commerce.calculator.document'),
+            service('ekyna_commerce.calculator.invoice'),
             service('ekyna_resource.orm.persistence_helper'),
         ])
         ->call('setLockChecker', [service('ekyna_commerce.checker.locking')]);

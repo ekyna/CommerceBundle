@@ -9,7 +9,10 @@ use Ekyna\Bundle\CommerceBundle\Service\Common\InvoiceNumberStorage;
 use Ekyna\Bundle\CommerceBundle\Service\Invoice\InvoiceArchiver;
 use Ekyna\Component\Commerce\Common\Generator\DefaultGenerator;
 use Ekyna\Component\Commerce\Invoice\Builder\InvoiceBuilder;
+use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCalculator;
 use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceCostCalculator;
+use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceMarginCalculator;
+use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceMarginCalculatorFactory;
 use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceSubjectCalculator;
 use Ekyna\Component\Commerce\Invoice\EventListener\AbstractInvoiceItemListener;
 use Ekyna\Component\Commerce\Invoice\EventListener\AbstractInvoiceLineListener;
@@ -44,6 +47,29 @@ return static function (ContainerConfigurator $container) {
             ])
         ]);
 
+    // Invoice calculator
+    $services
+        ->set('ekyna_commerce.calculator.invoice', InvoiceCalculator::class)
+        ->lazy()
+        ->args([
+            service('ekyna_commerce.factory.amount_calculator'),
+            service('ekyna_commerce.converter.currency'),
+        ]);
+
+    // Invoice cost calculator
+    $services
+        ->set('ekyna_commerce.calculator.invoice_cost', InvoiceCostCalculator::class);
+
+    // Invoice margin calculator factory
+    $services
+        ->set('ekyna_commerce.factory.invoice_margin_calculator', InvoiceMarginCalculatorFactory::class)
+        ->args([
+            service('ekyna_commerce.factory.amount_calculator'),
+            service('ekyna_commerce.calculator.item_cost'),
+            service('ekyna_commerce.calculator.shipment_cost'),
+            param('ekyna_commerce.default.currency'),
+        ]);
+
     // Invoice subject calculator
     $services
         ->set('ekyna_commerce.calculator.invoice_subject', InvoiceSubjectCalculator::class)
@@ -51,10 +77,6 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.converter.currency'),
         ])
         ->call('setShipmentCalculator', [service('ekyna_commerce.calculator.shipment_subject')]);
-
-    // Invoice cost calculator
-    $services
-        ->set('ekyna_commerce.calculator.invoice_cost', InvoiceCostCalculator::class);
 
     // Invoice abstract listener
     $services
@@ -65,7 +87,8 @@ return static function (ContainerConfigurator $container) {
         ->call('setInvoiceNumberGenerator', [service('ekyna_commerce.generator.invoice_number')])
         ->call('setCreditNumberGenerator', [service('ekyna_commerce.generator.credit_number')])
         ->call('setInvoiceBuilder', [service('ekyna_commerce.builder.invoice')])
-        ->call('setInvoiceCalculator', [service('ekyna_commerce.calculator.document')])
+        ->call('setInvoiceCalculator', [service('ekyna_commerce.calculator.invoice')])
+        ->call('setInvoiceMarginCalculatorFactory', [service('ekyna_commerce.factory.invoice_margin_calculator')])
         ->call('setInvoicePaymentResolver', [service('ekyna_commerce.resolver.invoice_payment')])
         ->call('setAuthorizationChecker', [service('security.authorization_checker')]);
 
@@ -136,7 +159,6 @@ return static function (ContainerConfigurator $container) {
         ->tag('doctrine.event_listener', [
             'event'      => Events::onClear,
             'connection' => 'default',
-            'method'     => 'clear',
         ])
         ->tag('resource.event_listener', [
             'event'  => QueueEvents::QUEUE_CLOSE,

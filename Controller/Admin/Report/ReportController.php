@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin\Report;
 
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
+use Ekyna\Bundle\AdminBundle\Service\Menu\MenuBuilder;
 use Ekyna\Bundle\CommerceBundle\Entity\ReportRequest;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Report\ReportConfigType;
 use Ekyna\Bundle\CommerceBundle\Message\SendSalesReport;
@@ -28,6 +29,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
 
+use function min;
 use function Symfony\Component\Translation\t;
 
 /**
@@ -37,58 +39,35 @@ use function Symfony\Component\Translation\t;
  */
 class ReportController
 {
-    private ?ReportRequest $reportRequest = null;
-
     public function __construct(
         private readonly ReportRequestRepository $requestRepository,
-        private readonly EntityManagerInterface  $entityManager,
+        private readonly ManagerRegistry $managerRegistry,
         private readonly LocaleProviderInterface $localeProvider,
         private readonly UserProviderInterface   $userProvider,
         private readonly FormFactoryInterface    $formFactory,
         private readonly UrlGeneratorInterface   $urlGenerator,
         private readonly Environment             $twig,
         private readonly MessageBusInterface     $messageBus,
+        private readonly MenuBuilder                 $menuBuilder,
         private readonly FlashHelper             $flashHelper,
-        private readonly int                     $delay = 60
+        private readonly int                     $delay = 5
     ) {
-    }
-
-    private function addThrottleFlash(?ReportRequest $reportRequest, string $type): void
-    {
-        if (null === $reportRequest) {
-            return;
-        }
-
-        if ($this->delay < $past = $reportRequest->getMinutesPast()) {
-            return;
-        }
-
-        $this->flashHelper->addFlash(t('report.message.throttle', [
-            '{minutes}' => $this->delay - $past,
-        ], 'EkynaCommerce'), $type);
-    }
-
-    private function logReportRequest(UserInterface $user, ?ReportRequest $reportRequest): void
-    {
-        $reportRequest = $reportRequest ?? new ReportRequest();
-        $reportRequest->setUser($user);
-        $reportRequest->setRequestedAt(new DateTime());
-
-        $this->entityManager->persist($reportRequest);
-        $this->entityManager->flush();
     }
 
     public function __invoke(Request $request): Response
     {
-        if (null === $user = $this->userProvider->getUser()) {
+        if (null === $this->userProvider->getUser()) {
             throw new AccessDeniedHttpException();
         }
 
-        // TODO Breadcrumb
-
-        /** @var UserInterface $user */
-
-        $reportRequest = $this->requestRepository->findOneByUser($user);
+        $this
+            ->menuBuilder
+            ->breadcrumbAppend([
+                'name'         => 'sales_report',
+                'label'        => 'report.title',
+                'route'        => 'admin_ekyna_commerce_report_index',
+                'trans_domain' => 'EkynaCommerce',
+            ]);
 
         $config = $this->createConfig();
 
@@ -102,25 +81,15 @@ class ReportController
                     $this->urlGenerator->generate('admin_ekyna_commerce_report_index')
                 );
 
-                if ($reportRequest && ($this->delay > $past = $reportRequest->getMinutesPast())) {
-                    $this->flashHelper->addFlash(t('report.message.throttle', [
-                        '{minutes}' => $this->delay - $past,
-                    ], 'EkynaCommerce'), 'danger');
+                if (!$this->throttleRequest()) {
+                    $message = SendSalesReport::fromConfig($config);
+
+                    $this->messageBus->dispatch($message);
+
+                    $this->logRequest($config);
 
                     return $redirect;
                 }
-
-                $message = SendSalesReport::fromConfig($config);
-
-                $this->messageBus->dispatch($message);
-
-                $this->logReportRequest($user, $reportRequest);
-
-                $this->flashHelper->addFlash(t('report.message.pending', [
-                    '{email}' => $config->email,
-                ], 'EkynaCommerce'), 'success');
-
-                return $redirect;
             }
         }
 
@@ -129,6 +98,57 @@ class ReportController
         ]);
 
         return new Response($content);
+    }
+
+    private function throttleRequest(): bool
+    {
+        /** @var UserInterface $user */
+        $user = $this->userProvider->getUser();
+
+        $reportRequest = $this->requestRepository->findOneByUser($user);
+
+        if (null === $reportRequest) {
+            return false;
+        }
+
+        if ($this->delay < $past = $reportRequest->getMinutesPast()) {
+            return false;
+        }
+
+        $this->flashHelper->addFlash(t('report.message.throttle', [
+            '{minutes}' => min(1, $this->delay - $past),
+        ], 'EkynaCommerce'),
+            'danger');
+
+        return true;
+    }
+
+    private function logRequest(ReportConfig $config): void
+    {
+        if ($config->test) {
+            return;
+        }
+
+        /** @var UserInterface $user */
+        $user = $this->userProvider->getUser();
+        $reportRequest = $this->requestRepository->findOneByUser($user);
+
+        if (null === $reportRequest) {
+            $reportRequest = new ReportRequest();
+            $reportRequest->setUser($user);
+        }
+
+        $reportRequest->setRequestedAt(new DateTime());
+
+        $manager = $this->managerRegistry->getManagerForClass(ReportRequest::class);
+        $manager->persist($reportRequest);
+        $manager->flush();
+
+        $message = t('report.message.pending', [
+            '{email}' => $config->email,
+        ], 'EkynaCommerce');
+
+        $this->flashHelper->addFlash($message, 'success');
     }
 
     private function createConfig(): ReportConfig

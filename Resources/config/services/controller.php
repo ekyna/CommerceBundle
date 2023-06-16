@@ -187,13 +187,14 @@ return static function (ContainerConfigurator $container) {
     $services->set('ekyna_commerce.controller.admin.report', Admin\Report\ReportController::class)
         ->args([
             service('ekyna_commerce.repository.report_request'),
-            service('doctrine.orm.default_entity_manager'),
+            service('doctrine'),
             service('ekyna_resource.provider.locale'),
             service('ekyna_admin.provider.user'),
             service('form.factory'),
             service('router'),
             service('twig'),
             service('messenger.bus.default'),
+            service('ekyna_admin.menu.builder'),
             service('ekyna_ui.helper.flash'),
         ])
         ->alias(Admin\Report\ReportController::class, 'ekyna_commerce.controller.admin.report')->public();

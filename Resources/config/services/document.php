@@ -12,68 +12,72 @@ use Ekyna\Component\Commerce\Document\Builder\DocumentBuilder;
 use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator;
 
 return static function (ContainerConfigurator $container) {
-    $container
-        ->services()
+    $services = $container->services();
 
-        // Document builder
+    // Document builder
+    $services
         ->set('ekyna_commerce.builder.document', DocumentBuilder::class)
-            ->lazy(true)
-            ->args([
-                service('ekyna_resource.provider.locale'),
-                service('ekyna_commerce.transformer.array_address'),
-                service('libphonenumber\PhoneNumberUtil'),
-            ])
+        ->lazy()
+        ->args([
+            service('ekyna_resource.provider.locale'),
+            service('ekyna_commerce.transformer.array_address'),
+            service('libphonenumber\PhoneNumberUtil'),
+        ]);
 
-        // Document calculator
+    // Document calculator
+    $services
         ->set('ekyna_commerce.calculator.document', DocumentCalculator::class)
-            ->lazy(true)
-            ->args([
-                service('ekyna_commerce.factory.amount_calculator'),
-                service('ekyna_commerce.converter.currency'),
-            ])
+        ->lazy()
+        ->args([
+            service('ekyna_commerce.factory.amount_calculator'),
+            service('ekyna_commerce.converter.currency'),
+        ]);
 
-        // Document renderer factory
+    // Document renderer factory
+    $services
         ->set('ekyna_commerce.factory.document_renderer', RendererFactory::class)
-            ->lazy(true)
-            ->args([
-                service('twig'),
-                service('ekyna_resource.generator.pdf'),
-                abstract_arg('Renderer factory configuration'),
-            ])
+        ->lazy()
+        ->args([
+            service('twig'),
+            service('ekyna_resource.generator.pdf'),
+            abstract_arg('Renderer factory configuration'),
+        ]);
 
-        // Document helper
+    // Document helper
+    $services
         ->set('ekyna_commerce.helper.document', DocumentHelper::class)
-            ->args([
-                service('ekyna_setting.manager'),
-                service('ekyna_commerce.filesystem'),
-                service('router'),
-                service('ekyna_commerce.renderer.common'),
-                service('ekyna_commerce.resolver.tax'),
-                service('ekyna_commerce.helper.subject'),
-                service('event_dispatcher'),
-                abstract_arg('Document helper configuration'),
-                param('kernel.default_locale'),
-            ])
-            ->tag('twig.runtime')
+        ->args([
+            service('ekyna_setting.manager'),
+            service('ekyna_commerce.filesystem'),
+            service('router'),
+            service('ekyna_commerce.renderer.common'),
+            service('ekyna_commerce.resolver.tax'),
+            service('ekyna_commerce.helper.subject'),
+            service('event_dispatcher'),
+            abstract_arg('Document helper configuration'),
+            param('kernel.default_locale'),
+        ])
+        ->tag('twig.runtime');
 
-        // Document page builder
+    // Document page builder
+    $services
         ->set('ekyna_commerce.builder.document_page', DocumentPageBuilder::class)
-            ->args([
-                service('ekyna_commerce.helper.subject'),
-                service('ekyna_commerce.calculator.shipment_subject'),
-                abstract_arg('Document page builder configuration'),
-            ])
-            ->tag('twig.runtime')
+        ->args([
+            service('ekyna_commerce.helper.subject'),
+            service('ekyna_commerce.calculator.shipment_subject'),
+            abstract_arg('Document page builder configuration'),
+        ])
+        ->tag('twig.runtime');
 
-        // Document generator
+    // Document generator
+    $services
         ->set('ekyna_commerce.generator.document', DocumentGenerator::class)
-            ->lazy(true)
-            ->args([
-                service('ekyna_commerce.builder.document'),
-                service('ekyna_commerce.calculator.document'),
-                service('ekyna_commerce.factory.document_renderer'),
-                service('ekyna_commerce.helper.factory'),
-                service('translator'),
-            ])
-    ;
+        ->lazy()
+        ->args([
+            service('ekyna_commerce.builder.document'),
+            service('ekyna_commerce.calculator.document'),
+            service('ekyna_commerce.factory.document_renderer'),
+            service('ekyna_commerce.helper.factory'),
+            service('translator'),
+        ]);
 };

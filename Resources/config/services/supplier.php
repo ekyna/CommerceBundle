@@ -13,6 +13,8 @@ use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierOrderExporter;
 use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierOrderItemExporter;
 use Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator;
 use Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculator;
+use Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderItemCalculator;
+use Ekyna\Component\Commerce\Supplier\Calculator\WeightingCalculator;
 use Ekyna\Component\Commerce\Supplier\EventListener\AbstractListener;
 use Ekyna\Component\Commerce\Supplier\Factory\SupplierOrderFactory;
 use Ekyna\Component\Commerce\Supplier\Factory\SupplierProductFactory;
@@ -34,16 +36,29 @@ return static function (ContainerConfigurator $container) {
             expr("parameter('kernel.project_dir')~'/var/data/supplier_order_number'"),
         ]);
 
+    // Supplier order weighting calculator
+    $services
+        ->set('ekyna_commerce.calculator.supplier_order_weighting', WeightingCalculator::class)
+        ->tag('doctrine.event_listener', [
+            'event'      => Events::onClear,
+            'connection' => 'default',
+        ]);
+
+    // Supplier order item calculator
+    $services
+        ->set('ekyna_commerce.calculator.supplier_order_item', SupplierOrderItemCalculator::class)
+        ->args([
+            service('ekyna_commerce.calculator.supplier_order_weighting'),
+            service('ekyna_commerce.converter.currency'),
+        ]);
+
     // Supplier order calculator
     $services
         ->set('ekyna_commerce.calculator.supplier_order', SupplierOrderCalculator::class)
         ->args([
-            service('ekyna_commerce.converter.currency'),
+            service('ekyna_commerce.calculator.supplier_order_weighting'),
             service('ekyna_commerce.resolver.tax'),
-        ])
-        ->tag('doctrine.event_listener', [
-            'event'      => Events::onClear,
-            'connection' => 'default',
+            param('ekyna_commerce.default.currency'),
         ]);
 
     // Supplier order updater
@@ -74,7 +89,7 @@ return static function (ContainerConfigurator $container) {
     // Supplier abstract (resource) event listener
     $services
         ->set('ekyna_commerce.listener.abstract_supplier', AbstractListener::class)
-        ->abstract(true)
+        ->abstract()
         ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
         ->call('setStockUnitLinker', [service('ekyna_commerce.linker.stock_unit')])
         ->call('setStockUnitUpdater', [service('ekyna_commerce.updater.stock_unit')]);

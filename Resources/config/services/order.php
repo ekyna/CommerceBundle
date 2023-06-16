@@ -27,6 +27,10 @@ use Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Resolver\OrderStateResolver;
 use Ekyna\Component\Commerce\Order\Updater\OrderUpdater;
+use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\HttpKernel\KernelEvents;
+
+use function class_exists;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services();
@@ -73,14 +77,26 @@ return static function (ContainerConfigurator $container) {
         ]);
 
     // Order margin invalidator
-    $services
+    $invalidator = $services
         ->set('ekyna_commerce.invalidator.order_margin', OrderMarginInvalidator::class)
         ->args([
             service('doctrine.orm.default_entity_manager'),
-            param('ekyna_commerce.class.order_item_stock_assignment'),
+            service('ekyna_resource.queue.message'),
             param('ekyna_commerce.class.order'),
         ])
-        ->tag('kernel.event_subscriber');
+        ->tag('kernel.event_listener', [
+            'event' => KernelEvents::TERMINATE,
+            'method' => 'invalidate',
+            'priority' => 1024, // Before Symfony EmailSenderListener
+        ]);
+
+    if (class_exists(ConsoleEvents::class)) {
+        $invalidator->tag('kernel.event_listener', [
+            'event' => ConsoleEvents::TERMINATE,
+            'method' => 'invalidate',
+            'priority' => 1024, // Before Symfony EmailSenderListener
+        ]);
+    }
 
     // Order (resource) event listener
     $services
