@@ -82,7 +82,7 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('doctrine.orm.default_entity_manager'),
             service('ekyna_resource.queue.message'),
-            param('ekyna_commerce.class.order'),
+            param('ekyna_commerce.class.order_item_stock_assignment'),
         ])
         ->tag('kernel.event_listener', [
             'event' => KernelEvents::TERMINATE,

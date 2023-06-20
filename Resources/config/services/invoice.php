@@ -88,7 +88,7 @@ return static function (ContainerConfigurator $container) {
         ->call('setCreditNumberGenerator', [service('ekyna_commerce.generator.credit_number')])
         ->call('setInvoiceBuilder', [service('ekyna_commerce.builder.invoice')])
         ->call('setInvoiceCalculator', [service('ekyna_commerce.calculator.invoice')])
-        ->call('setInvoiceMarginCalculatorFactory', [service('ekyna_commerce.factory.invoice_margin_calculator')])
+        ->call('setMarginCalculatorFactory', [service('ekyna_commerce.factory.invoice_margin_calculator')])
         ->call('setInvoicePaymentResolver', [service('ekyna_commerce.resolver.invoice_payment')])
         ->call('setAuthorizationChecker', [service('security.authorization_checker')]);
 
