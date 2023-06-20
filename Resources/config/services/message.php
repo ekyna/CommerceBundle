@@ -25,7 +25,7 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.repository.order'),
             service('ekyna_commerce.updater.order'),
             service('ekyna_commerce.factory.invoice_margin_calculator'),
-            service('ekyna_commerce.manager.order'),
+            service('ekyna_resource.manager.factory'),
         ])
         ->tag('messenger.message_handler');
 };
