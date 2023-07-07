@@ -13,6 +13,9 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
+use function is_resource;
+use function stream_get_contents;
+
 /**
  * Class ShipmentExtension
  * @package Ekyna\Bundle\CommerceBundle\Twig
@@ -49,7 +52,20 @@ class ShipmentExtension extends AbstractExtension
                 'shipment_receiver_address',
                 [ShipmentHelper::class, 'resolveReceiverAddress']
             ),
+            new TwigFilter(
+                'shipment_label_content',
+                [$this, 'getShipmentLabelContent']
+            ),
         ];
+    }
+
+    public function getShipmentLabelContent(Model\ShipmentLabelInterface $label): string
+    {
+        if (is_resource($content = $label->getContent())) {
+            return stream_get_contents($content);
+        }
+
+        return $content;
     }
 
     public function getFunctions(): array

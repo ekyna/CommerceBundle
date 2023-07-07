@@ -131,7 +131,9 @@ class ShipmentActionsType extends AbstractColumnType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault('resource', OrderShipmentInterface::class);
+        $resolver
+            ->setDefault('resource', OrderShipmentInterface::class)
+            ->setDefault('actions', []);
     }
 
     public function getBlockPrefix(): string

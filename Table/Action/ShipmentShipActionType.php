@@ -62,9 +62,11 @@ class ShipmentShipActionType extends AbstractActionType
                 $gateway = $this->gatewayRegistry->getGateway($shipment->getGatewayName());
 
                 $gateway->ship($shipment);
-            }
 
-            $this->shipmentPersister->flush();
+                // As invoice number generator fetches latest number from database,
+                // we need to flush the entity manager on every shipment.
+                $this->shipmentPersister->flush();
+            }
         } catch (ShipmentGatewayException $e) {
             $table->addError(new TableError($e->getMessage()));
         }

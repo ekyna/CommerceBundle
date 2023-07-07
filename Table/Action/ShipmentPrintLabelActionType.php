@@ -68,9 +68,11 @@ class ShipmentPrintLabelActionType extends AbstractActionType
                 foreach ($gateway->printLabel($shipment, $types) as $label) {
                     $labels[] = $label;
                 }
-            }
 
-            $this->shipmentPersister->flush();
+                // As invoice number generator fetches latest number from database,
+                // we need to flush the entity manager on every shipment.
+                $this->shipmentPersister->flush();
+            }
         } catch (ShipmentGatewayException $e) {
             $table->addError(new TableError($e->getMessage()));
 

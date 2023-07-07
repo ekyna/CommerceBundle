@@ -38,7 +38,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 use function file_get_contents;
+use function is_resource;
 use function sprintf;
+use function stream_get_contents;
+use function strpos;
+use function substr;
 
 /**
  * Class Mailer
@@ -50,15 +54,15 @@ class Mailer
     private ?Address $notificationSender = null;
 
     public function __construct(
-        protected readonly MailerInterface $mailer,
-        protected readonly Environment $twig,
-        protected readonly TranslatorInterface $translator,
+        protected readonly MailerInterface         $mailer,
+        protected readonly Environment             $twig,
+        protected readonly TranslatorInterface     $translator,
         protected readonly SettingManagerInterface $settingsManager,
-        protected readonly RendererFactory $rendererFactory,
-        protected readonly ShipmentLabelRenderer $shipmentLabelRenderer,
-        protected readonly SubjectLabelRenderer $subjectLabelRenderer,
-        protected readonly SubjectHelperInterface $subjectHelper,
-        protected readonly FilesystemOperator $filesystem
+        protected readonly RendererFactory         $rendererFactory,
+        protected readonly ShipmentLabelRenderer   $shipmentLabelRenderer,
+        protected readonly SubjectLabelRenderer    $subjectLabelRenderer,
+        protected readonly SubjectHelperInterface  $subjectHelper,
+        protected readonly FilesystemOperator      $filesystem
     ) {
     }
 
@@ -354,24 +358,22 @@ class Mailer
 
         // Labels
         if (0 < $notify->getLabels()->count()) {
-            $content = null;
-            try {
-                $content = $this->shipmentLabelRenderer->render($notify->getLabels(), true);
-            } catch (PdfException) {
-                $notify->setError(true);
-                $report .= "ERROR: failed to generate PDF for labels\n";
-            }
+            $count = 0;
+            foreach ($notify->getLabels() as $label) {
+                $count++;
 
-            if (!empty($content)) {
-                $filename = 'labels.pdf';
+                $format = $label->getFormat();
 
-                $message->attach($content, $filename, 'application/pdf');
+                $filename = sprintf('label-%d.%s', $count, substr($format, strpos($format, '/') + 1));
 
-                $attachments[$filename] = $this->translator->trans(
-                    'shipment_label.label.' . (1 < $notify->getLabels()->count() ? 'plural' : 'singular'),
-                    [],
-                    'EkynaCommerce'
-                );
+                if (is_resource($content = $label->getContent())) {
+                    $content = stream_get_contents($content);
+                }
+
+                $message->attach($content, $filename, $format);
+
+                $attachments[$filename] = $filename;
+
                 $report .= "Attachment: $filename\n";
             }
         }
@@ -489,9 +491,9 @@ class Mailer
      * Sends the email.
      */
     protected function createMessage(
-        string $subject,
-        string $body,
-        Address|string|array $to = null,
+        string                    $subject,
+        string                    $body,
+        Address|string|array      $to = null,
         Address|string|array|bool $from = null
     ): Email {
         if (empty($to)) {

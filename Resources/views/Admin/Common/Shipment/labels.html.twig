@@ -1,58 +1,11 @@
-{% apply spaceless %}
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <title>Shipment label(s)</title>
-    <style>
-        html,
-        body {
-            width: 100%;
-            height: 100%;
-            margin :0;
-            padding: 0;
-        }
-
-        img {
-            display: inline-block;
-            max-height: 100%;
-            max-width: 100%;
-            width: auto;
-        }
-
-        {% if layout %}
-        div.label {
-            box-sizing: border-box;
-            float: left;
-            padding: 1cm;
-            overflow: hidden;
-        }
-        div.label-a6 {
-            width: 50%;
-            height: 50%;
-        }
-        div.label-a5 {
-            width: 100%;
-            height: 50%;
-        }
-        {% else %}
-        div.label {
-            box-sizing: border-box;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            text-align: center;
-        }
-        {% endif %}
-    </style>
+    <title>ZPL/EPL labels</title>
 </head>
 <body>
-
-    {% for label in labels -%}
-    <div class="label label-{{ label.size }}">
-        <img alt="Label {{ loop.index }}" src="{{ label.content|base64_inline_data(label.format) }}">
-    </div>
-    {%- endfor %}
-
+{% for label in labels %}
+<code id="label-{{ loop.index0 }}" type="{{ label.format }}">{{- label|shipment_label_content -}}</code>
+{% endfor %}
 </body>
 </html>
-{% endapply %}

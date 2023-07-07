@@ -7,18 +7,16 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Shipment;
 use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentLabelInterface;
-use Ekyna\Component\Resource\Exception\PdfException;
-use Ekyna\Component\Resource\Helper\PdfGenerator;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use setasign\Fpdi\PdfParser\StreamReader;
+use setasign\Fpdi\Tcpdf\Fpdi;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Twig\Environment;
 
-use function array_replace;
-use function file_exists;
-use function file_put_contents;
-use function sys_get_temp_dir;
-use function unlink;
+use function is_resource;
+use function stream_get_contents;
+use function strpos;
+use function substr;
 
 /**
  * Class ShipmentLabelRenderer
@@ -32,9 +30,8 @@ class ShipmentLabelRenderer
     public const SIZE_A6 = 'A6';
 
     public function __construct(
-        private readonly Environment $twig,
-        private readonly PdfGenerator $generator,
-        private readonly SettingManagerInterface $setting
+        private readonly Environment             $twig,
+        private readonly SettingManagerInterface $setting,
     ) {
     }
 
@@ -42,10 +39,8 @@ class ShipmentLabelRenderer
      * Renders the labels.
      *
      * @param array<ShipmentLabelInterface> $labels
-     *
-     * @throws PdfException
      */
-    public function render(array $labels, bool $raw = false): Response|string
+    public function render(array $labels): Response|string
     {
         foreach ($labels as $label) {
             if (!$label instanceof ShipmentLabelInterface) {
@@ -53,72 +48,137 @@ class ShipmentLabelRenderer
             }
         }
 
-        $layout = false;
+        if (1 === count($labels)) {
+            return $this->renderSingleLabel($labels[0]);
+        }
 
-        $options = [
-            'unit'         => 'mm',
-            'marginTop'    => 6,
-            'marginBottom' => 6,
-            'marginLeft'   => 6,
-            'marginRight'  => 6,
-            'paperWidth'   => 210,
-            'paperHeight'  => 297,
+        return $this->renderMultipleLabels($labels);
+
+        // TODO Drop unused settings
+        // $config = $this->setting->getParameter('commerce.shipment_label');
+    }
+
+    /**
+     * @param array<int, ShipmentLabelInterface> $labels
+     * @return Response
+     */
+    private function renderMultipleLabels(array $labels): Response
+    {
+        /** @var array<int, ShipmentLabelInterface> $codes */
+        $codes = [];
+        /** @var array<int, ShipmentLabelInterface> $pdfs */
+        $pdfs = [];
+
+        $codeFormats = [
+            ShipmentLabelInterface::FORMAT_ZPL,
+            ShipmentLabelInterface::FORMAT_EPL,
         ];
 
-        $config = $this->setting->getParameter('commerce.shipment_label');
+        foreach ($labels as $label) {
+            if (in_array($label->getFormat(), $codeFormats, true)) {
+                $codes[] = $label;
 
-        if (null !== $size = $config['size']) {
-            if (self::SIZE_A4 === $size) {
-                $layout = true;
-            } elseif (self::SIZE_A5 === $size) {
-                $options['paperWidth'] = 148;
-                $options['paperHeight'] = 210;
-            } elseif (self::SIZE_A6 === $size) {
-                $options['paperWidth'] = 105;
-                $options['paperHeight'] = 148;
+                continue;
             }
-        } elseif ((0 < $width = ($config['width'] ?? 0)) && (0 < $height = ($config['height'] ?? 0))) {
-            $options['paperWidth'] = $width;
-            $options['paperHeight'] = $height;
 
-            if (0 < $margin = $config['margin'] ?? 0) {
-                $options = array_replace($options, [
-                    'marginTop'    => $margin,
-                    'marginBottom' => $margin,
-                    'marginLeft'   => $margin,
-                    'marginRight'  => $margin,
-                ]);
-            }
+            $pdfs[] = $label;
         }
 
-        $content = $this->twig->render('@EkynaCommerce/Admin/Common/Shipment/labels.html.twig', [
-            'layout' => $layout,
-            'labels' => $labels,
-        ]);
+        if (!empty($pdfs)) {
+            $pdf = new Fpdi();
 
-        $content = $this->generator->generateFromHtml($content, $options);
+            foreach ($pdfs as $label) {
+                $format = $label->getFormat();
 
-        if ($raw) {
-            return $content;
-        }
+                // PDF page
+                if (ShipmentLabelInterface::FORMAT_PDF === $format) {
+                    if (!is_resource($content = $label->getContent())) {
+                        $content = StreamReader::createByString($content);
+                    }
 
-        if ($config['download']) {
-            $file = sys_get_temp_dir() . '/print-label.pdf';
-            if (file_exists($file)) {
-                unlink($file);
+                    $count = $pdf->setSourceFile($content);
+
+                    for ($i = 1; $i <= $count; $i++) {
+                        $pdf->AddPage();
+                        $template = $pdf->importPage($i);
+                        $pdf->useTemplate($template);
+                    }
+
+                    continue;
+                }
+
+                if (is_resource($content = $label->getContent())) {
+                    $content = stream_get_contents($content);
+                }
+
+                // Image page
+                $pdf->AddPage();
+                $pdf->Image(
+                    '@' . $content,
+                    w: 180,
+                    type: substr($format, strpos($format, '/') + 1)
+                );
             }
-            file_put_contents($file, $content);
 
-            $response = new BinaryFileResponse($file);
-            $response->headers->set('Content-Type', 'application/pdf');
-            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'print-label.pdf');
+            foreach ($codes as $label) {
+                // TODO Convert ZPL to image and add to PDF
+            }
+
+            $content = $pdf->Output(dest: 'S');
+
+            $response = new Response($content, 200, [
+                'Content-Type' => 'application/pdf',
+            ]);
+
+            $config = $this->setting->getParameter('commerce.shipment_label');
+
+            if ($config['download']) {
+                $disposition = HeaderUtils::makeDisposition(
+                    HeaderUtils::DISPOSITION_ATTACHMENT,
+                    'shipment-labels.pdf'
+                );
+                $response->headers->set('Content-Disposition', $disposition);
+            }
 
             return $response;
         }
 
-        return new Response($content, 200, [
-            'Content-Type' => 'application/pdf',
+        $content = $this->twig->render('@EkynaCommerce/Admin/Common/Shipment/labels.html.twig', [
+            'labels' => $codes,
         ]);
+
+        return new Response($content);
+    }
+
+    private function renderSingleLabel(ShipmentLabelInterface $label): Response
+    {
+        $extension = match ($format = $label->getFormat()) {
+            ShipmentLabelInterface::FORMAT_GIF  => 'gif',
+            ShipmentLabelInterface::FORMAT_JPEG => 'jpeg',
+            ShipmentLabelInterface::FORMAT_PNG  => 'png',
+            ShipmentLabelInterface::FORMAT_ZPL  => 'zpl',
+            ShipmentLabelInterface::FORMAT_EPL  => 'epl',
+            default                             => 'pdf',
+        };
+
+        $filename = $label->getShipment()->getNumber() . '.' . $extension;
+
+        if (is_resource($content = $label->getContent())) {
+            $content = stream_get_contents($content);
+        }
+
+        $response = new Response($content, headers: [
+            'Content-Type' => $format,
+        ]);
+
+        $config = $this->setting->getParameter('commerce.shipment_label');
+
+        if ($config['download']) {
+            $disposition = HeaderUtils::makeDisposition(HeaderUtils::DISPOSITION_INLINE, $filename);
+            $response->headers->set('Content-Disposition', $disposition);
+        }
+
+        return $response;
     }
 
     /**

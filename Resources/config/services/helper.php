@@ -246,10 +246,8 @@ return static function (ContainerConfigurator $container) {
     // Shipment label renderer
     $services
         ->set('ekyna_commerce.renderer.shipment_label', ShipmentLabelRenderer::class)
-        ->lazy(true)
         ->args([
             service('twig'),
-            service('ekyna_resource.generator.pdf'),
             service('ekyna_setting.manager'),
         ]);
 
