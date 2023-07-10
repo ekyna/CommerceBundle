@@ -48,22 +48,6 @@ class ShipmentLabelRenderer
             }
         }
 
-        if (1 === count($labels)) {
-            return $this->renderSingleLabel($labels[0]);
-        }
-
-        return $this->renderMultipleLabels($labels);
-
-        // TODO Drop unused settings
-        // $config = $this->setting->getParameter('commerce.shipment_label');
-    }
-
-    /**
-     * @param array<int, ShipmentLabelInterface> $labels
-     * @return Response
-     */
-    private function renderMultipleLabels(array $labels): Response
-    {
         /** @var array<int, ShipmentLabelInterface> $codes */
         $codes = [];
         /** @var array<int, ShipmentLabelInterface> $pdfs */
@@ -148,37 +132,6 @@ class ShipmentLabelRenderer
         ]);
 
         return new Response($content);
-    }
-
-    private function renderSingleLabel(ShipmentLabelInterface $label): Response
-    {
-        $extension = match ($format = $label->getFormat()) {
-            ShipmentLabelInterface::FORMAT_GIF  => 'gif',
-            ShipmentLabelInterface::FORMAT_JPEG => 'jpeg',
-            ShipmentLabelInterface::FORMAT_PNG  => 'png',
-            ShipmentLabelInterface::FORMAT_ZPL  => 'zpl',
-            ShipmentLabelInterface::FORMAT_EPL  => 'epl',
-            default                             => 'pdf',
-        };
-
-        $filename = $label->getShipment()->getNumber() . '.' . $extension;
-
-        if (is_resource($content = $label->getContent())) {
-            $content = stream_get_contents($content);
-        }
-
-        $response = new Response($content, headers: [
-            'Content-Type' => $format,
-        ]);
-
-        $config = $this->setting->getParameter('commerce.shipment_label');
-
-        if ($config['download']) {
-            $disposition = HeaderUtils::makeDisposition(HeaderUtils::DISPOSITION_INLINE, $filename);
-            $response->headers->set('Content-Disposition', $disposition);
-        }
-
-        return $response;
     }
 
     /**
