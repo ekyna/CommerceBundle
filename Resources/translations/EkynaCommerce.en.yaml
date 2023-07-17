@@ -1381,6 +1381,7 @@ sale:
         prioritize: Reassign stocks
         prepare: Prepare shipment
         abort: Cancel shipment preparation
+        check_items: Check lines integrity
         adjustment:
             new: Add a new discount
             edit: Edit the discount
@@ -1438,6 +1439,8 @@ sale:
         immutable_element: This item cannot be be changed or deleted.
         null_exchange_rate: >
             Exchange rate is not fixed. <a href="{{url}}">Fix exchange rate</a>.
+        invalid_items: Some lines have integrity problems. Please synchronise them.
+        valid_items: No problem detected.
     form:
         add_item: Add a product line
         remove_item: Remove the product line ?

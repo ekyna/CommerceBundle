@@ -33,6 +33,17 @@ class QuoteAdminViewType extends AbstractViewType
 
         $view->vars['attr']['data-type'] = 'quote';
 
+        // Check items button
+        $checkItemsPath = $this->resourceUrl($sale, Admin\Sale\CheckItemsAction::class);
+        $view->addButton(new View\Button(
+            $checkItemsPath,
+            $this->trans('sale.button.check_items', [], 'EkynaCommerce'),
+            'fa fa-check-circle-o', [
+                'title' => $this->trans('sale.button.check_items', [], 'EkynaCommerce'),
+                'class' => 'btn btn-sm btn-default',
+            ]
+        ));
+
         // Refresh button
         $refreshPath = $this->resourceUrl($sale, Admin\Sale\RefreshAction::class);
         $view->addButton(new View\Button(
@@ -77,9 +88,11 @@ class QuoteAdminViewType extends AbstractViewType
         ));
 
         // New adjustment button
-        $newAdjustmentPath = $this->resourceUrl('ekyna_commerce.quote_adjustment', Admin\Sale\Adjustment\CreateAction::class, [
-            'quoteId' => $sale->getId(),
-        ]);
+        $newAdjustmentPath = $this->resourceUrl('ekyna_commerce.quote_adjustment',
+            Admin\Sale\Adjustment\CreateAction::class,
+            [
+                'quoteId' => $sale->getId(),
+            ]);
         $view->addButton(new View\Button(
             $newAdjustmentPath,
             $this->trans('sale.button.adjustment.new', [], 'EkynaCommerce'),
@@ -118,11 +131,11 @@ class QuoteAdminViewType extends AbstractViewType
 
                 $removePath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\DeleteAction::class);
                 $view->addAction(new View\Action($removePath, 'fa fa-percent', [
-                    'title'         => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
+                    'title'           => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
                     //'confirm'       => $this->trans('sale.confirm.adjustment.remove', [], 'EkynaCommerce'),
                     //'data-sale-xhr' => null,
                     'data-sale-modal' => null,
-                    'class'         => 'text-danger',
+                    'class'           => 'text-danger',
                 ]));
             } else {
                 // New adjustment button
@@ -169,11 +182,11 @@ class QuoteAdminViewType extends AbstractViewType
                 // Remove action
                 $removePath = $this->resourceUrl($item, Admin\Sale\Item\DeleteAction::class);
                 $view->addAction(new View\Action($removePath, 'fa fa-remove', [
-                    'title'         => $this->trans('sale.button.item.remove', [], 'EkynaCommerce'),
+                    'title'           => $this->trans('sale.button.item.remove', [], 'EkynaCommerce'),
                     //'confirm'       => $this->trans('sale.confirm.item.remove', [], 'EkynaCommerce'),
                     //'data-sale-xhr' => null,
                     'data-sale-modal' => null,
-                    'class'         => 'text-danger',
+                    'class'           => 'text-danger',
                 ]));
             }
         }
@@ -214,8 +227,8 @@ class QuoteAdminViewType extends AbstractViewType
 
     public function buildAdjustmentView(
         Common\AdjustmentInterface $adjustment,
-        View\LineView $view,
-        array $options
+        View\LineView              $view,
+        array                      $options
     ): void {
         if ($adjustment->isImmutable() || !$options['editable'] || !$options['private']) {
             return;
@@ -230,11 +243,11 @@ class QuoteAdminViewType extends AbstractViewType
 
         $removePath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\DeleteAction::class);
         $view->addAction(new View\Action($removePath, 'fa fa-remove', [
-            'title'         => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
+            'title'           => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
             //'confirm'       => $this->trans('sale.confirm.adjustment.remove', [], 'EkynaCommerce'),
             //'data-sale-xhr' => null,
             'data-sale-modal' => null,
-            'class'         => 'text-danger',
+            'class'           => 'text-danger',
         ]));
     }
 

@@ -17,6 +17,8 @@ use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
 use Ekyna\Component\Commerce\Stock\Prioritizer\PrioritizeCheckerInterface;
 use Exception;
 
+use function sprintf;
+
 /**
  * Class OrderViewType
  * @package Ekyna\Bundle\CommerceBundle\Service\Order
@@ -78,6 +80,18 @@ class OrderViewType extends AbstractViewType
             ));
         }
 
+        // Check items button
+        $checkItemsPath = $this->resourceUrl($sale, Admin\Sale\CheckItemsAction::class);
+        $view->addButton(new View\Button(
+            $checkItemsPath,
+            $this->trans('sale.button.check_items', [], 'EkynaCommerce'),
+            'fa fa-check-circle-o', [
+                'id'    => 'order_check_items',
+                'title' => $this->trans('sale.button.check_items', [], 'EkynaCommerce'),
+                'class' => 'btn btn-sm btn-default',
+            ]
+        ));
+
         // Refresh button
         $refreshPath = $this->resourceUrl($sale, Admin\Sale\RefreshAction::class);
         $view->addButton(new View\Button(
@@ -122,9 +136,11 @@ class OrderViewType extends AbstractViewType
         ));
 
         // New adjustment button
-        $newAdjustmentPath = $this->resourceUrl('ekyna_commerce.order_adjustment', Admin\Sale\Adjustment\CreateAction::class, [
-            'orderId' => $sale->getId(),
-        ]);
+        $newAdjustmentPath = $this->resourceUrl('ekyna_commerce.order_adjustment',
+            Admin\Sale\Adjustment\CreateAction::class,
+            [
+                'orderId' => $sale->getId(),
+            ]);
         $view->addButton(new View\Button(
             $newAdjustmentPath,
             $this->trans('sale.button.adjustment.new', [], 'EkynaCommerce'),
@@ -150,36 +166,47 @@ class OrderViewType extends AbstractViewType
         if (!($item->isCompound() && !$item->hasPrivateChildren())) {
             $lines = [];
 
+            $lines['field.available'] = $this->formatter->number(
+                $this->shipmentCalculator->calculateAvailableQuantity($item)
+            );
+
             $shipped = $this->shipmentCalculator->calculateShippedQuantity($item);
             $returned = $this->shipmentCalculator->calculateReturnedQuantity($item);
 
             if (0 < $returned) {
-                $shipped = sprintf('%s (-%s)', $this->formatter->number($shipped), $this->formatter->number($returned));
+                $shipment = sprintf('%s (-%s)',
+                    $this->formatter->number($shipped),
+                    $this->formatter->number($returned));
             } else {
-                $shipped = $this->formatter->number($shipped);
+                $shipment = $this->formatter->number($shipped);
             }
 
-            $lines['field.shipped'] = $shipped;
-
-            $lines['field.available'] = $this->formatter->number(
-                $this->shipmentCalculator->calculateAvailableQuantity($item)
-            );
+            $lines['field.shipped'] = $shipment;
 
             if (!$sale->isSample()) {
                 $invoiced = $this->invoiceCalculator->calculateInvoicedQuantity($item);
                 $credited = $this->invoiceCalculator->calculateCreditedQuantity($item, null, false);
 
                 if (0 < $credited) {
-                    $invoiced = sprintf(
+                    $invoice = sprintf(
                         '%s (-%s)',
                         $this->formatter->number($invoiced),
                         $this->formatter->number($credited)
                     );
                 } else {
-                    $invoiced = $this->formatter->number($invoiced);
+                    $invoice = $this->formatter->number($invoiced);
                 }
 
-                $lines['field.invoiced'] = $invoiced;
+                $lines['field.invoiced'] = $invoice;
+
+                $balance = $shipped->sub($returned)->sub($invoiced)->add($credited);
+
+                if (!$balance->isZero()) {
+                    $lines['field.balance'] = sprintf(
+                        '<strong style="color:red">%s</strong>',
+                        $this->formatter->number($balance)
+                    );
+                }
             }
 
             $popover = '<dl class="dl-horizontal" style="font-size:13px">';

@@ -47,11 +47,9 @@ class TransformAction extends AbstractSaleAction implements RoutingActionInterfa
     use BreadcrumbTrait;
     use TemplatingTrait;
 
-    private SaleTransformerInterface $saleTransformer;
-
-    public function __construct(SaleTransformerInterface $saleTransformer)
-    {
-        $this->saleTransformer = $saleTransformer;
+    public function __construct(
+        private readonly SaleTransformerInterface $saleTransformer
+    ) {
     }
 
     public function __invoke(): Response

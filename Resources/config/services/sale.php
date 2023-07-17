@@ -7,6 +7,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use Doctrine\ORM\Events;
 use Ekyna\Bundle\CommerceBundle\EventListener\SaleTransformListener;
 use Ekyna\Bundle\CommerceBundle\Factory\AbstractSaleFactory;
+use Ekyna\Bundle\CommerceBundle\Service\Checker\SaleItemsChecker;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\SaleCopyListener;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Resolver\CartStateResolver;
@@ -26,6 +27,7 @@ use Ekyna\Component\Commerce\Common\Preparer\SalePreparer;
 use Ekyna\Component\Commerce\Common\Resolver\DiscountResolver;
 use Ekyna\Component\Commerce\Common\Resolver\SaleStateResolverFactory;
 use Ekyna\Component\Commerce\Common\Transformer\SaleCopierFactory;
+use Ekyna\Component\Commerce\Common\Transformer\SaleDuplicator;
 use Ekyna\Component\Commerce\Common\Transformer\SaleTransformer;
 use Ekyna\Component\Commerce\Common\Updater\SaleUpdater;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
@@ -35,6 +37,9 @@ use Ekyna\Component\Commerce\Quote\Resolver\QuoteStateResolver;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services();
+
+    // Sale items checker
+    $services->set('ekyna_commerce.checker.sale_items', SaleItemsChecker::class);
 
     // Sale factory helper
     $services
@@ -66,12 +71,21 @@ return static function (ContainerConfigurator $container) {
     // Sale transformer
     $services
         ->set('ekyna_commerce.transformer.sale', SaleTransformer::class)
-        ->lazy()
         ->args([
             service('ekyna_commerce.factory.sale_copier'),
             service('ekyna_resource.factory.factory'),
             service('ekyna_resource.manager.factory'),
-            service('ekyna_resource.upload_toggler'),
+            service('event_dispatcher'),
+        ])
+        ->call('setUploadToggler', [service('ekyna_resource.upload_toggler')]);
+
+    // Sale duplicator
+    $services
+        ->set('ekyna_commerce.duplicator.sale', SaleDuplicator::class)
+        ->args([
+            service('ekyna_commerce.factory.sale_copier'),
+            service('ekyna_resource.factory.factory'),
+            service('ekyna_resource.manager.factory'),
             service('event_dispatcher'),
         ]);
 

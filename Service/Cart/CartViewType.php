@@ -33,6 +33,17 @@ class CartViewType extends AbstractViewType
 
         $view->vars['attr']['data-type'] = 'cart';
 
+        // Check items button
+        $checkItemsPath = $this->resourceUrl($sale, Admin\Sale\CheckItemsAction::class);
+        $view->addButton(new View\Button(
+            $checkItemsPath,
+            $this->trans('sale.button.check_items', [], 'EkynaCommerce'),
+            'fa fa-check-circle-o', [
+                'title' => $this->trans('sale.button.check_items', [], 'EkynaCommerce'),
+                'class' => 'btn btn-sm btn-default',
+            ]
+        ));
+
         // Refresh button
         $refreshPath = $this->resourceUrl($sale, Admin\Sale\RefreshAction::class);
         $view->addButton(new View\Button(

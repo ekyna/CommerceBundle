@@ -1417,6 +1417,7 @@ sale:
         prioritize: Réassigner le stock
         prepare: Préparer l'expédition
         abort: Annuler la préparation
+        check_items: Vérifier l'intégrité des lignes
         adjustment:
             new: Ajouter une remise
             edit: Modifier la remise
@@ -1477,6 +1478,8 @@ sale:
         immutable_element: Cet élément ne peut pas être modifié ou supprimé.
         null_exchange_rate: >
             Le taux de change n'est pas fixé. <a href="{{url}}">Fixer le taux de change</a>.
+        invalid_items: Certaines lignes présentent des problèmes de configuration. Veuillez les synchroniser.
+        valid_items: Aucun problème détecté.
     form:
         add_item: Ajouter une ligne produit
         remove_item: Supprimer la ligne produit ?

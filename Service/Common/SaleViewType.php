@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Service\Common;
 
 use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
+use Ekyna\Bundle\CommerceBundle\Service\Checker\SaleItemsChecker;
 use Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory;
 use Ekyna\Component\Commerce\Common\Model;
 use Ekyna\Component\Commerce\Common\View;
@@ -116,9 +117,15 @@ class SaleViewType extends AbstractViewType
     {
         $view->addClass('sale-detail-item');
 
-        if ($options['private'] && $options['editable'] && !$item->hasParent()) {
-            $view->vars['attr']['data-id'] = $item->getId();
-            $view->vars['attr']['draggable'] = 'true';
+        if ($options['private']) {
+            if ($item->hasDatum(SaleItemsChecker::INVALID_ITEM)) {
+                $view->vars['invalid'] = true;
+            }
+
+            if ($options['editable'] && !$item->hasParent()) {
+                $view->vars['attr']['data-id'] = $item->getId();
+                $view->vars['attr']['draggable'] = 'true';
+            }
         }
 
         if (!$item->hasSubjectIdentity()) {

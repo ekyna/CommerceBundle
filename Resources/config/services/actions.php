@@ -170,6 +170,12 @@ return static function (ContainerConfigurator $container) {
             ])
             ->tag('ekyna_resource.action')
 
+        ->set('ekyna_commerce.action.sale.check_items', Sale\CheckItemsAction::class)
+            ->args([
+                service('ekyna_commerce.checker.sale_items'),
+            ])
+            ->tag('ekyna_resource.action')
+
         ->set('ekyna_commerce.action.sale.document_generate', Sale\DocumentGenerateAction::class)
             ->args([
                 service('ekyna_commerce.generator.document'),
@@ -186,7 +192,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set('ekyna_commerce.action.sale.duplicate', Sale\DuplicateAction::class)
             ->args([
-                service('ekyna_commerce.factory.sale_copier'),
+                service('ekyna_commerce.duplicator.sale'),
             ])
             ->tag('ekyna_resource.action')
 

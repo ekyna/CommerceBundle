@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Action\Admin\Sale;
 
-use Decimal\Decimal;
 use Ekyna\Bundle\AdminBundle\Action\Util\BreadcrumbTrait;
-use Ekyna\Bundle\CommerceBundle\Model\InChargeSubjectInterface;
 use Ekyna\Bundle\ResourceBundle\Action\FactoryTrait;
 use Ekyna\Bundle\ResourceBundle\Action\FormTrait;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
@@ -19,14 +17,12 @@ use Ekyna\Bundle\UiBundle\Action\FlashTrait;
 use Ekyna\Bundle\UiBundle\Form\Type\FormActionsType;
 use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
-use Ekyna\Component\Commerce\Common\Model\SaleSources;
 use Ekyna\Component\Commerce\Common\Model\TransformationTargets;
-use Ekyna\Component\Commerce\Common\Transformer\SaleCopierFactoryInterface;
+use Ekyna\Component\Commerce\Common\Transformer\SaleDuplicatorInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\Form\Extension\Core\Type;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -52,11 +48,9 @@ class DuplicateAction extends AbstractSaleAction implements RoutingActionInterfa
     use BreadcrumbTrait;
     use TemplatingTrait;
 
-    private SaleCopierFactoryInterface $saleCopierFactory;
-
-    public function __construct(SaleCopierFactoryInterface $saleCopierFactory)
-    {
-        $this->saleCopierFactory = $saleCopierFactory;
+    public function __construct(
+        private readonly SaleDuplicatorInterface $saleDuplicator
+    ) {
     }
 
     public function __invoke(): Response
@@ -82,58 +76,34 @@ class DuplicateAction extends AbstractSaleAction implements RoutingActionInterfa
         /** @var SaleInterface $targetSale */
         $targetSale = $factory->create(false);
 
-        // Copies source to target
-        $this
-            ->saleCopierFactory
-            ->create($sourceSale, $targetSale)
-            ->copyData()
-            ->copyItems();
+        // Initialize the duplication
+        $event = $this->saleDuplicator->initialize($sourceSale, $targetSale);
+        if ($event->isPropagationStopped()) {
+            if ($event->hasErrors()) {
+                $this->addFlashFromEvent($event);
+            }
 
-        $targetSale
-            ->setCustomerGroup(null)
-            ->setShipmentMethod(null)
-            ->setPaymentMethod(null)
-            ->setPaymentTerm(null)
-            ->setOutstandingLimit(new Decimal(0))
-            ->setDepositTotal(new Decimal(0))
-            ->setSource(SaleSources::SOURCE_COMMERCIAL)
-            ->setExchangeRate(null)
-            ->setExchangeDate(null)
-            ->setAcceptedAt(null);
-
-        $factory->initialize($targetSale);
-
-        // Clear addresses
-        $targetSale
-            ->setSameAddress(true)
-            ->setInvoiceAddress(null)
-            ->setDeliveryAddress(null);
-
-        if ($targetSale instanceof InChargeSubjectInterface) {
-            $targetSale->setInCharge(null);
+            return $this->redirect($this->generateResourcePath($sourceSale));
         }
 
         $form = $this->createDuplicateConfirmForm(
-            $sourceSale, $targetSale, $targetConfig->getData('form'), $target
+            $sourceSale,
+            $targetSale,
+            $targetConfig->getData('form'),
+            $target
         );
 
         $form->handleRequest($this->request);
 
         // If user confirmed
         if ($form->isSubmitted() && $form->isValid()) {
-            $event = $this
-                ->getManager($targetConfig->getEntityInterface())
-                ->create($targetSale);
-
-            if ($event->hasErrors()) {
-                foreach ($event->getErrors() as $error) {
-                    $form->addError(new FormError($error->getMessage()));
-                }
-            } else {
-                $this->addFlashFromEvent($event);
-
+            // Do sale duplication
+            if (null === $event = $this->saleDuplicator->duplicate()) {
+                // Redirect to target sale
                 return $this->redirect($this->generateResourcePath($targetSale));
             }
+
+            $this->addFlashFromEvent($event);
         }
 
         $this->breadcrumbFromContext($this->context);
