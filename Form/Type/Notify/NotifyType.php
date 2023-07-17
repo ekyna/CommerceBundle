@@ -18,15 +18,11 @@ use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
-use Ekyna\Component\Commerce\Order\Entity\OrderAttachment;
-use Ekyna\Component\Commerce\Order\Entity\OrderInvoice;
-use Ekyna\Component\Commerce\Order\Entity\OrderShipment;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
-use Ekyna\Component\Commerce\Quote\Entity\QuoteAttachment;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
-use Ekyna\Component\Commerce\Supplier\Entity\SupplierOrderAttachment;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
+use Ekyna\Component\Resource\Config\Registry\ResourceRegistry;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
@@ -49,21 +45,15 @@ use function Symfony\Component\Translation\t;
  */
 class NotifyType extends AbstractType
 {
-    private RecipientHelper               $recipientHelper;
-    private TranslatorInterface           $translator;
-    private AuthorizationCheckerInterface $authorizationChecker;
-
     public function __construct(
-        RecipientHelper               $recipientHelper,
-        TranslatorInterface           $translator,
-        AuthorizationCheckerInterface $authorizationChecker
+        private readonly RecipientHelper               $recipientHelper,
+        private readonly TranslatorInterface           $translator,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly ResourceRegistry              $resourceRegistry,
     ) {
-        $this->recipientHelper = $recipientHelper;
-        $this->translator = $translator;
-        $this->authorizationChecker = $authorizationChecker;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $source = $options['source'];
 
@@ -195,22 +185,29 @@ class NotifyType extends AbstractType
      */
     protected function addSaleFields(FormBuilderInterface $builder, SaleInterface $sale): void
     {
-        // TODO use SaleFactory to get classes
         if ($sale instanceof OrderInterface) {
             $saleProperty = 'order';
-            $attachmentClass = OrderAttachment::class;
         } elseif ($sale instanceof QuoteInterface) {
             $saleProperty = 'quote';
-            $attachmentClass = QuoteAttachment::class;
         } else {
             throw new InvalidArgumentException('Unsupported sale.');
         }
 
         if ($sale instanceof OrderInterface) {
+            $invoiceClass = $this
+                ->resourceRegistry
+                ->find('ekyna_commerce.order_invoice')
+                ->getEntityClass();
+
+            $shipmentClass = $this
+                ->resourceRegistry
+                ->find('ekyna_commerce.order_shipment')
+                ->getEntityClass();
+
             $builder
                 ->add('invoices', EntityType::class, [
                     'label'         => t('notify.field.invoices', [], 'EkynaCommerce'),
-                    'class'         => OrderInvoice::class,
+                    'class'         => $invoiceClass,
                     'query_builder' => function (EntityRepository $repository) use ($saleProperty, $sale) {
                         $qb = $repository->createQueryBuilder('i');
 
@@ -218,10 +215,10 @@ class NotifyType extends AbstractType
                             ->andWhere($qb->expr()->eq('i.' . $saleProperty, ':sale'))
                             ->setParameter('sale', $sale);
                     },
-                    'choice_label'  => function ($value) {
-                        /** @var InvoiceInterface $value */
-                        return DocumentTypes::getLabel($value->getType())->trans($this->translator)
-                            . ' ' . $value->getNumber();
+                    'choice_label'  => function (InvoiceInterface $value): string {
+                        $label = DocumentTypes::getLabel($value->getType())->trans($this->translator);
+
+                        return $label . ' ' . $value->getNumber();
                     },
                     'multiple'      => true,
                     'expanded'      => true,
@@ -229,7 +226,7 @@ class NotifyType extends AbstractType
                 ])
                 ->add('shipments', EntityType::class, [
                     'label'         => t('notify.field.shipments', [], 'EkynaCommerce'),
-                    'class'         => OrderShipment::class,
+                    'class'         => $shipmentClass,
                     'query_builder' => function (EntityRepository $repository) use ($saleProperty, $sale) {
                         $qb = $repository->createQueryBuilder('i');
 
@@ -237,8 +234,7 @@ class NotifyType extends AbstractType
                             ->andWhere($qb->expr()->eq('i.' . $saleProperty, ':sale'))
                             ->setParameter('sale', $sale);
                     },
-                    'choice_label'  => function ($value) {
-                        /** @var ShipmentInterface $value */
+                    'choice_label'  => function (ShipmentInterface $value): string {
                         $type = ($value->isReturn() ? 'return' : 'shipment') . '.label.singular';
 
                         return $this->translator->trans($type, [], 'EkynaCommerce') . ' ' . $value->getNumber();
@@ -248,6 +244,11 @@ class NotifyType extends AbstractType
                     'required'      => false,
                 ]);
         }
+
+        $attachmentClass = $this
+            ->resourceRegistry
+            ->find("ekyna_commerce.{$saleProperty}_attachment")
+            ->getEntityClass();
 
         $builder
             ->add('attachments', EntityType::class, [
@@ -331,13 +332,18 @@ class NotifyType extends AbstractType
      */
     protected function addSupplierOrderFields(FormBuilderInterface $builder, SupplierOrderInterface $order): void
     {
+        $attachmentClass = $this
+            ->resourceRegistry
+            ->find('ekyna_commerce.supplier_order_attachment')
+            ->getEntityClass();
+
         $builder
             ->add('template', SupplierTemplateChoiceType::class, [
                 'order' => $order,
             ])
             ->add('attachments', EntityType::class, [
                 'label'         => t('attachment.label.plural', [], 'EkynaCommerce'),
-                'class'         => SupplierOrderAttachment::class,
+                'class'         => $attachmentClass,
                 'query_builder' => function (EntityRepository $repository) use ($order) {
                     $qb = $repository->createQueryBuilder('a');
 
@@ -346,7 +352,7 @@ class NotifyType extends AbstractType
                         ->addOrderBy('a.createdAt', 'DESC')
                         ->setParameter('order', $order);
                 },
-                'choice_label'  => function (AttachmentInterface $attachment) {
+                'choice_label'  => function (AttachmentInterface $attachment): string {
                     if (!empty($title = $attachment->getTitle())) {
                         return $attachment->getFilename() . ' :  <em>' . $title . '</em>';
                     }

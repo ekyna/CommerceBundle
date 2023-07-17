@@ -188,6 +188,7 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.helper.notify'),
             service('translator'),
             service('security.authorization_checker'),
+            service('ekyna_resource.registry.resource'),
         ])
         ->tag('form.type')
         ->tag('form.js', [
