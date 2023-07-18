@@ -8,9 +8,9 @@ resources:
             repository:
                 interface: Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface
                 class: Ekyna\Bundle\CommerceBundle\Repository\OrderRepository
-#            manager:
-#                interface: ~
-#                class: ~
+            manager:
+                interface: Ekyna\Component\Commerce\Order\Manager\OrderManagerInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Manager\OrderManager
             factory: Ekyna\Bundle\CommerceBundle\Factory\OrderFactory
 #            normalizer: ~
             search:
@@ -103,6 +103,9 @@ resources:
             repository:
                 interface : Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface
                 class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderInvoiceRepository
+            manager:
+                interface : Ekyna\Component\Commerce\Order\Manager\OrderInvoiceManagerInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Manager\OrderInvoiceManager
             factory: Ekyna\Bundle\CommerceBundle\Factory\InvoiceFactory
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceType
             table: Ekyna\Bundle\CommerceBundle\Table\Type\OrderInvoiceType

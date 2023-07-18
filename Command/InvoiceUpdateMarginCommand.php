@@ -8,9 +8,10 @@ use DateTime;
 use Decimal\Decimal;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Common\Model\Margin;
-use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceMarginCalculatorFactory;
+use Ekyna\Component\Commerce\Order\Manager\OrderInvoiceManagerInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInvoiceInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
+use Ekyna\Component\Commerce\Order\Updater\OrderInvoiceUpdaterInterface;
 use Generator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,7 +19,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-use function date;
 use function gc_collect_cycles;
 use function sprintf;
 
@@ -36,8 +36,9 @@ class InvoiceUpdateMarginCommand extends Command
 
     public function __construct(
         private readonly OrderInvoiceRepositoryInterface $repository,
-        private readonly InvoiceMarginCalculatorFactory  $factory,
-        private readonly EntityManagerInterface          $manager,
+        private readonly OrderInvoiceUpdaterInterface    $updater,
+        private readonly OrderInvoiceManagerInterface    $manager,
+        private readonly EntityManagerInterface          $entityManager,
     ) {
         parent::__construct();
     }
@@ -88,7 +89,7 @@ class InvoiceUpdateMarginCommand extends Command
     {
         $class = $this->repository->getClassName();
 
-        $query = $this->manager->createQuery(<<<DQL
+        $query = $this->entityManager->createQuery(<<<DQL
             SELECT i
             FROM $class i 
             JOIN i.order o
@@ -133,21 +134,6 @@ class InvoiceUpdateMarginCommand extends Command
             }
         };
 
-        $class = $this->repository->getClassName();
-
-        $update = $this->manager->createQuery(<<<DQL
-            UPDATE $class i
-            SET i.margin.revenueProduct = :revenue_product,
-                i.margin.revenueShipment = :revenue_shipment,
-                i.margin.costProduct = :cost_product,
-                i.margin.costSupply = :cost_supply,
-                i.margin.costShipment = :cost_shipment,
-                i.margin.average = :is_average,
-                i.updatedAt = :date
-            WHERE i.id = :id
-            DQL
-        );
-
         // Recalculation
         $count = $updated = 0;
         foreach ($invoices as $invoice) {
@@ -161,40 +147,32 @@ class InvoiceUpdateMarginCommand extends Command
 
             $old = $this->toArray(clone $invoice->getMargin());
 
-            $margin = $this
-                ->factory
-                ->create()
-                ->calculateInvoice($invoice);
+            if (!$this->updater->updateMargin($invoice)) {
+                $output->writeln('<comment>up to date</comment>');
 
-            $new = $this->toArray($margin);
+                goto loop;
+            }
+
+            $new = $this->toArray(clone $invoice->getMargin());
 
             if (0 === $count % 20) {
-                $this->manager->clear();
+                $this->entityManager->clear();
                 gc_collect_cycles();
             }
 
-            if (empty($diff = $this->getDiff($old, $new))) {
-                $output->writeln('<comment>up to date</comment>');
+            $showDiff($this->getDiff($old, $new));
 
-                continue;
-            }
-
-            $showDiff($diff);
-
-            $update->execute([
-                'revenue_product'  => $margin->getRevenueProduct()->toFixed(5),
-                'revenue_shipment' => $margin->getRevenueShipment()->toFixed(5),
-                'cost_product'     => $margin->getCostProduct()->toFixed(5),
-                'cost_supply'      => $margin->getCostSupply()->toFixed(5),
-                'cost_shipment'    => $margin->getCostShipment()->toFixed(5),
-                'is_average'       => $margin->isAverage() ? 1 : 0,
-                'date'             => date('Y-m-d H:i:s'),
-                'id'               => $invoice->getId(),
-            ]);
+            $this->manager->updateMargin($invoice);
 
             $updated++;
 
             $output->writeln('<info>updated</info>');
+
+            loop:
+            if (0 === $count % 20) {
+                $this->entityManager->clear();
+                gc_collect_cycles();
+            }
         }
 
         $output->writeln(sprintf('<info>Updated %d invoices</info>', $updated));

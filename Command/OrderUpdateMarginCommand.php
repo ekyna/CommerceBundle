@@ -7,10 +7,11 @@ namespace Ekyna\Bundle\CommerceBundle\Command;
 use DateTime;
 use Decimal\Decimal;
 use Doctrine\ORM\EntityManagerInterface;
-use Ekyna\Component\Commerce\Common\Calculator\MarginCalculatorFactory;
 use Ekyna\Component\Commerce\Common\Model\Margin;
+use Ekyna\Component\Commerce\Order\Manager\OrderManagerInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInvoiceInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
+use Ekyna\Component\Commerce\Order\Updater\OrderUpdaterInterface;
 use Generator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,7 +19,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-use function date;
 use function gc_collect_cycles;
 use function sprintf;
 
@@ -36,8 +36,9 @@ class OrderUpdateMarginCommand extends Command
 
     public function __construct(
         private readonly OrderRepositoryInterface $repository,
-        private readonly MarginCalculatorFactory  $calculatorFactory,
-        private readonly EntityManagerInterface   $manager,
+        private readonly OrderUpdaterInterface    $updater,
+        private readonly OrderManagerInterface    $manager,
+        private readonly EntityManagerInterface   $entityManager,
     ) {
         parent::__construct();
     }
@@ -88,7 +89,7 @@ class OrderUpdateMarginCommand extends Command
     {
         $class = $this->repository->getClassName();
 
-        $query = $this->manager->createQuery(<<<DQL
+        $query = $this->entityManager->createQuery(<<<DQL
             SELECT o
             FROM $class o 
             WHERE o.sample = :sample 
@@ -132,21 +133,6 @@ class OrderUpdateMarginCommand extends Command
             }
         };
 
-        $class = $this->repository->getClassName();
-
-        $update = $this->manager->createQuery(<<<DQL
-            UPDATE $class o
-            SET o.margin.revenueProduct = :revenue_product,
-                o.margin.revenueShipment = :revenue_shipment,
-                o.margin.costProduct = :cost_product,
-                o.margin.costSupply = :cost_supply,
-                o.margin.costShipment = :cost_shipment,
-                o.margin.average = :is_average,
-                o.updatedAt = :date
-            WHERE o.id = :id
-            DQL
-        );
-
         // Recalculation
         $count = $updated = 0;
         foreach ($orders as $order) {
@@ -159,40 +145,27 @@ class OrderUpdateMarginCommand extends Command
 
             $old = $this->toArray(clone $order->getMargin());
 
-            $margin = $this
-                ->calculatorFactory
-                ->create()
-                ->calculateSale($order);
-
-            $new = $this->toArray($margin);
-
-            if (0 === $count % 20) {
-                $this->manager->clear();
-                gc_collect_cycles();
-            }
-
-            if (empty($diff = $this->getDiff($old, $new))) {
+            if (!$this->updater->updateMargin($order)) {
                 $output->writeln('<comment>up to date</comment>');
 
-                continue;
+                goto loop;
             }
 
-            $showDiff($diff);
+            $new = $this->toArray($order->getMargin());
 
-            $update->execute([
-                'revenue_product'  => $margin->getRevenueProduct()->toFixed(5),
-                'revenue_shipment' => $margin->getRevenueShipment()->toFixed(5),
-                'cost_product'     => $margin->getCostProduct()->toFixed(5),
-                'cost_supply'      => $margin->getCostSupply()->toFixed(5),
-                'cost_shipment'    => $margin->getCostShipment()->toFixed(5),
-                'is_average'       => $margin->isAverage() ? 1 : 0,
-                'date'             => date('Y-m-d H:i:s'),
-                'id'               => $order->getId(),
-            ]);
+            $showDiff($this->getDiff($old, $new));
+
+            $this->manager->updateMargin($order);
 
             $updated++;
 
             $output->writeln('<info>updated</info>');
+
+            loop:
+            if (0 === $count % 20) {
+                $this->entityManager->clear();
+                gc_collect_cycles();
+            }
         }
 
         $output->writeln(sprintf('<info>Updated %d order</info>', $updated));

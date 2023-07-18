@@ -26,6 +26,7 @@ use Ekyna\Component\Commerce\Bridge\Symfony\Order\OrderMarginInvalidator;
 use Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Resolver\OrderStateResolver;
+use Ekyna\Component\Commerce\Order\Updater\OrderInvoiceUpdater;
 use Ekyna\Component\Commerce\Order\Updater\OrderUpdater;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -76,6 +77,13 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.factory.margin_calculator'),
         ]);
 
+    // Order invoice updater
+    $services
+        ->set('ekyna_commerce.updater.order_invoice', OrderInvoiceUpdater::class)
+        ->args([
+            service('ekyna_commerce.factory.invoice_margin_calculator'),
+        ]);
+
     // Order margin invalidator
     $invalidator = $services
         ->set('ekyna_commerce.invalidator.order_margin', OrderMarginInvalidator::class)
@@ -85,15 +93,15 @@ return static function (ContainerConfigurator $container) {
             param('ekyna_commerce.class.order_item_stock_assignment'),
         ])
         ->tag('kernel.event_listener', [
-            'event' => KernelEvents::TERMINATE,
-            'method' => 'invalidate',
+            'event'    => KernelEvents::TERMINATE,
+            'method'   => 'invalidate',
             'priority' => 1024, // Before Symfony EmailSenderListener
         ]);
 
     if (class_exists(ConsoleEvents::class)) {
         $invalidator->tag('kernel.event_listener', [
-            'event' => ConsoleEvents::TERMINATE,
-            'method' => 'invalidate',
+            'event'    => ConsoleEvents::TERMINATE,
+            'method'   => 'invalidate',
             'priority' => 1024, // Before Symfony EmailSenderListener
         ]);
     }

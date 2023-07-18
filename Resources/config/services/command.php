@@ -139,7 +139,8 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.command.invoice_update_margin', InvoiceUpdateMarginCommand::class)
         ->args([
             service('ekyna_commerce.repository.order_invoice'),
-            service('ekyna_commerce.factory.invoice_margin_calculator'),
+            service('ekyna_commerce.updater.order_invoice'),
+            service('ekyna_commerce.manager.order_invoice'),
             service('doctrine.orm.default_entity_manager'),
         ])
         ->tag('console.command');
@@ -189,7 +190,8 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.command.order_update_margin', OrderUpdateMarginCommand::class)
         ->args([
             service('ekyna_commerce.repository.order'),
-            service('ekyna_commerce.factory.margin_calculator'),
+            service('ekyna_commerce.updater.order'),
+            service('ekyna_commerce.manager.order'),
             service('doctrine.orm.default_entity_manager'),
         ])
         ->tag('console.command');
