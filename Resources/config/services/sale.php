@@ -17,6 +17,7 @@ use Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory;
 use Ekyna\Component\Commerce\Common\Calculator\ItemCostCalculator;
 use Ekyna\Component\Commerce\Common\Calculator\MarginCalculatorFactory;
 use Ekyna\Component\Commerce\Common\Calculator\WeightCalculator;
+use Ekyna\Component\Commerce\Common\Event\SaleTransformEvents;
 use Ekyna\Component\Commerce\Common\EventListener\AbstractAdjustmentListener;
 use Ekyna\Component\Commerce\Common\EventListener\AbstractSaleAddressListener;
 use Ekyna\Component\Commerce\Common\EventListener\AbstractSaleItemListener;
@@ -92,7 +93,16 @@ return static function (ContainerConfigurator $container) {
     // Sale copy event listener
     $services
         ->set('ekyna_commerce.listener.sale_copy', SaleCopyListener::class)
-        ->tag('kernel.event_subscriber');
+        ->tag('kernel.event_listener', [
+            'event'  => SaleTransformEvents::INIT_TRANSFORM,
+            'method' => 'onInitTransform',
+            'priority' => 2048,
+        ])
+        ->tag('kernel.event_listener', [
+            'event'  => SaleTransformEvents::POST_COPY,
+            'method' => 'onPostCopy',
+            'priority' => 2048,
+        ]);
 
     // Sale transform event listener
     $services
@@ -104,7 +114,14 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.generator.document'),
             service('doctrine.orm.default_entity_manager'),
         ])
-        ->tag('kernel.event_subscriber');
+        ->tag('kernel.event_listener', [
+            'event'  => SaleTransformEvents::POST_COPY,
+            'method' => 'onPostCopy',
+        ])
+        ->tag('kernel.event_listener', [
+            'event'  => SaleTransformEvents::PRE_TRANSFORM,
+            'method' => 'onPreTransform',
+        ]);
 
     // Sale Updater
     $services

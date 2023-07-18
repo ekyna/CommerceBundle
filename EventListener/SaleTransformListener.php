@@ -8,41 +8,35 @@ use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\TaggedSaleInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator;
 use Ekyna\Component\Commerce\Common\Event\SaleTransformEvent;
-use Ekyna\Component\Commerce\Common\Event\SaleTransformEvents;
 use Ekyna\Component\Commerce\Common\Generator\GeneratorInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Document\Util\DocumentUtil;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Resource\Exception\PdfException;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Class SaleTransformSubscriber
  * @package Ekyna\Bundle\CommerceBundle\EventListener
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class SaleTransformListener implements EventSubscriberInterface
+class SaleTransformListener
 {
-    protected GeneratorInterface $orderNumberGenerator;
-    protected GeneratorInterface $quoteNumberGenerator;
-    protected DocumentGenerator $generator;
+    protected GeneratorInterface     $orderNumberGenerator;
+    protected GeneratorInterface     $quoteNumberGenerator;
+    protected DocumentGenerator      $generator;
     protected EntityManagerInterface $manager;
 
     public function __construct(
-        GeneratorInterface $orderNumberGenerator,
-        GeneratorInterface $quoteNumberGenerator,
-        DocumentGenerator $generator,
+        GeneratorInterface     $orderNumberGenerator,
+        GeneratorInterface     $quoteNumberGenerator,
+        DocumentGenerator      $generator,
         EntityManagerInterface $manager
     ) {
         $this->orderNumberGenerator = $orderNumberGenerator;
         $this->quoteNumberGenerator = $quoteNumberGenerator;
         $this->generator = $generator;
         $this->manager = $manager;
-    }
-
-    public function onPreCopy(SaleTransformEvent $event): void
-    {
     }
 
     public function onPostCopy(SaleTransformEvent $event): void
@@ -82,13 +76,7 @@ class SaleTransformListener implements EventSubscriberInterface
             }
 
             $this->generateQuoteForm($target);
-
-            return;
         }
-    }
-
-    public function onPostTransform(SaleTransformEvent $event): void
-    {
     }
 
     /**
@@ -104,7 +92,7 @@ class SaleTransformListener implements EventSubscriberInterface
         try {
             $attachment = $this->generator->generate($order, DocumentTypes::TYPE_CONFIRMATION);
             $this->manager->persist($attachment);
-        } catch (PdfException $e) {
+        } catch (PdfException) {
             // Fail silently for now
             // TODO Warn the admin / customer
         }
@@ -123,19 +111,9 @@ class SaleTransformListener implements EventSubscriberInterface
         try {
             $attachment = $this->generator->generate($quote, DocumentTypes::TYPE_QUOTE);
             $this->manager->persist($attachment);
-        } catch (PdfException $e) {
+        } catch (PdfException) {
             // Fail silently for now
             // TODO Warn the admin / customer
         }
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            SaleTransformEvents::PRE_COPY       => 'onPreCopy',
-            SaleTransformEvents::POST_COPY      => 'onPostCopy',
-            SaleTransformEvents::PRE_TRANSFORM  => 'onPreTransform',
-            SaleTransformEvents::POST_TRANSFORM => 'onPostTransform',
-        ];
     }
 }
