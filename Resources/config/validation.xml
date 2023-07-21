@@ -60,6 +60,9 @@
         <property name="applyGroup">
             <constraint name="NotNull"/>
         </property>
+        <property name="comment">
+            <constraint name="Ekyna\Component\Resource\Bridge\Symfony\Validator\NotHtml"/>
+        </property>
         <constraint name="Ekyna\Bundle\CommerceBundle\Validator\Constraints\Registration"/>
     </class>
 

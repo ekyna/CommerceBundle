@@ -13,12 +13,6 @@ ekyna_commerce:
         customer_groups_is_required: Please select at least one customer group.
         customer_groups_must_be_empty: Please leave the customer group field empty.
     address:
-        gender_is_mandatory: Please select the title.
-        first_name_is_mandatory: Please enter the first name.
-        last_name_is_mandatory: Please enter the last name.
-        company_is_mandatory: Please enter the company name.
-        phone_is_mandatory: Please enter the phone number.
-        mobile_is_mandatory: Please enter the mobile phone number.
         invalid_zip_code: This postal code is not valid.
     customer:
         hierarchy_overflow: This customer is an accountable service and cannot be attached to antoher accountable service.

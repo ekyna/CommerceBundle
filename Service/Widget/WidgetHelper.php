@@ -25,6 +25,8 @@ use Symfony\Component\Intl\Locales;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+use function htmlspecialchars;
+
 /**
  * Class WidgetHelper
  * @package Ekyna\Bundle\CommerceBundle\Service\Widget
@@ -122,7 +124,11 @@ class WidgetHelper
 
         if (!empty($data['label'])) {
             if ($customer = $this->getCustomer()) {
-                $data['label'] = $customer->getFirstName() . ' ' . $customer->getLastName();
+                $data['label'] = htmlspecialchars(
+                    $customer->getFirstName() . ' ' . $customer->getLastName(),
+                    \ENT_QUOTES | \ENT_SUBSTITUTE,
+                    'UTF-8'
+                );
             } else {
                 $data['label'] = $this->translator->trans($data['label'], [], $data['trans_domain']);
             }

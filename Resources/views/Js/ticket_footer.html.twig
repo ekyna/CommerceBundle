@@ -1,9 +1,11 @@
 <div class="panel-footer">
     <p class="text-center">
     {%- if ticket.state == 'closed' -%}
+        {% if config.admin -%}
         <button type="button" class="btn btn-sm btn-warning ticket-open">
             <i class="fa fa-check"></i>&nbsp;{{ trans.open }}
         </button>
+        {%- endif %}
     {%- else -%}
         <button type="button" class="btn btn-sm btn-primary ticket-close">
             <i class="fa fa-close"></i>&nbsp;{{ trans.close }}

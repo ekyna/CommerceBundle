@@ -22,6 +22,7 @@ ekyna_commerce_account_quote_read:
     methods: [ GET ]
     options:
         ekyna_i18n: ~
+        expose: true
 
 ekyna_commerce_account_quote_export:
     path:

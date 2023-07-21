@@ -92,6 +92,7 @@ class ContactController implements ControllerInterface
         $form = $this->formFactory->create(CustomerContactType::class, $contact, [
             'method' => 'POST',
             'action' => $this->urlGenerator->generate('ekyna_commerce_account_contact_add'),
+            'validation_groups' => ['Default', 'Profile'],
         ]);
 
         FormUtil::addFooter($form, [
@@ -143,6 +144,7 @@ class ContactController implements ControllerInterface
         $form = $this->formFactory->create(CustomerContactType::class, $contact, [
             'method' => 'post',
             'action' => $action,
+            'validation_groups' => ['Default', 'Profile'],
         ]);
 
         FormUtil::addFooter($form, [

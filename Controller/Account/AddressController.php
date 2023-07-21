@@ -87,8 +87,9 @@ class AddressController implements ControllerInterface
         $address->setCustomer($customer);
 
         $form = $this->formFactory->create(CustomerAddressType::class, $address, [
-            'method' => 'POST',
-            'action' => $this->urlGenerator->generate('ekyna_commerce_account_address_add'),
+            'method'            => 'POST',
+            'action'            => $this->urlGenerator->generate('ekyna_commerce_account_address_add'),
+            'validation_groups' => ['Default', 'Address'],
         ]);
 
         $redirect = $this->urlGenerator->generate('ekyna_commerce_account_address_index');
@@ -136,10 +137,11 @@ class AddressController implements ControllerInterface
         }
 
         $form = $this->formFactory->create(CustomerAddressType::class, $address, [
-            'method' => 'POST',
-            'action' => $this->urlGenerator->generate('ekyna_commerce_account_address_edit', [
+            'method'            => 'POST',
+            'action'            => $this->urlGenerator->generate('ekyna_commerce_account_address_edit', [
                 'addressId' => $address->getId(),
             ]),
+            'validation_groups' => ['CustomerAddress', 'Address', 'Default'],
         ]);
 
         FormUtil::addFooter($form, [

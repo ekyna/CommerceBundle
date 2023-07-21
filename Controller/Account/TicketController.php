@@ -217,7 +217,7 @@ class TicketController extends AbstractTicketController
      */
     public function handleConfirmation(Request $request, string $action, callable $onConfirmed): Response
     {
-        if (!in_array($action, [self::OPEN, self::CLOSE, self::OPEN, true])) {
+        if (!in_array($action, [self::OPEN, self::CLOSE, self::REMOVE], true)) {
             throw new RuntimeException('Unexpected action');
         }
 

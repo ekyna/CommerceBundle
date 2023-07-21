@@ -13,12 +13,6 @@ ekyna_commerce:
         customer_groups_is_required: Veuillez sélectionner au moins un groupe de clients.
         customer_groups_must_be_empty: Veuillez ne pas sélectionner de groupe de clients.
     address:
-        gender_is_mandatory: Veuillez choisir la civilité.
-        first_name_is_mandatory: Veuillez saisir le prénom.
-        last_name_is_mandatory: Veuillez saisir le nom.
-        company_is_mandatory: Veuillez saisir le nom de l'entreprise.
-        phone_is_mandatory: Veuillez saisir le numéro de téléphone.
-        mobile_is_mandatory: Veuillez saisir le numéro de téléphone mobile.
         invalid_zip_code: Ce code postal n'est pas valide.
     customer:
         hierarchy_overflow: Ce client est un contact facturation et ne peut être rattaché un autre contact facturation.

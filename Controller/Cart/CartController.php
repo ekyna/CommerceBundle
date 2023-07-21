@@ -262,6 +262,7 @@ class CartController extends AbstractController
                 'attr'   => [
                     'class' => 'form-horizontal',
                 ],
+                'validation_groups' => ['Default', 'Checkout'],
             ]);
 
         $form->handleRequest($request);
@@ -369,7 +370,7 @@ class CartController extends AbstractController
             'checkout.button.edit_information',
             'ekyna_commerce_cart_information',
             [
-                'validation_groups' => ['Identity'],
+                'validation_groups' => ['Default', 'Identity'],
             ]
         );
     }
@@ -390,7 +391,7 @@ class CartController extends AbstractController
             'ekyna_commerce_cart_invoice_address',
             [
                 'address_type'      => CartAddressType::class,
-                'validation_groups' => ['Address'],
+                'validation_groups' => ['Default', 'Address'],
             ]
         );
     }
@@ -411,7 +412,7 @@ class CartController extends AbstractController
             'ekyna_commerce_cart_delivery_address',
             [
                 'address_type'      => CartAddressType::class,
-                'validation_groups' => ['Address'],
+                'validation_groups' => ['Default', 'Address'],
                 'delivery'          => true,
             ]
         );
@@ -432,7 +433,7 @@ class CartController extends AbstractController
             'checkout.button.edit_comment',
             'ekyna_commerce_cart_comment',
             [
-                'validation_groups' => ['Comment'],
+                'validation_groups' => ['Default', 'Checkout'],
             ]
         );
     }

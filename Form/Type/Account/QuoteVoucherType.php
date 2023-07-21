@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Account;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Quote\QuoteAttachmentType;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteVoucher;
+use Ekyna\Component\Resource\Bridge\Symfony\Validator\NotHtml;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,6 +30,7 @@ class QuoteVoucherType extends AbstractType
                 'required'    => true,
                 'constraints' => [
                     new Assert\NotBlank(),
+                    new NotHtml(),
                 ],
             ])
             ->add('attachment', QuoteAttachmentType::class, [
