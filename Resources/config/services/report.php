@@ -108,8 +108,8 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('ekyna_commerce.report.generator'),
             service('ekyna_commerce.report.registry'),
-            service('ekyna_setting.manager'),
             service('ekyna_commerce.factory.formatter'),
+            service('ekyna_admin.helper.mailer'),
             service('translator'),
             service('twig'),
             service('mailer.mailer'),

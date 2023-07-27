@@ -10,9 +10,9 @@ use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Notify\RecipientHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentHelper;
+use Ekyna\Bundle\UserBundle\Service\Security\LoginLinkHelper;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Event\NotifyEvent;
-use Ekyna\Component\Commerce\Common\Event\NotifyEvents;
 use Ekyna\Component\Commerce\Common\Model\NotificationTypes;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
@@ -27,44 +27,24 @@ use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Resource\Repository\ResourceRepositoryInterface;
-use League\Uri\Uri;
-use League\Uri\UriModifier;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-use function urlencode;
-
 /**
- * Class NotifyEventSubscriber
+ * Class NotifyEventListener
  * @package Ekyna\Bundle\CommerceBundle\EventListener
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class NotifyEventSubscriber implements EventSubscriberInterface
+class NotifyEventListener
 {
-    private ResourceRepositoryInterface $modelRepository;
-    private RecipientHelper             $recipientHelper;
-    private ShipmentHelper              $shipmentHelper;
-    private UrlGeneratorInterface       $urlGenerator;
-    private TranslatorInterface         $translator;
-    private ?LoginLinkHandlerInterface  $loginLinkHandler;
-
-
     public function __construct(
-        ResourceRepositoryInterface $modelRepository,
-        RecipientHelper             $recipientHelper,
-        ShipmentHelper              $shipmentHelper,
-        UrlGeneratorInterface       $urlGenerator,
-        TranslatorInterface         $translator,
-        ?LoginLinkHandlerInterface  $loginLinkHandler
+        private readonly ResourceRepositoryInterface $modelRepository,
+        private readonly RecipientHelper             $recipientHelper,
+        private readonly ShipmentHelper              $shipmentHelper,
+        private readonly UrlGeneratorInterface       $urlGenerator,
+        private readonly TranslatorInterface         $translator,
+        private readonly LoginLinkHelper             $loginLinkHelper
     ) {
-        $this->modelRepository = $modelRepository;
-        $this->recipientHelper = $recipientHelper;
-        $this->shipmentHelper = $shipmentHelper;
-        $this->urlGenerator = $urlGenerator;
-        $this->translator = $translator;
-        $this->loginLinkHandler = $loginLinkHandler;
     }
 
     /**
@@ -294,15 +274,19 @@ class NotifyEventSubscriber implements EventSubscriberInterface
             ->urlGenerator
             ->generate($route, ['number' => $source->getNumber()], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        if (!$notify->isUnsafe() && $user->isEnabled() && (null !== $this->loginLinkHandler)) {
-            $loginLink = $this->loginLinkHandler->createLoginLink($user);
-            $loginUri = Uri::createFromString($loginLink->getUrl());
-            $uri = (string)UriModifier::appendQuery($loginUri, 'redirect_after=' . urlencode($uri));
-        }
-
         $notify
             ->setButtonLabel($this->translator->trans($label, [], 'EkynaCommerce'))
             ->setButtonUrl($uri);
+
+        if ($notify->isUnsafe()) {
+            return;
+        }
+
+        if (null === $link = $this->loginLinkHelper->createLoginLink($user, $uri)) {
+            return;
+        }
+
+        $notify->setButtonUrl($link->getUrl());
     }
 
     /**
@@ -741,18 +725,5 @@ class NotifyEventSubscriber implements EventSubscriberInterface
         }
 
         return $added;
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            NotifyEvents::BUILD => [
-                ['buildSubject', -1],
-                ['buildRecipients', -2],
-                ['buildContent', -3],
-                ['buildButton', -4],
-                ['finalize', -2048],
-            ],
-        ];
     }
 }

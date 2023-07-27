@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Service\Mailer;
 
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
+use Ekyna\Bundle\AdminBundle\Service\Mailer\MailerHelper;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes as BDocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderAttachmentTypes;
@@ -12,10 +13,8 @@ use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
 use Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererInterface;
-use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentLabelRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectLabelRenderer;
-use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
 use Ekyna\Component\Commerce\Common\Model\CouponInterface;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
@@ -51,18 +50,15 @@ use function substr;
  */
 class Mailer
 {
-    private ?Address $notificationSender = null;
-
     public function __construct(
-        protected readonly MailerInterface         $mailer,
-        protected readonly Environment             $twig,
-        protected readonly TranslatorInterface     $translator,
-        protected readonly SettingManagerInterface $settingsManager,
-        protected readonly RendererFactory         $rendererFactory,
-        protected readonly ShipmentLabelRenderer   $shipmentLabelRenderer,
-        protected readonly SubjectLabelRenderer    $subjectLabelRenderer,
-        protected readonly SubjectHelperInterface  $subjectHelper,
-        protected readonly FilesystemOperator      $filesystem
+        private readonly MailerInterface        $mailer,
+        private readonly Environment            $twig,
+        private readonly TranslatorInterface    $translator,
+        private readonly MailerHelper           $mailerHelper,
+        private readonly RendererFactory        $rendererFactory,
+        private readonly SubjectLabelRenderer   $subjectLabelRenderer,
+        private readonly SubjectHelperInterface $subjectHelper,
+        private readonly FilesystemOperator     $filesystem
     ) {
     }
 
@@ -191,7 +187,7 @@ class Mailer
         $locale = $customer->getLocale();
 
         $subject = $this->translator->trans('ticket_message.notify.customer.subject', [
-            '%site_name%' => $this->settingsManager->getParameter('general.site_name'),
+            '%site_name%' => $this->mailerHelper->getSiteName(),
         ], 'EkynaCommerce', $locale);
 
         $body = $this->twig->render('@EkynaCommerce/Email/customer_ticket_message.html.twig', [
@@ -256,7 +252,7 @@ class Mailer
         $locale = $customer->getLocale();
 
         $subject = $this->translator->trans('coupon.notify.customer.subject', [
-            '%site_name%' => $this->settingsManager->getParameter('general.site_name'),
+            '%site_name%' => $this->mailerHelper->getSiteName(),
         ], 'EkynaCommerce', $locale);
 
         $body = $this->twig->render('@EkynaCommerce/Email/customer_coupons.html.twig', [
@@ -481,7 +477,7 @@ class Mailer
         $message
             ->subject('Notification failed')
             ->text("Notification failure\n\n" . $notify->getReport())
-            ->from($this->getNotificationSenderAddress())
+            ->from($this->mailerHelper->getNotificationSender())
             ->to(new Address($notify->getFrom()->getEmail(), $notify->getFrom()->getName()));
 
         $this->send($message);
@@ -497,15 +493,15 @@ class Mailer
         Address|string|array|bool $from = null
     ): Email {
         if (empty($to)) {
-            $to = $this->settingsManager->getParameter('notification.to_emails');
+            $to = $this->mailerHelper->getNotificationRecipients();
         }
 
         if (false === $from) {
-            $from = $this->settingsManager->getParameter('notification.no_reply');
+            $from = $this->mailerHelper->getNoReply();
         }
 
         if (empty($from)) {
-            $from = $this->getNotificationSenderAddress();
+            $from = $this->mailerHelper->getNotificationSender();
         }
 
         if (!is_array($to)) {
@@ -536,18 +532,6 @@ class Mailer
     private function recipientToAddress(Recipient $recipient): Address
     {
         return new Address($recipient->getEmail(), $recipient->getName());
-    }
-
-    private function getNotificationSenderAddress(): Address
-    {
-        if (null !== $this->notificationSender) {
-            return $this->notificationSender;
-        }
-
-        return $this->notificationSender = new Address(
-            $this->settingsManager->getParameter('notification.from_email'),
-            $this->settingsManager->getParameter('notification.from_name')
-        );
     }
 
     /**

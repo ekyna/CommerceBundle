@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Service;
 
-use Decimal\Decimal;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleCouponType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleQuantitiesType;
 use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
@@ -14,10 +13,8 @@ use Ekyna\Component\Commerce\Common\Model\SaleAttachmentInterface as SaleAttachm
 use Ekyna\Component\Commerce\Common\Model\SaleInterface as Sale;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface as SaleItem;
 use Ekyna\Component\Commerce\Common\Updater\SaleUpdaterInterface;
-use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
-use Throwable;
 
 /**
  * Class SaleHelper

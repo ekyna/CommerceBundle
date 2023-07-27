@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Report;
 
-use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
+use Ekyna\Bundle\AdminBundle\Service\Mailer\MailerHelper;
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Commerce\Report\ReportConfig;
 use Ekyna\Component\Commerce\Report\ReportGenerator;
 use Ekyna\Component\Commerce\Report\ReportRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
@@ -31,13 +30,13 @@ use function sprintf;
 class ReportMailer
 {
     public function __construct(
-        private readonly ReportGenerator         $generator,
-        private readonly ReportRegistry          $registry,
-        private readonly SettingManagerInterface $setting,
-        private readonly FormatterFactory        $formatterFactory,
-        private readonly TranslatorInterface     $translator,
-        private readonly Environment             $twig,
-        private readonly MailerInterface         $mailer
+        private readonly ReportGenerator     $generator,
+        private readonly ReportRegistry      $registry,
+        private readonly FormatterFactory    $formatterFactory,
+        private readonly MailerHelper        $mailerHelper,
+        private readonly TranslatorInterface $translator,
+        private readonly Environment         $twig,
+        private readonly MailerInterface     $mailer
     ) {
     }
 
@@ -77,12 +76,9 @@ class ReportMailer
             'locale'  => $config->locale,
         ]);
 
-        $fromEmail = $this->setting->getParameter('notification.from_email');
-        $fromName = $this->setting->getParameter('notification.from_name');
-
         $message = new Email();
         $message
-            ->from(new Address($fromEmail, $fromName))
+            ->from($this->mailerHelper->getNotificationSender())
             ->to($config->email)
             ->subject($subject)
             ->html($body);

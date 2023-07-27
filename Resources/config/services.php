@@ -22,125 +22,132 @@ use Ekyna\Component\Commerce\Features;
 use Symfony\Component\Cache\Psr16Cache;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
-return static function (ContainerConfigurator $container) {
-    $container
-        ->services()
+return static function (ContainerConfigurator $container): void {
+    $services = $container->services();
 
-        // Features
+    // Features
+    $services
         ->set('ekyna_commerce.features', Features::class)
-            ->args([
-                abstract_arg('Features configuration'),
-            ])
-            ->tag('twig.runtime')
+        ->args([
+            abstract_arg('Features configuration'),
+        ])
+        ->tag('twig.runtime');
 
-        // Cache
+    // Cache
+    $services
         ->set('ekyna_commerce.cache')
-            ->parent('cache.app')
-            ->private()
-            ->tag('cache.pool', ['clearer' => 'cache.default_clearer'])
+        ->parent('cache.app')
+        ->private()
+        ->tag('cache.pool', ['clearer' => 'cache.default_clearer']);
 
-        // PSR-16 Cache
+    // PSR-16 Cache
+    $services
         ->set('ekyna_commerce.cache.psr16', Psr16Cache::class)
-            ->args([
-                service('ekyna_commerce.cache'),
-            ])
+        ->args([
+            service('ekyna_commerce.cache'),
+        ]);
 
-        // Setting schema
+    // Setting schema
+    $services
         ->set('ekyna_commerce.setting', CommerceSettingsSchema::class)
-            ->tag(RegisterSchemasPass::TAG, ['namespace' => 'commerce', 'position' => 5])
+        ->tag(RegisterSchemasPass::TAG, ['namespace' => 'commerce', 'position' => 5]);
 
-        // Security listener
+    // Security listener
+    $services
         ->set('ekyna_commerce.listener.security', SecurityEventListener::class)
-            ->args([
-                service('ekyna_commerce.provider.cart'),
-                service('ekyna_commerce.provider.customer'),
-                service('ekyna_commerce.provider.currency'),
-                service('ekyna_commerce.provider.country'),
-                service('router'),
-            ])
-            ->tag('kernel.event_listener', [
-                'dispatcher' => 'security.event_dispatcher.main',
-                'event'      => LoginSuccessEvent::class,
-                'method'     => 'onLoginSuccess',
-                'priority'   => 0,
-            ])
+        ->args([
+            service('ekyna_commerce.provider.cart'),
+            service('ekyna_commerce.provider.customer'),
+            service('ekyna_commerce.provider.currency'),
+            service('ekyna_commerce.provider.country'),
+            service('router'),
+        ])
+        ->tag('kernel.event_listener', [
+            'dispatcher' => 'security.event_dispatcher.main',
+            'event'      => LoginSuccessEvent::class,
+            'method'     => 'onLoginSuccess',
+            'priority'   => 0,
+        ]);
 
-        // Security Logout event listener
+    // Security Logout event listener
+    $services
         ->set('ekyna_commerce.listener.logout', LogoutEventSubscriber::class)
-            ->args([
-                service('ekyna_commerce.provider.cart'),
-                service('ekyna_commerce.provider.customer'),
-            ])
-            ->tag('kernel.event_subscriber')
+        ->args([
+            service('ekyna_commerce.provider.cart'),
+            service('ekyna_commerce.provider.customer'),
+        ])
+        ->tag('kernel.event_subscriber');
 
-        // Security Logout event listener
-        ->set('ekyna_commerce.listener.logout', LogoutEventSubscriber::class)
-
-
-        // Ticket security voter
+    // Ticket security voter
+    $services
         ->set('ekyna_commerce.security_voter.ticket', TicketVoter::class)
-            ->tag('security.voter')
+        ->tag('security.voter');
 
-        // Ticket message security voter
+    // Ticket message security voter
+    $services
         ->set('ekyna_commerce.security_voter.ticket_message', TicketMessageVoter::class)
-            ->tag('security.voter')
+        ->tag('security.voter');
 
-        // Ticket attachment security voter
+    // Ticket attachment security voter
+    $services
         ->set('ekyna_commerce.security_voter.ticket_attachment', TicketAttachmentVoter::class)
-            ->tag('security.voter')
+        ->tag('security.voter');
 
-        // Load metadata event listener
+    // Load metadata event listener
+    $services
         ->set('ekyna_commerce.listener.orm.load_metadata', LoadMetadataListener::class)
-            ->tag('doctrine.event_listener', [
-                'event'      => Events::loadClassMetadata,
-                'connection' => 'default',
-                'priority'   => 99,
-            ])
+        ->tag('doctrine.event_listener', [
+            'event'      => Events::loadClassMetadata,
+            'connection' => 'default',
+            'priority'   => 99,
+        ]);
 
-        // Mailer
+    // Mailer
+    $services
         ->set('ekyna_commerce.mailer', Mailer::class)
-            ->args([
-                service('mailer'),
-                service('twig'),
-                service('translator'),
-                service('ekyna_setting.manager'),
-                service('ekyna_commerce.factory.document_renderer'),
-                service('ekyna_commerce.renderer.shipment_label'),
-                service('ekyna_commerce.renderer.subject_label'),
-                service('ekyna_commerce.helper.subject'),
-                service('ekyna_commerce.filesystem'),
-            ])
+        ->args([
+            service('mailer'),
+            service('twig'),
+            service('translator'),
+            service('ekyna_admin.helper.mailer'),
+            service('ekyna_commerce.factory.document_renderer'),
+            service('ekyna_commerce.renderer.subject_label'),
+            service('ekyna_commerce.helper.subject'),
+            service('ekyna_commerce.filesystem'),
+        ]);
 
-        // Routing loader
+    // Routing loader
+    $services
         ->set('ekyna_commerce.loader.routing', RoutingLoader::class)
-            ->args([
-                service('ekyna_commerce.features'),
-                param('ekyna_user.account_routing_prefix'),
-                param('kernel.environment'),
-            ])
-            ->tag('routing.loader')
+        ->args([
+            service('ekyna_commerce.features'),
+            param('ekyna_user.account_routing_prefix'),
+            param('kernel.environment'),
+        ])
+        ->tag('routing.loader');
 
-        // Filesystem
-        ->alias('ekyna_commerce.filesystem', 'oneup_flysystem.local_commerce_filesystem')
+    // Filesystem
+    $services->alias('ekyna_commerce.filesystem', 'oneup_flysystem.local_commerce_filesystem');
 
-        // Uploader
+    // Uploader
+    $services
         ->set('ekyna_commerce.uploader', Uploader::class)
-            ->args([
-                service('ekyna_resource.filesystem.tmp'),
-                service('ekyna_commerce.filesystem'),
-            ])
-            ->tag(UploaderPass::UPLOADER_TAG)
+        ->args([
+            service('ekyna_resource.filesystem.tmp'),
+            service('ekyna_commerce.filesystem'),
+        ])
+        ->tag(UploaderPass::UPLOADER_TAG);
 
-        // Installer
+    // Installer
+    $services
         ->set('ekyna_commerce.installer', CommerceInstaller::class)
-            ->args([
-                service('ekyna_resource.repository.factory'),
-                service('ekyna_resource.factory.factory'),
-                service('ekyna_resource.manager.factory'),
-                service('translator'),
-                param('ekyna_commerce.default.country'),
-                param('ekyna_commerce.default.currency'),
-            ])
-            ->tag('ekyna_install.installer', ['priority' => 97])
-    ;
+        ->args([
+            service('ekyna_resource.repository.factory'),
+            service('ekyna_resource.factory.factory'),
+            service('ekyna_resource.manager.factory'),
+            service('translator'),
+            param('ekyna_commerce.default.country'),
+            param('ekyna_commerce.default.currency'),
+        ])
+        ->tag('ekyna_install.installer', ['priority' => 97]);
 };
