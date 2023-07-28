@@ -32,6 +32,7 @@ field:
     internal: Internal
     revenue: Revenue
     template: Template
+    physical: Physical
 
 import:
     default_gender: Default gender
