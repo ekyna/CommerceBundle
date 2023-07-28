@@ -6,7 +6,6 @@ namespace Ekyna\Bundle\CommerceBundle\Form;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\UnitChoiceType;
 use Ekyna\Bundle\CommerceBundle\Model\StockSubjectModes;
-use Ekyna\Bundle\ProductBundle\Exception\UnexpectedTypeException;
 use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
 use Ekyna\Component\Commerce\Common\Model\Units;
 use Symfony\Component\Form\Extension\Core\Type as SF;
@@ -23,28 +22,14 @@ use function Symfony\Component\Translation\t;
  */
 class StockSubjectFormBuilder
 {
-    /**
-     * @var FormInterface|FormBuilderInterface
-     */
-    protected $form;
+    protected FormInterface|FormBuilderInterface $form;
 
-
-    /**
-     * @param FormInterface|FormBuilderInterface $form
-     */
-    public function initialize($form): void
+    public function initialize(FormInterface|FormBuilderInterface $form): void
     {
-        if (!($form instanceof FormInterface || $form instanceof FormBuilderInterface)) {
-            throw new UnexpectedTypeException($form, [FormInterface::class, FormBuilderInterface::class]);
-        }
-
         $this->form = $form;
     }
 
-    /**
-     * @return FormInterface|FormBuilderInterface
-     */
-    protected function getForm()
+    protected function getForm(): FormInterface|FormBuilderInterface
     {
         return $this->form;
     }
@@ -221,6 +206,21 @@ class StockSubjectFormBuilder
         ], $options);
 
         $this->form->add('depth', SF\IntegerType::class, $options);
+
+        return $this;
+    }
+
+    public function addPhysicalField(array $options = []): StockSubjectFormBuilder
+    {
+        $options = array_replace([
+            'label'    => t('field.physical', [], 'EkynaCommerce'),
+            'required' => false,
+            'attr'     => [
+                'align_with_widget' => true,
+            ],
+        ], $options);
+
+        $this->form->add('physical', SF\CheckboxType::class, $options);
 
         return $this;
     }

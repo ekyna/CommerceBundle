@@ -111,6 +111,8 @@ ekyna_commerce:
         stock_unit_shipped_quantity_overflow: |
             The resulting stock mut be greater than or equal to shipped stock (max %max%).
     shipment:
+        method_is_virtual_shipment_is_physical: |
+            The selected shipment method does not support physical products.
         method_does_not_support_parcel: |
             The selected shipment method does not support parcels.
         method_does_not_support_return: |

@@ -81,7 +81,7 @@ class SaleShipmentType extends AbstractType
                 $form
                     ->add('shipmentMethod', Shipment\ShipmentMethodPickType::class, [
                         'label'      => t('shipment_method.label.singular', [], 'EkynaCommerce'),
-                        'sale'       => $sale,
+                        'subject'    => $sale,
                         'with_price' => false,
                         'available'  => false,
                         'attr'       => [

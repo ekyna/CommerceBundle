@@ -137,7 +137,6 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.calculator.payment'),
             service('ekyna_commerce.calculator.invoice_subject'),
             service('ekyna_commerce.releaser.outstanding'),
-            service('ekyna_commerce.helper.factory'),
         ]);
 
     // Sale preparer

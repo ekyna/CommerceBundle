@@ -18,11 +18,13 @@ use Ekyna\Component\Commerce\Shipment\Builder\ShipmentBuilder;
 use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentCostCalculator;
 use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentSubjectCalculator;
 use Ekyna\Component\Commerce\Shipment\Calculator\WeightCalculator;
+use Ekyna\Component\Commerce\Shipment\Event\ShipmentMethodEvents;
 use Ekyna\Component\Commerce\Shipment\EventListener\AbstractShipmentItemListener;
 use Ekyna\Component\Commerce\Shipment\EventListener\AbstractShipmentListener;
 use Ekyna\Component\Commerce\Shipment\Gateway\GatewayRegistry;
 use Ekyna\Component\Commerce\Shipment\Gateway\InStore\InStorePlatform;
 use Ekyna\Component\Commerce\Shipment\Gateway\Noop\NoopPlatform;
+use Ekyna\Component\Commerce\Shipment\Gateway\Virtual\VirtualPlatform;
 use Ekyna\Component\Commerce\Shipment\Resolver\AvailabilityResolverFactory;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolver;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentSubjectStateResolver;
@@ -89,8 +91,20 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.listener.shipment_method', ShipmentMethodEventSubscriber::class)
         ->args([
             service('ekyna_resource.orm.persistence_helper'),
+            service('ekyna_commerce.registry.shipment_gateway'),
         ])
-        ->tag('resource.event_subscriber');
+        ->tag('resource.event_listener', [
+            'event'  => ShipmentMethodEvents::INSERT,
+            'method' => 'onInsert',
+        ])
+        ->tag('resource.event_listener', [
+            'event'  => ShipmentMethodEvents::PRE_DELETE,
+            'method' => 'onPreDelete',
+        ])
+        ->tag('resource.event_listener', [
+            'event'  => ShipmentMethodEvents::DELETE,
+            'method' => 'onDelete',
+        ]);
 
     // Shipment builder
     $services
@@ -135,6 +149,7 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('ekyna_commerce.repository.shipment_price'),
             service('ekyna_commerce.repository.shipment_rule'),
+            service('ekyna_commerce.repository.shipment_method'),
             service('ekyna_commerce.registry.shipment_gateway'),
             service('ekyna_commerce.resolver.tax'),
             service('ekyna_commerce.provider.context'),
@@ -190,5 +205,10 @@ return static function (ContainerConfigurator $container) {
     // Shipment In Store platform
     $services
         ->set('ekyna_commerce.shipment_platform.in_store', InStorePlatform::class)
+        ->tag(ShipmentGatewayRegistryPass::PLATFORM_TAG);
+
+    // Shipment Virtual platform
+    $services
+        ->set('ekyna_commerce.shipment_platform.virtual', VirtualPlatform::class)
         ->tag(ShipmentGatewayRegistryPass::PLATFORM_TAG);
 };

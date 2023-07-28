@@ -18,7 +18,6 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
-
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function array_unshift;
@@ -141,11 +140,10 @@ class SaleTransformType extends AbstractType
             } else {
                 $form
                     ->add('shipmentMethod', ShipmentMethodPickType::class, [
-                        'sale'      => $sale,
-                        'available' => true,
-                        'expanded'  => false,
-                        'select2'   => false,
-                        'attr'      => [
+                        'subject'  => $sale,
+                        'expanded' => false,
+                        'select2'  => false,
+                        'attr'     => [
                             'class' => 'sale-shipment-method',
                         ],
                     ])

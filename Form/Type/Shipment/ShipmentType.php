@@ -77,6 +77,11 @@ class ShipmentType extends AbstractResourceType
 
                 $stateChoices = BShipStates::getFormChoices($shipment->isReturn(), !($locked || $privileged));
 
+                $preferredMethods = [];
+                if (null !== $method = $sale->getShipmentMethod()) {
+                    $preferredMethods[] = $method;
+                }
+
                 $form
                     ->add('state', Type\ChoiceType::class, [
                         'label'                     => t('field.status', [], 'EkynaUi'),
@@ -109,9 +114,10 @@ class ShipmentType extends AbstractResourceType
                         ],
                     ])
                     ->add('method', ShipmentMethodPickType::class, [
-                        'available' => !$options['admin_mode'],
-                        'return'    => $shipment->isReturn(),
-                        'disabled'  => $locked,
+                        'subject'           => $shipment,
+                        'available'         => !$options['admin_mode'],
+                        'disabled'          => $locked,
+                        'preferred_choices' => $preferredMethods,
                     ])
                     ->add('trackingNumber', Type\TextType::class, [
                         'label'    => t('shipment.field.tracking_number', [], 'EkynaCommerce'),

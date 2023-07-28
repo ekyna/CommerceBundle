@@ -13,9 +13,11 @@ use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Commerce\Shipment\Gateway\GatewayInterface;
 use Ekyna\Component\Commerce\Shipment\Gateway\GatewayRegistryInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ResolvedShipmentPrice;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface;
 use Ekyna\Component\Commerce\Shipment\Repository\ShipmentMethodRepositoryInterface;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
+use Ekyna\Component\Commerce\Shipment\ShipmentUtil;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormInterface;
@@ -49,13 +51,13 @@ class ShipmentMethodPickType extends AbstractType
 
 
     public function __construct(
-        ShipmentPriceResolverInterface $priceResolver,
-        GatewayRegistryInterface $gatewayRegistry,
+        ShipmentPriceResolverInterface    $priceResolver,
+        GatewayRegistryInterface          $gatewayRegistry,
         ShipmentMethodRepositoryInterface $methodRepository,
-        ContextProviderInterface $contextProvider,
-        CurrencyConverterInterface $currencyConverter,
-        FormatterFactory $formatterFactory,
-        TranslatorInterface $translator
+        ContextProviderInterface          $contextProvider,
+        CurrencyConverterInterface        $currencyConverter,
+        FormatterFactory                  $formatterFactory,
+        TranslatorInterface               $translator
     ) {
         $this->priceResolver = $priceResolver;
         $this->gatewayRegistry = $gatewayRegistry;
@@ -72,12 +74,23 @@ class ShipmentMethodPickType extends AbstractType
      * @return array<ShipmentMethodInterface>
      */
     private function buildChoices(
-        SaleInterface $sale = null,
-        bool $return = false,
-        bool $withPrice = true,
-        bool $availableOnly = true
+        ShipmentInterface|SaleInterface $subject = null,
+        bool                            $withPrice = true,
+        bool                            $availableOnly = true
     ): array {
         $this->availablePrices = [];
+
+        $return = false;
+        if ($subject instanceof ShipmentInterface) {
+            $shipment = $subject;
+            $sale = $shipment->getSale();
+            $return = $shipment->isReturn();
+            $virtual = !ShipmentUtil::hasPhysicalItem($shipment);
+        } else {
+            $sale = $subject;
+            $virtual = !$sale->hasPhysicalItem();
+        }
+
         $this->context = $this->contextProvider->getContext($sale);
 
         if (null !== $sale) {
@@ -90,7 +103,7 @@ class ShipmentMethodPickType extends AbstractType
                     $methods[] = $price->getMethod();
                 }
 
-                return $this->filterMethods($methods, $return);
+                return $this->filterMethods($methods, $return, $virtual);
             }
         }
 
@@ -98,15 +111,21 @@ class ShipmentMethodPickType extends AbstractType
 
         return $this->filterMethods(
             (array)$this->methodRepository->findBy($criteria, ['position' => 'ASC']),
-            $return
+            $return, $virtual
         );
     }
 
     /**
-     * Filters the methods regarding to their capabilities (shipment/return).
+     * Filters the methods regarding their capabilities (shipment/return).
      */
-    private function filterMethods(array $methods, bool $return): array
+    private function filterMethods(array $methods, bool $return, bool $virtual): array
     {
+        $methods = array_filter($methods, function(ShipmentMethodInterface $method) use ($virtual) {
+            $gateway = $this->gatewayRegistry->getGateway($method->getGatewayName());
+
+            return $virtual xor !$gateway->supports(GatewayInterface::CAPABILITY_VIRTUAL);
+        });
+
         if ($return) {
             return array_filter($methods, function (ShipmentMethodInterface $method) {
                 $gateway = $this->gatewayRegistry->getGateway($method->getGatewayName());
@@ -127,7 +146,7 @@ class ShipmentMethodPickType extends AbstractType
      */
     private function findPriceByMethod(ShipmentMethodInterface $method): ?ResolvedShipmentPrice
     {
-        if (null !== $this->availablePrices) {
+        if (!empty($this->availablePrices)) {
             foreach ($this->availablePrices as $price) {
                 if ($price->getMethod() === $method) {
                     return $price;
@@ -150,6 +169,7 @@ class ShipmentMethodPickType extends AbstractType
             'data-gateway'  => $gateway->getName(),
             'data-relay'    => $gateway->supports(GatewayInterface::CAPABILITY_RELAY) ? 1 : 0,
             'data-parcel'   => $gateway->supports(GatewayInterface::CAPABILITY_PARCEL) ? 1 : 0,
+            'data-virtual'  => $gateway->requires(GatewayInterface::CAPABILITY_VIRTUAL) ? 1 : 0,
             'data-mobile'   => $gateway->requires(GatewayInterface::REQUIREMENT_MOBILE) ? 1 : 0,
         ];
 
@@ -201,10 +221,13 @@ class ShipmentMethodPickType extends AbstractType
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        /** @var SaleInterface $sale */
-        if (null !== $sale = $options['sale']) {
-            $view->vars['country'] = $sale->getDeliveryCountry();
+        if (null === $subject = $options['subject']) {
+            return;
         }
+
+        $sale = $subject instanceof ShipmentInterface ? $subject->getSale() : $subject;
+
+        $view->vars['country'] = $sale->getDeliveryCountry();
     }
 
     public function finishView(FormView $view, FormInterface $form, array $options): void
@@ -216,8 +239,7 @@ class ShipmentMethodPickType extends AbstractType
     {
         $choices = function (Options $options) {
             return $this->buildChoices(
-                $options['sale'],
-                $options['return'],
+                $options['subject'],
                 $options['with_price'],
                 $options['available']
             );
@@ -227,18 +249,16 @@ class ShipmentMethodPickType extends AbstractType
             ->setDefaults([
                 'label'                     => t('shipment_method.label.singular', [], 'EkynaCommerce'),
                 'choice_translation_domain' => false,
-                'sale'                      => null,
+                'subject'                   => null,
                 'with_price'                => true,
-                'return'                    => false,
                 'available'                 => true,
                 'choices'                   => $choices,
                 'choice_value'              => 'id',
                 'choice_attr'               => [$this, 'buildChoiceAttr'],
                 'choice_label'              => [$this, 'buildChoiceLabel'],
             ])
-            ->setAllowedTypes('sale', ['null', SaleInterface::class])
+            ->setAllowedTypes('subject', ['null', ShipmentInterface::class, SaleInterface::class])
             ->setAllowedTypes('with_price', 'bool')
-            ->setAllowedTypes('return', 'bool')
             ->setAllowedTypes('available', 'bool');
     }
 

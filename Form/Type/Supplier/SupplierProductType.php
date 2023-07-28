@@ -34,6 +34,13 @@ class SupplierProductType extends AbstractResourceType
                 'label' => t('field.reference', [], 'EkynaUi'),
             ])
             ->add('taxGroup', TaxGroupChoiceType::class)
+            ->add('physical', Symfony\CheckboxType::class, [
+                'label'   => t('field.physical', [], 'EkynaCommerce'),
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ])
             ->add('weight', Symfony\NumberType::class, [
                 'label'   => t('field.weight', [], 'EkynaUi'),
                 'decimal' => true,

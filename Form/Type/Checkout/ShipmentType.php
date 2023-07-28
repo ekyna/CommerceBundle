@@ -43,7 +43,7 @@ class ShipmentType extends AbstractType
             $form
                 ->add('shipmentMethod', ShipmentMethodPickType::class, [
                     'label'    => false,
-                    'sale'     => $sale,
+                    'subject'  => $sale,
                     'expanded' => true,
                     'attr'     => [
                         'class' => 'sale-shipment-method',

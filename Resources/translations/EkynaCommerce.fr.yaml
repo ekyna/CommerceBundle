@@ -6,7 +6,7 @@ field:
     sample: Échantillon
     description: Note interne
     taxes_total: Taxes
-    shipped: Expedié
+    shipped: Expédié
     expected: Attendu
     available: Disponible
     invoiced: Facturé
@@ -32,6 +32,7 @@ field:
     internal: Interne
     revenue: Chiffre d'affaire
     template: Modèle
+    physical: Physique
 
 import:
     default_gender: Civilité par défaut

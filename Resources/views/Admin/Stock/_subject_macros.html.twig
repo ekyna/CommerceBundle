@@ -172,6 +172,17 @@
 {%- endmacro show_depth -%}
 
 
+{% macro show_physical(subject, options = {}) %}
+    {{- show_row(subject.physical, 'boolean', {
+        'label': t('field.physical', [], 'EkynaCommerce'),
+        'id': 'subject_physical',
+        'color': true,
+        'true_class': 'label label-success',
+        'false_class': 'label label-warning'
+    }|merge(options)) -}}
+{% endmacro show_physical %}
+
+
 {%- macro show_unit(subject, options = {}) -%}
     {{- show_row(subject.unit, 'commerce_unit', {
         'label': t('unit.label', [], 'EkynaCommerce'),
@@ -236,6 +247,26 @@
         <div class="col-md-4">
             {{ macros.show_unit(subject, {
                 'id': prefix ~'_unit',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ macros.show_physical(subject, {
+                'id': prefix ~'_physical',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ macros.show_quote_only(subject, {
+                'id': prefix ~'_quoteOnly',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ macros.show_end_of_life(subject, {
+                'id': prefix ~'_endOfLife',
                 'label_col': 6
             }) }}
         </div>
@@ -322,26 +353,6 @@
     </div>
     <div class="row">
         <div class="col-md-4">
-            {{ macros.show_released_at(subject, {
-                'id': prefix ~'_releasedAt',
-                'label_col': 6
-            }) }}
-        </div>
-        <div class="col-md-4">
-            {{ macros.show_quote_only(subject, {
-                'id': prefix ~'_quoteOnly',
-                'label_col': 6
-            }) }}
-        </div>
-        <div class="col-md-4">
-            {{ macros.show_end_of_life(subject, {
-                'id': prefix ~'_endOfLife',
-                'label_col': 6
-            }) }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
             {{ macros.show_in_stock(subject, {
                 'id': prefix ~'_inStock',
                 'label_col': 6
@@ -364,6 +375,12 @@
         <div class="col-md-4">
             {{ macros.show_eda(subject, {
                 'id': prefix ~'_estimatedDateOfArrival',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ macros.show_released_at(subject, {
+                'id': prefix ~'_releasedAt',
                 'label_col': 6
             }) }}
         </div>

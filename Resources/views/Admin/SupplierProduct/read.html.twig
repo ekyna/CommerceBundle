@@ -70,6 +70,17 @@
                 }) }}
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(supplierProduct.physical, 'boolean', {
+                    'label': t('field.physical', [], 'EkynaCommerce'),
+                    'color': true,
+                    'true_class': 'label label-success',
+                    'false_class': 'label label-warning',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
         {{ macros.show_subject(supplierProduct, t('supplier_product.field.subject', [], 'EkynaCommerce')) }}
     </div>
 {%- endblock main_contents %}

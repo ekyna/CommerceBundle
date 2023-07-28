@@ -21,6 +21,8 @@ use Ekyna\Component\Commerce\Install\Installer;
 use Ekyna\Component\Commerce\Payment\Model\PaymentMethodInterface;
 use Ekyna\Component\Commerce\Pricing\Model\TaxGroupInterface;
 use Ekyna\Component\Commerce\Pricing\Repository\TaxGroupRepositoryInterface;
+use Ekyna\Component\Commerce\Shipment\Gateway\InStore\InStorePlatform;
+use Ekyna\Component\Commerce\Shipment\Gateway\Virtual\VirtualPlatform;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentMethodInterface;
 use Ekyna\Component\Resource\Factory\FactoryFactoryInterface;
 use Ekyna\Component\Resource\Manager\ManagerFactoryInterface;
@@ -49,11 +51,11 @@ class CommerceInstaller extends AbstractInstaller
 
     public function __construct(
         RepositoryFactoryInterface $repositoryFactory,
-        FactoryFactoryInterface $factoryFactory,
-        ManagerFactoryInterface $managerFactory,
-        TranslatorInterface $translator,
-        string $defaultCountry,
-        string $defaultCurrency
+        FactoryFactoryInterface    $factoryFactory,
+        ManagerFactoryInterface    $managerFactory,
+        TranslatorInterface        $translator,
+        string                     $defaultCountry,
+        string                     $defaultCurrency
     ) {
         $this->repositoryFactory = $repositoryFactory;
         $this->factoryFactory = $factoryFactory;
@@ -318,10 +320,18 @@ class CommerceInstaller extends AbstractInstaller
         $directory = realpath(__DIR__ . '/../Resources/install/shipment-method');
 
         $methods = [
+            'Dématérialisé'      => [
+                'platform'    => VirtualPlatform::NAME,
+                'image'       => 'virtual.png',
+                'description' => '<p>Vous serez notifié une fois les services mis en place</p>',
+                'available'   => true,
+                'enabled'     => true,
+            ],
             'Retrait en magasin' => [
-                'platform'    => 'in_store',
+                'platform'    => InStorePlatform::NAME,
                 'image'       => 'in-store.png',
                 'description' => '<p>Vous pourrez retirer votre colis à notre magasin ...</p>',
+                'available'   => true,
                 'enabled'     => true,
             ],
         ];
@@ -364,7 +374,7 @@ class CommerceInstaller extends AbstractInstaller
                 ->setPlatformName($options['platform'])
                 ->setName($name)
                 ->setEnabled($options['enabled'])
-                ->setAvailable(true)
+                ->setAvailable($options['available'])
                 ->setPosition($position)
                 ->setTitle($name)
                 ->setDescription($options['description']);

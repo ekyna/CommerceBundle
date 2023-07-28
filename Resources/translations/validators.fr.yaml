@@ -113,6 +113,8 @@ ekyna_commerce:
         stock_unit_shipped_quantity_overflow: |
             Le stock résultant doit être supérieur ou égale au stock expédié (max %max%).
     shipment:
+        method_is_virtual_shipment_is_physical: |
+            Le mode d'expédition sélectionné ne prend en charge les articles physiques.
         method_does_not_support_parcel: |
             Le mode d'expédition sélectionné ne prend en charge le colisage.
         method_does_not_support_return: |
@@ -120,7 +122,7 @@ ekyna_commerce:
         method_does_not_support_shipment: |
             Le mode d'expédition sélectionné ne prend en charge que les retours.
         method_requires_mobile:
-            Le mode d'expédition sélectionné nécéssite un numéro de mobile.
+            Le mode d'expédition sélectionné nécessite un numéro de mobile.
         shipped_state_denied: |
             Le statut de la vente ne permet pas de sélectionner ce statut d'expédition.
         weight_or_parcels_but_not_both: |
