@@ -49,11 +49,11 @@ class DocumentGenerateAction extends AbstractSaleAction implements RoutingAction
             $attachment = $this
                 ->documentGenerator
                 ->generate($sale, $type);
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException) {
             $this->addFlash(t('sale.message.already_exists', [], 'EkynaCommerce'), 'warning');
 
             return $redirect;
-        } catch (PdfException $e) {
+        } catch (PdfException) {
             $this->addFlash(t('document.message.failed_to_generate', [], 'EkynaCommerce'), 'danger');
 
             return $redirect;

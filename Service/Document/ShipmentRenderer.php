@@ -51,7 +51,7 @@ class ShipmentRenderer extends AbstractRenderer
         /** @var ShipmentInterface $subject */
         $subject = reset($this->subjects);
 
-        return 'shipment_' . $this->type . '_' . $subject->getNumber();
+        return $this->type . '_' . $subject->getNumber();
     }
 
     protected function getContent(string $format): string

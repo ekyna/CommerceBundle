@@ -49,6 +49,7 @@ class SupplierType extends AbstractResourceType
             ])
             ->add('carrier', ResourceChoiceType::class, [
                 'resource'  => 'ekyna_commerce.supplier_carrier',
+                'required'  => false,
                 'allow_new' => true,
             ])
             ->add('identity', Commerce\Common\IdentityType::class, [

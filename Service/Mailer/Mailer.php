@@ -5,21 +5,17 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Service\Mailer;
 
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
-use Ekyna\Bundle\AdminBundle\Service\Mailer\MailerHelper;
+use Ekyna\Bundle\AdminBundle\Service\Mailer\MailerHelper as AdminMailerHelper;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes as BDocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderAttachmentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
 use Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface;
-use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
-use Ekyna\Bundle\CommerceBundle\Service\Document\RendererInterface;
-use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
-use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectLabelRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Mailer\MailerHelper as CommerceMailerHelper;
 use Ekyna\Component\Commerce\Common\Model\CouponInterface;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
-use Ekyna\Component\Commerce\Document\Model\DocumentTypes as CDocumentTypes;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
@@ -27,8 +23,6 @@ use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
-use Ekyna\Component\Resource\Exception\PdfException;
-use League\Flysystem\FilesystemOperator;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
@@ -51,14 +45,11 @@ use function substr;
 class Mailer
 {
     public function __construct(
-        private readonly MailerInterface        $mailer,
-        private readonly Environment            $twig,
-        private readonly TranslatorInterface    $translator,
-        private readonly MailerHelper           $mailerHelper,
-        private readonly RendererFactory        $rendererFactory,
-        private readonly SubjectLabelRenderer   $subjectLabelRenderer,
-        private readonly SubjectHelperInterface $subjectHelper,
-        private readonly FilesystemOperator     $filesystem
+        private readonly MailerInterface      $mailer,
+        private readonly Environment          $twig,
+        private readonly TranslatorInterface  $translator,
+        private readonly AdminMailerHelper    $adminMailerHelper,
+        private readonly CommerceMailerHelper $commerceMailerHelper,
     ) {
     }
 
@@ -139,29 +130,15 @@ class Mailer
         $message = $this->createMessage($submit->getSubject(), $submit->getMessage(), $submit->getEmails());
 
         // Form attachment
-        $renderer = $this->rendererFactory->createRenderer($order);
-        $message->attach(
-            $renderer->render(RendererInterface::FORMAT_PDF),
-            $order->getNumber() . '.pdf',
-            'application/pdf'
-        );
+        $this
+            ->commerceMailerHelper
+            ->attachSupplierOrder($message, $order, $order->getNumber() . '.pdf');
 
         // Subjects labels
         if ($submit->isSendLabels()) {
-            $subjects = [];
-            foreach ($order->getItems() as $item) {
-                $subjects[] = $this->subjectHelper->resolve($item);
-            }
-
-            $pdf = $this->subjectLabelRenderer->render(SubjectLabelRenderer::FORMAT_LARGE, $subjects, [
-                'supplierOrder' => $order,
-            ]);
-
-            $message->attach(
-                $pdf,
-                'labels.pdf',
-                'application/pdf'
-            );
+            $this
+                ->commerceMailerHelper
+                ->attachSupplierOrderSubjectLabels($message, $order);
         }
 
         return $this->send($message);
@@ -187,7 +164,7 @@ class Mailer
         $locale = $customer->getLocale();
 
         $subject = $this->translator->trans('ticket_message.notify.customer.subject', [
-            '%site_name%' => $this->mailerHelper->getSiteName(),
+            '%site_name%' => $this->adminMailerHelper->getSiteName(),
         ], 'EkynaCommerce', $locale);
 
         $body = $this->twig->render('@EkynaCommerce/Email/customer_ticket_message.html.twig', [
@@ -252,7 +229,7 @@ class Mailer
         $locale = $customer->getLocale();
 
         $subject = $this->translator->trans('coupon.notify.customer.subject', [
-            '%site_name%' => $this->mailerHelper->getSiteName(),
+            '%site_name%' => $this->adminMailerHelper->getSiteName(),
         ], 'EkynaCommerce', $locale);
 
         $body = $this->twig->render('@EkynaCommerce/Email/customer_coupons.html.twig', [
@@ -312,18 +289,15 @@ class Mailer
 
         // Invoices
         foreach ($notify->getInvoices() as $invoice) {
-            $renderer = $this->rendererFactory->createRenderer($invoice);
             try {
-                $content = $renderer->render(RendererInterface::FORMAT_PDF);
-            } catch (PdfException) {
+                $filename = $this
+                    ->commerceMailerHelper
+                    ->attachInvoice($message, $invoice);
+            } catch (RuntimeException) {
                 $notify->setError(true);
                 $report .= "ERROR: failed to generate PDF for invoice {$invoice->getNumber()}\n";
                 continue;
             }
-
-            $filename = $renderer->getFilename() . '.pdf';
-
-            $message->attach($content, $filename, 'application/pdf');
 
             $attachments[$filename] = $this->translator->trans('invoice.label.singular', [], 'EkynaCommerce');
             $report .= "Attachment: $filename\n";
@@ -331,18 +305,15 @@ class Mailer
 
         // Shipments
         foreach ($notify->getShipments() as $shipment) {
-            $renderer = $this->rendererFactory->createRenderer($shipment, CDocumentTypes::TYPE_SHIPMENT_BILL);
             try {
-                $content = $renderer->render(RendererInterface::FORMAT_PDF);
-            } catch (PdfException) {
+                $filename = $this
+                    ->commerceMailerHelper
+                    ->attachShipment($message, $shipment);
+            } catch (RuntimeException) {
                 $notify->setError(true);
                 $report .= "ERROR: failed to generate PDF for shipment {$shipment->getNumber()}\n";
                 continue;
             }
-
-            $filename = $renderer->getFilename() . '.pdf';
-
-            $message->attach($content, $filename, 'application/pdf');
 
             $attachments[$filename] = $this->translator->trans(
                 'document.type.' . ($shipment->isReturn() ? 'return' : 'shipment') . '_bill',
@@ -356,6 +327,7 @@ class Mailer
         if (0 < $notify->getLabels()->count()) {
             $count = 0;
             foreach ($notify->getLabels() as $label) {
+                // TODO Use commerce mailer helper
                 $count++;
 
                 $format = $label->getFormat();
@@ -378,15 +350,15 @@ class Mailer
 
         // Attachments
         foreach ($notify->getAttachments() as $attachment) {
-            if (!$this->filesystem->fileExists($path = $attachment->getPath())) {
-                throw new RuntimeException("Attachment file '$path' not found.");
+            try {
+                $filename = $this
+                    ->commerceMailerHelper
+                    ->attach($message, $attachment);
+            } catch (RuntimeException) {
+                $notify->setError(true);
+                $report .= "ERROR: failed to attach {$attachment->getPath()}\n";
+                continue;
             }
-
-            $content = $this->filesystem->readStream($path);
-            $filename = pathinfo($path, PATHINFO_BASENAME);
-            $mimeType = $this->filesystem->mimeType($path);
-
-            $message->attach($content, $filename, $mimeType);
 
             if (!empty($type = $attachment->getType())) {
                 if ($source instanceof SupplierOrderInterface) {
@@ -397,6 +369,7 @@ class Mailer
             } else {
                 $attachments[$filename] = $attachment->getTitle();
             }
+
             $report .= "Attachment: $filename\n";
         }
 
@@ -409,21 +382,16 @@ class Mailer
         if ($source instanceof SupplierOrderInterface) {
             // Supplier order form
             if ($notify->isIncludeForm()) {
-                $renderer = $this->rendererFactory->createRenderer($source);
                 try {
-                    $content = $renderer->render(RendererInterface::FORMAT_PDF);
-                } catch (PdfException) {
-                    $notify->setError(true);
-                    $report .= "ERROR: failed to generate PDF for supplier order {$source->getNumber()}\n";
-                }
-
-                if ($content) {
-                    $filename = $renderer->getFilename() . '.pdf';
-
-                    $message->attach($content, $filename, 'application/pdf');
+                    $filename = $this
+                        ->commerceMailerHelper
+                        ->attachSupplierOrder($message, $source);
 
                     $attachments[$filename] = $this->translator->trans('document.type.form', [], 'EkynaCommerce');
                     $report .= "Attachment: $filename\n";
+                } catch (RuntimeException) {
+                    $notify->setError(true);
+                    $report .= "ERROR: failed to generate PDF for supplier order {$source->getNumber()}\n";
                 }
             }
 
@@ -477,7 +445,7 @@ class Mailer
         $message
             ->subject('Notification failed')
             ->text("Notification failure\n\n" . $notify->getReport())
-            ->from($this->mailerHelper->getNotificationSender())
+            ->from($this->adminMailerHelper->getNotificationSender())
             ->to(new Address($notify->getFrom()->getEmail(), $notify->getFrom()->getName()));
 
         $this->send($message);
@@ -493,15 +461,15 @@ class Mailer
         Address|string|array|bool $from = null
     ): Email {
         if (empty($to)) {
-            $to = $this->mailerHelper->getNotificationRecipients();
+            $to = $this->adminMailerHelper->getNotificationRecipients();
         }
 
         if (false === $from) {
-            $from = $this->mailerHelper->getNoReply();
+            $from = $this->adminMailerHelper->getNoReply();
         }
 
         if (empty($from)) {
-            $from = $this->mailerHelper->getNotificationSender();
+            $from = $this->adminMailerHelper->getNotificationSender();
         }
 
         if (!is_array($to)) {

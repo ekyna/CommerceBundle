@@ -26,7 +26,7 @@ use function Symfony\Component\Translation\t;
  * @package Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Attachment
  * @author  Étienne Dauvergne <contact@ekyna.com>
  *
- * @TODO Rename Refresh and move DocumentGenerateAction (rename to GenerateAction) into this folder.
+ * @TODO Rename to RefreshAction and move DocumentGenerateAction (rename to GenerateAction) into this folder.
  */
 class GenerateAction extends AbstractAction implements AdminActionInterface
 {
@@ -78,20 +78,21 @@ class GenerateAction extends AbstractAction implements AdminActionInterface
             $attachment = $this
                 ->documentGenerator
                 ->generate($sale, $type);
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException) {
             $this->addFlash(t('sale.message.already_exists', [], 'EkynaCommerce'), 'warning');
 
             return $redirect;
-        } catch (PdfException $e) {
+        } catch (PdfException) {
             $this->addFlash(t('document.message.failed_to_generate', [], 'EkynaCommerce'), 'danger');
 
             return $redirect;
         }
 
-        $event = $this->getManager()->save($attachment);
-        if ($event->hasErrors()) {
-            $this->addFlashFromEvent($event);
-        }
+        $event = $this
+            ->getManager($attachment)
+            ->save($attachment);
+
+        $this->addFlashFromEvent($event);
 
         return $redirect;
     }

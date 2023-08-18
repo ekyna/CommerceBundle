@@ -9,6 +9,7 @@ use Ekyna\Bundle\CommerceBundle\EventListener\LogoutEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\EventListener\SecurityEventListener;
 use Ekyna\Bundle\CommerceBundle\Install\CommerceInstaller;
 use Ekyna\Bundle\CommerceBundle\Service\Mailer\Mailer;
+use Ekyna\Bundle\CommerceBundle\Service\Mailer\MailerHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Routing\RoutingLoader;
 use Ekyna\Bundle\CommerceBundle\Service\Security\TicketAttachmentVoter;
 use Ekyna\Bundle\CommerceBundle\Service\Security\TicketMessageVoter;
@@ -104,16 +105,23 @@ return static function (ContainerConfigurator $container): void {
 
     // Mailer
     $services
+        ->set('ekyna_commerce.helper.mailer', MailerHelper::class)
+        ->args([
+            service('ekyna_commerce.filesystem'),
+            service('ekyna_commerce.factory.document_renderer'),
+            service('ekyna_commerce.helper.subject'),
+            service('ekyna_commerce.renderer.subject_label'),
+        ]);
+
+    // Mailer
+    $services
         ->set('ekyna_commerce.mailer', Mailer::class)
         ->args([
             service('mailer'),
             service('twig'),
             service('translator'),
             service('ekyna_admin.helper.mailer'),
-            service('ekyna_commerce.factory.document_renderer'),
-            service('ekyna_commerce.renderer.subject_label'),
-            service('ekyna_commerce.helper.subject'),
-            service('ekyna_commerce.filesystem'),
+            service('ekyna_commerce.helper.mailer'),
         ]);
 
     // Routing loader
