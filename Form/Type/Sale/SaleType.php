@@ -172,6 +172,7 @@ class SaleType extends AbstractResourceType
                     ],
                 ])
                 ->add('shipmentMethod', ShipmentMethodPickType::class, [
+                    'subject'   => $sale,
                     'disabled'  => $locked,
                     'available' => !$options['admin_mode'],
                 ])
