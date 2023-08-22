@@ -20,7 +20,7 @@ define(['jquery', 'ekyna-form/collection'], function($) {
                 $toggle = $form.find('#toggle-quantities');
 
             const onMethodChange = function() {
-                const $selectedMethod = $method.find('option[value="' + $method.val() + '"]');
+                const $selectedMethod = $method.find('option[value="' + $method.val() + '"]').first();
                 let supportParcel = 0, supportRelay = 0;
 
                 if (1 === $selectedMethod.length) {

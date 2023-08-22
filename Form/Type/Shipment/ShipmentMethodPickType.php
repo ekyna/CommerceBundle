@@ -169,7 +169,7 @@ class ShipmentMethodPickType extends AbstractType
             'data-gateway'  => $gateway->getName(),
             'data-relay'    => $gateway->supports(GatewayInterface::CAPABILITY_RELAY) ? 1 : 0,
             'data-parcel'   => $gateway->supports(GatewayInterface::CAPABILITY_PARCEL) ? 1 : 0,
-            'data-virtual'  => $gateway->requires(GatewayInterface::CAPABILITY_VIRTUAL) ? 1 : 0,
+            'data-virtual'  => $gateway->supports(GatewayInterface::CAPABILITY_VIRTUAL) ? 1 : 0,
             'data-mobile'   => $gateway->requires(GatewayInterface::REQUIREMENT_MOBILE) ? 1 : 0,
         ];
 
