@@ -9,8 +9,8 @@ use Ekyna\Bundle\CommerceBundle\Controller\Account;
 use Ekyna\Bundle\CommerceBundle\Dashboard\SupportWidget;
 use Ekyna\Bundle\CommerceBundle\EventListener\TicketEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\EventListener\TicketMessageEventSubscriber;
+use Ekyna\Bundle\CommerceBundle\Factory\TicketFactory;
 use Ekyna\Bundle\CommerceBundle\Service\Support\TicketRenderer;
-use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Factory\TicketFactory;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\TicketAttachmentEventSubscriber;
 use Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator;
 use Ekyna\Component\Commerce\Support\Resolver\TicketStateResolver;
@@ -68,6 +68,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.factory.ticket', TicketFactory::class)
         ->args([
             service('ekyna_commerce.factory.ticket_message'),
+            service('ekyna_admin.provider.user'),
             service('ekyna_commerce.resolver.in_charge'),
             service('request_stack'),
             service('ekyna_resource.repository.factory'),

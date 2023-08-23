@@ -13,6 +13,7 @@ use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
 use Ekyna\Component\Commerce\Support\Factory\TicketMessageFactoryInterface;
 use Ekyna\Component\Resource\Model\ResourceInterface;
 use Ekyna\Component\Resource\Repository\RepositoryFactoryInterface;
+use Ekyna\Component\User\Service\UserProviderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -22,21 +23,14 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class TicketFactory extends BaseFactory
 {
-    private InChargeResolver           $inChargeResolver;
-    private RequestStack               $requestStack;
-    private RepositoryFactoryInterface $repositoryFactory;
-
     public function __construct(
-        TicketMessageFactoryInterface $messageFactory,
-        InChargeResolver              $inChargeResolver,
-        RequestStack                  $requestStack,
-        RepositoryFactoryInterface    $repositoryFactory
+        TicketMessageFactoryInterface               $messageFactory,
+        private readonly UserProviderInterface      $adminProvider,
+        private readonly InChargeResolver           $inChargeResolver,
+        private readonly RequestStack               $requestStack,
+        private readonly RepositoryFactoryInterface $repositoryFactory
     ) {
         parent::__construct($messageFactory);
-
-        $this->inChargeResolver = $inChargeResolver;
-        $this->requestStack = $requestStack;
-        $this->repositoryFactory = $repositoryFactory;
     }
 
     /**
@@ -57,6 +51,10 @@ class TicketFactory extends BaseFactory
         }
         if ($number = $request->query->get('customer')) {
             $this->setTicketCustomer($ticket, $number);
+        }
+
+        if ($this->adminProvider->hasUser()) {
+            $ticket->setInternal(true);
         }
 
         $this->inChargeResolver->update($ticket);
@@ -90,7 +88,7 @@ class TicketFactory extends BaseFactory
      * @param TicketInterface $ticket
      * @param string          $number
      */
-    private function setTicketQuote(TicketInterface $ticket, $number): void
+    private function setTicketQuote(TicketInterface $ticket, string $number): void
     {
         $quote = $this
             ->repositoryFactory
@@ -116,7 +114,7 @@ class TicketFactory extends BaseFactory
      * @param TicketInterface $ticket
      * @param string          $number
      */
-    private function setTicketCustomer(TicketInterface $ticket, $number)
+    private function setTicketCustomer(TicketInterface $ticket, string $number): void
     {
         $customer = $this
             ->repositoryFactory
