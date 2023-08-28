@@ -80,6 +80,7 @@ class ShipmentMethodPickType extends AbstractType
     ): array {
         $this->availablePrices = [];
 
+        $shipment = null;
         $return = false;
         if ($subject instanceof ShipmentInterface) {
             $shipment = $subject;
@@ -93,7 +94,7 @@ class ShipmentMethodPickType extends AbstractType
 
         $this->context = $this->contextProvider->getContext($sale);
 
-        if (null !== $sale) {
+        if ($subject instanceof SaleInterface) {
             $this->availablePrices = $this->priceResolver->getAvailablePricesBySale($sale, $availableOnly);
 
             if ($withPrice) {
