@@ -26,14 +26,10 @@ use function Symfony\Component\Translation\t;
  */
 class OrderInvoiceType extends AbstractOrderListType
 {
-    private AuthorizationCheckerInterface $authorization;
-    private LockChecker                   $locking;
-
-
-    public function __construct(AuthorizationCheckerInterface $authorization, LockChecker $locking)
-    {
-        $this->authorization = $authorization;
-        $this->locking = $locking;
+    public function __construct(
+        private readonly AuthorizationCheckerInterface $authorization,
+        private readonly LockChecker                   $locking
+    ) {
     }
 
     public function buildTable(TableBuilderInterface $builder, array $options): void

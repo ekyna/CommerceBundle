@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Doctrine\Common\Collections\Collection;
 use Ekyna\Bundle\AdminBundle\Action\ReadAction;
+use Ekyna\Bundle\AdminBundle\Model\Ui;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Table\Column\AbstractColumnType;
@@ -26,6 +27,8 @@ use function Symfony\Component\Translation\t;
  * Class CartType
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
  * @author  Etienne Dauvergne <contact@ekyna.com>
+ *
+ * @TODO    Use 'anchor' block type with Anchor model(s).
  */
 class CartType extends AbstractColumnType
 {
@@ -47,7 +50,7 @@ class CartType extends AbstractColumnType
             $view->vars['value'] = sprintf('<a href="%s">%s</a> ', $href, $carts->getNumber());
 
             $view->vars['attr'] = array_replace($view->vars['attr'], [
-                'data-side-detail' => json_encode([
+                Ui::SIDE_DETAIL_ATTR => json_encode([
                     'route'      => 'ekyna_commerce_cart_admin_summary',
                     'parameters' => [
                         'cartId' => $carts->getId(),
@@ -79,7 +82,14 @@ class CartType extends AbstractColumnType
             ]);
 
             /** @noinspection HtmlUnknownTarget */
-            $output .= sprintf('<a href="%s" data-side-detail=\'%s\'>%s</a>', $href, $summary, $cart->getNumber());
+            /** @noinspection HtmlUnknownAttribute */
+            $output .= sprintf(
+                '<a href="%s" %s="%s">%s</a>',
+                $href,
+                Ui::SIDE_DETAIL_ATTR,
+                $summary,
+                $cart->getNumber()
+            );
         }
 
         $view->vars['value'] = $output;

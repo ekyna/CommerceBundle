@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 use Doctrine\Common\Collections\Collection;
 use Ekyna\Bundle\AdminBundle\Action\ReadAction;
 use Ekyna\Bundle\AdminBundle\Action\SummaryAction;
+use Ekyna\Bundle\AdminBundle\Model\Ui;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
@@ -29,6 +30,8 @@ use function Symfony\Component\Translation\t;
  * Class OrderType
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
  * @author  Etienne Dauvergne <contact@ekyna.com>
+ *
+ * @TODO    Use 'anchor' block type with Anchor model(s).
  */
 class OrderType extends AbstractColumnType
 {
@@ -50,7 +53,7 @@ class OrderType extends AbstractColumnType
             $view->vars['value'] = sprintf('<a href="%s">%s</a>', $href, $orders->getNumber());
 
             $view->vars['attr'] = array_replace($view->vars['attr'], [
-                'data-side-detail' => $this->helper->generateResourcePath($orders, SummaryAction::class),
+                Ui::SIDE_DETAIL_ATTR => $this->helper->generateResourcePath($orders, SummaryAction::class),
             ]);
 
             return;
@@ -73,7 +76,14 @@ class OrderType extends AbstractColumnType
             $summary = $this->helper->generateResourcePath($order, SummaryAction::class);
 
             /** @noinspection HtmlUnknownTarget */
-            $output .= sprintf('<a href="%s" data-side-detail="%s">%s</a>', $href, $summary, $order->getNumber());
+            /** @noinspection HtmlUnknownAttribute */
+            $output .= sprintf(
+                '<a href="%s" %s="%s">%s</a>',
+                $href,
+                Ui::SIDE_DETAIL_ATTR,
+                $summary,
+                $order->getNumber()
+            );
         }
 
         $view->vars['value'] = $output;
@@ -81,9 +91,9 @@ class OrderType extends AbstractColumnType
 
     public function applySort(
         AdapterInterface $adapter,
-        ColumnInterface $column,
-        ActiveSort $activeSort,
-        array $options
+        ColumnInterface  $column,
+        ActiveSort       $activeSort,
+        array            $options
     ): bool {
         if (!$adapter instanceof EntityAdapter) {
             return false;
@@ -102,24 +112,23 @@ class OrderType extends AbstractColumnType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver
-            ->setDefaults([
-                'multiple'      => false,
-                'label'         => function (Options $options, $value) {
-                    if ($value) {
-                        return $value;
-                    }
+        $resolver->setDefaults([
+            'multiple'      => false,
+            'label'         => function (Options $options, $value) {
+                if ($value) {
+                    return $value;
+                }
 
-                    return t('order.label.' . ($options['multiple'] ? 'plural' : 'singular'), [], 'EkynaCommerce');
-                },
-                'property_path' => function (Options $options, $value) {
-                    if ($value) {
-                        return $value;
-                    }
+                return t('order.label.' . ($options['multiple'] ? 'plural' : 'singular'), [], 'EkynaCommerce');
+            },
+            'property_path' => function (Options $options, $value) {
+                if ($value) {
+                    return $value;
+                }
 
-                    return $options['multiple'] ? 'orders' : 'order';
-                },
-            ]);
+                return $options['multiple'] ? 'orders' : 'order';
+            },
+        ]);
     }
 
     public function getBlockPrefix(): string

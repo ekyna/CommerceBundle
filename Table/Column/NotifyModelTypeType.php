@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Bundle\CommerceBundle\Model\NotificationTypes;
 use Ekyna\Bundle\TableBundle\Extension\Type\Column\AnchorType;
+use Ekyna\Bundle\TableBundle\Model\Anchor;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Source\RowInterface;
@@ -31,7 +32,13 @@ class NotifyModelTypeType extends AbstractColumnType
 
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
-        $view->vars['value'] = NotificationTypes::getLabel($view->vars['value'])->trans($this->translator);
+        $anchor = $view->vars['anchor'];
+
+        if (!$anchor instanceof Anchor) {
+            return;
+        }
+
+        $anchor->label = NotificationTypes::getLabel($anchor->value)->trans($this->translator);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

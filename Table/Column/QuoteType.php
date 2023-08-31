@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 use Doctrine\Common\Collections\Collection;
 use Ekyna\Bundle\AdminBundle\Action\ReadAction;
 use Ekyna\Bundle\AdminBundle\Action\SummaryAction;
+use Ekyna\Bundle\AdminBundle\Model\Ui;
 use Ekyna\Bundle\CommerceBundle\Model\QuoteInterface;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
@@ -19,11 +20,9 @@ use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use function array_replace;
 use function is_array;
-use function json_encode;
 use function sprintf;
 use function Symfony\Component\Translation\t;
 
@@ -31,6 +30,8 @@ use function Symfony\Component\Translation\t;
  * Class QuoteType
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
  * @author  Etienne Dauvergne <contact@ekyna.com>
+ *
+ * @TODO    Use 'anchor' block type with Anchor model(s).
  */
 class QuoteType extends AbstractColumnType
 {
@@ -52,7 +53,7 @@ class QuoteType extends AbstractColumnType
             $view->vars['value'] = sprintf('<a href="%s">%s</a>', $href, $quotes->getNumber());
 
             $view->vars['attr'] = array_replace($view->vars['attr'], [
-                'data-side-detail' => $this->helper->generateResourcePath($quotes, SummaryAction::class),
+                Ui::SIDE_DETAIL_ATTR => $this->helper->generateResourcePath($quotes, SummaryAction::class),
             ]);
 
             return;
@@ -75,7 +76,14 @@ class QuoteType extends AbstractColumnType
             $summary = $this->helper->generateResourcePath($quote, SummaryAction::class);
 
             /** @noinspection HtmlUnknownTarget */
-            $output .= sprintf('<a href="%s" data-side-detail="%s">%s</a>', $href, $summary, $quote->getNumber());
+            /** @noinspection HtmlUnknownAttribute */
+            $output .= sprintf(
+                '<a href="%s" %s="%s">%s</a>',
+                $href,
+                Ui::SIDE_DETAIL_ATTR,
+                $summary,
+                $quote->getNumber()
+            );
         }
 
         $view->vars['value'] = $output;
@@ -83,9 +91,9 @@ class QuoteType extends AbstractColumnType
 
     public function applySort(
         AdapterInterface $adapter,
-        ColumnInterface $column,
-        ActiveSort $activeSort,
-        array $options
+        ColumnInterface  $column,
+        ActiveSort       $activeSort,
+        array            $options
     ): bool {
         if (!$adapter instanceof EntityAdapter) {
             return false;

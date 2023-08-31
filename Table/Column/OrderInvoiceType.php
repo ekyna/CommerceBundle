@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 use Doctrine\Common\Collections\Collection;
 use Ekyna\Bundle\AdminBundle\Action\ReadAction;
 use Ekyna\Bundle\AdminBundle\Action\SummaryAction;
+use Ekyna\Bundle\AdminBundle\Model\Ui;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Order\Model\OrderInvoiceInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
@@ -20,7 +21,6 @@ use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use function array_replace;
 use function is_array;
 use function sprintf;
 use function Symfony\Component\Translation\t;
@@ -29,32 +29,19 @@ use function Symfony\Component\Translation\t;
  * Class OrderInvoiceType
  * @package Ekyna\Bundle\CommerceBundle\Table\Column
  * @author  Etienne Dauvergne <contact@ekyna.com>
+ *
+ * @TODO    Use 'anchor' block type with Anchor model(s).
  */
 class OrderInvoiceType extends AbstractColumnType
 {
-    private ResourceHelper $resourceHelper;
-
-    public function __construct(ResourceHelper $resourceHelper)
-    {
-        $this->resourceHelper = $resourceHelper;
+    public function __construct(
+        private readonly ResourceHelper $resourceHelper
+    ) {
     }
 
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
         $invoices = $row->getData($column->getConfig()->getPropertyPath());
-
-        if ($invoices instanceof OrderInvoiceInterface) {
-            $href = $this->resourceHelper->generateResourcePath($invoices->getOrder(), ReadAction::class);
-
-            /** @noinspection HtmlUnknownTarget */
-            $view->vars['value'] = sprintf('<a href="%s">%s</a>', $href, $invoices->getNumber());
-
-            $view->vars['attr'] = array_replace($view->vars['attr'], [
-                'data-side-detail' => $this->resourceHelper->generateResourcePath($invoices, SummaryAction::class),
-            ]);
-
-            return;
-        }
 
         if ($invoices instanceof Collection) {
             $invoices = $invoices->toArray();
@@ -70,10 +57,17 @@ class OrderInvoiceType extends AbstractColumnType
             }
 
             $href = $this->resourceHelper->generateResourcePath($invoice->getOrder(), ReadAction::class);
-            $summary = $this->resourceHelper->generateResourcePath($invoices, SummaryAction::class);
+            $summary = $this->resourceHelper->generateResourcePath($invoice, SummaryAction::class);
 
             /** @noinspection HtmlUnknownTarget */
-            $output .= sprintf('<a href="%s" data-side-detail="%s">%s</a>', $href, $summary, $invoice->getNumber());
+            /** @noinspection HtmlUnknownAttribute */
+            $output .= sprintf(
+                '<a href="%s" %s="%s">%s</a>',
+                $href,
+                Ui::SIDE_DETAIL_ATTR,
+                $summary,
+                $invoice->getNumber()
+            );
         }
 
         $view->vars['value'] = $output;
