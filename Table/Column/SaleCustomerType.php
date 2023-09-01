@@ -6,9 +6,11 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Bundle\AdminBundle\Action\ReadAction;
 use Ekyna\Bundle\AdminBundle\Action\SummaryAction;
+use Ekyna\Bundle\AdminBundle\Model\Ui;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
+use Ekyna\Bundle\TableBundle\Model\Anchor;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
@@ -54,13 +56,12 @@ class SaleCustomerType extends AbstractColumnType
 
         /** @var CustomerInterface $customer */
         if (null !== $customer = $row->getData($prefix . 'customer')) {
+            $href = $this->resourceHelper->generateResourcePath($customer, ReadAction::class);
+            $summary = $this->resourceHelper->generateResourcePath($customer, SummaryAction::class);
             $view->vars = array_replace($view->vars, [
                 'block_prefix' => 'anchor',
                 'value'        => $value,
-                'path'         => $this->resourceHelper->generateResourcePath($customer, ReadAction::class),
-                'attr'         => [
-                    'data-summary' => $this->resourceHelper->generateResourcePath($customer, SummaryAction::class),
-                ],
+                'anchor'       => new Anchor($value, $value, ['href' => $href, Ui::SUMMARY_ATTR => $summary]),
             ]);
 
             return;
