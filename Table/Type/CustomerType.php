@@ -73,6 +73,10 @@ class CustomerType extends AbstractResourceType
                 // TODO 'summary' => true,
                 'position' => 10,
             ])
+            ->addColumn('tags', Type\Column\CustomerFlagsType::class, [
+                'label'    => t('field.tags', [], 'EkynaUi'),
+                'position' => 15,
+            ])
             ->addColumn('name', CType\Column\TextType::class, [
                 'label'         => t('field.name', [], 'EkynaUi'),
                 'property_path' => false,

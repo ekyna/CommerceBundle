@@ -107,6 +107,15 @@ return static function (ContainerConfigurator $container) {
         ])
         ->tag('table.column_type');
 
+    // Customer flags column type
+    $services
+        ->set('ekyna_commerce.table_column_type.customer_flags', Column\CustomerFlagsType::class)
+        ->args([
+            service('ekyna_commerce.renderer.customer'),
+            param('ekyna_commerce.class.order'),
+        ])
+        ->tag('table.column_type');
+
     // Customer outstanding column type
     $services
         ->set('ekyna_commerce.table_column_type.customer_outstanding', Column\CustomerOutstandingType::class)
