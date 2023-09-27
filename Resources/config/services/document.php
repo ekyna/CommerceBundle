@@ -31,6 +31,7 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('ekyna_commerce.factory.amount_calculator'),
             service('ekyna_commerce.converter.currency'),
+            service('ekyna_commerce.factory.formatter'),
         ]);
 
     // Document renderer factory

@@ -23,7 +23,6 @@ return static function (ContainerConfigurator $container) {
                 service('ekyna_commerce.repository.tax_group'),
                 service('ekyna_commerce.repository.customer_group'),
                 service('ekyna_commerce.repository.warehouse'),
-                service('ekyna_commerce.registry.subject_provider'),
                 service('ekyna_resource.factory.factory'),
             ])
             ->tag('nelmio_alice.faker.provider')

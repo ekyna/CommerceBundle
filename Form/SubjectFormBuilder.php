@@ -71,7 +71,6 @@ class SubjectFormBuilder
             'attr'                  => ['label_col' => 2, 'widget_col' => 10],
             'modes'                 => [Common\AdjustmentModes::MODE_FLAT],
             'types'                 => [Common\AdjustmentTypes::TYPE_INCLUDED],
-            'required'              => false,
         ], $options);
 
         $this->form->add('adjustments', CO\Common\AdjustmentsType::class, $options);

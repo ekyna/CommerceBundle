@@ -22,7 +22,6 @@ use Ekyna\Component\Commerce\Stock\Model\WarehouseInterface;
 use Ekyna\Component\Commerce\Stock\Repository\WarehouseRepositoryInterface;
 use Ekyna\Component\Commerce\Subject\Entity\SubjectIdentity;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
-use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierAddressInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierInterface;
 use Ekyna\Component\Resource\Factory\FactoryFactoryInterface;
@@ -40,35 +39,19 @@ use RuntimeException;
  */
 class CommerceProvider
 {
-    private CountryRepositoryInterface       $countryRepository;
-    private CurrencyRepositoryInterface      $currencyRepository;
-    private TaxGroupRepositoryInterface      $taxGroupRepository;
-    private CustomerGroupRepositoryInterface $customerGroupRepository;
-    private WarehouseRepositoryInterface     $warehouseRepository;
-    private SubjectProviderRegistryInterface $providerRegistry;
-    private FactoryFactoryInterface          $factoryFactory;
-
     /** @var array<CustomerGroupInterface> */
     private ?array           $customerGroups = null;
     private ?Generator       $faker          = null;
     private ?PhoneNumberUtil $phoneUtil      = null;
 
     public function __construct(
-        CountryRepositoryInterface       $countryRepository,
-        CurrencyRepositoryInterface      $currencyRepository,
-        TaxGroupRepositoryInterface      $taxGroupRepository,
-        CustomerGroupRepositoryInterface $customerGroupRepository,
-        WarehouseRepositoryInterface     $warehouseRepository,
-        SubjectProviderRegistryInterface $providerRegistry,
-        FactoryFactoryInterface          $factoryFactory
+        private readonly CountryRepositoryInterface       $countryRepository,
+        private readonly CurrencyRepositoryInterface      $currencyRepository,
+        private readonly TaxGroupRepositoryInterface      $taxGroupRepository,
+        private readonly CustomerGroupRepositoryInterface $customerGroupRepository,
+        private readonly WarehouseRepositoryInterface     $warehouseRepository,
+        private readonly FactoryFactoryInterface          $factoryFactory
     ) {
-        $this->countryRepository = $countryRepository;
-        $this->currencyRepository = $currencyRepository;
-        $this->taxGroupRepository = $taxGroupRepository;
-        $this->customerGroupRepository = $customerGroupRepository;
-        $this->warehouseRepository = $warehouseRepository;
-        $this->providerRegistry = $providerRegistry;
-        $this->factoryFactory = $factoryFactory;
     }
 
     /**
@@ -132,7 +115,7 @@ class CommerceProvider
     /**
      * Generates an address.
      *
-     * @return OrderAddressInterface|CustomerAddressInterface|SupplierAddressInterface
+     * @return OrderAddressInterface|CustomerAddressInterface|SupplierAddressInterface|AddressInterface
      */
     public function generateAddress(IdentityInterface $owner, ?bool $ownerIdentity = null): AddressInterface
     {

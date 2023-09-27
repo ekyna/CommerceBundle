@@ -13,6 +13,7 @@ use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Cart\Resolver\CartStateResolver;
 use Ekyna\Component\Commerce\Common\Builder\AddressBuilder;
 use Ekyna\Component\Commerce\Common\Builder\AdjustmentBuilder;
+use Ekyna\Component\Commerce\Common\Builder\SaleAdjustmentBuilder;
 use Ekyna\Component\Commerce\Common\Calculator\AmountCalculatorFactory;
 use Ekyna\Component\Commerce\Common\Calculator\ItemCostCalculator;
 use Ekyna\Component\Commerce\Common\Calculator\MarginCalculatorFactory;
@@ -129,7 +130,7 @@ return static function (ContainerConfigurator $container) {
         ->lazy()
         ->args([
             service('ekyna_commerce.builder.address'),
-            service('ekyna_commerce.builder.adjustment'),
+            service('ekyna_commerce.builder.sale_adjustment'),
             service('ekyna_commerce.factory.amount_calculator'),
             service('ekyna_commerce.converter.currency'),
             service('ekyna_commerce.calculator.weight'),
@@ -173,9 +174,17 @@ return static function (ContainerConfigurator $container) {
         ->lazy()
         ->args([
             service('ekyna_commerce.helper.factory'),
+            service('ekyna_resource.orm.persistence_helper'),
+        ]);
+
+    // Sale adjustment builder
+    $services
+        ->set('ekyna_commerce.builder.sale_adjustment', SaleAdjustmentBuilder::class)
+        ->lazy()
+        ->args([
+            service('ekyna_commerce.builder.adjustment'),
             service('ekyna_commerce.resolver.tax'),
             service('ekyna_commerce.resolver.discount'),
-            service('ekyna_resource.orm.persistence_helper'),
         ]);
 
     // Weight calculator
@@ -257,7 +266,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.listener.abstract_sale_item', AbstractSaleItemListener::class)
         ->abstract()
         ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
-        ->call('setAdjustmentBuilder', [service('ekyna_commerce.builder.adjustment')]);
+        ->call('setSaleAdjustmentBuilder', [service('ekyna_commerce.builder.sale_adjustment')]);
 
     // Sale adjustment abstract listener
     $services

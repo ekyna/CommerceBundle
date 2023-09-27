@@ -128,6 +128,9 @@
                 {%- if row.description is not empty -%}
                     <br><p class="description">{{ row.description|nl2br }}</p>
                 {%- endif -%}
+                {%- if row.included is not empty -%}
+                    <br><p class="description">{{ row.included|nl2br }}</p>
+                {%- endif -%}
             </td>
             <td>{{ row.reference }}</td>
             <td class="text-right">
@@ -279,7 +282,7 @@
 </table>
 
 {# Taxes details #}
-{% if subject.taxesDetails is not empty -%}
+{% if subject.taxesDetails is not empty or subject.includes is not empty -%}
 <table class="bloc table taxes">
     <thead>
         <tr>
@@ -287,6 +290,7 @@
             <th>{{ 'sale.field.tax_total'|trans({}, 'EkynaCommerce') }}</th>
         </tr>
     </thead>
+    {% if subject.taxesDetails is not empty -%}
     <tbody>
         {% for details in subject.taxesDetails -%}
         <tr>
@@ -295,6 +299,17 @@
         </tr>
         {%- endfor %}
     </tbody>
+    {%- endif %}
+    {% if subject.includedDetails is not empty -%}
+    <tbody>
+        {% for details in subject.includedDetails -%}
+        <tr>
+            <th>{{ details.name }}</th>
+            <td class="text-right">{{ details.amount|format_currency(currency, {}, locale) }}</td>
+        </tr>
+        {%- endfor %}
+    </tbody>
+    {%- endif %}
 </table>
 {%- endif %}
 {%- endblock doc_lines %}

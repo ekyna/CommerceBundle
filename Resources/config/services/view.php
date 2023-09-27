@@ -17,78 +17,85 @@ use Ekyna\Component\Commerce\Common\View\ViewBuilder;
 use Ekyna\Component\Commerce\Common\View\ViewTypeRegistry;
 
 return static function (ContainerConfigurator $container) {
-    $container
-        ->services()
+    $services = $container->services();
 
-        // View types registry
-        ->set('ekyna_commerce.registry.view_type', ViewTypeRegistry::class)
+    // View types registry
+    $services->set('ekyna_commerce.registry.view_type', ViewTypeRegistry::class);
 
-        // View builder
+    // View builder
+    $services
         ->set('ekyna_commerce.builder.view', ViewBuilder::class)
-            ->lazy(true)
-            ->args([
-                service('ekyna_commerce.registry.view_type'),
-                service('ekyna_commerce.factory.amount_calculator'),
-                service('ekyna_commerce.factory.margin_calculator'),
-                service('ekyna_commerce.converter.currency'),
-                service('ekyna_commerce.factory.formatter'),
-                service('ekyna_commerce.helper.sale_item'),
-            ])
+        ->lazy()
+        ->args([
+            service('ekyna_commerce.registry.view_type'),
+            service('ekyna_commerce.factory.amount_calculator'),
+            service('ekyna_commerce.factory.margin_calculator'),
+            service('ekyna_commerce.converter.currency'),
+            service('ekyna_commerce.factory.formatter'),
+            service('ekyna_commerce.helper.sale_item'),
+        ]);
 
-        // Availability view type
+    // Availability view type
+    $services
         ->set('ekyna_commerce.view_type.availability', AvailabilityViewType::class)
-            ->args([
-                service('ekyna_commerce.helper.subject'),
-                service('ekyna_commerce.helper.availability'),
-            ])
-            ->tag(RegisterViewTypePass::VIEW_TYPE_TAG)
+        ->args([
+            service('ekyna_commerce.helper.subject'),
+            service('ekyna_commerce.helper.availability'),
+        ])
+        ->tag(RegisterViewTypePass::VIEW_TYPE_TAG);
 
-        // Abstract view type
+    // Abstract view type
+    $services
         ->set('ekyna_commerce.view_type.abstract', AbstractViewType::class)
-            ->abstract(true)
-            ->call('setUrlGenerator', [service('router')])
-            ->call('setTranslator', [service('translator')])
-            ->call('setResourceHelper', [service('ekyna_resource.helper')])
-            ->call('setSubjectHelper', [service('ekyna_commerce.helper.subject')])
+        ->abstract()
+        ->call('setUrlGenerator', [service('router')])
+        ->call('setTranslator', [service('translator')])
+        ->call('setResourceHelper', [service('ekyna_resource.helper')])
+        ->call('setSubjectHelper', [service('ekyna_commerce.helper.subject')]);
 
-        // Sale view type
+    // Sale view type
+    $services
         ->set('ekyna_commerce.view_type.sale', SaleViewType::class)
-            ->parent('ekyna_commerce.view_type.abstract')
-            ->call('setLocaleProvider', [service('ekyna_resource.provider.locale')])
-            ->call('setAmountCalculatorFactory', [service('ekyna_commerce.factory.amount_calculator')])
-            ->call('setAuthorizationChecker', [service('security.authorization_checker')])
-            ->tag(RegisterViewTypePass::VIEW_TYPE_TAG)
+        ->parent('ekyna_commerce.view_type.abstract')
+        ->call('setLocaleProvider', [service('ekyna_resource.provider.locale')])
+        ->call('setAmountCalculatorFactory', [service('ekyna_commerce.factory.amount_calculator')])
+        ->call('setAuthorizationChecker', [service('security.authorization_checker')])
+        ->tag(RegisterViewTypePass::VIEW_TYPE_TAG);
 
-        // Sale privacy view type
+    // Sale privacy view type
+    $services
         ->set('ekyna_commerce.view_type.sale_privacy', SaleViewPrivacyType::class) // TODO Rename to SalePrivacyViewType
-            ->parent('ekyna_commerce.view_type.abstract')
-            ->tag(RegisterViewTypePass::VIEW_TYPE_TAG)
+        ->parent('ekyna_commerce.view_type.abstract')
+        ->tag(RegisterViewTypePass::VIEW_TYPE_TAG);
 
-        // Cart view type
+    // Cart view type
+    $services
         ->set('ekyna_commerce.view_type.cart', CartViewType::class)
-            ->parent('ekyna_commerce.view_type.abstract')
-            ->call('setShipmentPriceResolver', [service('ekyna_commerce.resolver.shipment_price')])
-            ->tag(RegisterViewTypePass::VIEW_TYPE_TAG)
+        ->parent('ekyna_commerce.view_type.abstract')
+        ->call('setShipmentPriceResolver', [service('ekyna_commerce.resolver.shipment_price')])
+        ->tag(RegisterViewTypePass::VIEW_TYPE_TAG);
 
-        // Quote admin view type
+    // Quote admin view type
+    $services
         ->set('ekyna_commerce.view_type.quote_admin', QuoteAdminViewType::class)
-            ->parent('ekyna_commerce.view_type.abstract')
-            ->call('setShipmentPriceResolver', [service('ekyna_commerce.resolver.shipment_price')])
-            ->tag(RegisterViewTypePass::VIEW_TYPE_TAG)
+        ->parent('ekyna_commerce.view_type.abstract')
+        ->call('setShipmentPriceResolver', [service('ekyna_commerce.resolver.shipment_price')])
+        ->tag(RegisterViewTypePass::VIEW_TYPE_TAG);
 
-        // Quote account view type
+    // Quote account view type
+    $services
         ->set('ekyna_commerce.view_type.quote_account', QuoteAccountViewType::class)
-            ->parent('ekyna_commerce.view_type.abstract')
-            ->tag(RegisterViewTypePass::VIEW_TYPE_TAG)
+        ->parent('ekyna_commerce.view_type.abstract')
+        ->tag(RegisterViewTypePass::VIEW_TYPE_TAG);
 
-        // Order view type
+    // Order view type
+    $services
         ->set('ekyna_commerce.view_type.order', OrderViewType::class)
-            ->parent('ekyna_commerce.view_type.abstract')
-            ->call('setPrioritizeChecker', [service('ekyna_commerce.prioritizer.checker')])
-            ->call('setStockRenderer', [service('ekyna_commerce.renderer.stock')])
-            ->call('setInvoiceCalculator', [service('ekyna_commerce.calculator.invoice_subject')])
-            ->call('setShipmentSubjectCalculator', [service('ekyna_commerce.calculator.shipment_subject')])
-            ->call('setShipmentPriceResolver', [service('ekyna_commerce.resolver.shipment_price')])
-            ->tag(RegisterViewTypePass::VIEW_TYPE_TAG)
-    ;
+        ->parent('ekyna_commerce.view_type.abstract')
+        ->call('setPrioritizeChecker', [service('ekyna_commerce.prioritizer.checker')])
+        ->call('setStockRenderer', [service('ekyna_commerce.renderer.stock')])
+        ->call('setInvoiceCalculator', [service('ekyna_commerce.calculator.invoice_subject')])
+        ->call('setShipmentSubjectCalculator', [service('ekyna_commerce.calculator.shipment_subject')])
+        ->call('setShipmentPriceResolver', [service('ekyna_commerce.resolver.shipment_price')])
+        ->tag(RegisterViewTypePass::VIEW_TYPE_TAG);
 };

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
@@ -17,28 +19,14 @@ use Ekyna\Component\Commerce\Shipment\Model as Shipment;
  */
 class DocumentPageBuilder
 {
-    /**
-     * @var SubjectHelper
-     */
-    protected $subjectHelper;
+    protected array $config;
 
     /**
-     * @var ShipmentSubjectCalculatorInterface
-     */
-    protected $shipmentCalculator;
-
-    /**
-     * @var array
-     */
-    protected $config;
-
-    /**
-     * [<(string) oid> => <(int) last page height>]
+     * [<(int) oid> => <(int) last page height>]
      *
-     * @var array
+     * @var array<int, int>
      */
-    private $heightCache;
-
+    private array $heightCache = [];
 
     /**
      * Constructor.
@@ -48,13 +36,10 @@ class DocumentPageBuilder
      * @param array                              $config
      */
     public function __construct(
-        SubjectHelper $subjectHelper,
-        ShipmentSubjectCalculatorInterface $shipmentCalculator,
-        array $config = []
+        protected readonly SubjectHelper                      $subjectHelper,
+        protected readonly ShipmentSubjectCalculatorInterface $shipmentCalculator,
+        array                                                 $config = []
     ) {
-        $this->subjectHelper = $subjectHelper;
-        $this->shipmentCalculator = $shipmentCalculator;
-
         $this->config = array_replace([
             'row_height'      => 27,
             'row_desc_height' => 47,
@@ -94,11 +79,11 @@ class DocumentPageBuilder
             while (null !== $parent = $parent->getParent()) {
                 $level++;
 
-                if (null !== $this->findDocumentLineByItem($lines, $parent)) {
+                if (null !== $parentLine = $this->findDocumentLineByItem($lines, $parent)) {
                     continue;
                 }
 
-                if (in_array($parent->getId(), $parentIds)) {
+                if (in_array($parent->getId(), $parentIds, true)) {
                     continue;
                 }
 
@@ -108,7 +93,7 @@ class DocumentPageBuilder
                     $group = ['height' => 0, 'rows' => []];
                 }
 
-                $reference = $parent->getReference();
+                $reference = $parentLine->getReference();
                 if ($parent->isConfigurable() && $parent->isCompound() && !$parent->hasPrivateChildren()) {
                     $reference = null;
                 }
@@ -118,8 +103,9 @@ class DocumentPageBuilder
                     'level'         => $level - 1,
                     'virtual'       => true,
                     'reference'     => $reference,
-                    'designation'   => $parent->getDesignation(),
-                    'description'   => $parent->getDescription(),
+                    'designation'   => $parentLine->getDesignation(),
+                    'description'   => $parentLine->getDescription(),
+                    'included'      => $parentLine->getIncluded(),
                     'url'           => $this->subjectHelper->generatePublicUrl($parent, false),
                     'quantity'      => null,
                     'unit'          => null,
@@ -149,9 +135,10 @@ class DocumentPageBuilder
             $group['rows'][] = $row = [
                 'level'         => $level,
                 'virtual'       => false,
-                'reference'     => $item->getReference(),
+                'reference'     => $line->getReference(),
                 'designation'   => $line->getDesignation(),
                 'description'   => $line->getDescription(),
+                'included'      => $line->getIncluded(),
                 'url'           => $this->subjectHelper->generatePublicUrl($line->getSaleItem(), false),
                 'quantity'      => $line->getQuantity(),
                 'unit'          => $line->getUnit($ati),
@@ -183,6 +170,7 @@ class DocumentPageBuilder
                 'reference'     => $item->getReference(),
                 'designation'   => $item->getDesignation(),
                 'description'   => $item->getDescription(),
+                'included'      => $item->getIncluded(),
                 'url'           => null,
                 'quantity'      => $item->getQuantity(),
                 'unit'          => $item->getUnit($ati),
@@ -240,7 +228,7 @@ class DocumentPageBuilder
                     continue;
                 }
 
-                if (in_array($parent->getId(), $parentIds)) {
+                if (in_array($parent->getId(), $parentIds, true)) {
                     continue;
                 }
 
@@ -251,7 +239,7 @@ class DocumentPageBuilder
                 }
 
                 // Add parent row
-                $group['rows'][] = $row = [
+                $group['rows'][] = [
                     'level'       => $level - 1,
                     'virtual'     => true,
                     'private'     => $parent->isPrivate(),
@@ -268,13 +256,13 @@ class DocumentPageBuilder
             }
 
             //  New group
-            if ($level == 0 && !empty($group['rows'])) {
+            if ($level === 0 && !empty($group['rows'])) {
                 $groups[] = $group;
                 $group = ['height' => 0, 'rows' => []];
             }
 
             // Add row
-            $group['rows'][] = $row = [
+            $group['rows'][] = [
                 'level'       => $level,
                 'virtual'     => false,
                 'private'     => $item->isPrivate(),
@@ -340,13 +328,13 @@ class DocumentPageBuilder
                 }
 
                 //  New group
-                if ($level - 1 == 0 && !empty($group['rows'])) {
+                if ($level - 1 === 0 && !empty($group['rows'])) {
                     $groups[] = $group;
                     $group = ['height' => 0, 'rows' => []];
                 }
 
                 // Add parent row
-                $group['rows'][] = $row = [
+                $group['rows'][] = [
                     'level'       => $level - 1,
                     'virtual'     => true,
                     'private'     => $parent->isPrivate(),
@@ -368,7 +356,7 @@ class DocumentPageBuilder
             }
 
             // Add row
-            $group['rows'][] = $row = [
+            $group['rows'][] = [
                 'level'       => $level,
                 'virtual'     => false,
                 'private'     => $item->isPrivate(),
@@ -493,7 +481,7 @@ class DocumentPageBuilder
      */
     private function findListEntryByItem(
         Shipment\RemainingList $list,
-        SaleItemInterface $item
+        SaleItemInterface      $item
     ): ?Shipment\RemainingEntry {
         foreach ($list->getEntries() as $entry) {
             if ($entry->getSaleItem() === $item) {

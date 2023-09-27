@@ -204,7 +204,7 @@ return static function (ContainerConfigurator $container) {
     // Payment helper and renderer
     $services
         ->set('ekyna_commerce.helper.payment', PaymentHelper::class)
-        ->lazy(true)
+        ->lazy()
         ->args([
             service('payum'),
             service('ekyna_commerce.checker.locking'),
@@ -226,7 +226,7 @@ return static function (ContainerConfigurator $container) {
     // Shipment helper and renderer
     $services
         ->set('ekyna_commerce.helper.shipment', ShipmentHelper::class)
-        ->lazy(true)
+        ->lazy()
         ->args([
             service('ekyna_commerce.registry.shipment_gateway'),
         ])

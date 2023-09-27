@@ -41,7 +41,6 @@ class MentionsType extends AbstractType
                 'allow_add'     => true,
                 'allow_delete'  => true,
                 'allow_sort'    => true,
-                'required'      => false,
             ])
             ->setAllowedTypes('mention_class', 'string')
             ->setAllowedTypes('translation_class', 'string');
