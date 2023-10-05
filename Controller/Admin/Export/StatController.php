@@ -41,6 +41,9 @@ class StatController
 
     /**
      * Regions order statistics export.
+     *
+     * @deprecated
+     * @TODO Remove
      */
     public function regionsOrdersStats(): Response
     {

@@ -35,6 +35,8 @@ use function Symfony\Component\Translation\t;
  * Class CheckoutController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Cart
  * @author  Etienne Dauvergne <contact@ekyna.com>
+ *
+ * @TODO Split
  */
 class CheckoutController extends AbstractController
 {

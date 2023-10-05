@@ -185,9 +185,7 @@ class SaleType extends AbstractResourceType
                     'offline'     => true,
                     'credit'      => false,
                     'outstanding' => false,
-                    'attr'        => [
-                        'help_text' => t('customer.help.default_payment_method', [], 'EkynaCommerce'),
-                    ],
+                    'help'        => t('customer.help.default_payment_method', [], 'EkynaCommerce'),
                 ])
                 ->add('paymentTerm', PaymentTermChoiceType::class, [
                     'required' => false,

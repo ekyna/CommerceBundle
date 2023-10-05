@@ -22,11 +22,10 @@ class NotifyModelTranslationType extends AbstractType
     {
         $builder
             ->add('subject', TextType::class, [
-                'label'    => t('field.subject', [], 'EkynaUi'),
-                'required' => false,
-                'attr'     => [
-                    'help_text' => t('notify_model.help.subject', [], 'EkynaCommerce'),
-                ],
+                'label'     => t('field.subject', [], 'EkynaUi'),
+                'required'  => false,
+                'help'      => t('notify_model.help.subject', [], 'EkynaCommerce'),
+                'help_html' => true,
             ])
             ->add('message', TinymceType::class, [
                 'label'    => t('field.message', [], 'EkynaUi'),

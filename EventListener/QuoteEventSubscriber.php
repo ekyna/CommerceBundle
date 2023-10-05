@@ -63,6 +63,8 @@ class QuoteEventSubscriber extends BaseSubscriber
     {
         parent::handleContentChange($sale);
 
+        // TODO Changed to many to many relation won't be persisted
+        /** @see src/Ekyna/Component/Resource/Doctrine/ORM/Doctrine/ORM/PersistenceHelper.php:140 */
         $this->updateSaleItemsTags($sale);
     }
 }

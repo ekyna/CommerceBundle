@@ -188,9 +188,7 @@ class CustomerType extends AbstractResourceType
                     'credit'      => false,
                     'outstanding' => false,
                     'disabled'    => $hasParent,
-                    'attr'        => [
-                        'help_text' => t('customer.help.default_payment_method', [], 'EkynaCommerce'),
-                    ],
+                    'help'        => t('customer.help.default_payment_method', [], 'EkynaCommerce'),
                 ])
                 ->add('paymentMethods', PaymentMethodChoiceType::class, [
                     'label'       => t('customer.field.payment_methods', [], 'EkynaCommerce'),
@@ -200,9 +198,7 @@ class CustomerType extends AbstractResourceType
                     'credit'      => false,
                     'outstanding' => false,
                     'disabled'    => $hasParent,
-                    'attr'        => [
-                        'help_text' => t('customer.help.payment_methods', [], 'EkynaCommerce'),
-                    ],
+                    'help'        => t('customer.help.payment_methods', [], 'EkynaCommerce'),
                 ])
                 ->add('outstandingLimit', Type\MoneyType::class, [
                     'label'    => t('sale.field.outstanding_limit', [], 'EkynaCommerce'),
@@ -214,9 +210,9 @@ class CustomerType extends AbstractResourceType
                     'label'    => t('customer.field.outstanding_overflow', [], 'EkynaCommerce'),
                     'required' => false,
                     'disabled' => $hasParent,
+                    'help'     => t('customer.help.outstanding_overflow', [], 'EkynaCommerce'),
                     'attr'     => [
                         'align_with_widget' => true,
-                        'help_text'         => t('customer.help.outstanding_overflow', [], 'EkynaCommerce'),
                     ],
                 ]);
 
@@ -228,9 +224,9 @@ class CustomerType extends AbstractResourceType
                 'label'    => t('customer.field.can_read_parent_orders', [], 'EkynaCommerce'),
                 'required' => false,
                 'disabled' => !$hasParent,
+                'help'     => t('customer.help.can_read_parent_orders', [], 'EkynaCommerce'),
                 'attr'     => [
                     'align_with_widget' => true,
-                    'help_text'         => t('customer.help.can_read_parent_orders', [], 'EkynaCommerce'),
                 ],
             ]);
         };

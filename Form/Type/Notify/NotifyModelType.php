@@ -43,10 +43,11 @@ class NotifyModelType extends AbstractResourceType
                 'choice_translation_domain' => 'EkynaUi',
                 'expanded'                  => true,
                 'required'                  => false,
+                'help'                      => t('notify_model.help.payment_message', [], 'EkynaCommerce'),
+                'help_html'                 => true,
                 'attr'                      => [
                     'class'             => 'inline',
                     'align_with_widget' => true,
-                    'help_text'         => t('notify_model.help.payment_message', [], 'EkynaCommerce'),
                 ],
             ])
             ->add('shipmentMessage', Type\ChoiceType::class, [
@@ -59,10 +60,11 @@ class NotifyModelType extends AbstractResourceType
                 'choice_translation_domain' => 'EkynaUi',
                 'expanded'                  => true,
                 'required'                  => false,
+                'help'                      => t('notify_model.help.shipment_message', [], 'EkynaCommerce'),
+                'help_html'                 => true,
                 'attr'                      => [
                     'class'             => 'inline',
                     'align_with_widget' => true,
-                    'help_text'         => t('notify_model.help.shipment_message', [], 'EkynaCommerce'),
                 ],
             ])
             ->add('includeView', Type\ChoiceType::class, [
@@ -76,22 +78,24 @@ class NotifyModelType extends AbstractResourceType
                 'choice_translation_domain' => 'EkynaCommerce',
                 'expanded'                  => true,
                 'required'                  => false,
+                'help'                      => t('notify_model.help.include_view', [], 'EkynaCommerce'),
+                'help_html'                 => true,
                 'attr'                      => [
                     'class'             => 'inline',
                     'align_with_widget' => true,
-                    'help_text'         => t('notify_model.help.include_view', [], 'EkynaCommerce'),
                 ],
             ])
             ->add('documentTypes', ConstantChoiceType::class, [
-                'label'    => t('notify_model.field.document_types', [], 'EkynaCommerce'),
-                'class'    => DocumentTypes::class,
-                'accessor' => 'getSaleChoices',
-                'multiple' => true,
-                'expanded' => true,
-                'required' => false,
-                'attr'     => [
+                'label'     => t('notify_model.field.document_types', [], 'EkynaCommerce'),
+                'class'     => DocumentTypes::class,
+                'accessor'  => 'getSaleChoices',
+                'multiple'  => true,
+                'expanded'  => true,
+                'required'  => false,
+                'help'      => t('notify_model.field.document_types', [], 'EkynaCommerce'),
+                'help_html' => true,
+                'attr'      => [
                     'align_with_widget' => true,
-                    'help_text'         => t('notify_model.field.document_types', [], 'EkynaCommerce'),
                 ],
             ])
             ->add('enabled', Type\CheckboxType::class, [

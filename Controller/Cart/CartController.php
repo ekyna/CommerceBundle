@@ -28,6 +28,8 @@ use function array_replace;
  * Class CartController
  * @package Ekyna\Bundle\CommerceBundle\Controller\Cart
  * @author  Etienne Dauvergne <contact@ekyna.com>
+ *
+ * @TODO Split
  */
 class CartController extends AbstractController
 {
@@ -262,7 +264,7 @@ class CartController extends AbstractController
                 'attr'   => [
                     'class' => 'form-horizontal',
                 ],
-                'validation_groups' => ['Default', 'Checkout'],
+                'validation_groups' => ['Checkout', 'Default'],
             ]);
 
         $form->handleRequest($request);
@@ -433,7 +435,7 @@ class CartController extends AbstractController
             'checkout.button.edit_comment',
             'ekyna_commerce_cart_comment',
             [
-                'validation_groups' => ['Default', 'Checkout'],
+                'validation_groups' => ['Checkout', 'Default'],
             ]
         );
     }

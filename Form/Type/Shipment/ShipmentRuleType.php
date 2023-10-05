@@ -36,36 +36,30 @@ class ShipmentRuleType extends AbstractResourceType
             ->add('vatMode', VatDisplayModeType::class, [
                 'label'    => t('shipment_rule.field.vat_mode', [], 'EkynaCommerce'),
                 'required' => true,
+                'help'     => t('shipment_rule.help.vat_mode', [], 'EkynaCommerce'),
                 'attr'     => [
                     'inline'            => true,
                     'align_with_widget' => true,
-                    'help_text'         => t('shipment_rule.help.vat_mode', [], 'EkynaCommerce'),
                 ],
             ])
             ->add('methods', ShipmentMethodChoiceType::class, [
                 'label'    => t('shipment_method.label.plural', [], 'EkynaCommerce'),
                 'multiple' => true,
                 'required' => false,
-                'attr'     => [
-                    'help_text' => t('shipment_rule.help.methods', [], 'EkynaCommerce'),
-                ],
+                'help'     => t('shipment_rule.help.methods', [], 'EkynaCommerce'),
             ])
             ->add('countries', CountryChoiceType::class, [
                 'label'    => t('country.label.plural', [], 'EkynaCommerce'),
                 'enabled'  => false,
                 'multiple' => true,
                 'required' => false,
-                'attr'     => [
-                    'help_text' => t('shipment_rule.help.countries', [], 'EkynaCommerce'),
-                ],
+                'help'     => t('shipment_rule.help.countries', [], 'EkynaCommerce'),
             ])
             ->add('customerGroups', CustomerGroupChoiceType::class, [
                 'label'    => t('customer_group.label.plural', [], 'EkynaCommerce'),
                 'multiple' => true,
                 'required' => false,
-                'attr'     => [
-                    'help_text' => t('shipment_rule.help.customer_groups', [], 'EkynaCommerce'),
-                ],
+                'help'     => t('shipment_rule.help.customer_groups', [], 'EkynaCommerce'),
             ])
             ->add('startAt', Type\DateType::class, [
                 'label'    => t('shipment_rule.field.start_at', [], 'EkynaCommerce'),
@@ -79,17 +73,13 @@ class ShipmentRuleType extends AbstractResourceType
                 'label'    => t('shipment_rule.field.base_total', [], 'EkynaCommerce'),
                 'decimal'  => true,
                 'currency' => $this->defaultCurrency,
-                'attr'     => [
-                    'help_text' => t('shipment_rule.help.base_total', [], 'EkynaCommerce'),
-                ],
+                'help'     => t('shipment_rule.help.base_total', [], 'EkynaCommerce'),
             ])
             ->add('netPrice', Type\MoneyType::class, [
                 'label'    => t('field.net_price', [], 'EkynaCommerce'),
                 'decimal'  => true,
                 'currency' => $this->defaultCurrency,
-                'attr'     => [
-                    'help_text' => t('field.net_price', [], 'EkynaCommerce'),
-                ],
+                'help'     => t('field.net_price', [], 'EkynaCommerce'),
             ]);
     }
 }

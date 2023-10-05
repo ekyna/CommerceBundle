@@ -67,8 +67,8 @@ class CouponType extends AbstractResourceType
             ->add('cumulative', Type\CheckboxType::class, [
                 'label'    => t('coupon.field.cumulative', [], 'EkynaCommerce'),
                 'required' => false,
+                'help'     => t('coupon.help.cumulative', [], 'EkynaCommerce'),
                 'attr'     => [
-                    'help_text'         => t('coupon.help.cumulative', [], 'EkynaCommerce'),
                     'align_with_widget' => true,
                 ],
             ]);
@@ -85,15 +85,17 @@ class CouponType extends AbstractResourceType
                 ];
             } else {
                 $options = [
-                    'attr' => [
-                        'help_text' => t('coupon.alert.immutable_code', [], 'EkynaCommerce'),
-                    ],
+                    'help' => t('coupon.alert.immutable_code', [], 'EkynaCommerce'),
                 ];
             }
 
-            $form->add('code', Type\TextType::class, array_replace([
-                'label' => t('field.code', [], 'EkynaUi'),
-            ], $options));
+            $form->add(
+                'code',
+                Type\TextType::class,
+                array_replace([
+                    'label' => t('field.code', [], 'EkynaUi'),
+                ], $options)
+            );
         });
     }
 }

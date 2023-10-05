@@ -131,9 +131,8 @@ class SaleTransformType extends AbstractType
                             return (string)$customer;
                         },
                         'choice_translation_domain' => false,
-                        'attr'                      => [
-                            'help_text' => t('customer.help.hierarchy', [], 'EkynaCommerce'),
-                        ],
+                        'help'                      => t('customer.help.hierarchy', [], 'EkynaCommerce'),
+                        'help_html'                 => true,
                         'select2'                   => false,
                     ]);
                 }

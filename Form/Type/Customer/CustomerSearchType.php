@@ -22,12 +22,11 @@ class CustomerSearchType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'resource'    => 'ekyna_commerce.customer',
-                'required' => false,
-                'parent'   => false,
-                'attr'     => [
-                    'help_text' => t('customer.help.hierarchy', [], 'EkynaCommerce'),
-                ],
+                'resource'  => 'ekyna_commerce.customer',
+                'required'  => false,
+                'parent'    => false,
+                'help'      => t('customer.help.hierarchy', [], 'EkynaCommerce'),
+                'help_html' => true,
             ])
             ->setAllowedTypes('parent', 'bool')
             ->setNormalizer('search_parameters', function (Options $options, $value) {

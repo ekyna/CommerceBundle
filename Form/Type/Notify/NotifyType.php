@@ -316,10 +316,10 @@ class NotifyType extends AbstractType
                 'choice_translation_domain' => 'EkynaCommerce',
                 'expanded'                  => true,
                 'required'                  => true,
+                'help'                      => t('notify_model.help.include_view', [], 'EkynaCommerce'),
                 'attr'                      => [
                     'class'             => 'inline',
                     'align_with_widget' => true,
-                    'help_text'         => t('notify_model.help.include_view', [], 'EkynaCommerce'),
                 ],
             ])
             ->add('model', NotifyModelChoiceType::class, [

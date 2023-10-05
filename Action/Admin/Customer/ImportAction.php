@@ -119,6 +119,7 @@ class ImportAction extends AbstractAction implements AdminActionInterface
                 'city'       => 12,
             ]);
 
+        // TODO Make optional
         $deliveryConsumer = new AddressConsumer($this->phoneNumberUtil);
         $deliveryConsumer->setCustomerConsumer($customerConsumer);
         $deliveryConsumer

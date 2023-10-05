@@ -185,7 +185,7 @@ account:
             pay: Régler la commande
         message:
             payment_denied: >
-                Contactez votre service d'achat pour le réglement de cette commande
+                Contactez votre service d'achat pour le règlement de cette commande
                 (Vous devez être connecté en tant que {identity}).
     quote:
         title: Mes devis
@@ -203,11 +203,11 @@ account:
         message:
             expired: Ce devis est expiré, veuillez nous contacter pour l'actualiser.
             voucher_required: >
-                Avant de procéder au réglement du devis, nous vous prions de bien vouloir 
+                Avant de procéder au règlement du devis, nous vous prions de bien vouloir 
                 ajouter votre bon d'achat.
             voucher_denied: Contactez votre service d'achat pour la gestion du bon d'achat.
             payment_denied: >
-                Contactez votre service d'achat pour le réglement de ce devis
+                Contactez votre service d'achat pour le règlement de ce devis
                 (Vous devez être connecté en tant que {identity}).
     invoice:
         title: Mes factures
@@ -438,12 +438,12 @@ checkout:
     message:
         register: >
             <strong>Créez votre compte client</strong> pour voir vos <em>tarifs préférentiels</em> et accéder
-            <em>à votre carnet d'adresses</em>.<br>Ou saisissez vos <strong>Informations</strong> et addresse
+            <em>à votre carnet d'adresses</em>.<br>Ou saisissez vos <strong>Informations</strong> et adresse
             de <strong>Facturation</strong> en cliquant sur les boutons &laquo;Modifier&raquo; ci-dessous.
         sign_in_or_register: >
             <strong>Connectez-vous à votre compte client</strong> pour voir vos <em>tarifs préférentiels</em>
             et accéder à votre <em>carnet d'adresses</em>.<br>Sinon, veuillez saisir vos <strong>Informations</strong>
-            et addresse de <strong>Facturation</strong> en cliquant sur les boutons Modifier respectifs.
+            et adresse de <strong>Facturation</strong> en cliquant sur les boutons Modifier respectifs.
         submit_prevented:
             Veuillez vous <strong>Connecter</strong> à votre compte client ou saisir vos
             <strong>Informations</strong> et adresse de <strong>Facturation</strong>
@@ -455,7 +455,7 @@ checkout:
             <em>Vous serez redirigé vers le détail du devis dans votre espace client</em>.
         shipment_defaults: >
             <sup class="text-danger">&starf;</sup> Frais de port par défaut,
-            choix du mode de livraion à la prochaine étape.
+            choix du mode de livraison à la prochaine étape.
         empty_information: Saisissez vos nom, prénom et adresse email
         unlock: >
             Si vous n'avez effectué aucun paiement, vous pouvez
@@ -498,7 +498,7 @@ checkout:
     shipment:
         total_weight: Poids total de votre commande
         free_shipping: Offert
-        mobile_required: Ce mode d'expédition nécéssite un numéro de téléphone mobile.
+        mobile_required: Ce mode d'expédition nécessite un numéro de téléphone mobile.
 
 country:
     label:
@@ -550,7 +550,7 @@ coupon:
         usage: Ce code promotion n'est plus disponible.
         start_at: Ce code promotion sera disponible depuis le %date%.
         end_at: Ce code promotion n'est plus disponible depuis le %date%.
-        min_gross: Ce code promotion nécéssite un total d'articles hors taxes supérieur ou égal à %gross%.
+        min_gross: Ce code promotion nécessite un total d'articles hors taxes supérieur ou égal à %gross%.
         cumulative: Ce code promotion n'est pas cumulable avec des remises sur les articles.
         owner: Ce code promotion appartient à un autre compte client.
     notify:
@@ -748,10 +748,10 @@ customer:
         registration:
             subject: Création de compte client
         fraudster:
-            subject: Potientiel fraudeur détecté
+            subject: Potentiel fraudeur détecté
             message: >
                 Le client {identity} a été détecté comme fraudeur potentiel lors du paiement de son panier.<br>
-                Son statut à été défini à "Fraudeur" et il n'a plus accès au réglement en ligne.
+                Son statut à été défini à "Fraudeur" et il n'a plus accès au règlement en ligne.
     message:
         create_user: >
             Un utilisateur va être généré pour le client <strong>{identity}</strong>.
@@ -788,8 +788,8 @@ customer_address:
         edit: Modifier l'adresse
         remove: Supprimer l'adresse
         import: Importer des adresses
-        invoice_default: Definir par défaut pour la facturation
-        delivery_default: Definir par défaut pour la livraison
+        invoice_default: Définir par défaut pour la facturation
+        delivery_default: Définir par défaut pour la livraison
     field:
         invoice_default: Par défaut pour la facturation
         delivery_default: Par défaut pour la livraison
@@ -836,7 +836,7 @@ customer_group:
         remove: Supprimer le groupe de clients
     field:
         business: Entreprise
-        registration: Dispo à l'inscription
+        registration: Dispo. à l'inscription
         quote_allowed: Création de devis
     message:
         cant_be_deleted: Le groupe de client par défaut ne peut être supprimé.
@@ -974,19 +974,19 @@ notify:
             label: Rappel devis proche expiration
         payment_authorized:
             label: Paiement (hors ligne) autorisé
-            subject: Réglement de votre commande %number%
+            subject: Règlement de votre commande %number%
             message: >
-                Nous avons bien reçu le réglement de votre commande.
+                Nous avons bien reçu le règlement de votre commande.
         payment_captured:
             label: Paiement (hors ligne) accepté
-            subject: Réglement de votre commande %number%
+            subject: Règlement de votre commande %number%
             message: >
-                Nous avons bien reçu le réglement de votre commande.
+                Nous avons bien reçu le règlement de votre commande.
         payment_payedout:
             label: Paiement (hors ligne) fonds versés
-            subject: Réglement de votre commande %number%
+            subject: Règlement de votre commande %number%
             message: >
-                Nous avons bien reçu le réglement de votre commande.
+                Nous avons bien reçu le règlement de votre commande.
         payment_expired:
             label: Encours échu
         shipment_ready:
@@ -1186,7 +1186,7 @@ payment:
             message: Votre paiement est remboursé.
         suspended:
             label: Suspendu
-            message: Votre paiement est supendu.
+            message: Votre paiement est suspendu.
         payedout:
             label: Fond versés
             message: Les fonds ont été versés.
@@ -1595,8 +1595,8 @@ shipment:
         tracking_number: N° de suivi
         auto_invoice: Générer la facture
         auto_credit: Générer l'avoir
-        sender_address: Addresse expéditeur
-        receiver_address: Addresse destinataire
+        sender_address: Adresse expéditeur
+        receiver_address: Adresse destinataire
     action:
         ship: Expédier
         cancel: Annuler
@@ -1627,7 +1627,7 @@ shipment:
         unsupported_action: Cette action n'est pas prise en charge par la plateforme.
     alert:
         unlocked_items: >
-            Certaines lignes sont déverouillées : ces articles
+            Certaines lignes sont déverrouillées : ces articles
             (normalement invisibles) apparaîtront sur le document.
         no_item: Aucune expédition configuré
     platforms: Plateformes
@@ -1762,7 +1762,7 @@ stock_adjustment:
     confirm:
         remove: Êtes-vous sûr de vouloir supprimer cet ajustement de stock ?
     alert:
-        empty_list: Aucun ajustment de stock configuré
+        empty_list: Aucun ajustement de stock configuré
 
 stock_subject:
     field:
@@ -1909,13 +1909,13 @@ supplier_order:
         ordered_at: Commandée le
         payment_total: Total fournisseur
         payment_due_date: Échéance fournisseur
-        payment_date: Réglement fournisseur
+        payment_date: Règlement fournisseur
         customs_tax: Taxe douane
         customs_vat: TVA en douane
         forwarder_fee: Frais transitaire HT
         forwarder_total: Total transitaire
         forwarder_due_date: Échéance transitaire
-        forwarder_date: Réglement transitaire
+        forwarder_date: Règlement transitaire
         tracking_urls: Tracking
         send_email: Envoyer l'email au fournisseur
         send_labels: Envoyer les étiquettes

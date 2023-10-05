@@ -66,9 +66,7 @@ class RegistrationType extends AbstractType
                         ->andWhere($qb->expr()->eq('cg.registration', true))
                         ->orderBy('cg.id', 'ASC');
                 },
-                'attr'          => [
-                    'help_text' => t('account.registration.help.apply_group', [], 'EkynaCommerce'),
-                ],
+                'help'          => t('account.registration.help.apply_group', [], 'EkynaCommerce'),
             ])
             ->add('invoiceAddress', CustomerAddressType::class, [
                 'label'      => false,

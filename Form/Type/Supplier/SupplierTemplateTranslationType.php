@@ -26,12 +26,11 @@ class SupplierTemplateTranslationType extends AbstractType
                 'required' => true,
             ])
             ->add('message', TinymceType::class, [
-                'label'    => t('field.message', [], 'EkynaUi'),
-                'theme'    => 'front',
-                'required' => true,
-                'attr'     => [
-                    'help_text' => t('supplier_template.help.message', [], 'EkynaCommerce'),
-                ],
+                'label'     => t('field.message', [], 'EkynaUi'),
+                'theme'     => 'front',
+                'required'  => true,
+                'help'      => t('supplier_template.help.message', [], 'EkynaCommerce'),
+                'help_html' => true,
             ]);
     }
 }

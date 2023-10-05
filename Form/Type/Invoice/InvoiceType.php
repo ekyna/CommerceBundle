@@ -67,13 +67,13 @@ class InvoiceType extends AbstractResourceType
                 }
 
                 $locked = $this->lockChecker->isLocked($invoice)
-                      && !$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
+                    && !$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
 
                 $form->add('createdAt', Type\DateTimeType::class, [
                     'label'      => t('field.date', [], 'EkynaUi'),
                     'required'   => false,
                     'disabled'   => $locked,
-                    'empty_data' => (new DateTime())->format('d/m/Y H:i') // TODO Use the proper format !
+                    'empty_data' => (new DateTime())->format('d/m/Y H:i'), // TODO Use the proper format !
                 ]);
 
                 if ($invoice->isCredit()) {
@@ -81,9 +81,9 @@ class InvoiceType extends AbstractResourceType
                         'label'    => t('invoice.field.ignore_stock', [], 'EkynaCommerce'),
                         'required' => false,
                         'disabled' => $locked,
+                        'help'     => t('invoice.help.ignore_stock', [], 'EkynaCommerce'),
                         'attr'     => [
                             'align_with_widget' => true,
-                            'help_text'         => t('invoice.help.ignore_stock', [], 'EkynaCommerce'),
                         ],
                     ]);
                 }

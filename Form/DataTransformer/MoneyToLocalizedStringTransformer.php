@@ -18,6 +18,8 @@ class MoneyToLocalizedStringTransformer extends BaseTransformer
      */
     public function reverseTransform($value)
     {
+        // TODO Refreshing a form FLOW gives a Decimal here
+
         if ($value) {
             $value = str_replace(' ', '', $value); // \u202F
         }

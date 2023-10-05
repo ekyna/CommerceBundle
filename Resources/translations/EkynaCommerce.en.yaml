@@ -23,7 +23,7 @@ field:
     geocode: Geocode
     in_stock: Real stock
     available_stock: Available stock
-    virtual_stock: Previsional stock
+    virtual_stock: Forecast stock
     replenishment_eda: Replenishment date
     estimated_date_of_arrival: Estimated date of arrival
     status: Status
@@ -178,7 +178,7 @@ account:
     quote:
         title: My quotes
         summary: My quote
-        latest: Lastest quotes
+        latest: Latest quotes
         all: All my quotes
         show: Quote <em>%number%</em> details
         voucher: Quote <em>%number%</em> voucher
@@ -331,7 +331,7 @@ address:
     help:
         street: Street and number
         complement: Entrance, building, residence
-        supplement: Floor, corridor, stair, appartment
+        supplement: Floor, corridor, stair, apartment
         extra: Locality or other mention
 
 adjustment:
@@ -376,7 +376,7 @@ cart:
         new: Create a new cart
         edit: Edit the cart <small>%name%</small>
         remove: Remove the cart <small>%name%</small>
-        transform: Transfor the cart <small>%name% into %target%</small>
+        transform: Transform the cart <small>%name% into %target%</small>
         duplicate: Duplicate the cart <small>%name% into %target%</small>
         notify: Notify the cart <small>%name%</small>
     button:
@@ -462,7 +462,7 @@ checkout:
         edit_delivery: Edit shipping address
         edit_comment: Edit comment
     confirm:
-        attachment_remove: Are you sure you want to remove this attachmment ?
+        attachment_remove: Are you sure you want to remove this attachment ?
     payment:
         no_method_available: No payment method available
         last_step: >
@@ -551,7 +551,7 @@ coupon:
                 <p>Find all details about your fidelity points in
                 <a href="%url%">your customer area</a>.</p>
     help:
-        cumulative: Whether this coupon can be applied to a sale with autmatic item discount(s).
+        cumulative: Whether this coupon can be applied to a sale with automatic item discount(s).
         not_cumulative: can't be combined with any other discount.
     alert:
         immutable_code: This code cannot be changed
@@ -626,7 +626,7 @@ invoice:
         invoiced_at: Invoiced at
         sale_total: Sale total
         sale_paid: Paid
-        ignore_stock: Adjustement credit
+        ignore_stock: Adjustment credit
     help:
         ignore_stock: Adjustment credits should be re-invoiced.
     message:
@@ -924,7 +924,7 @@ notify:
             subject: Account balance
             message: Your account balance to this day
         cart_remind:
-            label: Abandonned cart reminder
+            label: Abandoned cart reminder
         order_accepted:
             label: Order confirm
             subject: Confirmation of your order %number%
@@ -1212,7 +1212,7 @@ payment_method:
         remove: Remove the method
         choose: "Pay by %gateway_name%"
     field:
-        use_default_currency: Default curerency
+        use_default_currency: Default currency
         private: Private
         notice: Order notice
         mention: Document mention
@@ -1285,7 +1285,7 @@ quote:
     alert:
         no_item: No quote configured
     message:
-        transformation_to_order_is_ready: This quote can be transformezd into an order.
+        transformation_to_order_is_ready: This quote can be transformed into an order.
         already_paid: This quote has already been paid.
         cant_be_deleted: This quote has valid payment(s) and therefore cannot be deleted.
     dashboard:
@@ -1310,7 +1310,7 @@ relay_point:
         singular: Relay point
         plural: Relay points
     message:
-        choose: Please select a relay poit.
+        choose: Please select a relay point.
 
 resupply_alert:
     subscribe:
@@ -1450,7 +1450,7 @@ sale:
         add_item_adjustment: Add a product adjustment
         remove_item_adjustment: Remove the product adjustment
         add_adjustment: Add adjustment
-        remove_adjustment: Remove the adjsutment ?
+        remove_adjustment: Remove the adjustment ?
     field:
         details: Details
         origin_customer: Salesman
@@ -1853,7 +1853,7 @@ supplier_order:
         render: Order form
     message:
         confirm_item_removal: Confirm line removal ?
-        confirm_cancel: Are you sure you want to canel this order ?
+        confirm_cancel: Are you sure you want to cancel this order ?
         cant_be_deleted: This supplier order cannot be deleted.
         cant_be_submitted: This supplier order has already been submitted to the supplier.
         relative_stock_unit_is_shipped: >

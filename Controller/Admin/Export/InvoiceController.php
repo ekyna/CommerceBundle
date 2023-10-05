@@ -94,6 +94,9 @@ class InvoiceController
 
     /**
      * Regions invoices stats export.
+     *
+     * @deprecated
+     * @TODO Remove
      */
     public function regionsInvoicesStats(): Response
     {

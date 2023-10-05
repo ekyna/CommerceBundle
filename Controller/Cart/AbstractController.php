@@ -32,7 +32,7 @@ use Twig\Environment;
  * @package Ekyna\Bundle\CommerceBundle\Controller\Cart
  * @author  Etienne Dauvergne <contact@ekyna.com>
  *
- * @TODO Split into actions...
+ * @TODO    Split into actions...
  */
 class AbstractController
 {

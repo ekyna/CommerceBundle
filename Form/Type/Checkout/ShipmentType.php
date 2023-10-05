@@ -69,9 +69,9 @@ class ShipmentType extends AbstractType
                 'required'        => false,
                 'default_country' => $region,
                 'type'            => PhoneType::MOBILE,
+                'help'            => t('checkout.shipment.mobile_required', [], 'EkynaCommerce'),
                 'attr'            => [
-                    'class'     => 'address-mobile',
-                    'help_text' => t('checkout.shipment.mobile_required', [], 'EkynaCommerce'),
+                    'class' => 'address-mobile',
                 ],
             ]);
         });

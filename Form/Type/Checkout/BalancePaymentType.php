@@ -54,7 +54,7 @@ class BalancePaymentType extends AbstractType
                         $fieldOptions['constraints'] = [
                             new LessThanOrEqual([
                                 'value'  => min($options['available_amount'], $payment->getAmount()),
-                                'groups' => ['Default', 'Checkout'],
+                                'groups' => ['Checkout', 'Default'],
                             ]),
                         ];
                     }
