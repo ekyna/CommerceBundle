@@ -6,7 +6,6 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\Common\ButtonRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\CommonRenderer;
-use Ekyna\Bundle\CommerceBundle\Service\Common\CustomerRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyRenderer;
@@ -87,6 +86,11 @@ class CommonExtension extends AbstractExtension
                 ['is_safe' => ['html']]
             ),
             new TwigFilter(
+                'customer_flags',
+                [FlagRenderer::class, 'renderCustomerFlags'],
+                ['is_safe' => ['html']]
+            ),
+            new TwigFilter(
                 'currency_quote',
                 [CurrencyRenderer::class, 'renderQuote'],
                 ['is_safe' => ['html']]
@@ -132,11 +136,6 @@ class CommonExtension extends AbstractExtension
             new TwigFunction(
                 'commerce_feature',
                 [Features::class, 'getConfig']
-            ),
-            new TwigFunction(
-                'customer_flags',
-                [CustomerRenderer::class, 'getCustomerFlags'],
-                ['is_safe' => ['html']]
             ),
         ];
     }

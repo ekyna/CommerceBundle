@@ -250,6 +250,7 @@ class OrderType extends AbstractResourceType
             ->addFilter('customer', Type\Filter\CustomerType::class, [
                 'position' => 30,
             ])
+            // TODO Add flags filter (prospect, international)
             ->addFilter('email', CType\Filter\TextType::class, [
                 'label'    => t('field.email', [], 'EkynaUi'),
                 'position' => 31,

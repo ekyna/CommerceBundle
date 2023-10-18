@@ -4,7 +4,7 @@
 
 {% block main_infos %}
     {{- customer|cms_tags({'text': false}) -}}
-    {{- customer_flags(customer, {'long': true}) -}}
+    {{- customer|customer_flags({'badge': true}) -}}
 {% endblock main_infos %}
 
 {% block main_actions -%}

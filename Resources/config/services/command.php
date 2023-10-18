@@ -10,6 +10,7 @@ use Ekyna\Bundle\CommerceBundle\Command\CartPurgeCommand;
 use Ekyna\Bundle\CommerceBundle\Command\CartTransformCommand;
 use Ekyna\Bundle\CommerceBundle\Command\CustomerBalanceIntegrityCommand;
 use Ekyna\Bundle\CommerceBundle\Command\CustomerBirthdayCommand;
+use Ekyna\Bundle\CommerceBundle\Command\CustomerFlagsUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\FixVoucherNumberCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceDueDateUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceNumberIntegrityCommand;
@@ -85,6 +86,16 @@ return static function (ContainerConfigurator $container) {
         ])
         ->tag('console.command');
 
+    // Customer birthday command
+    $services
+        ->set('ekyna_commerce.command.customer_flags_update', CustomerFlagsUpdateCommand::class)
+        ->args([
+            service('ekyna_resource.registry.resource'),
+            service('ekyna_commerce.helper.customer.flag_helper'),
+            service('doctrine.orm.default_entity_manager'),
+        ])
+        ->tag('console.command');
+
     // Fix duplicate order voucher number command
     $services
         ->set('ekyna_commerce.command.fix_order_duplicate_voucher_number', FixVoucherNumberCommand::class)
@@ -145,7 +156,7 @@ return static function (ContainerConfigurator $container) {
         ])
         ->tag('console.command');
 
-    // Order date modify command
+    // Modify order date command
     $services
         ->set('ekyna_commerce.command.order_date_modify', OrderDateModifyCommand::class)
         ->args([
@@ -241,7 +252,7 @@ return static function (ContainerConfigurator $container) {
         ])
         ->tag('console.command');
 
-    // Report generate command
+    // Generate report command
     $services
         ->set('ekyna_commerce.command.report_generate', ReportGenerateCommand::class)
         ->args([
@@ -260,7 +271,7 @@ return static function (ContainerConfigurator $container) {
         ])
         ->tag('console.command');
 
-    // Shipment address migrate command
+    // Migrate shipment address command
     $services
         ->set('ekyna_commerce.command.shipment_address_migrate', AddressMigrateCommand::class)
         ->args([

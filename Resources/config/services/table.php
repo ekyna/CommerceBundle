@@ -111,8 +111,7 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.table_column_type.customer_flags', Column\CustomerFlagsType::class)
         ->args([
-            service('ekyna_commerce.renderer.customer'),
-            param('ekyna_commerce.class.order'),
+            service('ekyna_commerce.renderer.flag'),
         ])
         ->tag('table.column_type');
 

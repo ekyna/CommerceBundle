@@ -73,9 +73,10 @@ class CustomerType extends AbstractResourceType
                 // TODO 'summary' => true,
                 'position' => 10,
             ])
-            ->addColumn('tags', Type\Column\CustomerFlagsType::class, [
-                'label'    => t('field.tags', [], 'EkynaUi'),
-                'position' => 15,
+            ->addColumn('flags', Type\Column\CustomerFlagsType::class, [
+                'label'         => t('field.tags', [], 'EkynaUi'),
+                'property_path' => false,
+                'position'      => 15,
             ])
             ->addColumn('name', CType\Column\TextType::class, [
                 'label'         => t('field.name', [], 'EkynaUi'),
@@ -132,6 +133,7 @@ class CustomerType extends AbstractResourceType
 
         if ($filters) {
             $builder
+                // TODO Flags filter
                 ->addFilter('number', CType\Filter\TextType::class, [
                     'label'    => t('field.number', [], 'EkynaUi'),
                     'position' => 10,
@@ -209,6 +211,14 @@ class CustomerType extends AbstractResourceType
                     'label'    => t('field.status', [], 'EkynaUi'),
                     'class'    => CustomerStates::class,
                     'position' => 120,
+                ])
+                ->addFilter('prospect', CType\Filter\BooleanType::class, [
+                    'label'    => t('value.prospect', [], 'EkynaCommerce'),
+                    'position' => 125,
+                ])
+                ->addFilter('international', CType\Filter\BooleanType::class, [
+                    'label'    => t('value.international', [], 'EkynaCommerce'),
+                    'position' => 126,
                 ])
                 ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                     'label'    => t('field.created_at', [], 'EkynaUi'),

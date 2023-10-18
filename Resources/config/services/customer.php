@@ -16,6 +16,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Customer\SecurityCustomerProvider;
 use Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator;
 use Ekyna\Component\Commerce\Customer\Balance\BalanceBuilder;
 use Ekyna\Component\Commerce\Customer\Export\CustomerExporter;
+use Ekyna\Component\Commerce\Customer\Helper\FlagHelper;
 use Ekyna\Component\Commerce\Customer\Updater\CustomerUpdater;
 
 return static function (ContainerConfigurator $container) {
@@ -72,6 +73,14 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_user.provider.user'),
         ]);
 
+    // Customer flag helper
+    $services
+        ->set('ekyna_commerce.helper.customer.flag_helper', FlagHelper::class)
+        ->args([
+            service('ekyna_commerce.repository.order'),
+            param('ekyna_commerce.default.country'),
+        ]);
+
     // Customer factory
     $services
         ->set('ekyna_commerce.factory.customer', CustomerFactory::class)
@@ -99,7 +108,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.listener.customer_address', CustomerAddressEventSubscriber::class)
         ->args([
             service('ekyna_resource.orm.persistence_helper'),
-            service('ekyna_commerce.repository.customer_address'),
+            service('ekyna_commerce.helper.customer.flag_helper'),
         ])
         ->tag('resource.event_subscriber');
 

@@ -11,7 +11,6 @@ use Ekyna\Bundle\CommerceBundle\EventListener\SaleOperationListener;
 use Ekyna\Bundle\CommerceBundle\Service\Common\ButtonRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\CommonRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\CouponHelper;
-use Ekyna\Bundle\CommerceBundle\Service\Common\CustomerRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\InChargeResolver;
 use Ekyna\Bundle\CommerceBundle\Service\Common\KeyGenerator;
@@ -260,15 +259,6 @@ return static function (ContainerConfigurator $container) {
         ])
         ->tag('twig.runtime')
         ->alias(CurrencyRendererInterface::class, 'ekyna_commerce.renderer.currency');
-
-    // Customer renderer
-    $services
-        ->set('ekyna_commerce.renderer.customer', CustomerRenderer::class)
-        ->args([
-            service('ekyna_resource.repository.factory'),
-            param('ekyna_commerce.default.country'),
-        ])
-        ->tag('twig.runtime');
 
     // Flag renderer
     $services
