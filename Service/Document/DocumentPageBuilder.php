@@ -79,7 +79,7 @@ class DocumentPageBuilder
             while (null !== $parent = $parent->getParent()) {
                 $level++;
 
-                if (null !== $parentLine = $this->findDocumentLineByItem($lines, $parent)) {
+                if (null !== $this->findDocumentLineByItem($lines, $parent)) {
                     continue;
                 }
 
@@ -93,7 +93,7 @@ class DocumentPageBuilder
                     $group = ['height' => 0, 'rows' => []];
                 }
 
-                $reference = $parentLine->getReference();
+                $reference = $parent->getReference();
                 if ($parent->isConfigurable() && $parent->isCompound() && !$parent->hasPrivateChildren()) {
                     $reference = null;
                 }
@@ -103,9 +103,9 @@ class DocumentPageBuilder
                     'level'         => $level - 1,
                     'virtual'       => true,
                     'reference'     => $reference,
-                    'designation'   => $parentLine->getDesignation(),
-                    'description'   => $parentLine->getDescription(),
-                    'included'      => $parentLine->getIncluded(),
+                    'designation'   => $parent->getDesignation(),
+                    'description'   => null,
+                    'included'      => null,
                     'url'           => $this->subjectHelper->generatePublicUrl($parent, false),
                     'quantity'      => null,
                     'unit'          => null,
@@ -116,7 +116,8 @@ class DocumentPageBuilder
                     'discountRates' => null,
                 ];
 
-                $rowHeight = empty($row['description']) ? $this->config['row_height']
+                $rowHeight = empty($row['description'])
+                    ? $this->config['row_height']
                     : $this->config['row_desc_height'];
 
                 $group['height'] += $rowHeight;
@@ -181,7 +182,9 @@ class DocumentPageBuilder
                 'discountRates' => $item->getDiscountRates(),
             ];
 
-            $rowHeight = empty($row['description']) ? $this->config['row_height'] : $this->config['row_desc_height'];
+            $rowHeight = empty($row['description'])
+                ? $this->config['row_height']
+                : $this->config['row_desc_height'];
 
             $group['height'] += $rowHeight;
             $totalHeight += $rowHeight;
