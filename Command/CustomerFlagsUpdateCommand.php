@@ -110,7 +110,7 @@ class CustomerFlagsUpdateCommand extends Command
     {
         $prospect = $this->helper->isProspect($customer);
 
-        if ($customer->isProspect() xor !$prospect) {
+        if ($customer->isProspect() === $prospect) {
             return false;
         }
 
@@ -123,7 +123,7 @@ class CustomerFlagsUpdateCommand extends Command
     {
         $international = $this->helper->isInternational($customer);
 
-        if ($customer->isInternational() xor !$international) {
+        if ($customer->isInternational() === $international) {
             return false;
         }
 
