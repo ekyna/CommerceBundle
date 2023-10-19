@@ -60,34 +60,38 @@ class OrderType extends AbstractResourceType
                     ->leftJoin('i.children', 'c')
                     ->leftJoin('c.children', 'sc')
                     ->leftJoin('sc.children', 'ssc')
-                    ->andWhere($qb->expr()->orX(
-                        $qb->expr()->andX(
-                            $qb->expr()->eq('i.subjectIdentity.provider', ':provider'),
-                            $qb->expr()->eq('i.subjectIdentity.identifier', ':identifier')
-                        ),
-                        $qb->expr()->andX(
-                            $qb->expr()->eq('c.subjectIdentity.provider', ':provider'),
-                            $qb->expr()->eq('c.subjectIdentity.identifier', ':identifier')
-                        ),
-                        $qb->expr()->andX(
-                            $qb->expr()->eq('sc.subjectIdentity.provider', ':provider'),
-                            $qb->expr()->eq('sc.subjectIdentity.identifier', ':identifier')
-                        ),
-                        $qb->expr()->andX(
-                            $qb->expr()->eq('ssc.subjectIdentity.provider', ':provider'),
-                            $qb->expr()->eq('ssc.subjectIdentity.identifier', ':identifier')
+                    ->andWhere(
+                        $qb->expr()->orX(
+                            $qb->expr()->andX(
+                                $qb->expr()->eq('i.subjectIdentity.provider', ':provider'),
+                                $qb->expr()->eq('i.subjectIdentity.identifier', ':identifier')
+                            ),
+                            $qb->expr()->andX(
+                                $qb->expr()->eq('c.subjectIdentity.provider', ':provider'),
+                                $qb->expr()->eq('c.subjectIdentity.identifier', ':identifier')
+                            ),
+                            $qb->expr()->andX(
+                                $qb->expr()->eq('sc.subjectIdentity.provider', ':provider'),
+                                $qb->expr()->eq('sc.subjectIdentity.identifier', ':identifier')
+                            ),
+                            $qb->expr()->andX(
+                                $qb->expr()->eq('ssc.subjectIdentity.provider', ':provider'),
+                                $qb->expr()->eq('ssc.subjectIdentity.identifier', ':identifier')
+                            )
                         )
-                    ))
+                    )
                     ->setParameter('provider', $subject::getProviderName())
                     ->setParameter('identifier', $subject->getId());
             };
         } elseif (null !== $customer) {
             $filters[] = function (QueryBuilder $qb, string $alias) use ($customer): void {
                 if ($customer->hasParent()) {
-                    $qb->andWhere($qb->expr()->orX(
-                        $qb->expr()->in($alias . '.customer', ':customer'),
-                        $qb->expr()->in($alias . '.originCustomer', ':customer')
-                    ));
+                    $qb->andWhere(
+                        $qb->expr()->orX(
+                            $qb->expr()->in($alias . '.customer', ':customer'),
+                            $qb->expr()->in($alias . '.originCustomer', ':customer')
+                        )
+                    );
                 } else {
                     $qb->andWhere($qb->expr()->eq($alias . '.customer', ':customer'));
                 }
@@ -343,6 +347,16 @@ class OrderType extends AbstractResourceType
             ->addFilter('initiatorCustomer', Type\Filter\CustomerType::class, [
                 'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
                 'position' => 150,
+            ])
+            ->addFilter('prospect', CType\Filter\BooleanType::class, [
+                'label'         => t('value.prospect', [], 'EkynaCommerce'),
+                'property_path' => 'customer.prospect',
+                'position'      => 151,
+            ])
+            ->addFilter('international', CType\Filter\BooleanType::class, [
+                'label'         => t('value.international', [], 'EkynaCommerce'),
+                'property_path' => 'customer.international',
+                'position'      => 152,
             ])
             ->addFilter('subject', Type\Filter\SaleSubjectType::class, [
                 'position' => 160,

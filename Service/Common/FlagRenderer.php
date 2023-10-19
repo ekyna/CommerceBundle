@@ -170,9 +170,7 @@ class FlagRenderer
         }
 
         if ($sale->isSample()) {
-            if ($sale instanceof OrderInterface && $sale->isFirst()) {
-                $flags .= $this->renderFlag(self::SAMPLE);
-            }
+            $flags .= $this->renderFlag(self::SAMPLE);
 
             if ($sale->canBeReleased()) {
                 $flags .= $this->renderFlag(self::RELEASABLE);
