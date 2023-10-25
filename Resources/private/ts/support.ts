@@ -17,6 +17,7 @@ interface Routes {
     ticket: string
     message: string
     attachment: string
+    customer: string
     order: string
     quote: string
 }
@@ -232,7 +233,7 @@ class Ticket {
         }
 
         window.open(
-            Router.generate(config.routes.order + '_read', {customerId: $(e.target).data('id')})
+            Router.generate(config.routes.customer + '_read', {customerId: $(e.target).data('id')})
             , '_blank'
         ).focus();
 

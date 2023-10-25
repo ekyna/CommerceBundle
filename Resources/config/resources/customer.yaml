@@ -26,7 +26,9 @@ resources:
                 admin_crud:
                     form: '@EkynaCommerce/Admin/Customer/_form.html.twig'
                     list: '@EkynaCommerce/Admin/Customer/list.html.twig'
-                    read: '@EkynaCommerce/Admin/Customer/read.html.twig'
+                    read:
+                        template: '@EkynaCommerce/Admin/Customer/read.html.twig'
+                        expose: true
                     summary: '@EkynaCommerce/Admin/Customer/summary.html.twig'
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Customer\BalanceAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Customer\CreateUserAction: ~
