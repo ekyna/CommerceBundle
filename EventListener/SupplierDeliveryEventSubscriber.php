@@ -10,7 +10,7 @@ use Ekyna\Component\Resource\Event\ResourceEventInterface;
 use Ekyna\Component\Resource\Event\ResourceMessage;
 
 /**
- * Class SupplierOrderEventSubscriber
+ * Class SupplierDeliveryEventSubscriber
  * @package Ekyna\Bundle\CommerceBundle\EventListener
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */

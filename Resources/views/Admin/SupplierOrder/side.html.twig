@@ -1,0 +1,60 @@
+{% apply spaceless %}
+    {% set currency = supplierOrder.currency.code %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            {{ 'supplier_order.label.singular'|trans({}, 'EkynaCommerce') }}
+        </div>
+        <div class="panel-body">
+            <table class="table table-condensed table-alt-head">
+                <tbody>
+                <tr>
+                    <th>{{ 'field.number'|trans({}, 'EkynaUi') }}</th>
+                    <td>{{ supplierOrder.number }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'supplier.label.singular'|trans({}, 'EkynaCommerce') }}</th>
+                    <td>
+                        <a href="{{ admin_resource_path(supplierOrder.supplier) }}">
+                            {{ supplierOrder.supplier }}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ 'supplier_order.field.payment_total'|trans({}, 'EkynaCommerce') }}</th>
+                    <td>{{ supplierOrder.paymentTotal|format_currency(currency) }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'supplier_order.field.payment_paid_total'|trans({}, 'EkynaCommerce') }}</th>
+                    <td>{{ supplierOrder|supplier_order_payment_badge({'date': true})|raw }}</td>
+                </tr>
+                {% set due = supplierOrder.paymentTotal - supplierOrder.paymentPaidTotal %}
+                {% if not due.isZero() %}
+                <tr>
+                    <th>&nbsp;</th>
+                    <td>
+                        <strong class="text-danger">{{ due|format_currency(currency) }}</strong>
+                    </td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <th>{{ 'supplier_order.field.forwarder_total'|trans({}, 'EkynaCommerce') }}</th>
+                    <td>{{ supplierOrder.forwarderTotal|format_currency(commerce_default_currency) }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'supplier_order.field.forwarder_paid_total'|trans({}, 'EkynaCommerce') }}</th>
+                    <td>{{ supplierOrder|supplier_order_payment_badge({'forwarder': true, 'date': true})|raw }}</td>
+                </tr>
+                {% set due = supplierOrder.forwarderTotal - supplierOrder.forwarderPaidTotal %}
+                {% if not due.isZero() %}
+                <tr>
+                    <th>&nbsp;</th>
+                    <td>
+                        <strong class="text-danger">{{ due|format_currency(currency) }}</strong>
+                    </td>
+                </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endapply %}

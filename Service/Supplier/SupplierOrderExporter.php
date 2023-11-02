@@ -16,45 +16,32 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class SupplierOrderExporter extends BaseExporter
 {
-    protected TranslatorInterface $translator;
-
-    public function __construct(SupplierOrderRepositoryInterface $repository, TranslatorInterface $translator)
-    {
+    public function __construct(
+        SupplierOrderRepositoryInterface       $repository,
+        protected readonly TranslatorInterface $translator
+    ) {
         parent::__construct($repository);
-
-        $this->translator = $translator;
     }
 
     protected function buildHeader(string $name): string
     {
-        switch ($name) {
-            case 'number':
-                return $this->translator->trans('field.number', [], 'EkynaUi');
-            case 'state':
-                return $this->translator->trans('field.status', [], 'EkynaCommerce');
-            case 'ordered_at':
-                return $this->translator->trans('supplier_order.field.ordered_at', [], 'EkynaCommerce');
-            case 'completed_at':
-                return $this->translator->trans('field.completed_at', [], 'EkynaUi');
-            case 'supplier':
-                return $this->translator->trans('supplier.label.singular', [], 'EkynaCommerce');
-            case 'payment_total':
-                return $this->translator->trans('supplier_order.field.payment_total', [], 'EkynaCommerce');
-            case 'payment_date' :
-                return $this->translator->trans('supplier_order.field.payment_date', [], 'EkynaCommerce');
-            case 'payment_due_date':
-                return $this->translator->trans('supplier_order.field.payment_due_date', [], 'EkynaCommerce');
-            case 'carrier':
-                return $this->translator->trans('supplier_carrier.label.singular', [], 'EkynaCommerce');
-            case 'forwarder_total':
-                return $this->translator->trans('supplier_order.field.forwarder_total', [], 'EkynaCommerce');
-            case 'forwarder_date':
-                return $this->translator->trans('supplier_order.field.forwarder_date', [], 'EkynaCommerce');
-            case 'forwarder_due_date':
-                return $this->translator->trans('supplier_order.field.forwarder_due_date', [], 'EkynaCommerce');
-        };
+        $t = fn(string $m, string $d) => $this->translator->trans($m, [], $d);
 
-        return $name;
+        return match ($name) {
+            'number'               => $t('field.number', 'EkynaUi'),
+            'state'                => $t('field.status', 'EkynaCommerce'),
+            'ordered_at'           => $t('supplier_order.field.ordered_at', 'EkynaCommerce'),
+            'completed_at'         => $t('field.completed_at', 'EkynaUi'),
+            'supplier'             => $t('supplier.label.singular', 'EkynaCommerce'),
+            'payment_total'        => $t('supplier_order.field.payment_total', 'EkynaCommerce'),
+            'payment_paid_total'   => $t('supplier_order.field.payment_paid_total', 'EkynaCommerce'),
+            'payment_due_date'     => $t('supplier_order.field.payment_due_date', 'EkynaCommerce'),
+            'carrier'              => $t('supplier_carrier.label.singular', 'EkynaCommerce'),
+            'forwarder_total'      => $t('supplier_order.field.forwarder_total', 'EkynaCommerce'),
+            'forwarder_paid_total' => $t('supplier_order.field.forwarder_paid_total', 'EkynaCommerce'),
+            'forwarder_due_date'   => $t('supplier_order.field.forwarder_due_date', 'EkynaCommerce'),
+            default                => $name,
+        };
     }
 
     protected function transform(string $name, string $value): string

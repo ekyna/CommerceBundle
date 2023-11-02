@@ -1,0 +1,23 @@
+{% extends '@EkynaAdmin/Entity/Crud/_form_default.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.amount, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.state, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.exchangeDate, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.toForwarder, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        {{ form_row(form.description) }}
+    </div>
+{%- endblock main_contents %}

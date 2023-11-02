@@ -117,9 +117,10 @@ class SupplierOrderType extends AbstractResourceType
                     'base'     => $currency,
                     'disabled' => true,
                 ])
-                ->add('paymentDate', Type\DateType::class, [
-                    'label'    => t('supplier_order.field.payment_date', [], 'EkynaCommerce'),
-                    'required' => false,
+                ->add('paymentPaidTotal', Commerce\Common\MoneyType::class, [
+                    'label'    => t('supplier_order.field.payment_paid_total', [], 'EkynaCommerce'),
+                    'base'     => $currency,
+                    'disabled' => true,
                 ])
                 ->add('paymentDueDate', Type\DateType::class, [
                     'label'    => t('supplier_order.field.payment_due_date', [], 'EkynaCommerce'),
@@ -143,10 +144,10 @@ class SupplierOrderType extends AbstractResourceType
                     'disabled' => true,
                     'required' => false,
                 ])
-                ->add('forwarderDate', Type\DateType::class, [
-                    'label'    => t('supplier_order.field.forwarder_date', [], 'EkynaCommerce'),
+                ->add('forwarderPaidTotal', Commerce\Common\MoneyType::class, [
+                    'label'    => t('supplier_order.field.forwarder_paid_total', [], 'EkynaCommerce'),
+                    'disabled' => true,
                     'required' => false,
-                    'disabled' => !$hasCarrier,
                 ])
                 ->add('forwarderDueDate', Type\DateType::class, [
                     'label'    => t('supplier_order.field.forwarder_due_date', [], 'EkynaCommerce'),

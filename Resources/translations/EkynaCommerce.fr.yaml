@@ -1156,6 +1156,7 @@ payment:
         singular: Paiement
         plural: Paiements
     header:
+        list: Liste des paiements
         new: Créer un nouveau paiement
         edit: Modifier le paiement
         remove: Supprimer le paiement
@@ -1912,12 +1913,14 @@ supplier_order:
         tax_total: Total TVA
         items_total: Total articles
         ordered_at: Commandée le
+        payment_paid_total: Total réglé fournisseur
         payment_total: Total fournisseur
         payment_due_date: Échéance fournisseur
         payment_date: Règlement fournisseur
         customs_tax: Taxe douane
         customs_vat: TVA en douane
         forwarder_fee: Frais transitaire HT
+        forwarder_paid_total: Total réglé transitaire
         forwarder_total: Total transitaire
         forwarder_due_date: Échéance transitaire
         forwarder_date: Règlement transitaire
@@ -1948,6 +1951,10 @@ supplier_order_attachment:
         forwarder: Facture transitaire
         import: Justificatif d'import
         delivery: Bon de livraison
+
+supplier_payment:
+    field:
+        to_forwarder: Au transitaire
 
 supplier_product:
     label:

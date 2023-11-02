@@ -23,6 +23,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Stock\ResupplyAlertHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetRenderer;
 use Ekyna\Component\Commerce\Stock\Helper\AdjustHelper;
@@ -256,6 +257,14 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.helper.supplier', SupplierHelper::class)
         ->args([
             service('ekyna_commerce.calculator.supplier_order'),
+        ])
+        ->tag('twig.runtime');
+
+    // Supplier helper
+    $services
+        ->set('ekyna_commerce.renderer.supplier', SupplierRenderer::class)
+        ->args([
+            service('ekyna_commerce.factory.formatter'),
         ])
         ->tag('twig.runtime');
 };

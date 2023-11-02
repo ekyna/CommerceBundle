@@ -164,17 +164,16 @@
                         }) }}
                     </div>
                     <div class="col-md-4">
-                        {{ show_row(supplierOrder.paymentDueDate, 'datetime', {
-                            'label': 'supplier_order.field.payment_due_date',
+                        {{ show_row(supplierOrder|supplier_order_payment_badge, 'text', {
+                            'label': 'supplier_order.field.payment_paid_total',
                             'label_trans_domain': 'EkynaCommerce',
-                            'id': 'order_paymentDate',
-                            'time': false,
+                            'id': 'order_paidTotal',
                             'label_col': 6
                         }) }}
                     </div>
                     <div class="col-md-4">
-                        {{ show_row(supplierOrder.paymentDate, 'datetime', {
-                            'label': 'supplier_order.field.payment_date',
+                        {{ show_row(supplierOrder.paymentDueDate, 'datetime', {
+                            'label': 'supplier_order.field.payment_due_date',
                             'label_trans_domain': 'EkynaCommerce',
                             'id': 'order_paymentDate',
                             'time': false,
@@ -237,17 +236,16 @@
                         }) }}
                     </div>
                     <div class="col-md-4">
-                        {{ show_row(supplierOrder.forwarderDueDate, 'datetime', {
-                            'label': 'supplier_order.field.forwarder_due_date',
+                        {{ show_row(supplierOrder|supplier_order_payment_badge({'forwarder': true}), 'text', {
+                            'label': 'supplier_order.field.forwarder_paid_total',
                             'label_trans_domain': 'EkynaCommerce',
-                            'id': 'order_forwarderDate',
-                            'time': false,
+                            'id': 'order_forwarderPaidTotal',
                             'label_col': 6
                         }) }}
                     </div>
                     <div class="col-md-4">
-                        {{ show_row(supplierOrder.forwarderDate, 'datetime', {
-                            'label': 'supplier_order.field.forwarder_date',
+                        {{ show_row(supplierOrder.forwarderDueDate, 'datetime', {
+                            'label': 'supplier_order.field.forwarder_due_date',
                             'label_trans_domain': 'EkynaCommerce',
                             'id': 'order_forwarderDate',
                             'time': false,
@@ -312,6 +310,22 @@
         {% include '@EkynaCommerce/Admin/SupplierOrder/Show/attachments.html.twig' %}
     </div>
 {%- endblock main_contents %}
+
+{% block post_main %}
+    <div class="sub-header">
+        <h2>{{ 'payment.header.list'|trans({}, 'EkynaCommerce')|raw }}</h2>
+    </div>
+    <div class="actions">
+        {% if not supplierOrder.paid %}
+        {{ admin_resource_btn('ekyna_commerce.supplier_payment', 'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction', {
+            'label': t('payment.button.new', [], 'EkynaCommerce'),
+        }) }}
+        {% endif %}
+    </div>
+    {{ ekyna_table_render(admin_resource_table('ekyna_commerce.supplier_payment', {
+        'source': supplierOrder.payments.toArray()
+    })) }}
+{% endblock post_main %}
 
 {% block side -%}
     {{ parent() }}

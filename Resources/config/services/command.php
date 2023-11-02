@@ -33,6 +33,7 @@ use Ekyna\Bundle\CommerceBundle\Command\StatCalculateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\StatUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\StockIntegrityCommand;
 use Ekyna\Bundle\CommerceBundle\Command\StockUnitPriceUpdateCommand;
+use Ekyna\Bundle\CommerceBundle\Command\SupplierOrderGeneratePaymentCommand;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services();
@@ -325,6 +326,17 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.command.stock_unit_price_update', StockUnitPriceUpdateCommand::class)
         ->args([
             service('ekyna_commerce.calculator.supplier_order_item'),
+            service('doctrine.orm.default_entity_manager'),
+        ])
+        ->tag('console.command');
+
+    // Supplier order generate payment command
+    $services
+        ->set('ekyna_commerce.command.supplier_order.generate_payments', SupplierOrderGeneratePaymentCommand::class)
+        ->args([
+            service('ekyna_commerce.updater.supplier_order'),
+            service('ekyna_commerce.converter.currency'),
+            service('ekyna_resource.registry.resource'),
             service('doctrine.orm.default_entity_manager'),
         ])
         ->tag('console.command');

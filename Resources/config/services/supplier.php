@@ -15,7 +15,9 @@ use Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator;
 use Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderCalculator;
 use Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderItemCalculator;
 use Ekyna\Component\Commerce\Supplier\Calculator\WeightingCalculator;
+use Ekyna\Component\Commerce\Supplier\Event\SupplierPaymentEvents;
 use Ekyna\Component\Commerce\Supplier\EventListener\AbstractListener;
+use Ekyna\Component\Commerce\Supplier\EventListener\SupplierPaymentListener;
 use Ekyna\Component\Commerce\Supplier\Factory\SupplierOrderFactory;
 use Ekyna\Component\Commerce\Supplier\Factory\SupplierProductFactory;
 use Ekyna\Component\Commerce\Supplier\Resolver\SupplierOrderStateResolver;
@@ -68,7 +70,6 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.generator.supplier_order_number'),
             service('ekyna_commerce.resolver.state.supplier_order'),
             service('ekyna_commerce.calculator.supplier_order'),
-            service('ekyna_commerce.converter.currency'),
         ]);
 
     // Supplier order factory
@@ -120,6 +121,26 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.listener.supplier_delivery_item', SupplierDeliveryItemEventSubscriber::class)
         ->parent('ekyna_commerce.listener.abstract_supplier')
         ->tag('resource.event_subscriber');
+
+    // Supplier payment (resource) event listener
+    $services
+        ->set('ekyna_commerce.listener.supplier_payment', SupplierPaymentListener::class)
+        ->args([
+            service('ekyna_commerce.converter.currency'),
+            service('ekyna_resource.orm.persistence_helper'),
+        ])
+        ->tag('resource.event_listener', [
+            'event'  => SupplierPaymentEvents::INSERT,
+            'method' => 'onInsert',
+        ])
+        ->tag('resource.event_listener', [
+            'event'  => SupplierPaymentEvents::UPDATE,
+            'method' => 'onUpdate',
+        ])
+        ->tag('resource.event_listener', [
+            'event'  => SupplierPaymentEvents::DELETE,
+            'method' => 'onDelete',
+        ]);
 
     // Supplier order exporter
     $services

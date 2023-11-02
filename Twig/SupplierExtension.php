@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderAttachmentTypes;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierRenderer;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
 use Ekyna\Component\Commerce\Supplier\Util\SupplierUtil;
@@ -61,6 +62,10 @@ class SupplierExtension extends AbstractExtension
             new TwigFilter(
                 'supplier_order_total',
                 [SupplierHelper::class, 'calculateTotal']
+            ),
+            new TwigFilter(
+                'supplier_order_payment_badge',
+                [SupplierRenderer::class, 'renderPaymentBadge']
             ),
             new TwigFilter(
                 'supplier_order_item_received_quantity',

@@ -268,8 +268,7 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.table_column_type.supplier_order_payment', Column\SupplierOrderPaymentType::class)
         ->args([
-            service('ekyna_commerce.factory.formatter'),
-            service('translator'),
+            service('ekyna_commerce.renderer.supplier'),
         ])
         ->tag('table.column_type');
 

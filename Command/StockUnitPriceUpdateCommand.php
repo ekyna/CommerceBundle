@@ -10,6 +10,10 @@ use Ekyna\Component\Commerce\Supplier\Calculator\SupplierOrderItemCalculatorInte
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+
+use function implode;
+use function sprintf;
 
 /**
  * Class StockUnitPriceUpdateCommand
@@ -30,6 +34,11 @@ class StockUnitPriceUpdateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $io = new SymfonyStyle($input, $output);
+        if (!$io->confirm('Do you want to continue ?')) {
+            return Command::SUCCESS;
+        }
+
         $qb = $this->manager->createQueryBuilder();
 
         $query = $qb
@@ -49,26 +58,44 @@ class StockUnitPriceUpdateCommand extends Command
             $id = $unit->getId();
             $item = $unit->getSupplierOrderItem();
 
-            $output->write('Unit #'.$id.':');
+            $output->write('Unit #' . $id . ':');
 
             $changed = false;
+            $parts = [];
 
             $netPrice = $this->calculator->calculateItemProductPrice($item);
             if (!$unit->getNetPrice()->equals($netPrice)) {
-                $unit->setNetPrice($netPrice);
                 $changed = true;
-                $output->write(' <info>price</info>');
+                $parts[] = sprintf(
+                    '<info>price</info>: %s => %s',
+                    $unit->getNetPrice()->toFixed(5),
+                    $netPrice->toFixed(5)
+                );
+                $unit->setNetPrice($netPrice);
             } else {
-                $output->write(' <comment>price</comment>');
+                $parts[] = '<comment>price</comment>';
             }
 
             $shippingPrice = $this->calculator->calculateItemShippingPrice($item);
             if (!$unit->getShippingPrice()->equals($shippingPrice)) {
-                $unit->setShippingPrice($shippingPrice);
                 $changed = true;
-                $output->writeln(' <info>shipping</info>');
+                $parts[] = sprintf(
+                    '<info>price</info>: %s => %s',
+                    $unit->getShippingPrice()->toFixed(5),
+                    $shippingPrice->toFixed(5)
+                );
+                $unit->setShippingPrice($shippingPrice);
             } else {
-                $output->writeln(' <comment>shipping</comment>');
+                $parts[] = '<comment>shipping</comment>';
+            }
+
+            if (!$changed) {
+                $output->writeln(' ' . implode(' ', $parts));
+            } else {
+                $output->writeln('');
+                foreach ($parts as $part) {
+                    $output->writeln(' - ' . $part);
+                }
             }
 
             if ($changed) {

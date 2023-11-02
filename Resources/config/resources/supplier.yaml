@@ -184,6 +184,28 @@ resources:
             trans_prefix: sale_item
             trans_domain: EkynaCommerce
 
+        supplier_payment:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Supplier\Model\SupplierPaymentInterface
+                class: Ekyna\Component\Commerce\Supplier\Entity\SupplierPayment
+            repository:
+                interface: Ekyna\Component\Commerce\Supplier\Repository\SupplierPaymentRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\SupplierPaymentRepository
+            factory:
+                interface: Ekyna\Component\Commerce\Supplier\Factory\SupplierPaymentFactoryInterface
+                class: Ekyna\Component\Commerce\Supplier\Factory\SupplierPaymentFactory
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierPaymentType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\SupplierPaymentType
+            parent: ekyna_commerce.supplier_order
+            trans_prefix: payment
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    templates: '@EkynaCommerce/Admin/SupplierPayment'
+                    list: false
+                    read: false
+
         supplier_template:
             driver: doctrine/orm
             entity:

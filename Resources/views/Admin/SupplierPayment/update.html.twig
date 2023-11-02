@@ -1,0 +1,5 @@
+{% extends '@EkynaAdmin/Entity/Crud/update.html.twig' %}
+
+{% block side %}
+    {% include '@EkynaCommerce/Admin/SupplierOrder/side.html.twig' with {'supplierOrder': supplierPayment.order} %}
+{% endblock side %}

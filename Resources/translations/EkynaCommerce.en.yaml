@@ -1122,6 +1122,7 @@ payment:
         singular: Payment
         plural: Payments
     header:
+        list: Payment list
         new: Create a new payment
         edit: Edit the payment
         remove: Remove the payment
@@ -1873,12 +1874,14 @@ supplier_order:
         tax_total: VAT total
         items_total: Goods total
         ordered_at: Ordered at
+        payment_paid_total: Supplier paid total
         payment_total: Supplier total
         payment_due_date: Supplier due date
         payment_date: Supplier payment date
         customs_tax: Customs taxes
         customs_vat: Customs VAT
         forwarder_fee: Forwarder fee
+        forwarder_paid_total: Forwarder paid total
         forwarder_total: Forwarder total
         forwarder_due_date: Forwarder due date
         forwarder_date: Forwarder payment date
@@ -1909,6 +1912,10 @@ supplier_order_attachment:
         forwarder: Forwarder invoice
         import: Import receipt
         delivery: Delivery bill
+
+supplier_payment:
+    field:
+        to_forwarder: To forwarder
 
 supplier_product:
     label:

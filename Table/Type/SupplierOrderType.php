@@ -65,9 +65,8 @@ class SupplierOrderType extends AbstractResourceType
                 'currency_path' => 'currency.code',
                 'position'      => 80,
             ])
-            ->addColumn('paymentDate', Column\SupplierOrderPaymentType::class, [
-                'label'    => t('supplier_order.field.payment_date', [], 'EkynaCommerce'),
-                'prefix'   => 'payment',
+            ->addColumn('paymentPaidTotal', Column\SupplierOrderPaymentType::class, [
+                'label'    => t('supplier_order.field.payment_paid_total', [], 'EkynaCommerce'),
                 'position' => 90,
             ])
             ->addColumn('forwarderTotal', BType\Column\PriceType::class, [
@@ -75,9 +74,9 @@ class SupplierOrderType extends AbstractResourceType
                 'currency_path' => 'currency.code',
                 'position'      => 100,
             ])
-            ->addColumn('forwarderDate', Column\SupplierOrderPaymentType::class, [
-                'label'    => t('supplier_order.field.forwarder_date', [], 'EkynaCommerce'),
-                'prefix'   => 'forwarder',
+            ->addColumn('forwarderPaidTotal', Column\SupplierOrderPaymentType::class, [
+                'label'    => t('supplier_order.field.forwarder_paid_total', [], 'EkynaCommerce'),
+                'forwarder'   => true,
                 'position' => 110,
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
