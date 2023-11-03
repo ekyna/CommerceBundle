@@ -7,12 +7,10 @@
     {{ companyAddress.postalCode ~ ' ' ~ companyAddress.city }}, {{ companyAddress.country|country(locale) }}<br>
 
     {%- if companyAddress.phone is not empty -%}
-        <span class="text-alt">{{ 'field.phone'|trans({}, 'EkynaUi') }}</span>
-        {{ companyAddress.phone }}<br>
+        <abbr title="{{ 'field.phone'|trans({}, 'EkynaUi') }}">T:</abbr> {{ companyAddress.phone }}<br>
     {%- endif -%}
     {%- if companyAddress.mobile is not empty -%}
-        <span class="text-alt">{{ 'field.mobile'|trans({}, 'EkynaUi') }}</span>
-        {{ companyAddress.mobile }}<br>
+        <abbr title="{{ 'field.mobile'|trans({}, 'EkynaUi') }}">M:</abbr> {{ companyAddress.mobile -}}<br>
     {%- endif -%}
 
     {{- get_setting('general.admin_email') }}<br>
@@ -133,6 +131,7 @@
 {%- apply spaceless -%}
     {% set payments = subject|invoice_payments(false) -%}
     {%- if payments is not empty -%}
+    <div class="bloc avoid-break">
     <h2>
         {%- if subject.credit -%}
             {{- 'refund.label.plural'|trans({}, 'EkynaCommerce') -}}
@@ -140,7 +139,7 @@
             {{- 'payment.label.plural'|trans({}, 'EkynaCommerce') -}}
         {%- endif -%}
     </h2>
-    <table class="bloc table">
+    <table class="table">
         <thead>
         <tr>
             <th>{{ 'field.number'|trans({}, 'EkynaUi') }}</th>
@@ -168,6 +167,7 @@
         </tr>
         </tbody>
     </table>
+    </div>
     {% endif %}
 {%- endapply -%}
 {%- endmacro -%}

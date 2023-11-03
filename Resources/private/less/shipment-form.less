@@ -1,4 +1,5 @@
-@font-size: 12px;
+@font-size: 14px;
+@line-height: 18px;
 @text-color: #333333;
 @head-color: #999999;
 @border-color: #dddddd;
@@ -11,57 +12,89 @@
 @gray-light: #777;
 
 @background-alt-color: #f2f2f2;
-@ratio: 1.3;
-@margin: 2mm * @ratio;
-@width: 21cm * @ratio;
-@height: 29.7cm * @ratio;
+@margin: 10px;
 
-html, body {
-    font-family: Helvetica, Arial, sans-serif;
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Open sans", Arial, sans-serif;
     font-size: @font-size;
-    line-height: 1.6em;
+    line-height: @line-height;
     color: @text-color;
 }
 
-.wrapper {
-    max-width: 1000px;
-    margin: 0 auto @margin * 3 auto;
+#layout {
+    max-width: 800px;
+    margin: auto;
 }
 
-.bloc {
-    position: relative;
-    padding: @margin;
-    border: 1px solid @border-color;
-}
-
-h1 {
-    font-variant: small-caps;
-    font-weight: normal;
-    color: @head-color;
-    font-size: @font-size * 2;
-    margin: 0 0 @font-size 0;
-
-    strong {
-        font-weight: 600;
+@media print {
+    html,
+    body {
+        text-rendering: optimizeLegibility;
     }
 
-    > small {
-        display: inline-block;
-        margin-left: 16px;
+    #layout {
+        width: 100%;
+        margin: 0;
     }
 }
+
+// -------------------- HEADER --------------------
+
+header, .header-space {
+    height: 70px;
+}
+
+.header-space {
+    padding-bottom: 10px;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    overflow: hidden;
+    border-bottom: 1px dotted @border-color;
+
+    > h1 {
+        font-variant: small-caps;
+        font-weight: normal;
+        color: @head-color;
+        font-size: @font-size * 2;
+        line-height: @font-size * 2;
+        margin: 0 0 10px 0;
+
+        strong {
+            font-weight: 600;
+        }
+
+        > small {
+            display: inline-block;
+            margin-left: 16px;
+        }
+    }
+
+    > div {
+        display: flex;
+        justify-content: space-between;
+
+        > p {
+            margin: 0;
+        }
+
+        > .tags {
+            font-size: @font-size;
+            text-align: right;
+        }
+    }
+}
+
+// -------------------- CONTENT --------------------
 
 .text-right {
     text-align: right !important;
-}
-
-.tags {
-    position: absolute;
-    top: @margin;
-    right: @margin;
-    max-width: 140px;
-    font-size: @font-size;
-    text-align: right;
 }
 
 .label {
@@ -126,16 +159,13 @@ h1 {
     border: 1px solid #faebcc;
     border-radius: 4px;
     color: #8a6d3b;
-    padding: @margin;
-}
-
-table {
-    border-collapse: collapse;
-    border-spacing: 3px;
-    width: 100%;
+    margin: 0 0 10px 0;
+    padding: 6px 12px;
 }
 
 .table {
+    border-collapse: collapse;
+    border-spacing: 3px;
     width: 100%;
 
     thead {
@@ -201,20 +231,5 @@ table {
         td {
             border-bottom: @border-color;
         }
-    }
-}
-
-@media print {
-    html,
-    body {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        text-rendering: optimizeLegibility;
-    }
-
-    .wrapper {
-        page-break-inside: avoid;
     }
 }

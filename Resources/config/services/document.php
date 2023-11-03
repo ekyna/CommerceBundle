@@ -6,6 +6,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentLinesHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Component\Commerce\Document\Builder\DocumentBuilder;
@@ -60,9 +61,9 @@ return static function (ContainerConfigurator $container) {
         ])
         ->tag('twig.runtime');
 
-    // Document page builder
+    // Document lines helper
     $services
-        ->set('ekyna_commerce.builder.document_page', DocumentPageBuilder::class)
+        ->set('ekyna_commerce.helper.document_lines', DocumentLinesHelper::class)
         ->args([
             service('ekyna_commerce.helper.subject'),
             service('ekyna_commerce.calculator.shipment_subject'),

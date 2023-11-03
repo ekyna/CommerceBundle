@@ -6,100 +6,82 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
-use Ekyna\Component\Commerce\Document\Model as Document;
+use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
+use Ekyna\Component\Commerce\Document\Model\DocumentLineInterface;
+use Ekyna\Component\Commerce\Document\Model\DocumentLineTypes;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Document\Util\DocumentUtil;
 use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentSubjectCalculatorInterface;
-use Ekyna\Component\Commerce\Shipment\Model as Shipment;
+use Ekyna\Component\Commerce\Shipment\Model\RemainingEntry;
+use Ekyna\Component\Commerce\Shipment\Model\RemainingList;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentItemInterface;
+
+use function array_replace;
+use function in_array;
 
 /**
- * Class DocumentPageBuilder
+ * Class DocumentLinesHelper
  * @package Ekyna\Bundle\CommerceBundle\Service\Document
- * @author  Etienne Dauvergne <contact@ekyna.com>
+ * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class DocumentPageBuilder
+class DocumentLinesHelper
 {
     protected array $config;
 
-    /**
-     * [<(int) oid> => <(int) last page height>]
-     *
-     * @var array<int, int>
-     */
-    private array $heightCache = [];
-
-    /**
-     * Constructor.
-     *
-     * @param SubjectHelper                      $subjectHelper
-     * @param ShipmentSubjectCalculatorInterface $shipmentCalculator
-     * @param array                              $config
-     */
     public function __construct(
         protected readonly SubjectHelper                      $subjectHelper,
         protected readonly ShipmentSubjectCalculatorInterface $shipmentCalculator,
         array                                                 $config = []
     ) {
         $this->config = array_replace([
-            'row_height'      => 27,
-            'row_desc_height' => 47,
-            'page_height'     => 1399,
-            'header_height'   => 370,
-            'title_height'    => 130,
-            'footer_height'   => 91,
+            'shipment_remaining_date' => true,
         ], $config);
     }
 
-    /**
-     * Builds the document pages.
-     *
-     * @param Document\DocumentInterface $document
-     *
-     * @return array
-     */
-    public function buildDocumentPages(Document\DocumentInterface $document): array
+    public function buildDocumentLines(DocumentInterface $document): array
     {
+        $groups = $group = $parentIds = [];
         $ati = $document->isAti();
 
-        $lines = $document->getLinesByType(Document\DocumentLineTypes::TYPE_GOOD);
-
-        $groups = [];
-        $group = ['height' => 0, 'rows' => []];
-        $totalHeight = 0;
-        $parentIds = [];
+        $lines = $document->getLinesByType(DocumentLineTypes::TYPE_GOOD);
 
         foreach ($lines as $line) {
+            // Skip private lines if they belong to a public line shown in this document.
             $item = $line->getSaleItem();
             if ($item->isPrivate() && DocumentUtil::hasPublicParent($document, $item)) {
                 continue;
             }
 
+            // Add parents lines if they are not yet shown in this document.
             $level = 0;
             $parent = $item;
             while (null !== $parent = $parent->getParent()) {
                 $level++;
 
+                // Do not add twice
                 if (null !== $this->findDocumentLineByItem($lines, $parent)) {
                     continue;
                 }
-
                 if (in_array($parent->getId(), $parentIds, true)) {
                     continue;
                 }
 
                 //  New group
-                if ($level - 1 == 0 && !empty($group['rows'])) {
+                if (!empty($group) && (0 === $level - 1)) {
                     $groups[] = $group;
-                    $group = ['height' => 0, 'rows' => []];
+                    $group = [];
                 }
+
+                $parentIds[] = $parent->getId();
 
                 $reference = $parent->getReference();
                 if ($parent->isConfigurable() && $parent->isCompound() && !$parent->hasPrivateChildren()) {
                     $reference = null;
                 }
 
-                // Add parent row
-                $group['rows'][] = $row = [
+                // Add parent line row
+                $group[] = [
                     'level'         => $level - 1,
                     'virtual'       => true,
                     'reference'     => $reference,
@@ -115,25 +97,16 @@ class DocumentPageBuilder
                     'taxRates'      => null,
                     'discountRates' => null,
                 ];
-
-                $rowHeight = empty($row['description'])
-                    ? $this->config['row_height']
-                    : $this->config['row_desc_height'];
-
-                $group['height'] += $rowHeight;
-                $totalHeight += $rowHeight;
-
-                $parentIds[] = $parent->getId();
             }
 
             //  New group
-            if ($level == 0 && !empty($group['rows'])) {
+            if (!empty($group) && (0 === $level)) {
                 $groups[] = $group;
-                $group = ['height' => 0, 'rows' => []];
+                $group = [];
             }
 
-            // Add row
-            $group['rows'][] = $row = [
+            // Add line row
+            $group[] = [
                 'level'         => $level,
                 'virtual'       => false,
                 'reference'     => $line->getReference(),
@@ -149,72 +122,43 @@ class DocumentPageBuilder
                 'taxRates'      => $line->getTaxRates(),
                 'discountRates' => $line->getDiscountRates(),
             ];
-
-            $rowHeight = empty($row['description']) ? $this->config['row_height'] : $this->config['row_desc_height'];
-
-            $group['height'] += $rowHeight;
-            $totalHeight += $rowHeight;
         }
 
-        //  Add group if not empty
-        if (!empty($group['rows'])) {
+        //  Add the group if it is not empty
+        if (!empty($group)) {
             $groups[] = $group;
         }
 
-        $group = ['height' => 0, 'rows' => []];
-
+        // Add item rows
         foreach ($document->getItems() as $item) {
-            // Add row
-            $group['rows'][] = $row = [
-                'level'         => 0,
-                'virtual'       => false,
-                'reference'     => $item->getReference(),
-                'designation'   => $item->getDesignation(),
-                'description'   => $item->getDescription(),
-                'included'      => $item->getIncluded(),
-                'url'           => null,
-                'quantity'      => $item->getQuantity(),
-                'unit'          => $item->getUnit($ati),
-                'gross'         => $item->getGross($ati),
-                'discount'      => $item->getDiscount($ati),
-                'base'          => $item->getBase($ati),
-                'taxRates'      => $item->getTaxRates(),
-                'discountRates' => $item->getDiscountRates(),
+            $groups[] = [
+                [
+                    'level'         => 0,
+                    'virtual'       => false,
+                    'reference'     => $item->getReference(),
+                    'designation'   => $item->getDesignation(),
+                    'description'   => $item->getDescription(),
+                    'included'      => $item->getIncluded(),
+                    'url'           => null,
+                    'quantity'      => $item->getQuantity(),
+                    'unit'          => $item->getUnit($ati),
+                    'gross'         => $item->getGross($ati),
+                    'discount'      => $item->getDiscount($ati),
+                    'base'          => $item->getBase($ati),
+                    'taxRates'      => $item->getTaxRates(),
+                    'discountRates' => $item->getDiscountRates(),
+                ],
             ];
-
-            $rowHeight = empty($row['description'])
-                ? $this->config['row_height']
-                : $this->config['row_desc_height'];
-
-            $group['height'] += $rowHeight;
-            $totalHeight += $rowHeight;
         }
 
-        //  Add group if not empty
-        if (!empty($group['rows'])) {
-            $groups[] = $group;
-        }
-
-        return $this->buildPages($groups, $totalHeight, spl_object_id($document));
+        return $groups;
     }
 
-    /**
-     * Builds the shipment pages.
-     *
-     * @param Shipment\ShipmentInterface $shipment The document subject
-     * @param string                     $type     The document type
-     *
-     * @return array
-     */
-    public function buildShipmentPages(Shipment\ShipmentInterface $shipment, string $type): array
+    public function buildShipmentLines(ShipmentInterface $shipment, string $type): array
     {
-        /** @var Shipment\ShipmentItemInterface[] $lines */
+        $groups = $group = $parentIds = [];
+        /** @var ShipmentItemInterface[] $lines */
         $lines = $shipment->getItems()->toArray();
-
-        $groups = [];
-        $group = ['height' => 0, 'rows' => []];
-        $totalHeight = 0;
-        $parentIds = [];
 
         foreach ($lines as $line) {
             $item = $line->getSaleItem();
@@ -236,13 +180,13 @@ class DocumentPageBuilder
                 }
 
                 //  New group
-                if ($level - 1 == 0 && !empty($group['rows'])) {
+                if (!empty($group) && (0 === $level - 1)) {
                     $groups[] = $group;
-                    $group = ['height' => 0, 'rows' => []];
+                    $group = [];
                 }
 
                 // Add parent row
-                $group['rows'][] = [
+                $group[] = [
                     'level'       => $level - 1,
                     'virtual'     => true,
                     'private'     => $parent->isPrivate(),
@@ -252,20 +196,17 @@ class DocumentPageBuilder
                     'quantity'    => null,
                 ];
 
-                $group['height'] += $this->config['row_height'];
-                $totalHeight += $this->config['row_height'];
-
                 $parentIds[] = $parent->getId();
             }
 
             //  New group
-            if ($level === 0 && !empty($group['rows'])) {
+            if (!empty($group) && (0 === $level)) {
                 $groups[] = $group;
-                $group = ['height' => 0, 'rows' => []];
+                $group = [];
             }
 
             // Add row
-            $group['rows'][] = [
+            $group[] = [
                 'level'       => $level,
                 'virtual'     => false,
                 'private'     => $item->isPrivate(),
@@ -274,27 +215,16 @@ class DocumentPageBuilder
                 'reference'   => $item->getReference(),
                 'quantity'    => $line->getQuantity(),
             ];
-
-            $group['height'] += $this->config['row_height'];
-            $totalHeight += $this->config['row_height'];
         }
 
-        //  Add group if not empty
-        if (!empty($group['rows'])) {
+        if (!empty($group)) {
             $groups[] = $group;
         }
 
-        return $this->buildPages($groups, $totalHeight, spl_object_id($shipment));
+        return $groups;
     }
 
-    /**
-     * Builds the shipment remaining pages.
-     *
-     * @param Shipment\ShipmentInterface $shipment
-     *
-     * @return array
-     */
-    public function buildShipmentRemainingPages(Shipment\ShipmentInterface $shipment): array
+    public function buildShipmentRemainingLines(ShipmentInterface $shipment): array
     {
         if ($shipment->isReturn()) {
             return [];
@@ -306,10 +236,7 @@ class DocumentPageBuilder
             return [];
         }
 
-        $groups = [];
-        $group = ['height' => 0, 'rows' => []];
-        $totalHeight = 0;
-        $parentIds = [];
+        $groups = $group = $parentIds = [];
 
         foreach ($list->getEntries() as $entry) {
             $item = $entry->getSaleItem();
@@ -331,13 +258,13 @@ class DocumentPageBuilder
                 }
 
                 //  New group
-                if ($level - 1 === 0 && !empty($group['rows'])) {
+                if (!empty($group) && (0 === $level - 1)) {
                     $groups[] = $group;
-                    $group = ['height' => 0, 'rows' => []];
+                    $group = [];
                 }
 
                 // Add parent row
-                $group['rows'][] = [
+                $group[] = [
                     'level'       => $level - 1,
                     'virtual'     => true,
                     'private'     => $parent->isPrivate(),
@@ -346,20 +273,18 @@ class DocumentPageBuilder
                     'reference'   => $parent->getReference(),
                     'quantity'    => null,
                 ];
-                $group['height'] += $this->config['row_height'];
-                $totalHeight += $this->config['row_height'];
 
                 $parentIds[] = $parent->getId();
             }
 
             //  New group
-            if ($level == 0 && !empty($group['rows'])) {
+            if (!empty($group) && (0 === $level)) {
                 $groups[] = $group;
-                $group = ['height' => 0, 'rows' => []];
+                $group = [];
             }
 
             // Add row
-            $group['rows'][] = [
+            $group[] = [
                 'level'       => $level,
                 'virtual'     => false,
                 'private'     => $item->isPrivate(),
@@ -368,83 +293,28 @@ class DocumentPageBuilder
                 'reference'   => $item->getReference(),
                 'quantity'    => $entry->getQuantity(),
             ];
-            $group['height'] += $this->config['row_height'];
-            $totalHeight += $this->config['row_height'];
         }
 
         //  Add group if not empty
-        if (!empty($group['rows'])) {
+        if (!empty($group)) {
             $groups[] = $group;
         }
 
         return [
-            'eda'   => $list->getEstimatedShippingDate(),
-            'pages' => $this->buildPages($groups, $totalHeight, spl_object_id($shipment)),
+            'eda'    => $this->config['shipment_remaining_date'] ? $list->getEstimatedShippingDate() : null,
+            'groups' => $groups,
         ];
-    }
-
-    /**
-     * Builds the pages.
-     *
-     * @param array $groups
-     * @param int   $totalHeight
-     * @param int   $oid
-     *
-     * @return array
-     */
-    private function buildPages(array $groups, int $totalHeight, int $oid): array
-    {
-        $pages = $page = [];
-        $pageHeight = 0;
-        $lastPageMaxOffset = 250; // Totals and Taxes rows
-        foreach ($groups as $group) {
-            $max = $this->config['page_height'] - $this->config['title_height'] - $this->config['footer_height'];
-
-            // If first page : keep space for customer addresses, etc...
-            if (empty($pages)) {
-                if (isset($this->heightCache[$oid])) {
-                    $max -= $this->heightCache[$oid];
-                } else {
-                    $max -= $this->config['header_height'];
-                }
-            }
-
-            if (
-                // Last page needs space for totals rows
-                ($totalHeight < $max && $pageHeight + $group['height'] + $lastPageMaxOffset > $max)
-                || ($pageHeight + $group['height'] > $max)
-            ) {
-                $pages[] = $page;
-                $page = [];
-
-                $totalHeight -= $pageHeight;
-                $this->heightCache[$oid] = $pageHeight;
-                $pageHeight = 0;
-            }
-
-            $pageHeight += $group['height'];
-            foreach ($group['rows'] as $row) {
-                $page[] = $row;
-            }
-        }
-
-        if (!empty($page)) {
-            $pages[] = $page;
-            $this->heightCache[$oid] = $pageHeight;
-        }
-
-        return $pages;
     }
 
     /**
      * Finds the document line matching the given sale item.
      *
-     * @param Document\DocumentLineInterface[] $lines
-     * @param SaleItemInterface                $item
+     * @param array<int, DocumentLineInterface> $lines
+     * @param SaleItemInterface                 $item
      *
-     * @return Document\DocumentLineInterface|null
+     * @return DocumentLineInterface|null
      */
-    private function findDocumentLineByItem(array $lines, SaleItemInterface $item): ?Document\DocumentLineInterface
+    private function findDocumentLineByItem(array $lines, SaleItemInterface $item): ?DocumentLineInterface
     {
         foreach ($lines as $line) {
             if ($line->getSaleItem() === $item) {
@@ -458,12 +328,12 @@ class DocumentPageBuilder
     /**
      * Finds the shipment item matching the given sale item.
      *
-     * @param Shipment\ShipmentItemInterface[] $lines
-     * @param SaleItemInterface                $item
+     * @param ShipmentItemInterface[] $lines
+     * @param SaleItemInterface       $item
      *
-     * @return Shipment\ShipmentItemInterface|null
+     * @return ShipmentItemInterface|null
      */
-    private function findShipmentLineByItem(array $lines, SaleItemInterface $item): ?Shipment\ShipmentItemInterface
+    private function findShipmentLineByItem(array $lines, SaleItemInterface $item): ?ShipmentItemInterface
     {
         foreach ($lines as $line) {
             if ($line->getSaleItem() === $item) {
@@ -477,15 +347,15 @@ class DocumentPageBuilder
     /**
      * Finds the shipment remaining entry matching the given sale item.
      *
-     * @param Shipment\RemainingList $list
-     * @param SaleItemInterface      $item
+     * @param RemainingList     $list
+     * @param SaleItemInterface $item
      *
-     * @return Shipment\RemainingEntry|null
+     * @return RemainingEntry|null
      */
     private function findListEntryByItem(
-        Shipment\RemainingList $list,
-        SaleItemInterface      $item
-    ): ?Shipment\RemainingEntry {
+        RemainingList     $list,
+        SaleItemInterface $item
+    ): ?RemainingEntry {
         foreach ($list->getEntries() as $entry) {
             if ($entry->getSaleItem() === $item) {
                 return $entry;

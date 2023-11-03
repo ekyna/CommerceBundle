@@ -1,15 +1,19 @@
 {% extends '@EkynaCommerce/Document/document.html.twig' %}
 
 
-{%- import '@EkynaCommerce/Document/macros.html.twig' as macro -%}
+{% import '@EkynaCommerce/Document/macros.html.twig' as macro -%}
 
 
-{# --- DOC TITLE --- #}
-{% block doc_title_content -%}
-    <h1>
-        {{- (subject.type ~ '.label.singular')|trans({}, 'EkynaCommerce') }}
-        {{ subject.number -}}
-    </h1>
+{% block title %}
+<h1>
+    {{ (subject.type ~ '.label.singular')|trans({}, 'EkynaCommerce') }}
+    {{ subject.number }}
+</h1>
+{% endblock title %}
+
+
+{% block mentions %}
+<div class="bloc">
     <p>
         <span class="text-alt">{{ 'field.date'|trans({}, 'EkynaUi') }}</span>
         {{- '&nbsp;' -}}
@@ -27,31 +31,47 @@
     </p>
     {{ get_setting('commerce.invoice_mention', subject.locale)|raw }}
     {% if subject.comment is not empty -%}
-    <p>{{ subject.comment|nl2br }}</p>
+        <p>{{ subject.comment|nl2br }}</p>
     {%- endif %}
-{%- endblock doc_title_content %}
+</div>
+{% endblock mentions %}
 
 
-{%- block doc_invoice_address -%}
-    {%- if subject.customInvoiceAddress -%}
-        {{- subject.customInvoiceAddress|address -}}
-    {%- else -%}
-        {{ parent() }}
-    {%- endif -%}
-{%- endblock doc_invoice_address -%}
+{% block addresses %}
+<div class="bloc addresses">
+    <div>
+        <h2>{{ 'customer.label.singular'|trans({}, 'EkynaCommerce') }}</h2>
+        <p>{{ subject.customer|customer }}</p>
+    </div>
+    <div>
+        <h2>{{ 'sale.field.invoice_address'|trans({}, 'EkynaCommerce') }}</h2>
+        <p>
+            {%- if subject.customInvoiceAddress -%}
+                {{- subject.customInvoiceAddress|address -}}
+            {%- else -%}
+                {{- subject.invoiceAddress|address -}}
+            {%- endif -%}
+        </p>
+    </div>
+    <div>
+        <h2>{{ 'sale.field.delivery_address'|trans({}, 'EkynaCommerce') }}</h2>
+        <p>
+            {%- if subject.customDeliveryAddress -%}
+                {{- subject.customDeliveryAddress|address -}}
+            {%- elseif subject.relayPoint is not empty -%}
+                {{ subject.relayPoint|address }}
+            {%- elseif subject.deliveryAddress is not empty -%}
+                {{ subject.deliveryAddress|address }}
+            {%- else -%}
+                {{ subject.invoiceAddress|address }}
+            {%- endif -%}
+        </p>
+    </div>
+</div>
+{% endblock addresses %}
 
 
-{%- block doc_delivery_address -%}
-    {%- if subject.customDeliveryAddress -%}
-        {{- subject.customDeliveryAddress|address -}}
-    {%- else -%}
-        {{ parent() }}
-    {%- endif -%}
-{%- endblock doc_delivery_address -%}
-
-
-{# --- DOC MISC --- #}
-{% block doc_misc -%}
-    {{- macro.render_invoice_payments(subject) -}}
-    {{ parent() }}
-{%- endblock doc_misc %}
+{% block misc %}
+{{- macro.render_invoice_payments(subject) -}}
+{{ parent() }}
+{% endblock misc %}

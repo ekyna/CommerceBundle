@@ -31,7 +31,7 @@ interface RendererInterface
      *
      * @throws PdfException
      */
-    public function create(string $format = RendererInterface::FORMAT_PDF): string;
+    public function create(string $format): string;
 
     /**
      * Renders the document.
@@ -40,7 +40,7 @@ interface RendererInterface
      *
      * @throws PdfException
      */
-    public function render(string $format = RendererInterface::FORMAT_HTML): string;
+    public function render(string $format): string;
 
     /**
      * Generates a response with the document.

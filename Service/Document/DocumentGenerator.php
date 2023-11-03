@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
+use Ekyna\Component\Commerce\Common\Model\SaleAttachmentInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Document\Builder\DocumentBuilderInterface;
 use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculatorInterface;
 use Ekyna\Component\Commerce\Document\Model\Document;
 use Ekyna\Component\Commerce\Document\Util\DocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
+use Ekyna\Component\Resource\Exception\PdfException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -19,43 +23,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class DocumentGenerator
 {
-    /**
-     * @var DocumentBuilderInterface
-     */
-    protected $documentBuilder;
-
-    /**
-     * @var DocumentCalculatorInterface
-     */
-    protected $documentCalculator;
-
-    /**
-     * @var RendererFactory
-     */
-    protected $rendererFactory;
-
-    /**
-     * @var FactoryHelperInterface
-     */
-    protected $factoryHelper;
-
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
     public function __construct(
-        DocumentBuilderInterface    $documentBuilder,
-        DocumentCalculatorInterface $documentCalculator,
-        RendererFactory             $rendererFactory,
-        FactoryHelperInterface      $factoryHelper,
-        TranslatorInterface         $translator
+        protected readonly DocumentBuilderInterface    $documentBuilder,
+        protected readonly DocumentCalculatorInterface $documentCalculator,
+        protected readonly RendererFactory             $rendererFactory,
+        protected readonly FactoryHelperInterface      $factoryHelper,
+        protected readonly TranslatorInterface         $translator
     ) {
-        $this->documentBuilder = $documentBuilder;
-        $this->documentCalculator = $documentCalculator;
-        $this->rendererFactory = $rendererFactory;
-        $this->factoryHelper = $factoryHelper;
-        $this->translator = $translator;
     }
 
     /**
@@ -64,15 +38,14 @@ class DocumentGenerator
      * @param SaleInterface $sale
      * @param string        $type
      *
-     * @return \Ekyna\Component\Commerce\Common\Model\SaleAttachmentInterface
-     *
-     * @throws \Ekyna\Component\Resource\Exception\PdfException
+     * @return SaleAttachmentInterface
+     * @throws PdfException
      */
-    public function generate(SaleInterface $sale, $type)
+    public function generate(SaleInterface $sale, string $type): SaleAttachmentInterface
     {
         $available = DocumentUtil::getSaleEditableDocumentTypes($sale);
         if (!in_array($type, $available, true)) {
-            throw new InvalidArgumentException("Unexpected document type.");
+            throw new InvalidArgumentException('Unexpected document type.');
         }
 
         // Generate the document file

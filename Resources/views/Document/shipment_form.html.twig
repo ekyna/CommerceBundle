@@ -1,71 +1,93 @@
 {% apply spaceless %}
 <!doctype html>
-<html>
+<html lang="{{ locale|default('en') }}">
 <head>
-    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Shipment forms</title>
+    <title>Shipment form</title>
     <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/shipment-form.css')) }}" rel="stylesheet" type="text/css" />
     <link href="{{ absolute_url(asset('bundles/ekynaui/css/fontawesome.css')) }}" rel="stylesheet" type="text/css" />
+    <link href="{{ absolute_url(asset('bundles/ekynaui/css/material.css')) }}" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    {% for subject in subjects %}
-    <div class="wrapper">
-        <div class="bloc">
-            <div class="tags">
-                {{- subject.sale|sale_flags -}}
-                {{- subject.sale.allTags|cms_tags({'text': false}) -}}
-            </div>
-            <h1>
-                {{ 'order.label.singular'|trans({}, 'EkynaCommerce') }} <strong>{{ subject.sale.number }}</strong>
-                <small>
-                    {{- 'shipment.label.singular'|trans({}, 'EkynaCommerce') }} <strong>{{ subject.number }}</strong>
-                    {% if subject.partial %}&nbsp;<em>({{ 'status.partial'|trans({}, 'EkynaCommerce') }})</em>{% endif %}
-                </small>
-            </h1>
-            <p>
-                {% if subject.sale.company is not empty %}<strong>{{ subject.sale.company }}</strong>{% endif %}
-                {{ subject.sale|identity }}
-            </p>
-            {% if subject.sale.preparationNote is not empty %}
-            <p class="note">{{ subject.sale.preparationNote|nl2br }}</p>
-            {% endif %}
-            <table class="table table-alt-head details">
-                <thead>
-                <tr>
-                    <th colspan="2">{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
-                    <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
-                    <th>{{ 'field.geocode'|trans({}, 'EkynaCommerce') }}</th>
-                    <th colspan="2">{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
-                </tr>
-                </thead>
-                <tbody class="stripped">
-                {% for item in subject.items %}
-                    {% set private = item.saleItem.private %}
-                    <tr{% if private %} style="color:#666"{% endif %}>
-                        <td{% if private %} style="padding-left:20px;"{% endif %}>
-                            {%- if private %}&bull;&nbsp;{% endif -%}
-                            {{- item.saleItem.designation -}}
-                        </td>
-                        <td class="text-right">
-                            {% set subject = item.saleItem|subject_get(false) %}
-                            {% if subject is not null %}{{ subject|cms_tags({'text': false, 'badge': false}) }}{% endif %}
-                        </td>
-                        <td>{{ item.saleItem.reference }}</td>
-                        <td>
-                            {% for assignment in item.saleItem.stockAssignments %}
-                                {{ assignment.stockUnit.geocodes|join(' ')|raw }}
-                            {% endfor %}
-                        </td>
-                        <td class="text-right">{{ item.quantity|format_number }}</td>{# TODO Packing format #}
-                        <td class="text-right"><span class="input">&nbsp;</span></td>
+
+{# --- LAYOUT --- #}
+<table id="layout">
+    <thead>
+    <tr>
+        <td>
+            <div class="header-space">&nbsp;</div>
+        </td>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+        <td>
+            <div class="content">
+                {% if subject.sale.preparationNote is not empty %}
+                    <p class="note">{{ subject.sale.preparationNote|nl2br }}</p>
+                {% endif %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th colspan="2">{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+                        <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+                        <th>{{ 'field.geocode'|trans({}, 'EkynaCommerce') }}</th>
+                        <th colspan="2">{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="stripped">
+                    {% for item in subject.items %}
+                        {% set private = item.saleItem.private %}
+                        <tr{% if private %} style="color:#666"{% endif %}>
+                            <td{% if private %} style="padding-left:20px;"{% endif %}>
+                                {%- if private %}&bull;&nbsp;{% endif -%}
+                                {{- item.saleItem.designation -}}
+                            </td>
+                            <td class="text-right">
+                                {% set product = item.saleItem|subject_get(false) %}
+                                {% if product is not null %}{{ product|cms_tags({'text': false, 'badge': false}) }}{% endif %}
+                            </td>
+                            <td>{{ item.saleItem.reference }}</td>
+                            <td>
+                                {% for assignment in item.saleItem.stockAssignments %}
+                                    {{ assignment.stockUnit.geocodes|join(' ')|raw }}
+                                {% endfor %}
+                            </td>
+                            <td class="text-right">{{ item.quantity|format_number }}</td>{# TODO Packing format #}
+                            <td class="text-right"><span class="input">&nbsp;</span></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+{# --- HEADER --- #}
+<header>
+    <h1>
+        {{ 'order.label.singular'|trans({}, 'EkynaCommerce') }} <strong>{{ subject.sale.number }}</strong>
+        <small>
+            {{- 'shipment.label.singular'|trans({}, 'EkynaCommerce') }} <strong>{{ subject.number }}</strong>
+            {% if subject.partial %}&nbsp;<em>({{ 'status.partial'|trans({}, 'EkynaCommerce') }})</em>{% endif %}
+        </small>
+    </h1>
+    <div>
+        <p>
+            {% if subject.sale.company is not empty %}<strong>{{ subject.sale.company }}</strong>{% endif %}
+            {{ subject.sale|identity }}
+        </p>
+        <div class="tags">
+            {{- subject.sale|sale_flags -}}
+            {{- subject.sale.allTags|cms_tags({'text': false}) -}}
         </div>
     </div>
-    {% endfor %}
+</header>
+
 </body>
 </html>
 {% endapply %}

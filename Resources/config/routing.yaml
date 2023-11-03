@@ -9,3 +9,8 @@ ekyna_commerce_admin:
 
 ekyna_commerce_front:
     resource: 'routing/front.yaml'
+
+when@dev:
+    ekyna_commerce_dev:
+        resource: 'routing/dev.yaml'
+        prefix: /dev

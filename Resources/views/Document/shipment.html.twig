@@ -4,17 +4,20 @@
 {% import '@EkynaCommerce/Document/macros.html.twig' as macro -%}
 
 
-{# --- TITLE --- #}
-{% block doc_title_content -%}
-{% apply spaceless %}
-    <h1>
-        {% if subject.return -%}
-            {{- 'document.type.return_bill'|trans({}, 'EkynaCommerce') }}
-        {%- else -%}
-            {{- 'document.type.shipment_bill'|trans({}, 'EkynaCommerce') }}
-        {%- endif %}
-        {{ subject.number -}}
-    </h1>
+{% block title %}
+<h1>
+    {% if subject.return -%}
+        {{- 'document.type.return_bill'|trans({}, 'EkynaCommerce') }}
+    {%- else -%}
+        {{- 'document.type.shipment_bill'|trans({}, 'EkynaCommerce') }}
+    {%- endif %}
+    {{ subject.number -}}
+</h1>
+{% endblock title %}
+
+
+{% block mentions %}
+<div class="bloc">
     <p>
         <span class="text-alt">{{ 'field.date'|trans({}, 'EkynaUi') }}</span>
         {{ subject.createdAt|format_datetime('long', 'none', locale=subject.locale) }}.
@@ -33,42 +36,27 @@
     {% if subject.sale.documentComment is not empty -%}
         <p>{{ subject.sale.documentComment|nl2br }}</p>
     {%- endif %}
-{% endapply %}
-{%- endblock doc_title_content %}
+</div>
+{% endblock mentions %}
 
 
-{# --- ADDRESSES --- #}
-{% block doc_addresses -%}
-{% apply spaceless %}
-    <table class="bloc table addresses">
-        <thead>
-        <tr>
-            <th>{{ 'shipment.field.sender_address'|trans({}, 'EkynaCommerce') }}</th>
-            <th class="blank">&nbsp;</th>
-            <th>{{ 'shipment.field.receiver_address'|trans({}, 'EkynaCommerce') }}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td class="address">
-                {{- subject|shipment_sender_address|address -}}
-            </td>
-            <td>&nbsp;</td>
-            <td class="address">
-                {{- subject|shipment_receiver_address|address -}}
-            </td>
-        </tr>
-        </tbody>
-    </table>
-{% endapply %}
-{%- endblock doc_addresses %}
+{% block addresses %}
+<div class="bloc addresses">
+    <div>
+        <h2>{{ 'shipment.field.sender_address'|trans({}, 'EkynaCommerce') }}</h2>
+        <p>{{ subject|shipment_sender_address|address }}</p>
+    </div>
+    <div>
+        <h2>{{ 'shipment.field.receiver_address'|trans({}, 'EkynaCommerce') }}</h2>
+        <p>{{ subject|shipment_receiver_address|address }}</p>
+    </div>
+</div>
+{% endblock addresses %}
 
 
-{# --- LINES --- #}
-{% block doc_lines %}
-{% apply spaceless %}
-    <table class="bloc table details">
-        {% block doc_lines_header %}
+{% block lines %}
+<table class="bloc table details">
+    {% block lines_header %}
         <thead>
         <tr>
             <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
@@ -76,26 +64,12 @@
             <th class="text-right">{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
         </tr>
         </thead>
-        {% endblock doc_lines_header %}
+    {% endblock lines_header %}
 
-        {% set pages = subject|shipment_pages(type) %}
-
-        <tbody class="stripped">
-        {% for page in pages -%}
-
-        {# Page break#}
-        {% if loop.index0 > 0 -%}
-        </tbody>
-    </table>
-    {{ block('doc_footer') }}
-    {{ '</div><div class="wrapper">' }}
-    {{ block('doc_title') }}
-    <table class="bloc table details">
-        {{ block('doc_lines_header') }}
-        <tbody class="stripped">
-        {%- endif %}
-
-        {% for row in page -%}
+    {% set groups = subject|shipment_lines(type) %}
+    {% for group in groups %}
+        <tbody class="group">
+        {% for row in group %}
             <tr{% if row.virtual %} class="virtual"{% endif %}{% if row.private %} style="color:#666"{% endif %}>
                 <td class="designation" style="padding-left:{{ 8 + (16 * row.level) }}px">
                     {%- if design.addLinks and row.url is not empty -%}
@@ -113,75 +87,63 @@
                     {%- endif -%}
                 </td>
             </tr>
-        {%- endfor %}
-
-        {%- endfor %}
+        {% endfor %}
         </tbody>
-    </table>
+    {% endfor %}
+</table>
 
 {% if type == constant('Ekyna\\Component\\Commerce\\Document\\Model\\DocumentTypes::TYPE_SHIPMENT_BILL') and not subject.return %}
-    {% set remaining = subject|shipment_remaining_pages %}
+    {% set remaining = subject|shipment_remaining_lines %}
     {% if remaining is not empty %}
-    <hr>
-    <p>
-    {%- if remaining_date and (remaining.eda is not null) -%}
-        {{ 'document.mention.remaining_with_date'|trans({
-            '%date%': remaining.eda|format_datetime('long', 'none', locale=subject.locale)
-        }, 'EkynaCommerce') }}
-    {%- else -%}
-        {{ 'document.mention.remaining_unknown'|trans({}, 'EkynaCommerce') }}
-    {%- endif -%}
-    </p>
-    <table class="bloc table details">
-        {{ block('doc_lines_header') }}
-        <tbody class="stripped">
-        {% for page in remaining.pages -%}
-
-        {# Page break#}
-        {% if loop.index0 > 0 -%}
-        </tbody>
-    </table>
-    {{ block('doc_footer') }}
-    {{ '</div><div class="wrapper">' }}
-    {{ block('doc_title') }}
-    <table class="bloc table details">
-        {{ block('doc_lines_header') }}
-        <tbody class="stripped">
-        {%- endif %}
-
-        {% for row in page -%}
-        <tr{% if row.virtual %} class="virtual"{% endif %}{% if row.private %} style="color:#666"{% endif %}>
-            <td class="designation" style="padding-left:{{ 8 + (16 * row.level) }}px">
-                {%- if design.addLinks and row.url is not empty -%}
-                    <a href="{{ row.url }}" title="{{ row.designation }}">{{ row.designation }}</a>
+        <div class="bloc">
+            <p>
+                {%- if remaining.eda is not null -%}
+                    {{ 'document.mention.remaining_with_date'|trans({
+                        '%date%': remaining.eda|format_datetime('long', 'none', locale=subject.locale)
+                    }, 'EkynaCommerce') }}
                 {%- else -%}
-                    <span title="{{ row.designation }}">{{ row.designation -}}</span>
+                    {{ 'document.mention.remaining_unknown'|trans({}, 'EkynaCommerce') }}
                 {%- endif -%}
-            </td>
-            <td>{{ row.reference }}</td>
-            <td class="text-right">
-                {%- if not row.virtual -%}
-                    {{ row.quantity|format_number }}{# TODO Packaging format #}
-                {%- else -%}
-                    &nbsp;
-                {%- endif -%}
-            </td>
-        </tr>
-        {%- endfor %}
-
-        {%- endfor %}
-        </tbody>
-    </table>
+            </p>
+            <table class="table details">
+                {{ block('lines_header') }}
+                {% for group in remaining.groups -%}
+                    <tbody class="group">
+                    {% for row in group -%}
+                        <tr{% if row.virtual %} class="virtual"{% endif %}{% if row.private %} style="color:#666"{% endif %}>
+                            <td class="designation" style="padding-left:{{ 8 + (16 * row.level) }}px">
+                                {%- if design.addLinks and row.url is not empty -%}
+                                    <a href="{{ row.url }}" title="{{ row.designation }}">{{ row.designation }}</a>
+                                {%- else -%}
+                                    <span title="{{ row.designation }}">{{ row.designation -}}</span>
+                                {%- endif -%}
+                            </td>
+                            <td>{{ row.reference }}</td>
+                            <td class="text-right">
+                                {%- if not row.virtual -%}
+                                    {{ row.quantity|format_number }}{# TODO Packaging format #}
+                                {%- else -%}
+                                    &nbsp;
+                                {%- endif -%}
+                            </td>
+                        </tr>
+                    {%- endfor %}
+                    </tbody>
+                {%- endfor %}
+            </table>
+        </div>
     {% endif %}
 {% endif %}
-{% endapply %}
-{% endblock doc_lines %}
+{% endblock lines %}
 
-{# --- MISC --- #}
-{% block doc_misc -%}
-    <div class="unbreakable">
-        {% for mention in subject|shipment_mentions -%}
+
+{% block misc %}
+{% set mentions = subject|shipment_mentions %}
+{% if mentions is not empty %}
+    <div class="bloc avoid-break">
+        {% for mention in mentions -%}
             {{ mention|raw }}
         {%- endfor %}
     </div>
-{%- endblock doc_misc %}
+{% endif %}
+{% endblock misc %}

@@ -6,7 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentHelper;
-use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
+use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentLinesHelper;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -44,18 +44,16 @@ class DocumentExtension extends AbstractExtension
                 [DocumentHelper::class, 'getShipmentMentions']
             ),
             new TwigFilter(
-                'document_pages',
-                [DocumentPageBuilder::class, 'buildDocumentPages']
+                'document_lines',
+                [DocumentLinesHelper::class, 'buildDocumentLines']
             ),
             new TwigFilter(
-                'shipment_pages',
-                [DocumentPageBuilder::class, 'buildShipmentPages'],
-                ['is_safe' => ['html']]
+                'shipment_lines',
+                [DocumentLinesHelper::class, 'buildShipmentLines']
             ),
             new TwigFilter(
-                'shipment_remaining_pages',
-                [DocumentPageBuilder::class, 'buildShipmentRemainingPages'],
-                ['is_safe' => ['html']]
+                'shipment_remaining_lines',
+                [DocumentLinesHelper::class, 'buildShipmentRemainingLines']
             ),
         ];
     }

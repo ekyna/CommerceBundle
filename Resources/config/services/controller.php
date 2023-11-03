@@ -91,14 +91,20 @@ return static function (ContainerConfigurator $container) {
         ->public();
 
     // Admin export supplier order item controller
-    $services->set('ekyna_commerce.controller.admin.export.supplier_order_item', Admin\Export\SupplierOrderItemController::class)
+    $services->set(
+        'ekyna_commerce.controller.admin.export.supplier_order_item',
+        Admin\Export\SupplierOrderItemController::class
+    )
         ->args([
             service('ekyna_commerce.exporter.supplier_order_item'),
             service('router'),
             service('ekyna_ui.helper.flash'),
             param('kernel.debug'),
         ])
-        ->alias(Admin\Export\SupplierOrderItemController::class, 'ekyna_commerce.controller.admin.export.supplier_order_item')
+        ->alias(
+            Admin\Export\SupplierOrderItemController::class,
+            'ekyna_commerce.controller.admin.export.supplier_order_item'
+        )
         ->public();
 
     // Admin export stat controller
@@ -138,7 +144,10 @@ return static function (ContainerConfigurator $container) {
         ->public();
 
     // Admin order document abstract controller
-    $services->set('ekyna_commerce.controller.admin.document.abstract', Admin\OrderList\AbstractDocumentController::class)
+    $services->set(
+        'ekyna_commerce.controller.admin.document.abstract',
+        Admin\OrderList\AbstractDocumentController::class
+    )
         ->abstract()
         ->args([
             service('ekyna_resource.helper'),
@@ -155,7 +164,10 @@ return static function (ContainerConfigurator $container) {
         ->public();
 
     // Admin order document shipment controller
-    $services->set('ekyna_commerce.controller.admin.document.shipment', Admin\OrderList\ShipmentDocumentController::class)
+    $services->set(
+        'ekyna_commerce.controller.admin.document.shipment',
+        Admin\OrderList\ShipmentDocumentController::class
+    )
         ->parent('ekyna_commerce.controller.admin.document.abstract')
         ->alias(Admin\OrderList\ShipmentDocumentController::class, 'ekyna_commerce.controller.admin.document.shipment')
         ->public();

@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Invoice;
 
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
+use Ekyna\Bundle\CommerceBundle\Service\Document\RendererInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleAttachmentInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
@@ -59,7 +60,7 @@ class InvoiceArchiver
         $path = $this
             ->rendererFactory
             ->createRenderer($invoice)
-            ->create();
+            ->create(RendererInterface::FORMAT_PDF);
 
         $title = sprintf(
             '[archived] %s %s',

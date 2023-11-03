@@ -1,115 +1,127 @@
 {% extends '@EkynaCommerce/Document/base.html.twig' %}
 
+
 {% import '@EkynaCommerce/Document/macros.html.twig' as macro -%}
+
 
 {% set currency = subject.currency.code %}
 
+
 {%- block company_address -%}
 <div class="address">
-{%- if subject.supplier.address is not null -%}
-    {{ subject.supplier.address|address }}
-{%- else -%}
-    {{ parent() }}
-{%- endif -%}
+    {%- if subject.supplier.address is not null -%}
+        {{ subject.supplier.address|address }}
+    {%- else -%}
+        {{ parent() }}
+    {%- endif -%}
 </div>
 {%- endblock company_address %}
 
-{# --- DOC TITLE --- #}
-{% block doc_title_content -%}
-    <h1>
-        <span class="text-alt">{{ t('supplier_order.label.singular', [], 'EkynaCommerce')|trans }}</span>
-        {{ subject.number }}
-    </h1>
+
+{% block title %}
+<h1>
+    <span class="text-alt">{{ t('supplier_order.label.singular', [], 'EkynaCommerce')|trans }}</span>
+    {{ subject.number }}
+</h1>
+{% endblock title %}
+
+
+{% block mentions %}
+<div class="bloc">
     <p>
         <span class="text-alt">{{ 'field.date'|trans({}, 'EkynaUi') }}</span>&nbsp;
         <strong>
-        {%- if subject.orderedAt is not null -%}
-            {{ subject.orderedAt|format_datetime('long', 'none', locale=subject.locale) }}
-        {%- else -%}
-            {{ subject.createdAt|format_datetime('long', 'none', locale=subject.locale) }}
-        {%- endif -%}
+            {%- if subject.orderedAt is not null -%}
+                {{ subject.orderedAt|format_datetime('long', 'none', locale=subject.locale) }}
+            {%- else -%}
+                {{ subject.createdAt|format_datetime('long', 'none', locale=subject.locale) }}
+            {%- endif -%}
         </strong>.
         {%- if subject.estimatedDateOfArrival is not null -%}
-        &nbsp;<span class="text-alt">{{ t('field.estimated_date_of_arrival', [], 'EkynaCommerce')|trans }}</span>&nbsp;
-        <strong>{{ subject.estimatedDateOfArrival|format_datetime('long', 'none', locale=subject.locale) }}</strong>.
+            &nbsp;<span class="text-alt">{{ t('field.estimated_date_of_arrival', [], 'EkynaCommerce')|trans }}</span>&nbsp;
+            <strong>{{ subject.estimatedDateOfArrival|format_datetime('long', 'none', locale=subject.locale) }}</strong>.
         {%- endif -%}
     </p>
-{%- endblock doc_title_content %}
+</div>
+{% endblock mentions %}
 
 
-{# --- ADDRESSES --- #}
-{%- block doc_customer -%}
-    <p>
-        {{- get_setting('general.site_name') }}<br>
-        {{- subject.supplier.customerCode -}}
-    </p>
-{%- endblock doc_customer -%}
+{% block addresses %}
+<div class="bloc addresses">
+    <div>
+        <h2>{{ 'customer.label.singular'|trans({}, 'EkynaCommerce') }}</h2>
+        <p>
+            {{- get_setting('general.site_name') }}<br>
+            {{- subject.supplier.customerCode -}}
+        </p>
+    </div>
+    <div>
+        <h2>{{ 'sale.field.invoice_address'|trans({}, 'EkynaCommerce') }}</h2>
+        <p>{{ macro.render_company(locale) }}</p>
+    </div>
+    <div>
+        <h2>{{ 'sale.field.delivery_address'|trans({}, 'EkynaCommerce') }}</h2>
+        <p>{{ macro.render_company(locale) }}</p>
+    </div>
+</div>
+{% endblock addresses %}
 
-{%- block doc_invoice_address -%}
-    {{ macro.render_company(locale) }}
-{%- endblock doc_invoice_address -%}
 
-{%- block doc_delivery_address -%}
-    {{ macro.render_company(locale) }}
-{%- endblock doc_delivery_address -%}
+{% block lines %}
+<table class="bloc table details">
+    <thead>
+    <tr>
+        <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+        <th class="text-right">{{ t('sale.field.net_unit', [], 'EkynaCommerce')|trans }}</th>
+        <th class="text-right">{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
+        <th class="text-right">{{ t('sale.field.net_total', [], 'EkynaCommerce')|trans }}</th>
+    </tr>
+    </thead>
 
-
-{# --- LINES --- #}
-{% block doc_lines %}
-    <table class="bloc table details">
-        <thead>
+    {# GOODS #}
+    <tbody class="stripped">
+    {% for item in subject.items %}
+        {% set line_total = item.netPrice * item.quantity %}
         <tr>
-            <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
-            <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
-            <th class="text-right">{{ t('sale.field.net_unit', [], 'EkynaCommerce')|trans }}</th>
-            <th class="text-right">{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
-            <th class="text-right">{{ t('sale.field.net_total', [], 'EkynaCommerce')|trans }}</th>
+            <td>{{ item.designation }}</td>
+            <td>{{ item.reference }}</td>
+            <td class="text-right">{{ item.netPrice|format_currency(currency, {'fraction_digit': 5}, subject.locale) }}</td>
+            <td class="text-right">{{ item.quantity|format_number(locale=subject.locale) }}</td>{# TODO Packing format #}
+            <td class="text-right">{{ (item.netPrice * item.quantity)|format_currency(currency, {}, subject.locale) }}</td>
         </tr>
-        </thead>
+    {% endfor %}
+    </tbody>
 
-        {# GOODS #}
-        <tbody class="stripped">
-        {% for item in subject.items %}
-            {% set line_total = item.netPrice * item.quantity %}
-            <tr>
-                <td>{{ item.designation }}</td>
-                <td>{{ item.reference }}</td>
-                <td class="text-right">{{ item.netPrice|format_currency(currency, {'fraction_digit': 5}, subject.locale) }}</td>
-                <td class="text-right">{{ item.quantity|format_number(locale=subject.locale) }}</td>{# TODO Packing format #}
-                <td class="text-right">{{ (item.netPrice * item.quantity)|format_currency(currency, {}, subject.locale) }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-
-        {# SHIPMENT #}
-        {% if 0 < subject.shippingCost %}
-            {% block spacer %}
+    {# SHIPMENT #}
+    {% if 0 < subject.shippingCost %}
+        {% block spacer %}
             <tbody class="spacer">
             <tr>
                 <td colspan="7">&nbsp;</td>
             </tr>
             </tbody>
-            {% endblock spacer %}
-            <tbody>
-                <tr>
-                    <td colspan="4">
-                        {{ t('supplier_order.field.shipping_cost', [], 'EkynaCommerce')|trans }}
-                    </td>
-                    <td class="text-right">{{ subject.shippingCost|format_currency(currency, {}, subject.locale) }}</td>
-                </tr>
-            </tbody>
-        {% endif %}
-
-        {# TOTALS #}
-        {{ block('spacer') }}
-        {% set tax = subject|supplier_order_tax %}
-        <tbody class="totals">
+        {% endblock spacer %}
+        <tbody>
         <tr>
-            <td colspan="2"{% if 0 < tax %} rowspan="3"{% endif %}>&nbsp;</td>
-            <th colspan="2" class="text-right">{{ t('sale.field.net_total', [], 'EkynaCommerce')|trans }}</th>
-            <td class="total final text-right">{{ (subject|supplier_order_items_total + subject.shippingCost)|format_currency(currency, {}, subject.locale) }}</td>
+            <td colspan="4">
+                {{ t('supplier_order.field.shipping_cost', [], 'EkynaCommerce')|trans }}
+            </td>
+            <td class="text-right">{{ subject.shippingCost|format_currency(currency, {}, subject.locale) }}</td>
         </tr>
-        {% if 0 < tax -%}
+        </tbody>
+    {% endif %}
+
+    {# TOTALS #}
+    {{ block('spacer') }}
+    {% set tax = subject|supplier_order_tax %}
+    <tbody class="totals">
+    <tr>
+        <td colspan="2"{% if 0 < tax %} rowspan="3"{% endif %}>&nbsp;</td>
+        <th colspan="2" class="text-right">{{ t('sale.field.net_total', [], 'EkynaCommerce')|trans }}</th>
+        <td class="total final text-right">{{ (subject|supplier_order_items_total + subject.shippingCost)|format_currency(currency, {}, subject.locale) }}</td>
+    </tr>
+    {% if 0 < tax -%}
         <tr>
             <th colspan="2" class="text-right">{{ t('sale.field.tax_total', [], 'EkynaCommerce')|trans }}</th>
             <td class="total final text-right">{{ tax|format_currency(currency, {}, subject.locale) }}</td>
@@ -118,7 +130,8 @@
             <th colspan="2" class="text-right">{{ t('sale.field.ati_total', [], 'EkynaCommerce')|trans }}</th>
             <td class="total final text-right">{{ subject|supplier_order_total|format_currency(currency, {}, subject.locale) }}</td>
         </tr>
-        {%- endif %}
-        </tbody>
-    </table>
-{% endblock doc_lines %}
+    {%- endif %}
+    </tbody>
+</table>
+{% endblock lines %}
+

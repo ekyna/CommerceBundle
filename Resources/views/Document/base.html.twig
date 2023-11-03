@@ -1,109 +1,113 @@
+{% apply spaceless %}
+
 {% import '@EkynaCommerce/Document/macros.html.twig' as macro -%}
 
 {% set design = subject|document_design(type|default(null)) %}
 {% set locale = design.locale %}
 
-
-{# --- PRE --- #}
-{% block doc_styles -%}
-<style type="text/css">
-{%- if design.primaryColor is not empty -%}
-h1, h2, .table thead th, .table tbody.totals th { color: {{ design.primaryColor }}; }
-{%- endif %}
-{% if design.secondaryColor is not empty -%}
-table.header, .footer, .table thead th, .table thead th:before, .table thead th:after, .table.details tr:last-child td { border-color: {{ design.secondaryColor }}; }
-{%- endif -%}
-</style>
-{%- endblock doc_styles %}
-
-
-{# --- PRE --- #}
-{% block doc_pre -%}
+{# Before #}
+{% block before %}
     {% do trans_set_locale(locale) %}
-{%- endblock doc_pre %}
+{% endblock before %}
 
+<!doctype html>
+<html lang="{{ locale|default('en') }}">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Commerce document</title>
+    <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/document.css')) }}" rel="stylesheet" type="text/css" />
 
-{# --- HEADER --- #}
-{% block doc_header -%}
-<header class="bloc">
-    <div class="logo">
-        {%- block logo -%}
-            {% if design.logoLink %}<a href="{{ absolute_url(design.logoLink) }}">{% endif %}
-            <img alt="{{ design.brandName }}" src="{{ absolute_url(design.logoPath) }}">
-            {% if design.logoLink %}</a>{% endif %}
-        {%- endblock logo -%}
-    </div>
-    {% block company_address -%}
-    <div class="address">
-    {%- if design.headerHtml is not empty -%}
-        {{ design.headerHtml|raw }}
-    {%- else -%}
-        {{ macro.render_company(locale) }}
-    {%- endif -%}
-    </div>
-    {%- endblock company_address %}
-</header>
-{%- endblock doc_header %}
+    {# --- STYLES --- #}
+    {% block style %}
+    <style>
+        {%- if design.primaryColor is not empty -%}
+        h1, h2, .table thead th, .table tbody.totals th { color: {{ design.primaryColor }}; }
+        {%- endif %}
+        {% if design.secondaryColor is not empty -%}
+        header, footer, .table thead th, .table thead th:before, .table thead th:after, .table.details tr:last-child td { border-color: {{ design.secondaryColor }}; }
+        {%- endif -%}
+    </style>
+    {% endblock %}
+</head>
+<body>
 
-
-{# --- TITLE --- #}
-{% block doc_title -%}
-<div class="bloc title">
-{% block doc_title_content %}<h1>Sale document</h1>{% endblock doc_title_content %}
-</div>
-{%- endblock doc_title %}
-
-
-{# --- ADDRESSES --- #}
-{% block doc_addresses -%}
-<table class="bloc table addresses">
+{# --- LAYOUT --- #}
+<table id="layout">
     <thead>
     <tr>
-        <th>{{ 'customer.label.singular'|trans({}, 'EkynaCommerce') }}</th>
-        <th class="blank">&nbsp;</th>
-        <th>{{ 'sale.field.invoice_address'|trans({}, 'EkynaCommerce') }}</th>
-        <th class="blank">&nbsp;</th>
-        <th>{{ 'sale.field.delivery_address'|trans({}, 'EkynaCommerce') }}</th>
+        <td>
+            <div class="header-space">&nbsp;</div>
+        </td>
     </tr>
     </thead>
+
     <tbody>
     <tr>
-        <td class="customer">
-        {%- block doc_customer %}{% endblock doc_customer -%}
-        </td>
-        <td>&nbsp;</td>
-        <td class="address">
-        {%- block doc_invoice_address %}{% endblock doc_invoice_address -%}
-        </td>
-        <td>&nbsp;</td>
-        <td class="address">
-        {%- block doc_delivery_address %}{% endblock doc_delivery_address -%}
+        <td>
+            <div class="content">
+                {% block content %}
+                    {% block mentions %}{% endblock mentions %}
+
+                    {% block addresses %}{% endblock addresses %}
+
+                    {% block lines %}{% endblock lines %}
+
+                    {% block misc %}{% endblock misc %}
+                {% endblock %}
+            </div>
         </td>
     </tr>
     </tbody>
+
+    <tfoot>
+    <tr>
+        <td>
+            <div class="footer-space">&nbsp;</div>
+        </td>
+    </tr>
+    </tfoot>
 </table>
-{%- endblock doc_addresses %}
 
+{# --- HEADER --- #}
+<header>
+{% block header %}
+    <div>
+        <div id="logo">
+            {%- block logo -%}
+                {% if design.logoLink %}<a href="{{ absolute_url(design.logoLink) }}">{% endif %}
+                <img alt="{{ design.brandName }}" src="{{ absolute_url(design.logoPath) }}">
+                {% if design.logoLink %}</a>{% endif %}
+            {%- endblock logo -%}
+            {% block title %}<h1>Sale document</h1>{% endblock title %}
+        </div>
 
-{# --- ITEMS --- #}
-{% block doc_lines %}{% endblock doc_lines %}
-
-
-{# --- MISC --- #}
-{% block doc_misc -%}{%- endblock doc_misc %}
-
+        {% block company_address -%}
+            <div class="address">
+                {%- if design.headerHtml is not empty -%}
+                    {{ design.headerHtml|raw }}
+                {%- else -%}
+                    {{ macro.render_company(locale) }}
+                {%- endif -%}
+            </div>
+        {%- endblock company_address %}
+    </div>
+{% endblock header %}
+</header>
 
 {# --- FOOTER --- #}
-{% block doc_footer -%}
-<div class="bloc footer">
-    {% block doc_footer_content -%}
-        {{ design.footerHtml|raw }}
-    {%- endblock doc_footer_content %}
-</div>
-{%- endblock doc_footer %}
+<footer>
+{% block footer %}
+    {{ design.footerHtml|raw }}
+{% endblock footer %}
+</footer>
 
+</body>
+</html>
 
-{# --- POST --- #}
-{% block doc_post -%}
+{# --- AFTER --- #}
+{% block after %}
     {% do trans_revert_locale() %}
-{%- endblock doc_post %}
+{% endblock after %}
+
+{% endapply %}

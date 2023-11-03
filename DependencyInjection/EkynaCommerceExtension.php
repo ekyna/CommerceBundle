@@ -152,14 +152,13 @@ class EkynaCommerceExtension extends Extension implements PrependExtensionInterf
             ], $config));
 
         $container
-            ->getDefinition('ekyna_commerce.builder.document_page')
+            ->getDefinition('ekyna_commerce.helper.document_lines')
             ->replaceArgument(2, $config);
 
         $container
             ->getDefinition('ekyna_commerce.factory.document_renderer')
             ->replaceArgument(2, [
-                'shipment_remaining_date' => $config['shipment_remaining_date'],
-                'debug'                   => '%kernel.debug%',
+                'debug' => '%kernel.debug%',
             ]);
     }
 

@@ -1,0 +1,15 @@
+ekyna_commerce_dev_document_invoice:
+    path: /document/invoice
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Dev\DocumentController::invoice
+
+ekyna_commerce_dev_document_shipment:
+    path: /document/shipment
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Dev\DocumentController::shipment
+
+ekyna_commerce_dev_document_shipment_form:
+    path: /document/shipment_form
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Dev\DocumentController::shipmentForm
+
+ekyna_commerce_dev_document_supplier_order:
+    path: /document/supplier_order
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Dev\DocumentController::supplierOrder

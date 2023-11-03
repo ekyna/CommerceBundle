@@ -1,12 +1,9 @@
-@font-size: 14px;
-@line-height: 18px;
+@font-size: 10px;
+@line-height: 12px;
 @text-color: #333333;
 @head-color: #999999;
 @border-color: #dddddd;
 @background-alt-color: #f2f2f2;
-@margin: 30px;
-@width: 972px; //@width: 1032px;
-@height: 1393px; //@height: 1459px;
 
 html,
 body {
@@ -18,35 +15,28 @@ body {
     color: @text-color;
 }
 
-.wrapper {
-    position: relative;
-    max-width: 1200px;
+#layout {
+    max-width: 800px;
     margin: auto;
 }
+
+@media print {
+    html,
+    body {
+        text-rendering: optimizeLegibility;
+    }
+
+    #layout {
+        width: 100%;
+        margin: 0;
+    }
+}
+
+// -------------------- TYPOGRAPHY --------------------
 
 a {
     color: @text-color;
     text-decoration: none;
-}
-
-h1 {
-    padding: 0;
-    margin: 0 0 20px 0;
-    font-variant: small-caps;
-    font-weight: normal;
-    color: @head-color;
-    font-size: @font-size * 2.2;
-    line-height: @font-size * 2.2;
-}
-
-h2 {
-    padding: 0;
-    margin: 0 0 16px 0;
-    font-variant: small-caps;
-    font-weight: normal;
-    color: @head-color;
-    font-size: @font-size * 1.8;
-    line-height: @font-size * 1.8;
 }
 
 .text-right {
@@ -57,107 +47,185 @@ h2 {
     color: @head-color;
 }
 
-table {
-    border-collapse: collapse;
-    border-spacing: 3px;
-    width: 100%;
+p {
+    margin: 0 0 10px 0;
 }
 
-.bloc {
-    margin-bottom: @margin;
-    width: 100%;
+.address > p {
+    margin: 0;
+}
 
-    &:last-child {
-        margin-bottom: 0;
-    }
+// -------------------- HEADER --------------------
+
+header, .header-space {
+    height: 115px;
+}
+
+.header-space {
+    padding-bottom: 10px;
 }
 
 header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    overflow: hidden;
+    border-bottom: 1px dotted @border-color;
 
-    > .logo {
-        min-width: 200px;
-        width: 25%;
-
-        > a {
-            display: block;
-        }
+    > div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 }
 
-.title {
+#logo {
+    a {
+        display: block;
+    }
+
+    img {
+        height: 70px;
+        width: auto;
+    }
 }
 
-.footer {
+h1 {
+    padding: 0;
+    margin: 10px 0 0;
+    font-variant: small-caps;
+    font-weight: normal;
+    color: @head-color;
+    font-size: @font-size * 2.2;
+    line-height: @font-size * 2.2;
+}
+
+// -------------------- FOOTER --------------------
+
+footer, .footer-space {
+    height: 50px;
+}
+
+.footer-space {
+    padding-top: 10px;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    overflow: hidden;
     border-top: 1px dotted @border-color;
-    margin-top: @margin;
     text-align: center;
+
+    > p:first-child {
+        margin-top: 10px;
+    }
+}
+
+// -------------------- CONTENT --------------------
+.content {
+
+}
+
+.content > hr {
+    display: none;
+}
+
+.avoid-break {
+    page-break-inside: avoid;
+}
+
+.bloc + .bloc {
+    margin-top: 20px;
+}
+
+.addresses {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    > div > p {
+        padding-right: 50px;
+    }
+}
+
+// Titles
+
+h2 {
+    padding: 0;
+    margin: 0 0 10px 0;
+    font-variant: small-caps;
+    font-weight: normal;
+    color: @head-color;
+    font-size: @font-size * 1.5;
+    line-height: @font-size * 1.5;
+}
+
+.addresses h2,
+.table > thead > tr > th {
+    text-transform: uppercase;
+    color: @head-color;
+    padding: 0 8px;
+    position: relative;
+    text-align: left;
+    font-size: @font-size - 1;
+    font-weight: bold;
+    line-height: 18px !important;
+    border-bottom: 1px solid @border-color;
+
+    &:before {
+        position: absolute;
+        display: block;
+        bottom: 0;
+        left: 0;
+        height: 7px;
+        width: 1px;
+        border-left: 1px solid @border-color;
+        content: "";
+    }
+
+    &.blank {
+        border-bottom: 0;
+    }
+}
+
+.addresses h2:after {
+    position: absolute;
+    display: block;
+    bottom: 0;
+    right: 0;
+    height: 7px;
+    width: 1px;
+    border-right: 1px solid @border-color;
+    content: "";
+}
+
+.table > thead > tr > th:last-child:after {
+    position: absolute;
+    display: block;
+    bottom: 0;
+    right: 0;
+    height: 7px;
+    width: 1px;
+    border-right: 1px solid @border-color;
+    content: "";
 }
 
 .table {
+    border-collapse: collapse;
     width: 100%;
 
-    thead {
-        th {
-            text-transform: uppercase;
-            color: @head-color;
-            padding: 0 8px;
-            position: relative;
-            text-align: left;
-            font-size: @font-size - 1;
-            line-height: 21px !important;
-            border-bottom: 1px solid @border-color;
+    > tbody {
+        page-break-inside: avoid;
 
-            &:before {
-                position: absolute;
-                display: block;
-                bottom: 0;
-                left: 0;
-                height: 7px;
-                width: 1px;
-                border-left: 1px solid @border-color;
-                content: "";
-            }
-
-            &:last-child:after {
-                position: absolute;
-                display: block;
-                bottom: 0;
-                right: 0;
-                height: 7px;
-                width: 1px;
-                border-right: 1px solid @border-color;
-                content: "";
-            }
-
-            &.blank {
-                border-bottom: 0;
-            }
-        }
-    }
-
-    tbody {
-        td {
-            padding: 5px 8px;
-            line-height: 18px;
+        th, td {
+            padding: 4px 4px;
             vertical-align: top;
-
-            &.address {
-                padding-top: 10px;
-
-                hr {
-                    border: none;
-                    border-top: 1px dotted @border-color;
-                    padding:0;
-                    margin: 5px 0;
-                }
-            }
         }
 
         &.spacer {
-            td, th {
+            th, td {
                 font-size: 50%;
                 line-height: 50%;
             }
@@ -192,6 +260,10 @@ header {
     }
 
     &.details {
+        > tbody.group:nth-child(even) > tr > td {
+            background: @background-alt-color;
+        }
+
         tr {
             > td {
                 &.designation {
@@ -205,7 +277,6 @@ header {
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
-                    line-height: 16px;
                 }
 
                 > a {
@@ -254,46 +325,5 @@ header {
                 font-weight: bold;
             }
         }
-    }
-}
-
-@media print {
-    html,
-    body {
-        margin: 0;
-        padding: 0;
-        text-rendering: optimizeLegibility;
-    }
-
-    .page-break {
-        margin: 0;
-        padding: 0;
-        border: none;
-        page-break-after: always;
-    }
-
-    .wrapper {
-        page-break-after: always;
-        box-sizing: border-box;
-        width: @width;
-        height: @height;
-        //overflow: hidden;
-        //background: mistyrose;
-    }
-
-    .footer {
-        position: absolute;
-        margin: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-    }
-
-    .unbreakable {
-        page-break-inside: avoid;
-    }
-
-    body > hr, .wrapper > hr {
-        display: none;
     }
 }

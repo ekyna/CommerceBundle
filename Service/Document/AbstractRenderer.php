@@ -6,7 +6,6 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use DateTimeInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Resource\Exception\PdfException;
 use Ekyna\Component\Resource\Helper\PdfGenerator;
 use Ekyna\Component\Resource\Model\TimestampableInterface;
@@ -17,8 +16,6 @@ use Twig\Environment;
 
 use function array_replace;
 use function file_put_contents;
-use function is_null;
-use function reset;
 use function sprintf;
 use function sys_get_temp_dir;
 use function uniqid;
@@ -33,32 +30,15 @@ abstract class AbstractRenderer implements RendererInterface
     protected readonly Environment  $twig;
     protected readonly PdfGenerator $pdfGenerator;
     protected readonly array        $config;
-    protected array                 $subjects;
+    protected object                $subject;
 
-
-    /**
-     * @param object|array<object> $subjects
-     */
-    public function __construct(object|array $subjects)
-    {
-        $this->subjects = [];
-
-        if (is_array($subjects)) {
-            foreach ($subjects as $subject) {
-                $this->addSubject($subject);
-            }
-        } else {
-            $this->addSubject($subjects);
-        }
-    }
-
-    private function addSubject(object $subject): void
+    public function __construct(object $subject)
     {
         if (!$this->supports($subject)) {
             throw new InvalidArgumentException('Unsupported subject.');
         }
 
-        $this->subjects[] = $subject;
+        $this->subject = $subject;
     }
 
     public function setTwig(Environment $twig): void
@@ -76,17 +56,13 @@ abstract class AbstractRenderer implements RendererInterface
         $this->config = $config;
     }
 
-    public function create(string $format = RendererInterface::FORMAT_PDF): string
+    public function create(string $format): string
     {
         $this->validateFormat($format);
 
-        $content = $this->getContent($format);
+        $content = $this->render($format);
 
         $path = sys_get_temp_dir() . '/' . uniqid() . '.' . $format;
-
-        if ($format === RendererInterface::FORMAT_PDF) {
-            $content = $this->pdfGenerator->generateFromHtml($content);
-        }
 
         if (!file_put_contents($path, $content)) {
             throw new PdfException("Failed to write content into file '$path'.");
@@ -165,38 +141,20 @@ abstract class AbstractRenderer implements RendererInterface
      */
     protected function getContent(string $format): string
     {
-        return $this->twig->render('@EkynaCommerce/Document/render.html.twig', array_replace([
-            'debug'    => $this->config['debug'],
-            'format'   => $format,
-            'subjects' => $this->subjects,
-            'template' => $this->getTemplate(),
-        ], $this->getParameters()));
+        return $this->twig->render(
+            $this->getTemplate(),
+            array_replace([
+                'debug'   => $this->config['debug'],
+                'format'  => $format,
+                'subject' => $this->subject,
+            ], $this->getParameters())
+        );
     }
 
     public function getLastModified(): ?DateTimeInterface
     {
-        if (empty($this->subjects)) {
-            throw new LogicException('Call addSubject() first.');
-        }
-
-        $subject = null;
-
-        if (1 === count($this->subjects)) {
-            $subject = reset($this->subjects);
-        } else {
-            foreach ($this->subjects as $s) {
-                if (!$s instanceof TimestampableInterface) {
-                    continue;
-                }
-
-                if (is_null($subject) || ($subject->getUpdatedAt() < $s->getUpdatedAt())) {
-                    $subject = $s;
-                }
-            }
-        }
-
-        if ($subject instanceof TimestampableInterface) {
-            return $subject->getUpdatedAt();
+        if ($this->subject instanceof TimestampableInterface) {
+            return $this->subject->getUpdatedAt();
         }
 
         return null;

@@ -4,27 +4,37 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Ekyna\Bundle\CommerceBundle\Controller\Dev\DocumentController;
 use Ekyna\Bundle\CommerceBundle\DataFixtures\CommerceProcessor;
 use Ekyna\Bundle\CommerceBundle\DataFixtures\ORM\CommerceProvider;
 
 return static function (ContainerConfigurator $container) {
-    $container
-        ->services()
+    $services = $container->services();
 
-        // Commerce fixtures processor
+    // Commerce fixtures processor
+    $services
         ->set('ekyna_commerce.processor.data_fixtures', CommerceProcessor::class)
-            ->tag('fidry_alice_data_fixtures.processor')
+        ->tag('fidry_alice_data_fixtures.processor');
 
-        // Commerce fixtures provider
+    // Commerce fixtures provider
+    $services
         ->set('ekyna_commerce.provider.data_fixtures', CommerceProvider::class)
-            ->args([
-                service('ekyna_commerce.repository.country'),
-                service('ekyna_commerce.repository.currency'),
-                service('ekyna_commerce.repository.tax_group'),
-                service('ekyna_commerce.repository.customer_group'),
-                service('ekyna_commerce.repository.warehouse'),
-                service('ekyna_resource.factory.factory'),
-            ])
-            ->tag('nelmio_alice.faker.provider')
-    ;
+        ->args([
+            service('ekyna_commerce.repository.country'),
+            service('ekyna_commerce.repository.currency'),
+            service('ekyna_commerce.repository.tax_group'),
+            service('ekyna_commerce.repository.customer_group'),
+            service('ekyna_commerce.repository.warehouse'),
+            service('ekyna_resource.factory.factory'),
+        ])
+        ->tag('nelmio_alice.faker.provider');
+
+    // Dev document controller
+    $services
+        ->set(DocumentController::class)
+        ->public()
+        ->args([
+            service('ekyna_resource.repository.factory'),
+            service('twig'),
+        ]);
 };

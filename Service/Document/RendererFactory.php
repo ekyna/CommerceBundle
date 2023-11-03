@@ -32,38 +32,28 @@ class RendererFactory
         $this->pdfGenerator = $pdfGenerator;
 
         $this->config = array_replace([
-            'shipment_remaining_date' => true,
-            'debug'                   => false,
+            'debug' => false,
         ], $config);
     }
 
     /**
      * Returns a new renderer.
      *
-     * @param object|array $subjects The subjects
-     * @param string|null  $type     The document type
+     * @param object      $subject The subjects
+     * @param string|null $type    The document type
      *
      * @return RendererInterface
      */
-    public function createRenderer(object|array $subjects, string $type = null): RendererInterface
+    public function createRenderer(object $subject, string $type = null): RendererInterface
     {
-        if (is_object($subjects)) {
-            $subject = $subjects;
-            $subjects = [$subjects];
-        } elseif (is_array($subjects)) {
-            $subject = reset($subjects);
-        } else {
-            throw new InvalidArgumentException('Unexpected subjects.');
-        }
-
         if ($subject instanceof SupplierOrderInterface) {
-            $renderer = new SupplierOrderRenderer($subjects);
+            $renderer = new SupplierOrderRenderer($subject);
         } elseif ($subject instanceof ShipmentInterface) {
-            $renderer = new ShipmentRenderer($subjects, $type);
+            $renderer = new ShipmentRenderer($subject, $type);
         } elseif ($subject instanceof InvoiceInterface) {
-            $renderer = new InvoiceRenderer($subjects);
+            $renderer = new InvoiceRenderer($subject);
         } elseif ($subject instanceof DocumentInterface) {
-            $renderer = new DocumentRenderer($subjects);
+            $renderer = new DocumentRenderer($subject);
         } else {
             throw new InvalidArgumentException('Unsupported subject.');
         }

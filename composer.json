@@ -30,7 +30,7 @@
         "florianv/swap-bundle": "^5.2",
         "tecnickcom/tc-lib-barcode": "^1.17",
         "tecnickcom/tcpdf": "^6.6",
-        "setasign/fpdi": "^2.3"
+        "tomsgu/pdf-merger": "^0.4"
     },
     "suggest" : {
         "symfony/messenger": "To make this bundle send messages about order state change, customer registration, etc",

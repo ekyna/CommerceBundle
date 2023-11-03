@@ -1,22 +1,25 @@
-{%- extends '@EkynaCommerce/Document/base.html.twig' -%}
+{% extends '@EkynaCommerce/Document/base.html.twig' %}
 
 
-{%- import '@EkynaCommerce/Document/macros.html.twig' as macro -%}
+{% import '@EkynaCommerce/Document/macros.html.twig' as macro -%}
 
 
-{# --- PRE --- #}
-{% block doc_pre -%}
+{% block before %}
     {{ parent() }}
     {% do currency_configure(subject.sale) %}
-{%- endblock doc_pre %}
+{% endblock before %}
 
 
-{# --- TITLE --- #}
-{%- block doc_title_content -%}
-    <h1>
-        {{- ('document.type.' ~ subject.type)|trans({}, 'EkynaCommerce') }}
-        {{ subject.sale.number -}}
-    </h1>
+{% block title %}
+<h1>
+    {{- ('document.type.' ~ subject.type)|trans({}, 'EkynaCommerce') }}
+    {{ subject.sale.number -}}
+</h1>
+{% endblock title %}
+
+
+{% block mentions %}
+<div class="bloc">
     <p>
         <span class="text-alt">{{ 'field.date'|trans({}, 'EkynaUi') }}</span>
         {{- '&nbsp;' -}}
@@ -36,295 +39,287 @@
         {%- endif %}
     </p>
     {% if subject.comment is not empty -%}
-    <p>{{ subject.comment|nl2br }}</p>
+        <p>{{ subject.comment|nl2br }}</p>
     {%- endif %}
-{%- endblock doc_title_content -%}
+</div>
+{% endblock mentions %}
 
 
-{# --- ADDRESSES --- #}
-{%- block doc_customer -%}
-    <p>{{ subject.customer|customer }}</p>
-{%- endblock doc_customer -%}
-
-{%- block doc_invoice_address -%}
-    {{- subject.invoiceAddress|address -}}
-{%- endblock doc_invoice_address -%}
-
-{%- block doc_delivery_address -%}
-    {%- if subject.relayPoint is not empty -%}
-        {{ subject.relayPoint|address }}
-    {%- elseif subject.deliveryAddress is not empty -%}
-        {{ subject.deliveryAddress|address }}
-    {%- else -%}
-        {{ subject.invoiceAddress|address }}
-    {%- endif -%}
-{%- endblock doc_delivery_address -%}
+{% block addresses %}
+<div class="bloc addresses">
+    <div>
+        <h2>{{ 'customer.label.singular'|trans({}, 'EkynaCommerce') }}</h2>
+        <p>{{ subject.customer|customer }}</p>
+    </div>
+    <div>
+        <h2>{{ 'sale.field.invoice_address'|trans({}, 'EkynaCommerce') }}</h2>
+        <p>{{- subject.invoiceAddress|address -}}</p>
+    </div>
+    <div>
+        <h2>{{ 'sale.field.delivery_address'|trans({}, 'EkynaCommerce') }}</h2>
+        <p>
+            {%- if subject.relayPoint is not empty -%}
+                {{ subject.relayPoint|address }}
+            {%- elseif subject.deliveryAddress is not empty -%}
+                {{ subject.deliveryAddress|address }}
+            {%- else -%}
+                {{ subject.invoiceAddress|address }}
+            {%- endif -%}
+        </p>
+    </div>
+</div>
+{% endblock addresses %}
 
 
 {%- set currency = subject.currency -%}
 {%- set multiple_taxes = subject.hasMultipleTaxes() -%}
 {%- set line_discount = subject.hasLineDiscount() -%}
-
 {%- set columns_count = 5 -%}
 {%- if multiple_taxes %}{% set columns_count = columns_count + 1 %}{% endif -%}
 {%- if line_discount %}{% set columns_count = columns_count + 3 %}{% endif -%}
 
-{# --- LINES --- #}
-{%- block doc_lines -%}
+{% block lines %}
 <table class="bloc table details">
-    {% block doc_lines_header %}
     <thead>
     <tr>
         <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
         <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
         <th>{{ ('sale.field.' ~ (subject.ati ? 'ati' : 'net') ~ '_unit')|trans({}, 'EkynaCommerce') }}</th>
         {% if multiple_taxes -%}
-        <th>{{ 'sale.field.tax_rate'|trans({}, 'EkynaCommerce') }}</th>
+            <th>{{ 'sale.field.tax_rate'|trans({}, 'EkynaCommerce') }}</th>
         {%- endif %}
         <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
         {% if line_discount -%}
-        <th>{{ ('sale.field.' ~ (subject.ati ? 'ati' : 'net') ~ '_gross')|trans({}, 'EkynaCommerce') }}</th>
-        <th colspan="2">{{ 'sale.field.discount'|trans({}, 'EkynaCommerce') }}</th>
+            <th>{{ ('sale.field.' ~ (subject.ati ? 'ati' : 'net') ~ '_gross')|trans({}, 'EkynaCommerce') }}</th>
+            <th colspan="2">{{ 'sale.field.discount'|trans({}, 'EkynaCommerce') }}</th>
         {%- endif %}
         <th>{{ ('sale.field.' ~ (subject.ati ? 'ati' : 'net') ~ '_total')|trans({}, 'EkynaCommerce') }}</th>
     </tr>
     </thead>
-    {% endblock doc_lines_header %}
 
-    {# GOODS #}
-    {% set pages = subject|document_pages %}
     {% set linesCount = 0 %}
     {% set grossTotal, discountTotal, baseTotal = 0, 0, 0 %}
+
+    {# GOODS #}
+    {% set groups = subject|document_lines %}
+    {% for group in groups %}
+        <tbody class="group">
+        {% for row in group %}
+            {% set linesCount = linesCount + 1 %}
+            {% set grossTotal = grossTotal + row.gross ?? 0 %}
+            {% set discountTotal = discountTotal + row.discount ?? 0 %}
+            {% set baseTotal = baseTotal + row.base ?? 0 %}
+            <tr{% if row.virtual %} class="virtual"{% endif %}>
+                <td class="designation" style="padding-left:{{ 8 + (16 * row.level) }}px">
+                    {%- if design.addLinks and row.url is not empty -%}
+                        <a href="{{ row.url }}" title="{{ row.designation }}">{{ row.designation }}</a>
+                    {%- else -%}
+                        <span title="{{ row.designation }}">{{ row.designation -}}</span>
+                    {%- endif -%}
+                    {%- if row.description is not empty -%}
+                        <br><p class="description">{{ row.description|nl2br }}</p>
+                    {%- endif -%}
+                    {%- if row.included is not empty -%}
+                        <br><p class="description">{{ row.included|nl2br }}</p>
+                    {%- endif -%}
+                </td>
+                <td>{{ row.reference }}</td>
+                <td class="text-right">
+                    {%- if not row.virtual -%}
+                        {{ row.unit|format_currency(currency, {}, locale) }}
+                    {%- else -%}
+                        &nbsp;
+                    {%- endif -%}
+                </td>
+                {% if multiple_taxes %}
+                    <td class="text-right">
+                        {%- for rate in row.taxRates -%}
+                            {{- rate|format_number }}%
+                            {%- if not loop.last %}, {% endif -%}
+                        {%- else -%}
+                            &nbsp;
+                        {%- endfor -%}
+                    </td>
+                {% endif %}
+                <td class="text-right">
+                    {%- if not row.virtual -%}
+                        {{ row.quantity|format_number }}{# TODO Packing format #}
+                    {%- else -%}
+                        &nbsp;
+                    {%- endif -%}
+                </td>
+                {% if line_discount %}
+                    <td class="text-right">
+                        {%- if not row.virtual -%}
+                            {{ row.gross|format_currency(currency, {}, locale) }}
+                        {%- else -%}
+                            &nbsp;
+                        {%- endif -%}
+                    </td>
+                    {%- if 0 < row.discount -%}
+                        <td class="text-right">
+                            {%- for rate in row.discountRates -%}
+                                {{- rate|format_number }}%
+                                {%- if not loop.last %}, {% endif -%}
+                            {%- else -%}
+                                &nbsp;
+                            {%- endfor -%}
+                        </td>
+                        <td class="text-right">-{{- row.discount|format_currency(currency, {}, locale) -}}</td>
+                    {%- else -%}
+                        <td class="text-right">&nbsp;</td>
+                        <td class="text-right">&nbsp;</td>
+                    {%- endif -%}
+                {% endif %}
+                <td class="text-right">
+                    {%- if not row.virtual -%}
+                        {{ row.base|format_currency(currency, {}, locale) }}
+                    {%- else -%}
+                        &nbsp;
+                    {%- endif -%}
+                </td>
+            </tr>
+        {% endfor %}{# end row loop #}
+        </tbody>
+    {% endfor %}{# end group loop #}
+
+    <tbody class="spacer"><tr><td colspan="{{ columns_count }}">&nbsp;</td></tr></tbody>
+
     {% set discountLines = subject.linesByType('discount') -%}
     {% set shipmentLines = subject.linesByType('shipment') -%}
 
-    <tbody class="stripped">
-    {% for page in pages %}
-
-    {# Page break#}
-    {% if format == 'pdf' and loop.index0 > 0 %}
-    </tbody>
-</table>
-{{ block('doc_footer') }}
-{{ '</div><div class="wrapper">' }}
-{{ block('doc_title') }}
-<table class="bloc table details">
-    {{ block('doc_lines_header') }}
-    <tbody class="stripped">
-    {% endif %}
-
-    {% for row in page %}
-        {% set linesCount = linesCount + 1 %}
-        {% set grossTotal = grossTotal + row.gross ?? 0 %}
-        {% set discountTotal = discountTotal + row.discount ?? 0 %}
-        {% set baseTotal = baseTotal + row.base ?? 0 %}
-        <tr{% if row.virtual %} class="virtual"{% endif %}>
-            <td class="designation" style="padding-left:{{ 8 + (16 * row.level) }}px">
-                {%- if design.addLinks and row.url is not empty -%}
-                    <a href="{{ row.url }}" title="{{ row.designation }}">{{ row.designation }}</a>
-                {%- else -%}
-                    <span title="{{ row.designation }}">{{ row.designation -}}</span>
-                {%- endif -%}
-                {%- if row.description is not empty -%}
-                    <br><p class="description">{{ row.description|nl2br }}</p>
-                {%- endif -%}
-                {%- if row.included is not empty -%}
-                    <br><p class="description">{{ row.included|nl2br }}</p>
-                {%- endif -%}
-            </td>
-            <td>{{ row.reference }}</td>
-            <td class="text-right">
-                {%- if not row.virtual -%}
-                    {{ row.unit|format_currency(currency, {}, locale) }}
-                {%- else -%}
-                    &nbsp;
-                {%- endif -%}
-            </td>
-            {% if multiple_taxes %}
-            <td class="text-right">
-                {%- for rate in row.taxRates -%}
-                    {{- rate|format_number }}%
-                    {%- if not loop.last %}, {% endif -%}
-                {%- else -%}
-                    &nbsp;
-                {%- endfor -%}
-            </td>
-            {% endif %}
-            <td class="text-right">
-                {%- if not row.virtual -%}
-                    {{ row.quantity|format_number }}{# TODO Packing format #}
-                {%- else -%}
-                    &nbsp;
-                {%- endif -%}
-            </td>
-            {% if line_discount %}
-            <td class="text-right">
-                {%- if not row.virtual -%}
-                    {{ row.gross|format_currency(currency, {}, locale) }}
-                {%- else -%}
-                    &nbsp;
-                {%- endif -%}
-            </td>
-            {%- if 0 < row.discount -%}
-            <td class="text-right">
-                {%- for rate in row.discountRates -%}
-                    {{- rate|format_number }}%
-                    {%- if not loop.last %}, {% endif -%}
-                {%- else -%}
-                    &nbsp;
-                {%- endfor -%}
-            </td>
-            <td class="text-right">-{{- row.discount|format_currency(currency, {}, locale) -}}</td>
-            {%- else -%}
-            <td class="text-right">&nbsp;</td>
-            <td class="text-right">&nbsp;</td>
-            {%- endif -%}
-            {% endif %}
-            <td class="text-right">
-                {%- if not row.virtual -%}
-                    {{ row.base|format_currency(currency, {}, locale) }}
-                {%- else -%}
-                    &nbsp;
-                {%- endif -%}
-            </td>
-        </tr>
-    {% endfor %}
-    {% endfor %}
-    </tbody>
-
-
-    <tbody class="spacer"><tr><td colspan="{{ columns_count }}">&nbsp;</td></tr></tbody>
-
+    {# GROSS TOTALS #}
     {% if line_discount or (1 < linesCount and discountLines is not empty) -%}
-    <tbody class="totals">
+        <tbody class="totals">
         <tr>
             <td colspan="{{ columns_count - (line_discount ? 4 : 1) }}">{{ 'sale.field.gross_totals'|trans({}, 'EkynaCommerce') }}</td>
             {% if line_discount -%}
-            <td class="text-right">{{ grossTotal|format_currency(currency, {}, locale) }}</td>
-            <td class="text-right" colspan="2">
-                {%- if 0 < discountTotal %}-{% endif %}{{ discountTotal|format_currency(currency, {}, locale) -}}
-            </td>
+                <td class="text-right">{{ grossTotal|format_currency(currency, {}, locale) }}</td>
+                <td class="text-right" colspan="2">
+                    {%- if 0 < discountTotal %}-{% endif %}{{ discountTotal|format_currency(currency, {}, locale) -}}
+                </td>
             {%- endif %}
             <td class="text-right">{{ baseTotal|format_currency(currency, {}, locale) }}</td>
         </tr>
-    </tbody>
-    <tbody class="spacer"><tr><td colspan="{{ columns_count }}">&nbsp;</td></tr></tbody>
+        </tbody>
+        <tbody class="spacer"><tr><td colspan="{{ columns_count }}">&nbsp;</td></tr></tbody>
     {%- endif %}
-
 
     {# DISCOUNTS #}
     {% if discountLines is not empty -%}
-    <tbody class="totals">
-    {% for line in discountLines -%}
-        <tr>
-            <td colspan="{{ columns_count - 1 }}">
-                {%- if line.designation is empty -%}
-                    {{- 'adjustment.type.discount'|trans({}, 'EkynaCommerce') }}
-                {%- else -%}
-                    {{- line.designation -}}
-                {%- endif -%}
-            </td>
-            <td class="total text-right">-{{ line.base(subject.ati)|format_currency(currency, {}, locale) }}</td>
-        </tr>
-    {%- endfor %}
-    </tbody>
+        <tbody class="totals">
+        {% for line in discountLines -%}
+            <tr>
+                <td colspan="{{ columns_count - 1 }}">
+                    {%- if line.designation is empty -%}
+                        {{- 'adjustment.type.discount'|trans({}, 'EkynaCommerce') }}
+                    {%- else -%}
+                        {{- line.designation -}}
+                    {%- endif -%}
+                </td>
+                <td class="total text-right">-{{ line.base(subject.ati)|format_currency(currency, {}, locale) }}</td>
+            </tr>
+        {%- endfor %}
+        </tbody>
     {%- endif %}
-
 
     {# SHIPMENT #}
     {% if shipmentLines is not empty -%}
-    <tbody class="totals">
-    {% for line in shipmentLines -%}
-        <tr>
-            <td colspan="{{ columns_count - 2 }}">&nbsp;</td>
-            <th>{{ ('sale.field.shipment_' ~ (subject.ati ? 'ati' : 'net') ~ '_total')|trans({}, 'EkynaCommerce') }}</th>
-            <td class="total text-right">{{ line.base(subject.ati)|format_currency(currency, {}, locale) }}</td>
-        </tr>
-    {%- endfor %}
-    </tbody>
+        <tbody class="totals">
+        {% for line in shipmentLines -%}
+            <tr>
+                <td colspan="{{ columns_count - 2 }}">&nbsp;</td>
+                <th>{{ ('sale.field.shipment_' ~ (subject.ati ? 'ati' : 'net') ~ '_total')|trans({}, 'EkynaCommerce') }}</th>
+                <td class="total text-right">{{ line.base(subject.ati)|format_currency(currency, {}, locale) }}</td>
+            </tr>
+        {%- endfor %}
+        </tbody>
     {%- endif %}
-
 
     {# TOTALS #}
     <tbody class="totals">
-        <tr>
-            <td colspan="{{ columns_count - 2 }}" rowspan="{{ subject.ati ? 2 : 3 }}">&nbsp;</td>
-            {% if subject.ati -%}
+    <tr>
+        <td colspan="{{ columns_count - 2 }}" rowspan="{{ subject.ati ? 2 : 3 }}">&nbsp;</td>
+        {% if subject.ati -%}
             <th>{{ 'sale.field.ati_total'|trans({}, 'EkynaCommerce') }}</th>
             <td class="total final text-right">
                 {% block grand_total %}
-                {{- subject.grandTotal|format_currency(currency, {}, locale) -}}
-                {% if subject.currency != commerce_default_currency -%}
-                    <br><em>({{- subject.realGrandTotal|format_currency(commerce_default_currency, {}, locale) -}})</em>
-                {%- endif %}
+                    {{- subject.grandTotal|format_currency(currency, {}, locale) -}}
+                    {% if subject.currency != commerce_default_currency -%}
+                        <br><em>({{- subject.realGrandTotal|format_currency(commerce_default_currency, {}, locale) -}})</em>
+                    {%- endif %}
                 {% endblock grand_total %}
             </td>
-            {%- else -%}
+        {%- else -%}
             <th>{{ 'sale.field.net_total'|trans({}, 'EkynaCommerce') }}</th>
             <td class="total text-right">
                 {{- (subject.goodsBase - subject.discountBase + subject.shipmentBase)|format_currency(currency, {}, locale) -}}
             </td>
-            {%- endif %}
-        </tr>
-        <tr>
-            <th>{{ 'sale.field.tax_total'|trans({}, 'EkynaCommerce') }}</th>
-            <td class="total text-right">{{ subject.taxesTotal|format_currency(currency, {}, locale) }}</td>
-        </tr>
-        {% if not subject.ati -%}
+        {%- endif %}
+    </tr>
+    <tr>
+        <th>{{ 'sale.field.tax_total'|trans({}, 'EkynaCommerce') }}</th>
+        <td class="total text-right">{{ subject.taxesTotal|format_currency(currency, {}, locale) }}</td>
+    </tr>
+    {% if not subject.ati -%}
         <tr>
             <th>{{ 'sale.field.ati_total'|trans({}, 'EkynaCommerce') }}</th>
             <td class="total final text-right">
                 {{ block('grand_total') }}
             </td>
         </tr>
-        {%- endif %}
+    {%- endif %}
     </tbody>
 </table>
 
-{# Taxes details #}
+
+{# TAXES #}
 {% if subject.taxesDetails is not empty or subject.includes is not empty -%}
-<table class="bloc table taxes">
-    <thead>
+    <table class="bloc table taxes">
+        <thead>
         <tr>
             <th>{{ 'tax.label.singular'|trans({}, 'EkynaCommerce') }}</th>
             <th>{{ 'sale.field.tax_total'|trans({}, 'EkynaCommerce') }}</th>
         </tr>
-    </thead>
-    {% if subject.taxesDetails is not empty -%}
-    <tbody>
-        {% for details in subject.taxesDetails -%}
-        <tr>
-            <th>{{ details.name }}</th>
-            <td class="text-right">{{ details.amount|format_currency(currency, {}, locale) }}</td>
-        </tr>
-        {%- endfor %}
-    </tbody>
-    {%- endif %}
-    {% if subject.includedDetails is not empty -%}
-    <tbody>
-        {% for details in subject.includedDetails -%}
-        <tr>
-            <th>{{ details.name }}</th>
-            <td class="text-right">{{ details.amount|format_currency(currency, {}, locale) }}</td>
-        </tr>
-        {%- endfor %}
-    </tbody>
-    {%- endif %}
-</table>
+        </thead>
+        {% if subject.taxesDetails is not empty -%}
+            <tbody>
+            {% for details in subject.taxesDetails -%}
+                <tr>
+                    <th>{{ details.name }}</th>
+                    <td class="text-right">{{ details.amount|format_currency(currency, {}, locale) }}</td>
+                </tr>
+            {%- endfor %}
+            </tbody>
+        {%- endif %}
+        {% if subject.includedDetails is not empty -%}
+            <tbody>
+            {% for details in subject.includedDetails -%}
+                <tr>
+                    <th>{{ details.name }}</th>
+                    <td class="text-right">{{ details.amount|format_currency(currency, {}, locale) }}</td>
+                </tr>
+            {%- endfor %}
+            </tbody>
+        {%- endif %}
+    </table>
 {%- endif %}
-{%- endblock doc_lines %}
+{% endblock lines %}
 
-{# --- MISC --- #}
-{% block doc_misc -%}
-    <div class="unbreakable">
-        {% for mention in subject|document_mentions -%}
+
+{% block misc %}
+{% set mentions = subject|document_mentions %}
+{% if mentions is not empty %}
+    <div class="bloc avoid-break">
+        {% for mention in mentions -%}
             {{ mention|raw }}
         {%- endfor %}
     </div>
-{%- endblock doc_misc %}
+{% endif %}
+{% endblock misc %}
 
-{# --- POST --- #}
-{% block doc_post -%}
+
+{% block after %}
     {{ parent() }}
     {% do currency_configure() %}
-{%- endblock doc_post %}
+{% endblock after %}
