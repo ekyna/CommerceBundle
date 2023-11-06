@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 
-use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MoneyType;
-use Ekyna\Bundle\CommerceBundle\Form\Type\Stock\WarehouseChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type as Commerce;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
 use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceChoiceType;
 use Ekyna\Bundle\UiBundle\Form\Type\CollectionType;
@@ -121,59 +120,60 @@ class SupplierOrderSubmitType extends Form\AbstractType
                             'class' => 'order-carrier',
                         ],
                     ])
-                    ->add('warehouse', WarehouseChoiceType::class, [
+                    ->add('warehouse', Commerce\Stock\WarehouseChoiceType::class, [
                         'attr' => [
                             'class' => 'order-warehouse',
                         ],
                     ])
                     // Supplier fields
-                    ->add('shippingCost', MoneyType::class, [
+                    ->add('shippingCost', Commerce\Common\MoneyType::class, [
                         'label' => t('supplier_order.field.shipping_cost', [], 'EkynaCommerce'),
                         'base'  => $currency,
                     ])
-                    ->add('discountTotal', MoneyType::class, [
+                    ->add('discountTotal', Commerce\Common\MoneyType::class, [
                         'label' => t('supplier_order.field.discount_total', [], 'EkynaCommerce'),
                         'base'  => $currency,
                     ])
-                    ->add('taxTotal', MoneyType::class, [
+                    ->add('taxTotal', Commerce\Common\MoneyType::class, [
                         'label'    => t('supplier_order.field.tax_total', [], 'EkynaCommerce'),
                         'base'     => $currency,
                         'disabled' => true,
                     ])
-                    ->add('paymentTotal', MoneyType::class, [
+                    ->add('paymentTotal', Commerce\Common\MoneyType::class, [
                         'label'    => t('supplier_order.field.payment_total', [], 'EkynaCommerce'),
                         'base'     => $currency,
                         'disabled' => true,
                     ])
-                    ->add('paymentDate', Type\DateType::class, [
-                        'label'    => t('supplier_order.field.payment_date', [], 'EkynaCommerce'),
-                        'required' => false,
+                    ->add('paymentPaidTotal', Commerce\Common\MoneyType::class, [
+                        'label'    => t('supplier_order.field.payment_paid_total', [], 'EkynaCommerce'),
+                        'base'     => $currency,
+                        'disabled' => true,
                     ])
                     ->add('paymentDueDate', Type\DateType::class, [
                         'label'    => t('supplier_order.field.payment_due_date', [], 'EkynaCommerce'),
                         'required' => false,
                     ])
                     // Forwarder
-                    ->add('forwarderFee', MoneyType::class, [
+                    ->add('forwarderFee', Commerce\Common\MoneyType::class, [
                         'label'    => t('supplier_order.field.forwarder_fee', [], 'EkynaCommerce'),
                         'disabled' => !$hasCarrier,
                     ])
-                    ->add('customsTax', MoneyType::class, [
+                    ->add('customsTax', Commerce\Common\MoneyType::class, [
                         'label'    => t('supplier_order.field.customs_tax', [], 'EkynaCommerce'),
                         'disabled' => !$hasCarrier,
                     ])
-                    ->add('customsVat', MoneyType::class, [
+                    ->add('customsVat', Commerce\Common\MoneyType::class, [
                         'label'    => t('supplier_order.field.customs_vat', [], 'EkynaCommerce'),
                         'disabled' => !$hasCarrier,
                     ])
-                    ->add('forwarderTotal', MoneyType::class, [
+                    ->add('forwarderTotal', Commerce\Common\MoneyType::class, [
                         'label'    => t('supplier_order.field.forwarder_total', [], 'EkynaCommerce'),
                         'disabled' => true,
                     ])
-                    ->add('forwarderDate', Type\DateType::class, [
-                        'label'    => t('supplier_order.field.forwarder_date', [], 'EkynaCommerce'),
+                    ->add('forwarderPaidTotal', Commerce\Common\MoneyType::class, [
+                        'label'    => t('supplier_order.field.forwarder_paid_total', [], 'EkynaCommerce'),
+                        'disabled' => true,
                         'required' => false,
-                        'disabled' => !$hasCarrier,
                     ])
                     ->add('forwarderDueDate', Type\DateType::class, [
                         'label'    => t('supplier_order.field.forwarder_due_date', [], 'EkynaCommerce'),

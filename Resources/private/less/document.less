@@ -145,8 +145,20 @@ footer {
     justify-content: space-between;
     align-items: flex-start;
 
-    > div > p {
-        padding-right: 50px;
+    > div {
+        min-width: 36%;
+    }
+
+    &:has(> div:nth-child(3)) {
+        > div {
+            min-width: 28%;
+        }
+    }
+
+    &:has(> div:nth-child(4)) {
+        > div {
+            min-width: 20%;
+        }
     }
 }
 
