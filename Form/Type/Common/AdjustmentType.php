@@ -27,14 +27,26 @@ class AdjustmentType extends AbstractResourceType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        if (empty($designations = $options['designations'])) {
+            $builder
+                ->add('designation', Type\TextType::class, [
+                    'label'    => t('field.designation', [], 'EkynaUi'),
+                    'required' => false,
+                    'attr'     => [
+                        'placeholder' => t('field.designation', [], 'EkynaUi'),
+                    ],
+                ]);
+        } else {
+            $builder
+                ->add('designation', Type\ChoiceType::class, [
+                    'label'    => t('field.designation', [], 'EkynaUi'),
+                    'choices'  => $designations,
+                    'required' => true,
+                    'select2'  => false,
+                ]);
+        }
+
         $builder
-            ->add('designation', Type\TextType::class, [
-                'label'    => t('field.designation', [], 'EkynaUi'),
-                'required' => false,
-                'attr'     => [
-                    'placeholder' => t('field.designation', [], 'EkynaUi'),
-                ],
-            ])
             ->add('type', ConstantChoiceType::class, [
                 'label'             => t('field.type', [], 'EkynaUi'),
                 'class'             => AdjustmentTypes::class,
@@ -74,9 +86,11 @@ class AdjustmentType extends AbstractResourceType
 
         $resolver
             ->setDefaults([
-                'types' => [],
-                'modes' => [],
+                'designations' => [],
+                'types'        => [],
+                'modes'        => [],
             ])
+            ->setAllowedTypes('designations', 'array')
             ->setAllowedTypes('types', 'array')
             ->setAllowedTypes('modes', 'array');
     }

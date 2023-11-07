@@ -306,4 +306,16 @@ class StockSubjectFormBuilder
 
         return $this;
     }
+
+    public function addHsCodeField(array $options = []): StockSubjectFormBuilder
+    {
+        $options = array_replace([
+            'label'    => t('stock_subject.field.hs_code', [], 'EkynaCommerce'),
+            'required' => false,
+        ], $options);
+
+        $this->form->add('hsCode', SF\TextType::class, $options);
+
+        return $this;
+    }
 }

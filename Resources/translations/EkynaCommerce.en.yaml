@@ -1746,6 +1746,7 @@ stock_subject:
         package_width: Packed length
         package_height: Packed width
         package_depth: Packed height
+        hs_code: Harmonized System Code
     mode:
         disabled: Disabled
         manual: Manual

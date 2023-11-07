@@ -1785,6 +1785,7 @@ stock_subject:
         package_width: Longueur emballé
         package_height: Largeur emballé
         package_depth: Hauteur emballé
+        hs_code: Code Système Harmonisé
     mode:
         disabled: Désactivé
         manual: Manuel

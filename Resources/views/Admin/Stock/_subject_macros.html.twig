@@ -227,6 +227,16 @@
 {%- endmacro show_package_depth -%}
 
 
+{% macro show_hs_code(subject, options = {}) %}
+{% apply spaceless %}
+    {{ show_row(subject.hsCode, 'text', {
+        'label': t('stock_subject.field.hs_code', [], 'EkynaCommerce'),
+        'id': 'subject_hsCode'
+    }|merge(options)) }}
+{% endapply %}
+{% endmacro show_hs_code %}
+
+
 {% macro show_stock_view(subject, prefix) %}
 {% apply spaceless %}
     {% import _self as macros %}
@@ -381,6 +391,12 @@
         <div class="col-md-4">
             {{ macros.show_released_at(subject, {
                 'id': prefix ~'_releasedAt',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ macros.show_hs_code(subject, {
+                'id': prefix ~'_hsCode',
                 'label_col': 6
             }) }}
         </div>
