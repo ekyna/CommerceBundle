@@ -37,7 +37,7 @@ class TicketNormalizer extends BaseNormalizer
     {
         $data = parent::normalize($object, $format, $context);
 
-        if ($this->contextHasGroup(['Default', 'Ticket'], $context)) {
+        if (self::contextHasGroup(['Default', 'Ticket'], $context)) {
             $admin = $context['admin'] ?? false;
 
             $data = array_replace($data, [

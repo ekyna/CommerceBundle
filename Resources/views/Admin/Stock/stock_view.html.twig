@@ -1,0 +1,187 @@
+{% apply spaceless %}
+    {% set prefix = prefix|default('subject') %}
+    <div class="row">
+        <div class="col-md-4">
+            {{ show_row(subject.mode_badge, 'text', {
+                'label': t('field.mode', [], 'EkynaUi'),
+                'id': prefix ~ '_stockMode',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ show_row(subject.state_badge, 'text', {
+                'label': t('field.status', [], 'EkynaUi'),
+                'id': prefix ~ '_stockState',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{- show_row(subject.unit, 'text', {
+                'label': t('unit.label', [], 'EkynaCommerce'),
+                'id': prefix ~ '_unit',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{- show_row(subject.physical, 'text', {
+                'label': t('field.physical', [], 'EkynaCommerce'),
+                'id': prefix ~ '_physical',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ show_row(subject.quote_only, 'text', {
+                'label': t('stock_subject.field.quote_only', [], 'EkynaCommerce'),
+                'id': prefix ~ '_quoteOnly',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ show_row(subject.end_of_life, 'text', {
+                'label': t('stock_subject.field.end_of_life', [], 'EkynaCommerce'),
+                'id': prefix ~ '_endOfLife',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ show_row(subject.geocode, 'text', {
+                'label': t('field.geocode', [], 'EkynaCommerce'),
+                'id': prefix ~ '_geocode',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ show_row(subject.weight, 'text', {
+                'label': t('field.weight', [], 'EkynaUi'),
+                'id': prefix ~ '_weight',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ show_row(subject.package_weight, 'text', {
+                'label': t('stock_subject.field.package_weight', [], 'EkynaCommerce'),
+                'id': prefix ~ '_package_weight',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ show_row(subject.floor, 'text', {
+                'label': t('stock_subject.field.floor', [], 'EkynaCommerce'),
+                'id': prefix ~ '_stockFloor',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ show_row(subject.width, 'text', {
+                'label': t('field.width', [], 'EkynaUi'),
+                'id': prefix ~ '_width',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ show_row(subject.package_width, 'text', {
+                'label': t('stock_subject.field.package_width', [], 'EkynaCommerce'),
+                'id': prefix ~ '_package_width',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ show_row(subject.replenishment, 'text', {
+                'label': t('stock_subject.field.replenishment_time', [], 'EkynaCommerce'),
+                'id': prefix ~ '_replenishmentTime',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ show_row(subject.height, 'text', {
+                'label': t('field.height', [], 'EkynaUi'),
+                'id': prefix ~ '_height',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{- show_row(subject.package_height, 'text', {
+                'label': t('stock_subject.field.package_height', [], 'EkynaCommerce'),
+                'id': prefix ~ '_package_height',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ show_row(subject.moq, 'text', {
+                'label': t('stock_subject.field.minimum_order_quantity', [], 'EkynaCommerce'),
+                'id': prefix ~ '_minimumOrderQuantity',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{- show_row(subject.depth, 'text', {
+                'label': t('field.depth', [], 'EkynaUi'),
+                'id': prefix ~ '_depth',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{- show_row(subject.package_depth, 'text', {
+                'label': t('stock_subject.field.package_depth', [], 'EkynaCommerce'),
+                'id': prefix ~ '_package_depth',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ show_row(subject.in, 'text', {
+                'label': t('field.in_stock', [], 'EkynaCommerce'),
+                'id': prefix ~ '_inStock',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ show_row(subject.available, 'text', {
+                'label': t('field.available_stock', [], 'EkynaCommerce'),
+                'id': prefix ~ '_availableStock',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ show_row(subject.virtual, 'text', {
+                'label': t('field.virtual_stock', [], 'EkynaCommerce'),
+                'id': prefix ~ '_virtualStock',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ show_row(subject.eda, 'text', {
+                'label': t('field.replenishment_eda', [], 'EkynaCommerce'),
+                'id': prefix ~ '_estimatedDateOfArrival',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{- show_row(subject.released_at, 'text', {
+                'label': t('stock_subject.field.released_at', [], 'EkynaCommerce'),
+                'id': prefix ~ '_releasedAt',
+                'label_col': 6
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ show_row(subject.hs_code, 'text', {
+                'label': t('stock_subject.field.hs_code', [], 'EkynaCommerce'),
+                'id': prefix ~ '_hsCode',
+                'label_col': 6
+            }) }}
+        </div>
+    </div>
+{% endapply %}

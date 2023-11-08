@@ -24,6 +24,8 @@ class UnitType extends AbstractType
     {
         parent::build($view, $value, $options);
 
+        // TODO Use constant helper
+
         if (Units::isValid($value)) {
             $value = Units::getLabel($value);
         } else {

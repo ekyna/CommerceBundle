@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Service;
 
 use Ekyna\Bundle\CommerceBundle\Model;
+use Ekyna\Bundle\CommerceBundle\Model\Units;
 use Ekyna\Bundle\ResourceBundle\Helper\AbstractConstantsHelper;
 use Ekyna\Component\Commerce\Accounting\Model\AccountingInterface;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
@@ -785,6 +786,20 @@ class ConstantsHelper extends AbstractConstantsHelper
             : null;
 
         return trim(sprintf('%s %s %s', $label, $identity->getFirstName(), $identity->getLastName()));
+    }
+
+    /**
+     * Renders the unit.
+     */
+    public function renderUnit(string $unit): string
+    {
+        if (Units::isValid($unit)) {
+            $value = Units::getLabel($unit);
+        } else {
+            $value = t('value.undefined', [], 'EkynaUi');
+        }
+
+        return $value->trans($this->translator);
     }
 
     /**

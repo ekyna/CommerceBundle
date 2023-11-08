@@ -9,6 +9,7 @@ use Ekyna\Bundle\CommerceBundle\Action\Admin\StockUnit\CreateAdjustmentAction;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
+use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Group;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\StockUnitNormalizer as BaseNormalizer;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface;
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
@@ -22,13 +23,13 @@ use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
 class StockUnitNormalizer extends BaseNormalizer
 {
     protected ConstantsHelper $constantHelper;
-    protected ResourceHelper $resourceHelper;
+    protected ResourceHelper  $resourceHelper;
 
     public function __construct(
-        FormatterFactory $formatterFactory,
+        FormatterFactory           $formatterFactory,
         CurrencyConverterInterface $currencyConverter,
-        ConstantsHelper $constantHelper,
-        ResourceHelper $resourceHelper
+        ConstantsHelper            $constantHelper,
+        ResourceHelper             $resourceHelper
     ) {
         parent::__construct($formatterFactory, $currencyConverter);
 
@@ -45,7 +46,7 @@ class StockUnitNormalizer extends BaseNormalizer
     {
         $data = parent::normalize($object, $format, $context);
 
-        if ($this->contextHasGroup(['StockView', 'StockAssignment'], $context)) {
+        if (self::contextHasGroup([Group::STOCK_UNIT, Group::STOCK_ASSIGNMENT], $context)) {
             $translator = $this->constantHelper->getTranslator();
 
             if (null === $eda = $data['eda']) {
@@ -54,12 +55,13 @@ class StockUnitNormalizer extends BaseNormalizer
 
             $actions = [];
 
-            if ($this->contextHasGroup('StockView', $context)) {
+            if (self::contextHasGroup(Group::STOCK_UNIT, $context)) {
                 if (null !== $supplierOrderItem = $object->getSupplierOrderItem()) {
                     $supplierOrder = $supplierOrderItem->getOrder();
 
                     $actions[] = [
-                        'label' => sprintf('%s (%s)',
+                        'label' => sprintf(
+                            '%s (%s)',
                             $supplierOrder->getNumber(),
                             $this->constantHelper->renderSupplierOrderStateLabel($supplierOrder)
                         ),

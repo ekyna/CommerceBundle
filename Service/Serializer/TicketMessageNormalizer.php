@@ -28,7 +28,7 @@ class TicketMessageNormalizer extends BaseNormalizer
     {
         $data = parent::normalize($object, $format, $context);
 
-        if ($this->contextHasGroup(['Default', 'Ticket', 'Message'], $context)) {
+        if (self::contextHasGroup(['Default', 'Ticket', 'Message'], $context)) {
             $data = array_replace($data, [
                 'admin'      => null !== $object->getAdmin(),
                 'attachment' => $this->isGranted(Permission::CREATE, (new TicketAttachment())->setMessage($object)),

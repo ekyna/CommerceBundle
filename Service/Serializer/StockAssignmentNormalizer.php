@@ -8,6 +8,7 @@ use Ekyna\Bundle\AdminBundle\Action\ReadAction;
 use Ekyna\Bundle\CommerceBundle\Model\OrderStates;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
+use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Group;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\StockAssignmentNormalizer as BaseNormalizer;
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
@@ -20,12 +21,12 @@ use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
 class StockAssignmentNormalizer extends BaseNormalizer
 {
     protected ConstantsHelper $constantHelper;
-    protected ResourceHelper $resourceHelper;
+    protected ResourceHelper  $resourceHelper;
 
     public function __construct(
         FormatterFactory $formatterFactory,
-        ConstantsHelper $constantHelper,
-        ResourceHelper $resourceHelper
+        ConstantsHelper  $constantHelper,
+        ResourceHelper   $resourceHelper
     ) {
         $this->formatterFactory = $formatterFactory;
         $this->constantHelper = $constantHelper;
@@ -43,11 +44,12 @@ class StockAssignmentNormalizer extends BaseNormalizer
 
         $actions = [];
 
-        if ($this->contextHasGroup('StockView', $context)) {
+        if (self::contextHasGroup(Group::STOCK_UNIT, $context)) {
             $order = $object->getSaleItem()->getRootSale();
 
             $actions[] = [
-                'label' => sprintf('%s (%s)',
+                'label' => sprintf(
+                    '%s (%s)',
                     $order->getNumber(),
                     $this->constantHelper->renderOrderStateLabel($order)
                 ),

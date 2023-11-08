@@ -26,165 +26,181 @@ use Ekyna\Component\Commerce\Stock\Updater\StockSubjectUpdater;
 use Ekyna\Component\Commerce\Stock\Updater\StockUnitUpdater;
 
 return static function (ContainerConfigurator $container) {
-    $container
-        ->services()
+    $services = $container->services();
 
-        // Stock logger
+    // Stock logger
+    $services
         ->set('ekyna_commerce.logger.stock', StockLogger::class)
-            ->args([
-                service('logger'),
-            ])
-            ->tag('monolog.logger', ['channel' => 'stock'])
+        ->args([
+            service('logger'),
+        ])
+        ->tag('monolog.logger', ['channel' => 'stock']);
 
-        // Abstract stock unit listener
-        // TODO (previously ekyna_commerce.stock_unit.abstract_listener)
+    // Abstract stock unit listener
+    $services
         ->set('ekyna_commerce.listener.abstract_stock_unit', AbstractStockUnitListener::class)
-            ->abstract(true)
-            ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
-            ->call('setDispatcher', [service('ekyna_resource.event_dispatcher')])
-            ->call('setStateResolver', [service('ekyna_commerce.resolver.state.stock_unit')])
+        ->abstract()
+        ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
+        ->call('setDispatcher', [service('ekyna_resource.event_dispatcher')])
+        ->call('setStateResolver', [service('ekyna_commerce.resolver.state.stock_unit')]);
 
-        // Stock adjustment (resource) listener
+    // Stock adjustment (resource) listener
+    $services
         ->set('ekyna_commerce.listener.stock_adjustment', StockAdjustmentEventSubscriber::class)
-            ->args([
-                service('ekyna_resource.orm.persistence_helper'),
-                service('ekyna_commerce.updater.stock_unit'),
-            ])
-            ->tag('resource.event_subscriber')
+        ->args([
+            service('ekyna_resource.orm.persistence_helper'),
+            service('ekyna_commerce.updater.stock_unit'),
+        ])
+        ->tag('resource.event_subscriber');
 
-        // Stock unit cache
+    // Stock unit cache
+    $services
         ->set('ekyna_commerce.cache.stock_unit', StockUnitCache::class)
-            ->tag('resource.event_subscriber')
+        ->tag('resource.event_subscriber');
 
-        // Stock unit resolver
+    // Stock unit resolver
+    $services
         ->set('ekyna_commerce.resolver.stock_unit', StockUnitResolver::class)
-            ->args([
-                service('ekyna_commerce.helper.subject'),
-                service('ekyna_commerce.cache.stock_unit'),
-                service('ekyna_resource.repository.factory'),
-                service('ekyna_resource.factory.factory'),
-            ])
+        ->args([
+            service('ekyna_commerce.helper.subject'),
+            service('ekyna_commerce.cache.stock_unit'),
+            service('ekyna_resource.repository.factory'),
+            service('ekyna_resource.factory.factory'),
+        ]);
 
-        // Stock unit state resolver
-        ->set('ekyna_commerce.resolver.state.stock_unit', StockUnitStateResolver::class)
+    // Stock unit state resolver
+    $services
+        ->set('ekyna_commerce.resolver.state.stock_unit', StockUnitStateResolver::class);
 
-        // Stock unit manager
+    // Stock unit manager
+    $services
         ->set('ekyna_commerce.manager.stock_unit', StockUnitManager::class)
-            ->args([
-                service('ekyna_resource.orm.persistence_helper'),
-                service('ekyna_commerce.resolver.state.stock_unit'),
-                service('ekyna_commerce.cache.stock_unit'),
-            ])
+        ->args([
+            service('ekyna_resource.orm.persistence_helper'),
+            service('ekyna_commerce.resolver.state.stock_unit'),
+            service('ekyna_commerce.cache.stock_unit'),
+        ]);
 
-        // Stock unit updater
+    // Stock unit updater
+    $services
         ->set('ekyna_commerce.updater.stock_unit', StockUnitUpdater::class)
-            ->args([
-                service('ekyna_resource.orm.persistence_helper'),
-                service('ekyna_commerce.resolver.stock_unit'),
-                service('ekyna_commerce.manager.stock_unit'),
-                service('ekyna_commerce.handler.stock_overflow'),
-            ])
+        ->args([
+            service('ekyna_resource.orm.persistence_helper'),
+            service('ekyna_commerce.resolver.stock_unit'),
+            service('ekyna_commerce.manager.stock_unit'),
+            service('ekyna_commerce.handler.stock_overflow'),
+        ]);
 
-        // Stock assignment cache
-        ->set('ekyna_commerce.cache.stock_assignment', StockAssignmentCache::class)
+    // Stock assignment cache
+    $services
+        ->set('ekyna_commerce.cache.stock_assignment', StockAssignmentCache::class);
 
-        // Stock assignment manager
+    // Stock assignment manager
+    $services
         ->set('ekyna_commerce.manager.stock_assignment', StockAssignmentManager::class)
-            ->args([
-                service('ekyna_resource.orm.persistence_helper'),
-                service('ekyna_commerce.cache.stock_assignment'),
-                service('ekyna_commerce.helper.factory'),
-            ])
-            ->tag('resource.event_subscriber')
+        ->args([
+            service('ekyna_resource.orm.persistence_helper'),
+            service('ekyna_commerce.cache.stock_assignment'),
+            service('ekyna_commerce.helper.factory'),
+        ])
+        ->tag('resource.event_subscriber');
 
-        // Stock assignment updater
+    // Stock assignment updater
+    $services
         ->set('ekyna_commerce.updater.stock_assignment', StockAssignmentUpdater::class)
-            ->args([
-                service('ekyna_commerce.updater.stock_unit'),
-                service('ekyna_commerce.manager.stock_assignment'),
-            ])
+        ->args([
+            service('ekyna_commerce.updater.stock_unit'),
+            service('ekyna_commerce.manager.stock_assignment'),
+        ]);
 
-        // Stock assignment dispatcher
+    // Stock assignment dispatcher
+    $services
         ->set('ekyna_commerce.dispatcher.stock_assignment', StockAssignmentDispatcher::class)
-            ->lazy(true)
-            ->args([
-                service('ekyna_commerce.manager.stock_assignment'),
-                service('ekyna_commerce.manager.stock_unit'),
-                service('ekyna_commerce.logger.stock'),
-            ])
+        ->args([
+            service('ekyna_commerce.manager.stock_assignment'),
+            service('ekyna_commerce.manager.stock_unit'),
+            service('ekyna_commerce.logger.stock'),
+        ]);
 
-        // Stock overflow handler
+    // Stock overflow handler
+    $services
         ->set('ekyna_commerce.handler.stock_overflow', OverflowHandler::class)
-            ->args([
-                service('ekyna_resource.orm.persistence_helper'),
-                service('ekyna_commerce.resolver.stock_unit'),
-                service('ekyna_commerce.dispatcher.stock_assignment'),
-            ])
+        ->args([
+            service('ekyna_resource.orm.persistence_helper'),
+            service('ekyna_commerce.resolver.stock_unit'),
+            service('ekyna_commerce.dispatcher.stock_assignment'),
+        ]);
 
-        // Stock unit assigner
+    // Stock unit assigner
+    $services
         ->set('ekyna_commerce.assigner.stock_unit', StockUnitAssigner::class)
-            ->args([
-                service('ekyna_resource.orm.persistence_helper'),
-                service('ekyna_commerce.resolver.stock_unit'),
-                service('ekyna_commerce.manager.stock_assignment'),
-                service('ekyna_commerce.updater.stock_assignment'),
-                service('ekyna_commerce.helper.factory'),
-                service('ekyna_commerce.helper.subject'),
-            ])
+        ->args([
+            service('ekyna_resource.orm.persistence_helper'),
+            service('ekyna_commerce.resolver.stock_unit'),
+            service('ekyna_commerce.manager.stock_assignment'),
+            service('ekyna_commerce.updater.stock_assignment'),
+            service('ekyna_commerce.helper.factory'),
+            service('ekyna_commerce.helper.subject'),
+        ]);
 
-        // Stock unit linker
+    // Stock unit linker
+    $services
         ->set('ekyna_commerce.linker.stock_unit', StockUnitLinker::class)
-            ->args([
-                service('ekyna_resource.orm.persistence_helper'),
-                service('ekyna_commerce.calculator.supplier_order_item'),
-                service('ekyna_commerce.updater.stock_unit'),
-                service('ekyna_commerce.resolver.stock_unit'),
-            ])
+        ->args([
+            service('ekyna_resource.orm.persistence_helper'),
+            service('ekyna_commerce.calculator.supplier_order_item'),
+            service('ekyna_commerce.updater.stock_unit'),
+            service('ekyna_commerce.resolver.stock_unit'),
+        ]);
 
-        // Stock subject updater
+    // Stock subject updater
+    $services
         ->set('ekyna_commerce.updater.stock_subject', StockSubjectUpdater::class)
-            ->args([
-                service('ekyna_commerce.resolver.stock_unit'),
-                service('ekyna_commerce.repository.supplier_product'),
-                abstract_arg('Stock subject defaults'),
-            ])
+        ->args([
+            service('ekyna_commerce.resolver.stock_unit'),
+            service('ekyna_commerce.repository.supplier_product'),
+            abstract_arg('Stock subject defaults'),
+        ]);
 
-        // Stock prioritize checker
+    // Stock prioritize checker
+    $services
         ->set('ekyna_commerce.prioritizer.checker', PrioritizeChecker::class)
-            ->args([
-                service('ekyna_commerce.helper.subject'),
-            ])
-            ->tag('twig.runtime')
+        ->args([
+            service('ekyna_commerce.helper.subject'),
+        ])
+        ->tag('twig.runtime');
 
-        // Stock prioritizer
+    // Stock prioritizer
+    $services
         ->set('ekyna_commerce.prioritizer.stock', StockPrioritizer::class)
-            ->args([
-                service('ekyna_commerce.resolver.stock_unit'),
-                service('ekyna_commerce.assigner.stock_unit'),
-                service('ekyna_commerce.manager.stock_unit'),
-                service('ekyna_commerce.cache.stock_unit'),
-                service('ekyna_commerce.manager.stock_assignment'),
-                service('ekyna_commerce.dispatcher.stock_assignment'),
-                service('ekyna_commerce.prioritizer.checker'),
-            ])
+        ->args([
+            service('ekyna_commerce.resolver.stock_unit'),
+            service('ekyna_commerce.assigner.stock_unit'),
+            service('ekyna_commerce.manager.stock_unit'),
+            service('ekyna_commerce.cache.stock_unit'),
+            service('ekyna_commerce.manager.stock_assignment'),
+            service('ekyna_commerce.dispatcher.stock_assignment'),
+            service('ekyna_commerce.prioritizer.checker'),
+        ]);
 
-        // Stock renderer
+    // Stock renderer
+    $services
         ->set('ekyna_commerce.renderer.stock', StockRenderer::class)
-            ->lazy(true)
-            ->args([
-                service('serializer'),
-                service('twig'),
-                abstract_arg('Stock unit list template'),
-                abstract_arg('Stock assignment list template'),
-                abstract_arg('Stock subject list template'),
-            ])
-            ->tag('twig.runtime')
+        ->args([
+            service('serializer'),
+            service('twig'),
+            abstract_arg('Stock view template'),
+            abstract_arg('Stock unit list template'),
+            abstract_arg('Stock assignment list template'),
+            abstract_arg('Stock subject list template'),
+        ])
+        ->tag('twig.runtime');
 
-        // Warehouse provider
+    // Warehouse providers
+    $services
         ->set('ekyna_commerce.provider.warehouse', WarehouseProvider::class)
-            ->args([
-                service('ekyna_commerce.repository.warehouse'),
-            ])
-            ->tag('twig.runtime')
-    ;
+        ->args([
+            service('ekyna_commerce.repository.warehouse'),
+        ])
+        ->tag('twig.runtime');
 };

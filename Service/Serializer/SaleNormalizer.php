@@ -39,7 +39,7 @@ class SaleNormalizer extends BaseNormalizer
     {
         $data = parent::normalize($object, $format, $context);
 
-        if ($this->contextHasGroup('Summary', $context)) {
+        if (self::contextHasGroup('Summary', $context)) {
             $data['state_badge'] = $this
                 ->constantsHelper
                 ->renderSaleStateBadge($object);

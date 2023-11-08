@@ -1,7 +1,6 @@
-{% import '@EkynaCommerce/Admin/Stock/_subject_macros.html.twig' as stock_macros %}
 <?xml version="1.0" encoding="UTF-8"?>
 <response>
     {% if stock_view is defined -%}
-        <stockView><![CDATA[{{ stock_macros.show_stock_view(subject, 'product') }}]]></stockView>
+        <stockView><![CDATA[{{ render_subject_stock_view(subject, {'prefix': 'product'}) }}]]></stockView>
     {%- endif %}
 </response>

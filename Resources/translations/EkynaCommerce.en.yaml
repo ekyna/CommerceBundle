@@ -3,6 +3,7 @@ label: Commerce
 field:
     balance: Balance
     eta: ETA
+    eda: EDA
     sample: Sample
     description: Internal note
     taxes_total: Taxes

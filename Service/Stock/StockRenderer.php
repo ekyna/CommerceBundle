@@ -4,12 +4,20 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Stock;
 
+use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Group;
 use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
 use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Twig\Environment;
+
+use function array_merge;
+use function array_replace;
+use function array_unique;
+use function explode;
+use function implode;
+use function uniqid;
 
 /**
  * Class StockRenderer
@@ -18,84 +26,39 @@ use Twig\Environment;
  */
 class StockRenderer
 {
-    private NormalizerInterface $normalizer;
-    private Environment         $twig;
-    private string              $unitTemplate;
-    private string              $assignmentTemplate;
-    private string              $subjectTemplate;
-
-
     public function __construct(
-        NormalizerInterface $normalizer,
-        Environment $twig,
-        string $unitTemplate = '@EkynaCommerce/Admin/Stock/stock_units.html.twig',
-        string $assignmentTemplate = '@EkynaCommerce/Admin/Stock/stock_assignments.html.twig',
-        string $subjectTemplate = '@EkynaCommerce/Admin/Stock/subjects_stock.html.twig'
+        private readonly NormalizerInterface $normalizer,
+        private readonly Environment         $twig,
+        private readonly string              $viewTemplate = '@EkynaCommerce/Admin/Stock/stock_view.html.twig',
+        private readonly string              $unitTemplate = '@EkynaCommerce/Admin/Stock/stock_units.html.twig',
+        private readonly string              $assignmentTemplate = '@EkynaCommerce/Admin/Stock/stock_assignments.html.twig',
+        private readonly string              $subjectsTemplate = '@EkynaCommerce/Admin/Stock/subjects_stock.html.twig'
     ) {
-        $this->normalizer = $normalizer;
-        $this->twig = $twig;
-        $this->unitTemplate = $unitTemplate;
-        $this->assignmentTemplate = $assignmentTemplate;
-        $this->subjectTemplate = $subjectTemplate;
     }
 
     /**
-     * Renders the stock assignments list.
+     * Renders the subject's stock view.
      *
-     * @param StockAssignmentInterface[] $assignments
-     * @param array                      $options
+     * @param StockSubjectInterface $subject
+     * @param array                 $options
      *
      * @return string
      */
-    public function renderStockAssignments(array $assignments, array $options = []): string
+    public function renderSubjectStockView(StockSubjectInterface $subject, array $options = []): string
     {
         $options = array_replace([
-            'template' => $this->assignmentTemplate,
-            'prefix'   => 'stockAssignments',
-            'class'    => null,
-            'actions'  => true,
+            'template' => $this->viewTemplate,
+            'prefix'   => 'subject',
         ], $options);
 
         $id = $options['id'] ?? $options['prefix'] . '_' . uniqid();
 
-        $classes = ['table', 'table-striped', 'table-hover', 'table-alt-head'];
-        if (isset($options['class'])) {
-            $classes = array_unique(array_merge($classes, explode(' ', $options['class'])));
-        }
-
-        $normalized = $this->normalizer->normalize($assignments, 'json', ['groups' => ['StockAssignment']]);
+        $normalized = $this->normalizer->normalize($subject, 'json', ['groups' => [Group::STOCK_VIEW]]);
 
         return $this->twig->render($options['template'], [
-            'stockAssignments' => $normalized,
-            'prefix'           => $options['prefix'],
-            'id'               => $id,
-            'classes'          => implode(' ', $classes),
-            'actions'          => $options['actions'],
-        ]);
-    }
-
-    /**
-     * Renders the stock units list.
-     *
-     * @param StockUnitInterface[] $subjects
-     * @param array                $options
-     *
-     * @return string
-     */
-    public function renderSubjectsStock(array $subjects, array $options = []): string
-    {
-        $template = $options['template'] ?? $this->subjectTemplate;
-        $id = $options['id'] ?? 'subject';
-
-        $classes = ['table', 'table-striped', 'table-hover'];
-        if (isset($options['class'])) {
-            $classes = array_unique(array_merge($classes, explode(' ', $options['class'])));
-        }
-
-        return $this->twig->render($template, [
-            'subjects' => $subjects,
-            'prefix'   => $id,
-            'classes'  => implode(' ', $classes),
+            'subject' => $normalized,
+            'prefix'  => $options['prefix'],
+            'id'      => $id,
         ]);
     }
 
@@ -124,7 +87,9 @@ class StockRenderer
             $classes = array_unique(array_merge($classes, explode(' ', $options['class'])));
         }
 
-        $normalized = $this->normalizer->normalize($subject, 'json', ['groups' => ['StockView']]);
+        $normalized = $this->normalizer->normalize($subject, 'json', [
+            'groups' => [Group::STOCK_UNIT],
+        ]);
 
         return $this->twig->render($options['template'], [
             'stockUnits' => $normalized['stock_units'],
@@ -134,6 +99,66 @@ class StockRenderer
             'manual'     => $subject->getStockMode() === StockSubjectModes::MODE_MANUAL,
             'script'     => $options['script'],
             'actions'    => $options['actions'],
+        ]);
+    }
+
+    /**
+     * Renders the stock assignments list.
+     *
+     * @param StockAssignmentInterface[] $assignments
+     * @param array                      $options
+     *
+     * @return string
+     */
+    public function renderStockAssignments(array $assignments, array $options = []): string
+    {
+        $options = array_replace([
+            'template' => $this->assignmentTemplate,
+            'prefix'   => 'stockAssignments',
+            'class'    => null,
+            'actions'  => true,
+        ], $options);
+
+        $id = $options['id'] ?? $options['prefix'] . '_' . uniqid();
+
+        $classes = ['table', 'table-striped', 'table-hover', 'table-alt-head'];
+        if (isset($options['class'])) {
+            $classes = array_unique(array_merge($classes, explode(' ', $options['class'])));
+        }
+
+        $normalized = $this->normalizer->normalize($assignments, 'json', ['groups' => [Group::STOCK_ASSIGNMENT]]);
+
+        return $this->twig->render($options['template'], [
+            'stockAssignments' => $normalized,
+            'prefix'           => $options['prefix'],
+            'id'               => $id,
+            'classes'          => implode(' ', $classes),
+            'actions'          => $options['actions'],
+        ]);
+    }
+
+    /**
+     * Renders the stock units list.
+     *
+     * @param StockUnitInterface[] $subjects
+     * @param array                $options
+     *
+     * @return string
+     */
+    public function renderSubjectsStock(array $subjects, array $options = []): string
+    {
+        $template = $options['template'] ?? $this->subjectsTemplate;
+        $id = $options['id'] ?? 'subject';
+
+        $classes = ['table', 'table-striped', 'table-hover'];
+        if (isset($options['class'])) {
+            $classes = array_unique(array_merge($classes, explode(' ', $options['class'])));
+        }
+
+        return $this->twig->render($template, [
+            'subjects' => $subjects,
+            'prefix'   => $id,
+            'classes'  => implode(' ', $classes),
         ]);
     }
 }

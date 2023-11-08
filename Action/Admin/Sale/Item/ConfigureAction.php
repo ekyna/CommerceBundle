@@ -14,6 +14,8 @@ use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class ConfigureAction
  * @package Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item
@@ -65,6 +67,8 @@ class ConfigureAction extends AbstractFormAction
 
     protected function onRenderModal(Modal $modal): ?Response
     {
+        $modal->setTitle(t('sale.header.item.configure', [], 'EkynaCommerce'));
+
         /** @var SaleItemInterface $item */
         $item = $this->context->getResource();
 

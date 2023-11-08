@@ -286,9 +286,10 @@ class EkynaCommerceExtension extends Extension implements PrependExtensionInterf
     {
         $container
             ->getDefinition('ekyna_commerce.renderer.stock')
-            ->replaceArgument(2, $config['stock_unit_list'])
-            ->replaceArgument(3, $config['stock_assignment_list'])
-            ->replaceArgument(4, $config['subject_stock_list']);
+            ->replaceArgument(2, $config['stock_view'])
+            ->replaceArgument(3, $config['stock_unit_list'])
+            ->replaceArgument(4, $config['stock_assignment_list'])
+            ->replaceArgument(5, $config['subject_stock_list']);
 
         $container
             ->getDefinition('ekyna_commerce.renderer.shipment')

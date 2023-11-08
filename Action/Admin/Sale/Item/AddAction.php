@@ -22,6 +22,8 @@ use Ekyna\Component\Resource\Model\ResourceInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Class AddAction
  * @package Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item
@@ -91,7 +93,9 @@ class AddAction extends AbstractCreateFlowAction
 
     protected function onRenderModal(Modal $modal): ?Response
     {
-        $modal->setButtons([]);
+        $modal
+            ->setTitle(t('sale.header.item.add', [], 'EkynaCommerce'))
+            ->setButtons([]);
 
         /** @var SaleItemInterface $item */
         $item = $this->context->getResource();

@@ -26,7 +26,7 @@ class TicketAttachmentNormalizer extends BaseNormalizer
     {
         $data = parent::normalize($object, $format, $context);
 
-        if ($this->contextHasGroup(['Default', 'Ticket', 'TicketMessage', 'TicketAttachment'], $context)) {
+        if (self::contextHasGroup(['Default', 'Ticket', 'TicketMessage', 'TicketAttachment'], $context)) {
             $data = array_replace($data, [
                 'edit'   => $this->isGranted(Permission::UPDATE, $object),
                 'remove' => $this->isGranted(Permission::DELETE, $object),
