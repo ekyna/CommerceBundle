@@ -46,7 +46,11 @@ class GatewayDataType extends AbstractType
                 return;
             }
 
-            $this->registry->getGateway($method->getGatewayName())->buildForm($form);
+            $gateway = $this->registry->getGateway($method->getGatewayName());
+            $gateway->initData($shipment);
+            $gateway->buildForm($form);
+
+            $event->setData($shipment->getGatewayData());
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
