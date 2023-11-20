@@ -338,6 +338,10 @@ class OrderType extends AbstractResourceType
                 'label'    => t('field.sample', [], 'EkynaCommerce'),
                 'position' => 130,
             ])
+            ->addFilter('support', CType\Filter\BooleanType::class, [
+                'label'    => t('field.support', [], 'EkynaCommerce'),
+                'position' => 135,
+            ])
             ->addFilter('tags', Type\Filter\SaleTagsType::class, [
                 'position' => 140,
             ])

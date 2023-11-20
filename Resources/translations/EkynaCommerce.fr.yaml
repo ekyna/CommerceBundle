@@ -5,6 +5,7 @@ field:
     eta: ETA
     eda: EDA
     sample: Échantillon
+    support: SAV
     description: Note interne
     taxes_total: Taxes
     shipped: Expédié

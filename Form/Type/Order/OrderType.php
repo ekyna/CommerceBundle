@@ -61,6 +61,13 @@ class OrderType extends SaleType
                         'align_with_widget' => true,
                     ],
                 ])
+                ->add('support', CheckboxType::class, [
+                    'label'    => t('field.support', [], 'EkynaCommerce'),
+                    'required' => false,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ])
                 ->add('inCharge', UserChoiceType::class, [
                     'label'    => t('customer.field.in_charge', [], 'EkynaCommerce'),
                     'roles'    => [],

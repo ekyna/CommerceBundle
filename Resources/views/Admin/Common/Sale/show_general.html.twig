@@ -1,28 +1,38 @@
 {% apply spaceless %}
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         {{ show_row(sale.number, 'text', {
             'label': 'field.number',
             'label_trans_domain': 'EkynaUi',
             'id': 'sale_number',
-            'label_col': 6
+            'label_col': 4
         }) }}
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
         {{ show_row(sale.voucherNumber, 'text', {
             'label': 'sale.field.voucher_number',
             'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_voucherNumber',
-            'label_col': 6
+            'label_col': 4
         }) }}
     </div>
-    <div class="col-md-4">
+</div>
+<div class="row">
+    <div class="col-md-6">
         {{ show_row(sale|sale_state_badge, 'text', {
             'label': 'field.status',
             'label_trans_domain': 'EkynaCommerce',
             'id': 'sale_state',
             'class': 'sale-state',
-            'label_col': 6
+            'label_col': 4
+        }) }}
+    </div>
+    <div class="col-md-6">
+        {{ show_row(sale.createdAt, 'datetime', {
+            'label': 'field.created_at',
+            'label_trans_domain': 'EkynaUi',
+            'id': 'sale_createdAt',
+            'label_col': 4
         }) }}
     </div>
 </div>
@@ -125,19 +135,22 @@
             'id': 'sale_sample',
             'label_col': 6,
             'color': true,
-            'true_class': 'label label-indigo',
+            'true_class': 'label label-purple',
+            'false_class': 'label label-default'
+        }) }}
+    </div>
+    <div class="col-md-4">
+        {{ show_row(sale.support, 'boolean', {
+            'label': 'field.support',
+            'label_trans_domain': 'EkynaCommerce',
+            'id': 'sale_support',
+            'label_col': 6,
+            'color': true,
+            'true_class': 'label label-amber',
             'false_class': 'label label-default'
         }) }}
     </div>
     {%- endif %}
-    <div class="col-md-4">
-        {{ show_row(sale.createdAt, 'datetime', {
-            'label': 'field.created_at',
-            'label_trans_domain': 'EkynaUi',
-            'id': 'sale_createdAt',
-            'label_col': 6
-        }) }}
-    </div>
 </div>
 <div class="row">
     <div class="col-md-4">

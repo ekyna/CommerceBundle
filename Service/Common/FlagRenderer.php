@@ -36,9 +36,10 @@ class FlagRenderer
     private const MARKETPLACE = 12;
     private const FIRST       = 20;
     private const SAMPLE      = 21;
-    private const RELEASABLE  = 22;
-    private const PREPARATION = 23;
-    private const COMMENT     = 24;
+    private const SUPPORT     = 22;
+    private const RELEASABLE  = 30;
+    private const PREPARATION = 31;
+    private const COMMENT     = 40;
 
     private static function getDefaults(): array
     {
@@ -88,13 +89,18 @@ class FlagRenderer
             ],
             self::FIRST         => [
                 'label' => t('sale.flag.first_order', [], 'EkynaCommerce'),
-                'theme' => 'success',
+                'theme' => 'teal',
                 'icon'  => 'thumbs-o-up',
             ],
             self::SAMPLE        => [
                 'label' => t('field.sample', [], 'EkynaCommerce'),
-                'theme' => 'info',
+                'theme' => 'purple',
                 'icon'  => 'cube',
+            ],
+            self::SUPPORT        => [
+                'label' => t('field.support', [], 'EkynaCommerce'),
+                'theme' => 'amber',
+                'icon'  => 'wrench',
             ],
             self::RELEASABLE    => [
                 'label' => t('sale.flag.can_be_released', [], 'EkynaCommerce'),
@@ -115,7 +121,7 @@ class FlagRenderer
     }
 
     private readonly array $config;
-    private string $template;
+    private string         $template;
 
     public function __construct(
         private readonly TranslatorInterface $translator,
@@ -165,15 +171,21 @@ class FlagRenderer
             }
         );
 
-        if ($sale instanceof OrderInterface && $sale->isFirst()) {
-            $flags .= $this->renderFlag(self::FIRST);
-        }
+        if ($sale instanceof OrderInterface) {
+            if ($sale->isFirst()) {
+                $flags .= $this->renderFlag(self::FIRST);
+            }
 
-        if ($sale->isSample()) {
-            $flags .= $this->renderFlag(self::SAMPLE);
+            if ($sale->isSample()) {
+                $flags .= $this->renderFlag(self::SAMPLE);
 
-            if ($sale->canBeReleased()) {
-                $flags .= $this->renderFlag(self::RELEASABLE);
+                if ($sale->canBeReleased()) {
+                    $flags .= $this->renderFlag(self::RELEASABLE);
+                }
+            }
+
+            if ($sale->isSupport()) {
+                $flags .= $this->renderFlag(self::SUPPORT);
             }
         }
 
