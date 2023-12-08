@@ -140,8 +140,8 @@ class SaleTransformType extends AbstractType
                 $form
                     ->add('shipmentMethod', ShipmentMethodPickType::class, [
                         'subject'  => $sale,
+                        'available' => !$options['admin_mode'],
                         'expanded' => false,
-                        'select2'  => false,
                         'attr'     => [
                             'class' => 'sale-shipment-method',
                         ],

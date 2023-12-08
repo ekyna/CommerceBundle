@@ -104,20 +104,18 @@ class SupplierOrderType extends AbstractResourceType
                 'class'    => SupplierOrderStates::class,
                 'position' => 50,
             ])
-            ->addFilter('paymentDate', CType\Filter\DateTimeType::class, [
-                'label'    => t('supplier_order.field.payment_date', [], 'EkynaCommerce'),
+            ->addFilter('paymentPaidTotal', CType\Filter\NumberType::class, [
+                'label'    => t('supplier_order.field.payment_paid_total', [], 'EkynaCommerce'),
                 'position' => 60,
-                'time'     => false,
             ])
             ->addFilter('paymentDueDate', CType\Filter\DateTimeType::class, [
                 'label'    => t('supplier_order.field.payment_due_date', [], 'EkynaCommerce'),
                 'position' => 70,
                 'time'     => false,
             ])
-            ->addFilter('forwarderDate', CType\Filter\DateTimeType::class, [
-                'label'    => t('supplier_order.field.forwarder_date', [], 'EkynaCommerce'),
+            ->addFilter('forwarderPaidTotal', CType\Filter\NumberType::class, [
+                'label'    => t('supplier_order.field.forwarder_paid_total', [], 'EkynaCommerce'),
                 'position' => 80,
-                'time'     => false,
             ])
             ->addFilter('forwarderDueDate', CType\Filter\DateTimeType::class, [
                 'label'    => t('supplier_order.field.forwarder_due_date', [], 'EkynaCommerce'),
