@@ -31,6 +31,7 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.factory.amount_calculator'),
             service('ekyna_commerce.factory.margin_calculator'),
             service('ekyna_commerce.converter.currency'),
+            service('ekyna_commerce.calculator.weight'),
             service('ekyna_commerce.factory.formatter'),
             service('ekyna_commerce.helper.sale_item'),
         ]);
