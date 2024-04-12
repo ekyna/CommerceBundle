@@ -60,7 +60,6 @@ abstract class AbstractOrderListType extends AbstractResourceType
                     ->setPerPageChoices([100]);
             } else {
                 $builder
-                    ->setExportable(true)
                     ->setConfigurable(true)
                     ->setProfileable(true)
                     ->addColumn('customer', Column\SaleCustomerType::class, [

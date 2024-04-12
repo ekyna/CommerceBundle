@@ -53,7 +53,6 @@ class CustomerType extends AbstractResourceType
         } else {
             $filters = true;
             $builder
-                ->setExportable(true)
                 ->setConfigurable(true)
                 ->setProfileable(true)
                 /*->addColumn('company', CType\Column\TextType::class, [

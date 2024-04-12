@@ -99,6 +99,22 @@ class SaleCustomerType extends AbstractColumnType
         return true;
     }
 
+    public function export(ColumnInterface $column, RowInterface $row, array $options): ?string
+    {
+        $prefix = '';
+        if (!empty($path = $column->getConfig()->getPropertyPath())) {
+            $prefix = $path . '.';
+        }
+
+        $value = $this->constantsHelper->renderIdentity($row->getData($path));
+
+        if (!empty($company = $row->getData($prefix . 'company'))) {
+            $value = sprintf('[%s] %s', $company, $value);
+        }
+
+        return $value;
+    }
+
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

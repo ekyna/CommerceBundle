@@ -37,6 +37,7 @@ class OrderInvoiceType extends AbstractOrderListType
         parent::buildTable($builder, $options);
 
         $builder
+            ->setExportable(true)
             ->addDefaultSort('createdAt', ColumnSort::DESC)
             ->addColumn('number', Column\OrderInvoiceType::class, [
                 'label'         => t('field.number', [], 'EkynaUi'),
@@ -50,6 +51,11 @@ class OrderInvoiceType extends AbstractOrderListType
                 'true_class'  => 'label-warning',
                 'false_class' => 'label-success',
                 'position'    => 20,
+            ])
+            ->addColumn('goodsBase', BType\Column\PriceType::class, [
+                'label'         => t('invoice.field.goods_base', [], 'EkynaCommerce'),
+                'currency_path' => 'currency',
+                'position'      => 40,
             ])
             ->addColumn('grandTotal', BType\Column\PriceType::class, [
                 'label'         => t('sale.field.ati_total', [], 'EkynaCommerce'),

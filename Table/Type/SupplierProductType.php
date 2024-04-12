@@ -53,8 +53,6 @@ class SupplierProductType extends AbstractResourceType
      */
     private function buildForSupplier(TableBuilderInterface $builder, SupplierInterface $supplier): void
     {
-        $builder->setExportable(true);
-
         $source = $builder->getSource();
         if (!$source instanceof EntitySource) {
             return;

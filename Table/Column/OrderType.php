@@ -21,7 +21,8 @@ use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use function array_replace;
+use function array_map;
+use function implode;
 use function is_array;
 use function sprintf;
 use function Symfony\Component\Translation\t;
@@ -44,30 +45,9 @@ class OrderType extends AbstractColumnType
 
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
-        $orders = $row->getData($column->getConfig()->getPropertyPath());
-
-        if ($orders instanceof OrderInterface) {
-            $href = $this->helper->generateResourcePath($orders, ReadAction::class);
-
-            /** @noinspection HtmlUnknownTarget */
-            $view->vars['value'] = sprintf('<a href="%s">%s</a>', $href, $orders->getNumber());
-
-            $view->vars['attr'] = array_replace($view->vars['attr'], [
-                Ui::SIDE_DETAIL_ATTR => $this->helper->generateResourcePath($orders, SummaryAction::class),
-            ]);
-
-            return;
-        }
-
-        if ($orders instanceof Collection) {
-            $orders = $orders->toArray();
-        } elseif (!is_array($orders)) {
-            $orders = [$orders];
-        }
-
         $output = '';
 
-        foreach ($orders as $order) {
+        foreach ($this->getOrders($column, $row) as $order) {
             if (!$order instanceof OrderInterface) {
                 continue;
             }
@@ -108,6 +88,33 @@ class OrderType extends AbstractColumnType
             ->addOrderBy($property, $activeSort->getDirection());
 
         return true;
+    }
+
+    public function export(ColumnInterface $column, RowInterface $row, array $options): ?string
+    {
+        return implode(', ', array_map(
+            fn (OrderInterface $order): string => $order->getNumber(),
+            $this->getOrders($column, $row)
+        ));
+    }
+
+    /**
+     * Retrieves the orders associated with the given column and row.
+     *
+     * @param ColumnInterface $column The column for which to retrieve the orders.
+     * @param RowInterface    $row    The row for which to retrieve the orders.
+     *
+     * @return array<int, OrderInterface>
+     */
+    private function getOrders(ColumnInterface $column, RowInterface $row): array
+    {
+        $orders = $row->getData($column->getConfig()->getPropertyPath());
+
+        if ($orders instanceof Collection) {
+            return $orders->toArray();
+        }
+
+        return is_array($orders) ? $orders : [$orders];
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -53,7 +53,6 @@ class CartType extends AbstractResourceType
         } else {
             $filters = true;
             $builder
-                ->setExportable(true)
                 ->setConfigurable(true)
                 ->setProfileable(true);
         }

@@ -36,10 +36,7 @@ class CouponType extends AbstractResourceType
             $builder
                 ->setFilterable(false)
                 ->setSortable(false)
-                ->setBatchable(false)
-                ->setConfigurable(false)
-                ->setExportable(false)
-                ->setProfileable(false);
+                ->setBatchable(false);
 
             $initializer = function (QueryBuilder $qb, string $alias) use ($customer): void {
                 $qb

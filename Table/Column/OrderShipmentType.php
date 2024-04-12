@@ -10,6 +10,7 @@ use Ekyna\Bundle\AdminBundle\Action\SummaryAction;
 use Ekyna\Bundle\AdminBundle\Model\Ui;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Commerce\Order\Model\OrderShipmentInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
 use Ekyna\Component\Table\Column\AbstractColumnType;
 use Ekyna\Component\Table\Column\ColumnInterface;
@@ -21,6 +22,8 @@ use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function array_map;
+use function implode;
 use function is_array;
 use function sprintf;
 use function Symfony\Component\Translation\t;
@@ -44,17 +47,9 @@ class OrderShipmentType extends AbstractColumnType
      */
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
-        $shipments = $row->getData($column->getConfig()->getPropertyPath());
-
-        if ($shipments instanceof Collection) {
-            $shipments = $shipments->toArray();
-        } elseif (!is_array($shipments)) {
-            $shipments = [$shipments];
-        }
-
         $output = '';
 
-        foreach ($shipments as $shipment) {
+        foreach ($this->getShipments($column, $row) as $shipment) {
             if (!$shipment instanceof OrderShipmentInterface) {
                 continue;
             }
@@ -95,6 +90,33 @@ class OrderShipmentType extends AbstractColumnType
             ->addOrderBy($property, $activeSort->getDirection());
 
         return true;
+    }
+
+    public function export(ColumnInterface $column, RowInterface $row, array $options): ?string
+    {
+        return implode(', ', array_map(
+            fn (ShipmentInterface $shipment): string => $shipment->getNumber(),
+            $this->getShipments($column, $row)
+        ));
+    }
+
+    /**
+     * Retrieves the shipments for a given column and row.
+     *
+     * @param ColumnInterface $column The column object.
+     * @param RowInterface    $row    The row object.
+     *
+     * @return array<int, ShipmentInterface> The array of shipments.
+     */
+    private function getShipments(ColumnInterface $column, RowInterface $row): array
+    {
+        $shipments = $row->getData($column->getConfig()->getPropertyPath());
+
+        if ($shipments instanceof Collection) {
+            return $shipments->toArray();
+        }
+
+        return is_array($shipments) ? $shipments : [$shipments];
     }
 
     public function configureOptions(OptionsResolver $resolver): void

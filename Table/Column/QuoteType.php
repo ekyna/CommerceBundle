@@ -21,7 +21,9 @@ use Ekyna\Component\Table\View\CellView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function array_map;
 use function array_replace;
+use function implode;
 use function is_array;
 use function sprintf;
 use function Symfony\Component\Translation\t;
@@ -44,30 +46,9 @@ class QuoteType extends AbstractColumnType
 
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
-        $quotes = $row->getData($column->getConfig()->getPropertyPath());
-
-        if ($quotes instanceof QuoteInterface) {
-            $href = $this->helper->generateResourcePath($quotes, ReadAction::class);
-
-            /** @noinspection HtmlUnknownTarget */
-            $view->vars['value'] = sprintf('<a href="%s">%s</a>', $href, $quotes->getNumber());
-
-            $view->vars['attr'] = array_replace($view->vars['attr'], [
-                Ui::SIDE_DETAIL_ATTR => $this->helper->generateResourcePath($quotes, SummaryAction::class),
-            ]);
-
-            return;
-        }
-
-        if ($quotes instanceof Collection) {
-            $quotes = $quotes->toArray();
-        } elseif (!is_array($quotes)) {
-            $quotes = [$quotes];
-        }
-
         $output = '';
 
-        foreach ($quotes as $quote) {
+        foreach ($this->getQuotes($column, $row) as $quote) {
             if (!$quote instanceof QuoteInterface) {
                 continue;
             }
@@ -108,6 +89,33 @@ class QuoteType extends AbstractColumnType
             ->addOrderBy($property, $activeSort->getDirection());
 
         return true;
+    }
+
+    public function export(ColumnInterface $column, RowInterface $row, array $options): ?string
+    {
+        return implode(', ', array_map(
+            fn (QuoteInterface $quote): string => $quote->getNumber(),
+            $this->getQuotes($column, $row)
+        ));
+    }
+
+    /**
+     * Retrieves the quotes associated with the given column and row.
+     *
+     * @param ColumnInterface $column The column for which to retrieve the quotes.
+     * @param RowInterface    $row    The row for which to retrieve the quotes.
+     *
+     * @return array<int, QuoteInterface>
+     */
+    private function getQuotes(ColumnInterface $column, RowInterface $row): array
+    {
+        $quotes = $row->getData($column->getConfig()->getPropertyPath());
+
+        if ($quotes instanceof Collection) {
+            return $quotes->toArray();
+        }
+
+        return is_array($quotes) ? $quotes : [$quotes];
     }
 
     public function configureOptions(OptionsResolver $resolver): void

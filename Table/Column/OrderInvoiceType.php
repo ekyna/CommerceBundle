@@ -9,6 +9,7 @@ use Ekyna\Bundle\AdminBundle\Action\ReadAction;
 use Ekyna\Bundle\AdminBundle\Action\SummaryAction;
 use Ekyna\Bundle\AdminBundle\Model\Ui;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInvoiceInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntityAdapter;
 use Ekyna\Component\Table\Column\AbstractColumnType;
@@ -41,17 +42,9 @@ class OrderInvoiceType extends AbstractColumnType
 
     public function buildCellView(CellView $view, ColumnInterface $column, RowInterface $row, array $options): void
     {
-        $invoices = $row->getData($column->getConfig()->getPropertyPath());
-
-        if ($invoices instanceof Collection) {
-            $invoices = $invoices->toArray();
-        } elseif (!is_array($invoices)) {
-            $invoices = [$invoices];
-        }
-
         $output = '';
 
-        foreach ($invoices as $invoice) {
+        foreach ($this->getInvoices($column, $row) as $invoice) {
             if (!$invoice instanceof OrderInvoiceInterface) {
                 continue;
             }
@@ -92,6 +85,33 @@ class OrderInvoiceType extends AbstractColumnType
             ->addOrderBy($property, $activeSort->getDirection());
 
         return true;
+    }
+
+    public function export(ColumnInterface $column, RowInterface $row, array $options): ?string
+    {
+        return implode(', ', array_map(
+            fn (InvoiceInterface $invoice): string => $invoice->getNumber(),
+            $this->getInvoices($column, $row)
+        ));
+    }
+
+    /**
+     * Retrieves the invoices for a given column and row.
+     *
+     * @param ColumnInterface $column The column object.
+     * @param RowInterface    $row    The row object.
+     *
+     * @return array<int, InvoiceInterface> Returns an array of invoices.
+     */
+    private function getInvoices(ColumnInterface $column, RowInterface $row): array
+    {
+        $invoices = $row->getData($column->getConfig()->getPropertyPath());
+
+        if ($invoices instanceof Collection) {
+            return $invoices->toArray();
+        }
+
+        return is_array($invoices) ? $invoices : [$invoices];
     }
 
     public function configureOptions(OptionsResolver $resolver): void

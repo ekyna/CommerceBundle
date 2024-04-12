@@ -23,7 +23,6 @@ class NotifyModelType extends AbstractResourceType
     {
         $builder
             ->setFilterable(false)
-            ->setExportable(false)
             ->setSortable(false)
             ->addColumn('type', NotifyModelTypeType::class, [
                 'position' => 10,
