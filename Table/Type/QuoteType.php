@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
-use Ekyna\Bundle\AdminBundle\Table\Type\Filter\ConstantChoiceType;
 use Ekyna\Bundle\CmsBundle\Table\Column\TagsType;
 use Ekyna\Bundle\CommerceBundle\Model;
 use Ekyna\Bundle\CommerceBundle\Table as Type;
@@ -76,6 +75,15 @@ class QuoteType extends AbstractResourceType
                 'position'    => 20,
                 'time_format' => 'none',
             ])
+            ->addColumn('completionDate', CType\Column\DateTimeType::class, [
+                'label'       => t('quote.field.completion_date', [], 'EkynaCommerce'),
+                'position'    => 25,
+                'time_format' => 'none',
+            ])
+            ->addColumn('netTotal', Type\Column\CurrencyType::class, [
+                'label'    => t('sale.field.net_total', [], 'EkynaCommerce'),
+                'position' => 30,
+            ])
             ->addColumn('title', CType\Column\TextType::class, [
                 'label'    => t('field.title', [], 'EkynaUi'),
                 'position' => 40,
@@ -84,20 +92,16 @@ class QuoteType extends AbstractResourceType
                 'label'    => t('sale.field.voucher_number', [], 'EkynaCommerce'),
                 'position' => 45,
             ])
-            ->addColumn('grandTotal', Type\Column\CurrencyType::class, [
-                'label'    => t('sale.field.ati_total', [], 'EkynaCommerce'),
-                'position' => 50,
-            ])
-            ->addColumn('paidTotal', Type\Column\CurrencyType::class, [
+            /*->addColumn('paidTotal', Type\Column\CurrencyType::class, [
                 'label'    => t('sale.field.paid_total', [], 'EkynaCommerce'),
                 'position' => 60,
-            ])
-            ->addColumn('state', Type\Column\SaleStateType::class, [
+            ])*/
+            /*->addColumn('state', Type\Column\SaleStateType::class, [
                 'position' => 70,
-            ])
-            ->addColumn('paymentState', Type\Column\PaymentStateType::class, [
+            ])*/
+            /*->addColumn('paymentState', Type\Column\PaymentStateType::class, [
                 'position' => 80,
-            ])
+            ])*/
             /*->addColumn('inCharge', Type\Column\InChargeType::class, [
                 'position' => 90,
             ])*/
@@ -126,6 +130,11 @@ class QuoteType extends AbstractResourceType
             ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                 'label'    => t('field.created_at', [], 'EkynaUi'),
                 'position' => 20,
+                'time'     => false,
+            ])
+            ->addFilter('completionDate', CType\Filter\DateTimeType::class, [
+                'label'    => t('quote.field.completion_date', [], 'EkynaCommerce'),
+                'position' => 25,
                 'time'     => false,
             ])
             ->addFilter('customer', Type\Filter\CustomerType::class, [
@@ -164,30 +173,27 @@ class QuoteType extends AbstractResourceType
                 'label'    => t('sale.field.voucher_number', [], 'EkynaCommerce'),
                 'position' => 45,
             ])
-            ->addFilter('grandTotal', CType\Filter\NumberType::class, [
-                'label'    => t('sale.field.ati_total', [], 'EkynaCommerce'),
+            ->addFilter('netTotal', CType\Filter\NumberType::class, [
+                'label'    => t('sale.field.net_total', [], 'EkynaCommerce'),
                 'position' => 50,
             ])
-            ->addFilter('paidTotal', CType\Filter\NumberType::class, [
+            /*->addFilter('paidTotal', CType\Filter\NumberType::class, [
                 'label'    => t('sale.field.paid_total', [], 'EkynaCommerce'),
                 'position' => 60,
-            ])
-            ->addFilter('state', ConstantChoiceType::class, [
+            ])*/
+            /*->addFilter('state', ConstantChoiceType::class, [
                 'label'    => t('field.status', [], 'EkynaCommerce'),
                 'class'    => Model\QuoteStates::class,
                 'position' => 70,
-            ])
-            ->addFilter('paymentState', Type\Filter\SalePaymentStateType::class, [
+            ])*/
+            /*->addFilter('paymentState', Type\Filter\SalePaymentStateType::class, [
                 'position' => 80,
-            ])
+            ])*/
             ->addFilter('inCharge', Type\Filter\InChargeType::class, [
                 'position' => 90,
             ])
             ->addFilter('tags', Type\Filter\SaleTagsType::class, [
                 'position' => 100,
-            ])
-            ->addFilter('inCharge', Type\Filter\InChargeType::class, [
-                'position' => 110,
             ])
             ->addFilter('initiatorCustomer', Type\Filter\CustomerType::class, [
                 'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),

@@ -1290,6 +1290,7 @@ quote:
         notify: Notify quote
     field:
         editable: Editable by the customer
+        completion_date: Completion date
     alert:
         no_item: No quote configured
     message:

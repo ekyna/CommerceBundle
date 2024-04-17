@@ -1324,6 +1324,7 @@ quote:
         notify: Notifier le devis
     field:
         editable: Modifiable par le client
+        completion_date: Date de réalisation
     alert:
         no_item: Aucun devis configuré
     message:

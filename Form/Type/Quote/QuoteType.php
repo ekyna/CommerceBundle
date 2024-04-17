@@ -11,6 +11,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleType;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -51,6 +52,10 @@ class QuoteType extends SaleType
             ])
             ->add('expiresAt', DateTimeType::class, [
                 'label' => t('field.expires_at', [], 'EkynaUi'),
+            ])
+            ->add('completionDate', DateType::class, [
+                'label'    => t('quote.field.completion_date', [], 'EkynaCommerce'),
+                'required' => false,
             ])
             ->add('tags', TagChoiceType::class);
 
