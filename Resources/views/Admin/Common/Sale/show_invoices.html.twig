@@ -59,7 +59,7 @@
                 <td id="{{ invoiceId }}_shipment">
                     {%- if invoice.shipment is not null -%}
                         {{ invoice.shipment.number }}
-                        {% if not locked -%}
+                        {% if is_granted('ROLE_SUPER_ADMIN') and not locked -%}
                         <a href="{{ admin_resource_path(invoice, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Invoice\\UnlinkAction') }}"
                            id="{{ invoiceId }}_recalculate"
                            class="btn btn-link btn-xs"
@@ -86,6 +86,7 @@
                        title="{{ 'button.archive'|trans({}, 'EkynaUi') }}">
                         <span class="fa fa-archive"></span>
                     </a>
+                    {% if is_granted('ROLE_SUPER_ADMIN') -%}
                     <a href="{{ locked ? 'javascript:void(0)' : admin_resource_path(invoice, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Invoice\\RecalculateAction') }}"
                        id="{{ invoiceId }}_recalculate"
                        class="btn btn-warning btn-xs{% if locked %} disabled{% endif %}"
@@ -98,6 +99,7 @@
                        {%- endif %}>
                         <span class="fa fa-refresh"></span>
                     </a>
+                    {%- endif %}
                     <a href="{{ admin_resource_path(invoice, 'Ekyna\\Bundle\\AdminBundle\\Action\\UpdateAction') }}"
                        id="{{ invoiceId }}_edit"
                        class="btn btn-warning btn-xs"

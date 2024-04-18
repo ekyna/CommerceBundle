@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice;
 
 use Ekyna\Bundle\AdminBundle\Action\DeleteAction as BaseAction;
+use Ekyna\Bundle\ResourceBundle\Action\AuthorizationTrait;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 use function array_replace_recursive;
 
@@ -20,13 +20,7 @@ use function array_replace_recursive;
 class DeleteAction extends BaseAction
 {
     use ArchiverTrait;
-
-    private AuthorizationCheckerInterface $authorizationChecker;
-
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker)
-    {
-        $this->authorizationChecker = $authorizationChecker;
-    }
+    use AuthorizationTrait;
 
     protected function onInit(): ?Response
     {
@@ -37,7 +31,7 @@ class DeleteAction extends BaseAction
         }
 
         if (!$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
-            return new Response('You are not allowed to delete this resource.', Response::HTTP_FORBIDDEN);
+            return new Response('You are not allowed to delete this invoice.', Response::HTTP_FORBIDDEN);
         }
 
         return null;

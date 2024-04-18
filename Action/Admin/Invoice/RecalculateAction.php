@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice;
 
 use Ekyna\Bundle\AdminBundle\Action\AdminActionInterface;
 use Ekyna\Bundle\ResourceBundle\Action\AbstractAction;
+use Ekyna\Bundle\ResourceBundle\Action\AuthorizationTrait;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
 use Ekyna\Bundle\ResourceBundle\Action\ManagerTrait;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
@@ -15,6 +16,7 @@ use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Shipment\Builder\InvoiceSynchronizerInterface;
 use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Class RecalculateAction
@@ -26,6 +28,7 @@ class RecalculateAction extends AbstractAction implements AdminActionInterface
     use ArchiverTrait;
     use HelperTrait;
     use ManagerTrait;
+    use AuthorizationTrait;
 
     public function __construct(
         private readonly InvoiceSynchronizerInterface $invoiceSynchronizer,
@@ -44,6 +47,10 @@ class RecalculateAction extends AbstractAction implements AdminActionInterface
 
         if (!$invoice instanceof InvoiceInterface) {
             throw new UnexpectedTypeException($invoice, InvoiceInterface::class);
+        }
+
+        if (!$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
+            return new Response('You are not allowed to recalculate this invoice.', Response::HTTP_FORBIDDEN);
         }
 
         $redirect = $this->redirectToReferer(
