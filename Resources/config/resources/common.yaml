@@ -74,3 +74,21 @@ resources:
                 admin_crud:
                     read: '@EkynaCommerce/Admin/Coupon/read.html.twig'
                     form: '@EkynaCommerce/Admin/Coupon/_form.html.twig'
+
+        project:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Common\Model\ProjectInterface
+                class: Ekyna\Component\Commerce\Common\Entity\Project
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ProjectNormalizer
+            search:
+                class: Ekyna\Bundle\CommerceBundle\Service\Search\ProjectRepository
+                global: true
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Common\ProjectType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\ProjectType
+            trans_domain: EkynaCommerce
+            actions:
+                api_crud:
+                    search: true
+                admin_crud:
+                    read: '@EkynaCommerce/Admin/Project/read.html.twig'

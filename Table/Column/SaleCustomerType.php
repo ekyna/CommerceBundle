@@ -55,7 +55,8 @@ class SaleCustomerType extends AbstractColumnType
         }
 
         /** @var CustomerInterface $customer */
-        if (null !== $customer = $row->getData($prefix . 'customer')) {
+        $path = empty($path = $options['customer_path']) ? null : $prefix . $path;
+        if (null !== $customer = $row->getData($path)) {
             $href = $this->resourceHelper->generateResourcePath($customer, ReadAction::class);
             $summary = $this->resourceHelper->generateResourcePath($customer, SummaryAction::class);
             $view->vars = array_replace($view->vars, [
@@ -117,10 +118,13 @@ class SaleCustomerType extends AbstractColumnType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'label'         => t('customer.label.singular', [], 'EkynaCommerce'),
-            'property_path' => false,
-        ]);
+        $resolver
+            ->setDefaults([
+                'label'         => t('customer.label.singular', [], 'EkynaCommerce'),
+                'property_path' => false,
+                'customer_path' => 'customer',
+            ])
+            ->setAllowedTypes('customer_path', ['null', 'string']);
     }
 
     public function getBlockPrefix(): string

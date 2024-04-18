@@ -56,6 +56,19 @@ fos_elastica:
                 provider: { batch_size: 25 }
                 listener: ~
                 finder: ~
+        ekyna_commerce.project:
+            index_name: '%env(ELASTICSEARCH_NAME)%_commerce_project'
+            serializer:
+                groups: [ Search ]
+            properties:
+                name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                description: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+            persistence:
+                driver: orm
+                model: '%ekyna_commerce.class.project%'
+                provider: { batch_size: 10 }
+                listener: ~
+                finder: ~
         ekyna_commerce.supplier:
             index_name: '%env(ELASTICSEARCH_NAME)%_commerce_supplier'
             serializer:

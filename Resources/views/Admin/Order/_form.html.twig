@@ -142,8 +142,11 @@
                 {{ form_row(form.inCharge, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
+        {{ form_row(form.project) }}
+        <hr>
         {{ form_row(form.comment) }}
         {{ form_row(form.documentComment) }}
+        <hr>
         {{ form_row(form.description) }}
         {{ form_row(form.preparationNote) }}
     </div>

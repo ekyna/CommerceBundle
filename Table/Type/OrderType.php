@@ -7,22 +7,23 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Action\DeleteAction;
 use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
+use Ekyna\Bundle\AdminBundle\Table\Type\Column\ResourceType as ResourceColumn;
 use Ekyna\Bundle\AdminBundle\Table\Type\Filter\ConstantChoiceType;
 use Ekyna\Bundle\CmsBundle\Table\Column\TagsType;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Order\AbortAction;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Order\PrepareAction;
 use Ekyna\Bundle\CommerceBundle\Model;
 use Ekyna\Bundle\CommerceBundle\Table as Type;
-use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
+use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType as ResourceFilter;
 use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Component\Commerce\Common\Model\ProjectInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceStates;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
-use Ekyna\Component\Table\Exception\UnexpectedTypeException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
@@ -42,86 +43,86 @@ class OrderType extends AbstractResourceType
     public function buildTable(TableBuilderInterface $builder, array $options): void
     {
         $source = $builder->getSource();
-        if (!$source instanceof EntitySource) {
-            throw new UnexpectedTypeException($source, EntitySource::class);
-        }
 
         $filters = [];
-
-        /** @var SubjectInterface $subject */
         $subject = $options['subject'];
-        /** @var Model\CustomerInterface $customer */
         $customer = $options['customer'];
+        $project = $options['project'];
 
-        if (null !== $subject) {
-            $filters[] = function (QueryBuilder $qb, string $alias) use ($subject): void {
-                $qb
-                    ->join($alias . '.items', 'i')
-                    ->leftJoin('i.children', 'c')
-                    ->leftJoin('c.children', 'sc')
-                    ->leftJoin('sc.children', 'ssc')
-                    ->andWhere(
-                        $qb->expr()->orX(
-                            $qb->expr()->andX(
-                                $qb->expr()->eq('i.subjectIdentity.provider', ':provider'),
-                                $qb->expr()->eq('i.subjectIdentity.identifier', ':identifier')
-                            ),
-                            $qb->expr()->andX(
-                                $qb->expr()->eq('c.subjectIdentity.provider', ':provider'),
-                                $qb->expr()->eq('c.subjectIdentity.identifier', ':identifier')
-                            ),
-                            $qb->expr()->andX(
-                                $qb->expr()->eq('sc.subjectIdentity.provider', ':provider'),
-                                $qb->expr()->eq('sc.subjectIdentity.identifier', ':identifier')
-                            ),
-                            $qb->expr()->andX(
-                                $qb->expr()->eq('ssc.subjectIdentity.provider', ':provider'),
-                                $qb->expr()->eq('ssc.subjectIdentity.identifier', ':identifier')
+        if ($source instanceof EntitySource) {
+            if ($subject instanceof SubjectInterface) {
+                $filters[] = function (QueryBuilder $qb, string $alias) use ($subject): void {
+                    $qb
+                        ->join($alias . '.items', 'i')
+                        ->leftJoin('i.children', 'c')
+                        ->leftJoin('c.children', 'sc')
+                        ->leftJoin('sc.children', 'ssc')
+                        ->andWhere(
+                            $qb->expr()->orX(
+                                $qb->expr()->andX(
+                                    $qb->expr()->eq('i.subjectIdentity.provider', ':provider'),
+                                    $qb->expr()->eq('i.subjectIdentity.identifier', ':identifier')
+                                ),
+                                $qb->expr()->andX(
+                                    $qb->expr()->eq('c.subjectIdentity.provider', ':provider'),
+                                    $qb->expr()->eq('c.subjectIdentity.identifier', ':identifier')
+                                ),
+                                $qb->expr()->andX(
+                                    $qb->expr()->eq('sc.subjectIdentity.provider', ':provider'),
+                                    $qb->expr()->eq('sc.subjectIdentity.identifier', ':identifier')
+                                ),
+                                $qb->expr()->andX(
+                                    $qb->expr()->eq('ssc.subjectIdentity.provider', ':provider'),
+                                    $qb->expr()->eq('ssc.subjectIdentity.identifier', ':identifier')
+                                )
                             )
                         )
-                    )
-                    ->setParameter('provider', $subject::getProviderName())
-                    ->setParameter('identifier', $subject->getId());
-            };
-        } elseif (null !== $customer) {
-            $filters[] = function (QueryBuilder $qb, string $alias) use ($customer): void {
-                if ($customer->hasParent()) {
-                    $qb->andWhere(
-                        $qb->expr()->orX(
-                            $qb->expr()->in($alias . '.customer', ':customer'),
-                            $qb->expr()->in($alias . '.originCustomer', ':customer')
-                        )
-                    );
-                } else {
-                    $qb->andWhere($qb->expr()->eq($alias . '.customer', ':customer'));
-                }
-                $qb->setParameter('customer', $customer);
-            };
-        }
-
-        foreach (['state', 'paymentState', 'shipmentState', 'invoiceState'] as $property) {
-            if (!empty($states = $options[$property])) {
-                $filters[] = function (QueryBuilder $qb, string $alias) use ($property, $states): void {
-                    $qb->andWhere($qb->expr()->in($alias . '.' . $property, $states));
+                        ->setParameter('provider', $subject::getProviderName())
+                        ->setParameter('identifier', $subject->getId());
+                };
+            } elseif ($customer instanceof Model\CustomerInterface) {
+                $filters[] = function (QueryBuilder $qb, string $alias) use ($customer): void {
+                    if ($customer->hasParent()) {
+                        $qb->andWhere(
+                            $qb->expr()->orX(
+                                $qb->expr()->in($alias . '.customer', ':customer'),
+                                $qb->expr()->in($alias . '.originCustomer', ':customer')
+                            )
+                        );
+                    } else {
+                        $qb->andWhere($qb->expr()->eq($alias . '.customer', ':customer'));
+                    }
+                    $qb->setParameter('customer', $customer);
+                };
+            } elseif ($project instanceof ProjectInterface) {
+                $filters[] = function (QueryBuilder $qb, string $alias) use ($project): void {
+                    $qb
+                        ->andWhere($qb->expr()->eq($alias . '.project', ':project'))
+                        ->setParameter('project', $project);
                 };
             }
-        }
 
-        if (!empty($filters)) {
-            $builder
-                ->setFilterable(false)
-                ->setPerPageChoices([100]);
-
-            $source->setQueryBuilderInitializer(function (QueryBuilder $qb, string $alias) use ($filters): void {
-                foreach ($filters as $filter) {
-                    $filter($qb, $alias);
+            foreach (['state', 'paymentState', 'shipmentState', 'invoiceState'] as $property) {
+                if (!empty($states = $options[$property])) {
+                    $filters[] = function (QueryBuilder $qb, string $alias) use ($property, $states): void {
+                        $qb->andWhere($qb->expr()->in($alias . '.' . $property, $states));
+                    };
                 }
-            });
-        } else {
-            $builder
-                ->setExportable(true)
-                ->setConfigurable(true)
-                ->setProfileable(true);
+            }
+
+            if (!empty($filters)) {
+                $builder
+                    ->setConfigurable(false)
+                    ->setProfileable(false)
+                    ->setFilterable(false)
+                    ->setPerPageChoices([100]);
+
+                $source->setQueryBuilderInitializer(function (QueryBuilder $qb, string $alias) use ($filters): void {
+                    foreach ($filters as $filter) {
+                        $filter($qb, $alias);
+                    }
+                });
+            }
         }
 
         $builder
@@ -149,9 +150,14 @@ class OrderType extends AbstractResourceType
                 'position'    => 22,
                 'time_format' => 'none',
             ])*/
+            ->addColumn('project', ResourceColumn::class, [
+                'label'    => t('project.label.singular', [], 'EkynaCommerce'),
+                'resource' => 'ekyna_commerce.project',
+                'position' => 40,
+            ])
             ->addColumn('title', CType\Column\TextType::class, [
                 'label'    => t('field.title', [], 'EkynaUi'),
-                'position' => 40,
+                'position' => 41,
             ])
             ->addColumn('voucherNumber', CType\Column\TextType::class, [
                 'label'    => t('sale.field.voucher_number', [], 'EkynaCommerce'),
@@ -276,13 +282,17 @@ class OrderType extends AbstractResourceType
                 'property_path' => 'customer.companyNumber',
                 'position'      => 35,
             ])
-            ->addFilter('customerGroup', ResourceType::class, [
+            ->addFilter('customerGroup', ResourceFilter::class, [
                 'resource' => 'ekyna_commerce.customer_group',
                 'position' => 36,
             ])
             ->addFilter('title', CType\Filter\TextType::class, [
                 'label'    => t('field.title', [], 'EkynaUi'),
                 'position' => 40,
+            ])
+            ->addFilter('project', ResourceFilter::class, [
+                'resource' => 'ekyna_commerce.project',
+                'position' => 41,
             ])
             ->addFilter('voucherNumber', CType\Filter\TextType::class, [
                 'label'    => t('sale.field.voucher_number', [], 'EkynaCommerce'),
@@ -305,7 +315,7 @@ class OrderType extends AbstractResourceType
                 'class'    => Model\OrderStates::class,
                 'position' => 80,
             ])
-            ->addFilter('paymentMethod', ResourceType::class, [
+            ->addFilter('paymentMethod', ResourceFilter::class, [
                 'resource' => 'ekyna_commerce.payment_method',
                 'position' => 90,
             ])
@@ -386,14 +396,19 @@ class OrderType extends AbstractResourceType
         parent::configureOptions($resolver);
 
         $resolver
+            ->setDefault('exportable', true)
+            ->setDefault('profileable', true)
+            ->setDefault('configurable', true)
             ->setDefault('customer', null)
             ->setDefault('subject', null)
+            ->setDefault('project', null)
             ->setDefault('state', [])
             ->setDefault('shipmentState', [])
             ->setDefault('paymentState', [])
             ->setDefault('invoiceState', [])
             ->setAllowedTypes('subject', ['null', SubjectInterface::class])
             ->setAllowedTypes('customer', ['null', Model\CustomerInterface::class])
+            ->setAllowedTypes('project', ['null', ProjectInterface::class])
             ->setAllowedTypes('state', 'array')
             ->setAllowedTypes('shipmentState', 'array')
             ->setAllowedTypes('paymentState', 'array')

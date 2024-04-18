@@ -9,9 +9,11 @@ use Ekyna\Bundle\CmsBundle\Form\Type\TagChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerSearchType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleType;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceSearchType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -39,6 +41,10 @@ class QuoteType extends SaleType
         parent::buildForm($builder, $options);
 
         $builder
+            ->add('project', ResourceSearchType::class, [
+                'resource' => 'ekyna_commerce.project',
+                'required' => false,
+            ])
             ->add('initiatorCustomer', CustomerSearchType::class, [
                 'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
                 'required' => false,
@@ -53,9 +59,17 @@ class QuoteType extends SaleType
             ->add('expiresAt', DateTimeType::class, [
                 'label' => t('field.expires_at', [], 'EkynaUi'),
             ])
-            ->add('completionDate', DateType::class, [
-                'label'    => t('quote.field.completion_date', [], 'EkynaCommerce'),
+            ->add('projectDate', DateType::class, [
+                'label'    => t('quote.field.project_date', [], 'EkynaCommerce'),
                 'required' => false,
+            ])
+            ->add('projectTrust', IntegerType::class, [
+                'label'    => t('quote.field.project_trust', [], 'EkynaCommerce'),
+                'required' => false,
+                'attr'     => [
+                    'min' => 1,
+                    'max' => 10,
+                ],
             ])
             ->add('tags', TagChoiceType::class);
 

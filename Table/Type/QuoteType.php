@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
+use Ekyna\Bundle\AdminBundle\Table\Type\Column\ResourceType;
 use Ekyna\Bundle\CmsBundle\Table\Column\TagsType;
 use Ekyna\Bundle\CommerceBundle\Model;
 use Ekyna\Bundle\CommerceBundle\Table as Type;
-use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
+use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType as ResourceFilter;
 use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
+use Ekyna\Component\Commerce\Common\Model\ProjectInterface;
 use Ekyna\Component\Table\Bridge\Doctrine\ORM\Source\EntitySource;
 use Ekyna\Component\Table\Exception\UnexpectedTypeException;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
@@ -30,9 +32,9 @@ class QuoteType extends AbstractResourceType
 {
     public function buildTable(TableBuilderInterface $builder, array $options): void
     {
-        $filters = false;
-        /** @var Model\CustomerInterface $customer */
-        if (null !== $customer = $options['customer']) {
+        $filters = true;
+        $customer = $options['customer'];
+        if ($customer instanceof Model\CustomerInterface) {
             $source = $builder->getSource();
             if (!$source instanceof EntitySource) {
                 throw new UnexpectedTypeException($source, EntitySource::class);
@@ -50,13 +52,12 @@ class QuoteType extends AbstractResourceType
                 }
             });
 
-            $builder->setFilterable(false);
-        } else {
-            $filters = true;
+            $filters = false;
             $builder
-                ->setExportable(true)
-                ->setConfigurable(true)
-                ->setProfileable(true);
+                ->setConfigurable(false)
+                ->setProfileable(false)
+                ->setFilterable(false)
+                ->setPerPageChoices([100]);
         }
 
         $builder
@@ -75,23 +76,32 @@ class QuoteType extends AbstractResourceType
                 'position'    => 20,
                 'time_format' => 'none',
             ])
-            ->addColumn('completionDate', CType\Column\DateTimeType::class, [
-                'label'       => t('quote.field.completion_date', [], 'EkynaCommerce'),
-                'position'    => 25,
+            ->addColumn('project', ResourceType::class, [
+                'label'    => t('project.label.singular', [], 'EkynaCommerce'),
+                'resource' => 'ekyna_commerce.project',
+                'position' => 30,
+            ])
+            ->addColumn('projectDate', CType\Column\DateTimeType::class, [
+                'label'       => t('quote.field.project_date', [], 'EkynaCommerce'),
+                'position'    => 31,
                 'time_format' => 'none',
+            ])
+            ->addColumn('projectTrust', CType\Column\NumberType::class, [
+                'label'    => t('quote.field.project_trust', [], 'EkynaCommerce'),
+                'position' => 32,
             ])
             ->addColumn('netTotal', Type\Column\CurrencyType::class, [
                 'label'    => t('sale.field.net_total', [], 'EkynaCommerce'),
-                'position' => 30,
+                'position' => 40,
             ])
             ->addColumn('title', CType\Column\TextType::class, [
                 'label'    => t('field.title', [], 'EkynaUi'),
-                'position' => 40,
+                'position' => 50,
             ])
-            ->addColumn('voucherNumber', CType\Column\TextType::class, [
+            /*->addColumn('voucherNumber', CType\Column\TextType::class, [
                 'label'    => t('sale.field.voucher_number', [], 'EkynaCommerce'),
                 'position' => 45,
-            ])
+            ])*/
             /*->addColumn('paidTotal', Type\Column\CurrencyType::class, [
                 'label'    => t('sale.field.paid_total', [], 'EkynaCommerce'),
                 'position' => 60,
@@ -102,9 +112,9 @@ class QuoteType extends AbstractResourceType
             /*->addColumn('paymentState', Type\Column\PaymentStateType::class, [
                 'position' => 80,
             ])*/
-            /*->addColumn('inCharge', Type\Column\InChargeType::class, [
+            ->addColumn('inCharge', Type\Column\InChargeType::class, [
                 'position' => 90,
-            ])*/
+            ])
             ->addColumn('tags', TagsType::class, [
                 'property_path' => 'allTags',
                 'position'      => 100,
@@ -114,14 +124,21 @@ class QuoteType extends AbstractResourceType
             ]);
 
         if (null === $customer || $customer->hasChildren()) {
-            $builder->addColumn('customer', Type\Column\SaleCustomerType::class, [
-                'position' => 30,
-            ]);
+            $builder
+                ->addColumn('customer', Type\Column\SaleCustomerType::class, [
+                    'position' => 60,
+                ])
+                ->addColumn('initiatorCustomer', ResourceType::class, [
+                    'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
+                    'resource' => 'ekyna_commerce.customer',
+                    'position' => 61,
+                ]);
         }
 
         if (!$filters) {
             return;
         }
+
         $builder
             ->addFilter('number', CType\Filter\TextType::class, [
                 'label'    => t('field.number', [], 'EkynaUi'),
@@ -161,13 +178,17 @@ class QuoteType extends AbstractResourceType
                 'property_path' => 'customer.companyNumber',
                 'position'      => 35,
             ])
-            ->addFilter('customerGroup', ResourceType::class, [
+            ->addFilter('customerGroup', ResourceFilter::class, [
                 'resource' => 'ekyna_commerce.customer_group',
                 'position' => 36,
             ])
             ->addFilter('title', CType\Filter\TextType::class, [
                 'label'    => t('field.title', [], 'EkynaUi'),
                 'position' => 40,
+            ])
+            ->addFilter('project', ResourceFilter::class, [
+                'resource' => 'ekyna_commerce.project',
+                'position' => 41,
             ])
             ->addFilter('voucherNumber', CType\Filter\TextType::class, [
                 'label'    => t('sale.field.voucher_number', [], 'EkynaCommerce'),
@@ -209,7 +230,12 @@ class QuoteType extends AbstractResourceType
         parent::configureOptions($resolver);
 
         $resolver
+            ->setDefault('exportable', true)
+            ->setDefault('profileable', true)
+            ->setDefault('configurable', true)
             ->setDefault('customer', null)
-            ->setAllowedTypes('customer', ['null', Model\CustomerInterface::class]);
+            ->setDefault('project', null)
+            ->setAllowedTypes('customer', ['null', Model\CustomerInterface::class])
+            ->setAllowedTypes('project', ['null', ProjectInterface::class]);
     }
 }

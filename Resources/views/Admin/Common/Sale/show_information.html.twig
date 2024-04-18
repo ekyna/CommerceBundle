@@ -64,6 +64,29 @@
     </div>
     {% endif %}
 </div>
+{% if sale is sale_quote %}
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(sale.projectDate, 'datetime', {
+            'label': t('quote.field.project_date', {}, 'EkynaCommerce'),
+            'id': 'sale_projectDate',
+            'label_col': 4
+        }) }}
+    </div>
+    <div class="col-md-6">
+        {{ show_row(sale.projectTrust, 'number', {
+            'label': t('quote.field.project_trust', {}, 'EkynaCommerce'),
+            'id': 'sale_projectTrust',
+            'label_col': 4
+        }) }}
+    </div>
+</div>
+{% endif %}
+{{ show_row(sale.project, 'resource', {
+    'label': 'project.label.singular',
+    'label_trans_domain': 'EkynaCommerce',
+    'id': 'sale_project'
+}) }}
 {% endif %}
 <hr>
 {{ show_row(sale.comment, 'textarea', {

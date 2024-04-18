@@ -9,6 +9,7 @@ use Ekyna\Bundle\CmsBundle\Form\Type\TagChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerSearchType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleType;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceSearchType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -37,6 +38,10 @@ class OrderType extends SaleType
         parent::buildForm($builder, $options);
 
         $builder
+            ->add('project', ResourceSearchType::class, [
+                'resource' => 'ekyna_commerce.project',
+                'required' => false,
+            ])
             ->add('initiatorCustomer', CustomerSearchType::class, [
                 'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
                 'required' => false,

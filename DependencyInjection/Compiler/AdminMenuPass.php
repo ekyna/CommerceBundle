@@ -82,6 +82,11 @@ class AdminMenuPass implements CompilerPassInterface
                 'position' => 10,
             ])
             ->addEntry([
+                'name'     => 'projects',
+                'resource' => 'ekyna_commerce.project',
+                'position' => 11,
+            ])
+            ->addEntry([
                 'name'       => 'order_invoices',
                 'route'      => 'admin_ekyna_commerce_list_order_invoice',
                 'label'      => 'invoice.label.plural',

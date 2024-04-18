@@ -206,6 +206,8 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('ekyna_commerce.account.order_resource_helper'),
             service('router'),
+            service('ekyna_commerce.helper.constants'),
+            service('ekyna_ui.helper.flash'),
             service('ekyna_commerce.helper.payment'),
             service('form.factory'),
             service('twig'),

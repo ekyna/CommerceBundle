@@ -1,0 +1,32 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {{ show_row(project.name, 'text', {
+            'label': 'field.name',
+            'label_trans_domain': 'EkynaUi'
+        }) }}
+        {{ show_row(project.description, 'textarea', {
+            'label': 'field.description',
+            'label_trans_domain': 'EkynaUi',
+            'html': true,
+        }) }}
+    </div>
+{%- endblock main_contents %}
+
+{% block post_main -%}
+    <div class="sub-header">
+        <h2>{{ 'order.label.plural'|trans({}, 'EkynaCommerce')|raw }}</h2>
+    </div>
+    {{ ekyna_table_render(admin_resource_table('ekyna_commerce.order', {
+        'source': project.orders.toArray(),
+        'filterable': false,
+    })) }}
+    <div class="sub-header">
+        <h2>{{ 'quote.label.plural'|trans({}, 'EkynaCommerce')|raw }}</h2>
+    </div>
+    {{ ekyna_table_render(admin_resource_table('ekyna_commerce.quote', {
+        'source': project.quotes.toArray(),
+        'filterable': false,
+    })) }}
+{%- endblock post_main %}

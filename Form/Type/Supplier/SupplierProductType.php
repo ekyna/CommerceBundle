@@ -96,6 +96,7 @@ class SupplierProductType extends AbstractResourceType
                 'currency' => $currency->getCode(),
                 'decimal'  => true,
                 'scale'    => 5,
+                'help' => t('supplier_product.help.net_price', [], 'EkynaCommerce'),
             ]);
         });
     }

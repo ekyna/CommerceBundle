@@ -1301,6 +1301,25 @@ pricing:
         ati: TTC
         net: HT
 
+project:
+    label:
+        singular: Projet
+        plural: Projets
+    header:
+        list: Projets <small>Liste des projets</small>
+        show: Détail du projet <small>%name%</small>
+        new: Créer un nouveau projet
+        edit: Modifier le projet <small>%name%</small>
+        remove: Supprimer le projet <small>%name%</small>
+    button:
+        list: Liste des projet
+        show: Détail du projet
+        new: Nouveau projet
+        edit: Modifier le projet
+        remove: Supprimer le projet
+    alert:
+        no_item: Aucun projet configuré
+
 quote:
     label:
         singular: Devis
@@ -1324,7 +1343,8 @@ quote:
         notify: Notifier le devis
     field:
         editable: Modifiable par le client
-        completion_date: Date de réalisation
+        project_date: Date projet
+        project_trust: Confiance projet
     alert:
         no_item: Aucun devis configuré
     message:
@@ -1982,6 +2002,8 @@ supplier_product:
         ordered: Réappro.
         eda: E.D.A.
         subject: Article
+    help:
+        net_price: Pour la quantité du conditionnement.
     alert:
         no_item: Aucune référence fournisseur configuré
 

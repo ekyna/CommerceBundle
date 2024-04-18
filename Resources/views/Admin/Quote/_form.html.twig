@@ -109,9 +109,6 @@
             <div class="col-md-6">
                 {{ form_row(form.editable, {'label_col': 4, 'widget_col': 8}) }}
             </div>
-            <div class="col-md-6">
-                {{ form_row(form.completionDate, {'label_col': 4, 'widget_col': 8}) }}
-            </div>
         </div>
         <hr>
         {{ form_row(form.tags) }}
@@ -145,8 +142,19 @@
                 {{ form_row(form.inCharge, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.projectDate, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.projectTrust, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        {{ form_row(form.project) }}
+        <hr>
         {{ form_row(form.comment) }}
         {{ form_row(form.documentComment) }}
+        <hr>
         {{ form_row(form.description) }}
         {{ form_row(form.preparationNote) }}
     </div>

@@ -1267,6 +1267,25 @@ pricing:
         ati: Inc. tax.
         net: Exc. tax.
 
+project:
+    label:
+        singular: Project
+        plural: Projects
+    header:
+        list: Projects <small>List of projects</small>
+        show: Project details <small>%name%</small>
+        new: Create a new project
+        edit: Edit project <small>%name%</small>
+        remove: Remove project <small>%name%</small>
+    button:
+        list: Projects list
+        show: Project details
+        new: New project
+        edit: Edit project
+        remove: Remove project
+    alert:
+        no_item: No project configured
+
 quote:
     label:
         singular: Quote
@@ -1290,7 +1309,8 @@ quote:
         notify: Notify quote
     field:
         editable: Editable by the customer
-        completion_date: Completion date
+        project_date: Project date
+        project_trust: Project trust
     alert:
         no_item: No quote configured
     message:
@@ -1943,6 +1963,8 @@ supplier_product:
         ordered: Ordered
         eda: E.D.A.
         subject: Product
+    help:
+        net_price: For the packing quantity.
     alert:
         no_item: No supplier reference configured
 
