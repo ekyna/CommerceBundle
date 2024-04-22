@@ -73,3 +73,15 @@ resources:
             behaviors:
                 uploadable:
                     uploader: ekyna_commerce.uploader
+
+        ticket_tag:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Support\Model\TicketTagInterface
+                class: Ekyna\Component\Commerce\Support\Entity\TicketTag
+            normalizer: Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketTagNormalizer
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Support\TicketTagType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\TicketTagType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud: ~

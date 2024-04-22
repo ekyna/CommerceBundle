@@ -34,6 +34,9 @@
         {% if ticket.updated_at > ticket.created_at -%}
             &nbsp;(<span class="field">{{ trans.updated_at }}</span>{{ ticket.f_updated_at }})
         {%- endif %}
+        {% if ticket.closed_at is not null -%}
+            &nbsp;(<span class="field">{{ trans.closed_at }}</span>{{ ticket.f_closed_at }})
+        {%- endif %}
     </span>
     {% if ticket.orders is not empty -%}
         <br><span class="field">{{ trans.orders }}</span>
@@ -51,6 +54,12 @@
            class="btn btn-xs btn-default quote-show"
            {% if config.admin %}data-summary='{"route": "admin_ekyna_commerce_quote_summary", "parameters": {"quoteId": {{ quote.id }}}}'{% endif %}
            data-id="{{ quote.id }}">{{ quote.number }}</a>
+        {%- endfor %}
+    {%- endif %}
+    {% if ticket.tags is not empty -%}
+        <br><span class="field">{{ trans.tags }}</span>
+        {% for tag in ticket.tags -%}
+        <span class="btn btn-xs btn-default">{{ tag }}</span>
         {%- endfor %}
     {%- endif %}
 </p>

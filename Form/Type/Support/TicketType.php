@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Support;
 use Ekyna\Bundle\AdminBundle\Form\Type\UserChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerSearchType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceChoiceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceSearchType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -42,6 +43,12 @@ class TicketType extends AbstractResourceType
                     'resource' => 'ekyna_commerce.quote',
                     'multiple' => true,
                     'required' => false,
+                ])
+                ->add('tags', ResourceChoiceType::class, [
+                    'resource'  => 'ekyna_commerce.ticket_tag',
+                    'multiple'  => true,
+                    'allow_new' => true,
+                    'required'  => false,
                 ])
                 ->add('internal', CheckboxType::class, [
                     'label'    => t('field.internal', [], 'EkynaCommerce'),

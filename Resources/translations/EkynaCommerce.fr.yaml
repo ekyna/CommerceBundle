@@ -2152,6 +2152,26 @@ ticket:
         open_confirm: Confirmer la réouverture du ticket ?
         remove_confirm: Confirmer la suppression du ticket ?
 
+
+ticket_tag:
+    label:
+        singular: Étiquette de ticket
+        plural: Étiquettes de ticket
+    header:
+        list: Étiquettes de ticket <small>Liste des étiquettes</small>
+        show: Détails de l'étiquette <small>%name%</small>
+        new: Créer une nouvelle étiquette
+        edit: Modifier l'étiquette
+        remove: Supprimer l'étiquette
+    button:
+        list: Liste des étiquettes
+        show: Détail de l'étiquette
+        new: Nouvelle étiquette
+        edit: Modifier l'étiquette
+        remove: Supprimer l'étiquette
+    alert:
+        no_item: Aucune étiquette configuré
+
 ticket_message:
     label:
         singular: Message

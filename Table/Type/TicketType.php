@@ -13,6 +13,7 @@ use Ekyna\Bundle\CommerceBundle\Table\Filter;
 use Ekyna\Bundle\ResourceBundle\Table\Type\AbstractResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Customer\Model\CustomerInterface;
+use Ekyna\Component\Commerce\Support\Model\TicketTagInterface;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
@@ -49,6 +50,11 @@ class TicketType extends AbstractResourceType
             ->addColumn('subject', CType\Column\TextType::class, [
                 'label'    => t('field.subject', [], 'EkynaUi'),
                 'position' => 40,
+            ])
+            ->addColumn('tags', ResourceType::class, [
+                'label'    => t('field.tags', [], 'EkynaUi'),
+                'resource' => TicketTagInterface::class,
+                'position' => 70,
             ])
             ->addColumn('orders', Column\OrderType::class, [
                 'multiple' => true,

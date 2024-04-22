@@ -64,12 +64,14 @@ class TicketRenderer
         } elseif ($source instanceof QuoteInterface) {
             $tickets = $this->repository->findByQuote($source, $config['admin']);
         } else {
-            throw new UnexpectedValueException(sprintf(
-                'Expected instance of %s, %s or %s.',
-                CustomerInterface::class,
-                OrderInterface::class,
-                QuoteInterface::class
-            ));
+            throw new UnexpectedValueException(
+                sprintf(
+                    'Expected instance of %s, %s or %s.',
+                    CustomerInterface::class,
+                    OrderInterface::class,
+                    QuoteInterface::class
+                )
+            );
         }
 
         $this->addRoutes($config);
@@ -170,8 +172,10 @@ class TicketRenderer
             'in_charge'  => $this->translator->trans('customer.field.in_charge', [], 'EkynaCommerce'),
             'created_at' => $this->translator->trans('ticket.field.created_at', [], 'EkynaCommerce'),
             'updated_at' => $this->translator->trans('ticket.field.updated_at', [], 'EkynaCommerce'),
+            'closed_at'  => $this->translator->trans('field.closed_at', [], 'EkynaUi'),
             'orders'     => $this->translator->trans('order.label.plural', [], 'EkynaCommerce'),
             'quotes'     => $this->translator->trans('quote.label.plural', [], 'EkynaCommerce'),
+            'tags'       => $this->translator->trans('field.tags', [], 'EkynaUi'),
         ];
     }
 }

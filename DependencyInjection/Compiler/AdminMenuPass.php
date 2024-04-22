@@ -114,13 +114,22 @@ class AdminMenuPass implements CompilerPassInterface
                 'position'   => 22,
             ]);
 
-        if ($this->features->isEnabled(Features::SUPPORT)) {
-            $this->helper->addEntry([
+        if (!$this->features->isEnabled(Features::SUPPORT)) {
+            return;
+        }
+
+        $this
+            ->helper
+            ->addEntry([
                 'name'     => 'tickets',
                 'resource' => 'ekyna_commerce.ticket',
                 'position' => 23,
+            ])
+            ->addEntry([
+                'name'     => 'ticket_tags',
+                'resource' => 'ekyna_commerce.ticket_tag',
+                'position' => 24,
             ]);
-        }
     }
 
     private function addSupplierMenu(): void
