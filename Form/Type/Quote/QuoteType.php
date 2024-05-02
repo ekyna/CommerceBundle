@@ -11,6 +11,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleType;
 use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
 use Ekyna\Bundle\ResourceBundle\Form\Type\ResourceSearchType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -69,6 +70,21 @@ class QuoteType extends SaleType
                 'attr'     => [
                     'min' => 1,
                     'max' => 10,
+                ],
+            ])
+            ->add('projectAlive', ChoiceType::class, [
+                'label'                     => t('quote.field.project_alive', [], 'EkynaCommerce'),
+                'choices'                   => [
+                    'value.yes' => '1',
+                    'value.no'  => '0',
+                ],
+                'choice_translation_domain' => 'EkynaUi',
+                'expanded'                  => true,
+                'required'                  => false,
+                'placeholder'               => t('value.undefined', [], 'EkynaUi'),
+                'attr'                      => [
+                    'class'             => 'inline',
+                    'align_with_widget' => true,
                 ],
             ])
             ->add('tags', TagChoiceType::class);

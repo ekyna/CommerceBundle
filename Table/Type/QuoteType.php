@@ -90,6 +90,10 @@ class QuoteType extends AbstractResourceType
                 'label'    => t('quote.field.project_trust', [], 'EkynaCommerce'),
                 'position' => 32,
             ])
+            ->addColumn('projectAlive', CType\Column\BooleanType::class, [
+                'label'    => t('quote.field.project_alive', [], 'EkynaCommerce'),
+                'position' => 33,
+            ])
             ->addColumn('netTotal', Type\Column\CurrencyType::class, [
                 'label'    => t('sale.field.net_total', [], 'EkynaCommerce'),
                 'position' => 40,

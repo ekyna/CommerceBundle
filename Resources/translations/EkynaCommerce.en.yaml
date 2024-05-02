@@ -1311,6 +1311,7 @@ quote:
         editable: Editable by the customer
         project_date: Project date
         project_trust: Project trust
+        project_alive: Project alive
     alert:
         no_item: No quote configured
     message:

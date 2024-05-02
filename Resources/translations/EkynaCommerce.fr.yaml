@@ -1345,6 +1345,7 @@ quote:
         editable: Modifiable par le client
         project_date: Date projet
         project_trust: Confiance projet
+        project_alive: Vie projet
     alert:
         no_item: Aucun devis configuré
     message:

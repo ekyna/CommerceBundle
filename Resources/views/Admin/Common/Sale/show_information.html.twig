@@ -81,6 +81,15 @@
         }) }}
     </div>
 </div>
+<div class="row">
+    <div class="col-md-6">
+        {{ show_row(sale.projectAlive, 'boolean', {
+            'label': t('quote.field.project_alive', {}, 'EkynaCommerce'),
+            'id': 'sale_projectDate',
+            'label_col': 4
+        }) }}
+    </div>
+</div>
 {% endif %}
 {{ show_row(sale.project, 'resource', {
     'label': 'project.label.singular',

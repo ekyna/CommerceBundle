@@ -28,7 +28,7 @@ resources:
                     read:
                         expose: true
                 admin_toggle:
-                    properties: [autoDiscount,autoShipping,autoNotify]
+                    properties: [autoDiscount,autoShipping,autoNotify,projectAlive]
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\BatchAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\CheckItemsAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\DocumentGenerateAction: ~
