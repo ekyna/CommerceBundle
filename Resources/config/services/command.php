@@ -15,6 +15,7 @@ use Ekyna\Bundle\CommerceBundle\Command\FixVoucherNumberCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceDueDateUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceNumberIntegrityCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoicePaidTotalUpdateCommand;
+use Ekyna\Bundle\CommerceBundle\Command\InvoiceUpdateDataCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceUpdateMarginCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceUpdateTotalsCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderDateModifyCommand;
@@ -143,6 +144,17 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.calculator.invoice'),
             service('doctrine.orm.default_entity_manager'),
             service('ekyna_commerce.checker.locking'),
+        ])
+        ->tag('console.command');
+
+    // Invoice update data command
+    $services
+        ->set('ekyna_commerce.command.invoice_update_data', InvoiceUpdateDataCommand::class)
+        ->args([
+            service('ekyna_commerce.repository.order_invoice'),
+            service('ekyna_commerce.checker.locking'),
+            service('ekyna_commerce.builder.invoice'),
+            service('doctrine.orm.default_entity_manager'),
         ])
         ->tag('console.command');
 
