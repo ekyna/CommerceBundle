@@ -13,6 +13,7 @@ use Ekyna\Bundle\CommerceBundle\Command\CustomerBirthdayCommand;
 use Ekyna\Bundle\CommerceBundle\Command\CustomerFlagsUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\FixVoucherNumberCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceDueDateUpdateCommand;
+use Ekyna\Bundle\CommerceBundle\Command\InvoiceExportCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceNumberIntegrityCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoicePaidTotalUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceUpdateDataCommand;
@@ -114,6 +115,16 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.repository.order_invoice'),
             service('ekyna_commerce.resolver.due_date'),
             service('doctrine.orm.default_entity_manager'),
+        ])
+        ->tag('console.command');
+
+    // Invoice export command
+    $services
+        ->set('ekyna_commerce.command.invoice_export', InvoiceExportCommand::class)
+        ->args([
+            service('ekyna_commerce.repository.order_invoice'),
+            service('mailer'), // TODO Report* mailer
+            param('ekyna_resource.report_email'),
         ])
         ->tag('console.command');
 

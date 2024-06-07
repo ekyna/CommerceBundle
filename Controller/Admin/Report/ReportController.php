@@ -29,7 +29,6 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
 
-use function min;
 use function Symfony\Component\Translation\t;
 
 /**
@@ -41,14 +40,14 @@ class ReportController
 {
     public function __construct(
         private readonly ReportRequestRepository $requestRepository,
-        private readonly ManagerRegistry $managerRegistry,
+        private readonly ManagerRegistry         $managerRegistry,
         private readonly LocaleProviderInterface $localeProvider,
         private readonly UserProviderInterface   $userProvider,
         private readonly FormFactoryInterface    $formFactory,
         private readonly UrlGeneratorInterface   $urlGenerator,
         private readonly Environment             $twig,
         private readonly MessageBusInterface     $messageBus,
-        private readonly MenuBuilder                 $menuBuilder,
+        private readonly MenuBuilder             $menuBuilder,
         private readonly FlashHelper             $flashHelper,
         private readonly int                     $delay = 5
     ) {
@@ -115,10 +114,12 @@ class ReportController
             return false;
         }
 
-        $this->flashHelper->addFlash(t('report.message.throttle', [
-            '{minutes}' => min(1, $this->delay - $past),
-        ], 'EkynaCommerce'),
-            'danger');
+        $this->flashHelper->addFlash(
+            t('report.message.throttle', [
+                '{minutes}' => max(1, $this->delay - $past),
+            ], 'EkynaCommerce'),
+            'danger'
+        );
 
         return true;
     }

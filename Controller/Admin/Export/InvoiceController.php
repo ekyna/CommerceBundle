@@ -106,7 +106,7 @@ class InvoiceController
         try {
             $path = $this
                 ->orderInvoiceExporter
-                ->exportRegionsInvoices($from, $to);
+                ->exportRegionsInvoicesStats($from, $to);
         } catch (CommerceExceptionInterface $e) {
             if ($this->debug) {
                 throw $e;
