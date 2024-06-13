@@ -40,6 +40,7 @@ class InvoiceExportCommand extends Command
         $this->addOption('from', 'f', InputOption::VALUE_REQUIRED, 'The `from` date');
         $this->addOption('to', 't', InputOption::VALUE_REQUIRED, 'The `to` date');
         $this->addOption('email', null, InputOption::VALUE_REQUIRED, 'The `email` to send export to');
+        $this->addOption('filename', null, InputOption::VALUE_REQUIRED, 'The exported file name');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -56,7 +57,7 @@ class InvoiceExportCommand extends Command
 
         $range = new DateRange($from, $to);
 
-        $fileName = sprintf(
+        $fileName = $input->getOption('filename') ?? sprintf(
             'invoices_%s_%s.csv',
             $from->format('Y-m-d'),
             $to->format('Y-m-d')
