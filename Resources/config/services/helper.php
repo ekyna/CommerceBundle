@@ -29,6 +29,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetRenderer;
 use Ekyna\Component\Commerce\Stock\Helper\AdjustHelper;
 use Ekyna\Component\Commerce\Stock\Helper\AvailabilityHelperInterface;
 use Ekyna\Component\Commerce\Stock\Helper\StockSubjectQuantityHelper;
+use Ekyna\Component\Commerce\Stock\Helper\StockUnitHelper;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services();
@@ -116,6 +117,13 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('ekyna_commerce.helper.subject'),
             service('ekyna_commerce.calculator.invoice_subject'),
+        ]);
+
+    // Stock subject quantity helper
+    $services
+        ->set('ekyna_commerce.helper.stock_unit', StockUnitHelper::class)
+        ->args([
+            service('ekyna_resource.repository.factory'),
         ]);
 
     // Constants helper

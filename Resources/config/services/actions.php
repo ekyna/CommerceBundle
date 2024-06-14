@@ -327,6 +327,12 @@ return static function (ContainerConfigurator $container) {
             ])
             ->tag('ekyna_resource.action')
 
+        ->set('ekyna_commerce.action.subject.export_stock_log', Subject\ExportStockLogAction::class)
+            ->args([
+                service('ekyna_commerce.exporter.subject_stock_log'),
+            ])
+            ->tag('ekyna_resource.action')
+
         ->set('ekyna_commerce.action.subject.label', Subject\LabelAction::class)
             ->args([
                 service('ekyna_commerce.renderer.subject_label'),

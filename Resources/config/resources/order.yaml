@@ -257,6 +257,9 @@ resources:
             entity:
                 interface: Ekyna\Component\Commerce\Order\Model\OrderShipmentItemInterface
                 class: Ekyna\Component\Commerce\Order\Entity\OrderShipmentItem
+            repository:
+                interface : Ekyna\Component\Commerce\Order\Repository\OrderShipmentItemRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderShipmentItemRepository
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentItemType
             parent: ekyna_commerce.order_shipment
             trans_prefix: sale_item

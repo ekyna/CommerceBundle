@@ -11,6 +11,7 @@ use Ekyna\Component\Commerce\Stock\Cache\StockAssignmentCache;
 use Ekyna\Component\Commerce\Stock\Cache\StockUnitCache;
 use Ekyna\Component\Commerce\Stock\Dispatcher\StockAssignmentDispatcher;
 use Ekyna\Component\Commerce\Stock\EventListener\AbstractStockUnitListener;
+use Ekyna\Component\Commerce\Stock\Export\StockSubjectLogExporter;
 use Ekyna\Component\Commerce\Stock\Linker\StockUnitLinker;
 use Ekyna\Component\Commerce\Stock\Logger\StockLogger;
 use Ekyna\Component\Commerce\Stock\Manager\StockAssignmentManager;
@@ -35,6 +36,15 @@ return static function (ContainerConfigurator $container) {
             service('logger'),
         ])
         ->tag('monolog.logger', ['channel' => 'stock']);
+
+    // Stock subject log exporter
+    $services
+        ->set('ekyna_commerce.exporter.subject_stock_log', StockSubjectLogExporter::class)
+        ->args([
+            service('ekyna_commerce.repository.supplier_delivery_item'),
+            service('ekyna_commerce.repository.order_shipment_item'),
+            service('ekyna_commerce.helper.stock_unit'),
+        ]);
 
     // Abstract stock unit listener
     $services

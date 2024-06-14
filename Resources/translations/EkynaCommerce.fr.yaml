@@ -1795,6 +1795,8 @@ stock_adjustment:
         empty_list: Aucun ajustement de stock configuré
 
 stock_subject:
+    button:
+        export_stock_log: Exporter les mouvements de stock
     field:
         mode: Mode stock
         state: État stock
