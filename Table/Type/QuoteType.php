@@ -153,11 +153,6 @@ class QuoteType extends AbstractResourceType
                 'position' => 20,
                 'time'     => false,
             ])
-            ->addFilter('completionDate', CType\Filter\DateTimeType::class, [
-                'label'    => t('quote.field.completion_date', [], 'EkynaCommerce'),
-                'position' => 25,
-                'time'     => false,
-            ])
             ->addFilter('customer', Type\Filter\CustomerType::class, [
                 'position' => 30,
             ])
@@ -193,6 +188,19 @@ class QuoteType extends AbstractResourceType
             ->addFilter('project', ResourceFilter::class, [
                 'resource' => 'ekyna_commerce.project',
                 'position' => 41,
+            ])
+            ->addFilter('projectDate', CType\Filter\DateTimeType::class, [
+                'label'    => t('quote.field.project_date', [], 'EkynaCommerce'),
+                'position' => 42,
+                'time'     => false,
+            ])
+            ->addFilter('projectTrust', CType\Filter\NumberType::class, [
+                'label'    => t('quote.field.project_trust', [], 'EkynaCommerce'),
+                'position' => 43,
+            ])
+            ->addFilter('projectAlive', CType\Filter\BooleanType::class, [
+                'label'    => t('quote.field.project_alive', [], 'EkynaCommerce'),
+                'position' => 44,
             ])
             ->addFilter('voucherNumber', CType\Filter\TextType::class, [
                 'label'    => t('sale.field.voucher_number', [], 'EkynaCommerce'),
