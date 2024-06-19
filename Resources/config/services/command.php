@@ -28,6 +28,7 @@ use Ekyna\Bundle\CommerceBundle\Command\OrderUpdateTotalsCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderWatchCommand;
 use Ekyna\Bundle\CommerceBundle\Command\PaymentStateChangeCommand;
 use Ekyna\Bundle\CommerceBundle\Command\PaymentWatchCommand;
+use Ekyna\Bundle\CommerceBundle\Command\QuoteReportCommand;
 use Ekyna\Bundle\CommerceBundle\Command\ReportGenerateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\ReportRequestPurgeCommand;
 use Ekyna\Bundle\CommerceBundle\Command\ShipmentLabelPurgeCommand;
@@ -45,6 +46,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.command.accounting_export', AccountingExportCommand::class)
         ->args([
             service('ekyna_commerce.exporter.accounting'),
+            service('ekyna_commerce.helper.mailer.address'),
             service('ekyna_setting.manager'),
             service('mailer'),
         ])
@@ -273,6 +275,17 @@ return static function (ContainerConfigurator $container) {
             service('doctrine.orm.default_entity_manager'),
             service('ekyna_setting.manager'),
             service('mailer.mailer'),
+        ])
+        ->tag('console.command');
+
+    // Quote report command
+    $services
+        ->set('ekyna_commerce.command.report.quote', QuoteReportCommand::class)
+        ->args([
+            service('ekyna_commerce.generator.quote_report'),
+            service('ekyna_commerce.helper.mailer.address'),
+            service('translator'),
+            service('mailer'),
         ])
         ->tag('console.command');
 

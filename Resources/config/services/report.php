@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Ekyna\Bundle\CommerceBundle\MessageHandler\SendSalesReportHandler;
 use Ekyna\Bundle\CommerceBundle\Repository\ReportRequestRepository;
+use Ekyna\Bundle\CommerceBundle\Service\Quote\QuoteReportGenerator;
 use Ekyna\Bundle\CommerceBundle\Service\Report\ReportMailer;
 use Ekyna\Component\Commerce\Bridge\Symfony\DependencyInjection\ReportRegistryPass;
 use Ekyna\Component\Commerce\Report\Fetcher\InvoiceFetcher;
@@ -109,9 +109,18 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.report.generator'),
             service('ekyna_commerce.report.registry'),
             service('ekyna_commerce.factory.formatter'),
-            service('ekyna_admin.helper.mailer'),
+            service('ekyna_admin.helper.mailer.address'),
             service('translator'),
             service('twig'),
             service('mailer.mailer'),
+        ]);
+
+    // Quote report generator
+    $services
+        ->set('ekyna_commerce.generator.quote_report', QuoteReportGenerator::class)
+        ->args([
+            service('ekyna_commerce.repository.quote'),
+            service('translator'),
+            service('twig'),
         ]);
 };

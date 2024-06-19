@@ -44,6 +44,7 @@ class CurrencyType extends AbstractColumnType
         }
 
         $view->vars['value'] = $this->renderer->renderQuote($view->vars['value'], $subject, $options['default']);
+        $view->vars['attr']['class'] = 'text-right';
     }
 
     public function getBlockPrefix(): string

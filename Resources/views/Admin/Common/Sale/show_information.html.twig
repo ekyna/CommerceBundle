@@ -85,8 +85,9 @@
     <div class="col-md-6">
         {{ show_row(sale.projectAlive, 'boolean', {
             'label': t('quote.field.project_alive', {}, 'EkynaCommerce'),
-            'id': 'sale_projectDate',
-            'label_col': 4
+            'id': 'sale_projectAlive',
+            'label_col': 4,
+            'toggle_path': admin_resource_path(sale, 'admin_toggle', {property: 'projectAlive'})
         }) }}
     </div>
 </div>

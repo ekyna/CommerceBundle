@@ -8,8 +8,9 @@ use Doctrine\ORM\Events;
 use Ekyna\Bundle\CommerceBundle\EventListener\LogoutEventSubscriber;
 use Ekyna\Bundle\CommerceBundle\EventListener\SecurityEventListener;
 use Ekyna\Bundle\CommerceBundle\Install\CommerceInstaller;
+use Ekyna\Bundle\CommerceBundle\Service\Mailer\AddressHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Mailer\AttachmentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Mailer\Mailer;
-use Ekyna\Bundle\CommerceBundle\Service\Mailer\MailerHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Routing\RoutingLoader;
 use Ekyna\Bundle\CommerceBundle\Service\Security\TicketAttachmentVoter;
 use Ekyna\Bundle\CommerceBundle\Service\Security\TicketMessageVoter;
@@ -103,9 +104,17 @@ return static function (ContainerConfigurator $container): void {
             'priority'   => 99,
         ]);
 
-    // Mailer
+    // Address mailer helper
     $services
-        ->set('ekyna_commerce.helper.mailer', MailerHelper::class)
+        ->set('ekyna_commerce.helper.mailer.address', AddressHelper::class)
+        ->args([
+            service('ekyna_admin.helper.mailer.address'),
+            service('ekyna_setting.manager'),
+        ]);
+
+    // Attachment mailer helper
+    $services
+        ->set('ekyna_commerce.helper.mailer.attachment', AttachmentHelper::class)
         ->args([
             service('ekyna_commerce.filesystem'),
             service('ekyna_commerce.factory.document_renderer'),
@@ -120,8 +129,8 @@ return static function (ContainerConfigurator $container): void {
             service('mailer'),
             service('twig'),
             service('translator'),
-            service('ekyna_admin.helper.mailer'),
-            service('ekyna_commerce.helper.mailer'),
+            service('ekyna_admin.helper.mailer.address'),
+            service('ekyna_commerce.helper.mailer.attachment'),
         ]);
 
     // Routing loader

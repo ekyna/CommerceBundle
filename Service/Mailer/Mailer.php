@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Service\Mailer;
 
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
-use Ekyna\Bundle\AdminBundle\Service\Mailer\MailerHelper as AdminMailerHelper;
+use Ekyna\Bundle\AdminBundle\Service\Mailer\AddressHelper;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes as BDocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderAttachmentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
 use Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface;
-use Ekyna\Bundle\CommerceBundle\Service\Mailer\MailerHelper as CommerceMailerHelper;
 use Ekyna\Component\Commerce\Common\Model\CouponInterface;
 use Ekyna\Component\Commerce\Common\Model\Notify;
 use Ekyna\Component\Commerce\Common\Model\Recipient;
@@ -45,11 +44,11 @@ use function substr;
 class Mailer
 {
     public function __construct(
-        private readonly MailerInterface      $mailer,
-        private readonly Environment          $twig,
-        private readonly TranslatorInterface  $translator,
-        private readonly AdminMailerHelper    $adminMailerHelper,
-        private readonly CommerceMailerHelper $commerceMailerHelper,
+        private readonly MailerInterface     $mailer,
+        private readonly Environment         $twig,
+        private readonly TranslatorInterface $translator,
+        private readonly AddressHelper       $addressHelper,
+        private readonly AttachmentHelper    $attachmentHelper,
     ) {
     }
 
@@ -131,13 +130,13 @@ class Mailer
 
         // Form attachment
         $this
-            ->commerceMailerHelper
+            ->attachmentHelper
             ->attachSupplierOrder($message, $order, $order->getNumber() . '.pdf');
 
         // Subjects labels
         if ($submit->isSendLabels()) {
             $this
-                ->commerceMailerHelper
+                ->attachmentHelper
                 ->attachSupplierOrderSubjectLabels($message, $order);
         }
 
@@ -164,7 +163,7 @@ class Mailer
         $locale = $customer->getLocale();
 
         $subject = $this->translator->trans('ticket_message.notify.customer.subject', [
-            '%site_name%' => $this->adminMailerHelper->getSiteName(),
+            '%site_name%' => $this->addressHelper->getSiteName(),
         ], 'EkynaCommerce', $locale);
 
         $body = $this->twig->render('@EkynaCommerce/Email/customer_ticket_message.html.twig', [
@@ -229,7 +228,7 @@ class Mailer
         $locale = $customer->getLocale();
 
         $subject = $this->translator->trans('coupon.notify.customer.subject', [
-            '%site_name%' => $this->adminMailerHelper->getSiteName(),
+            '%site_name%' => $this->addressHelper->getSiteName(),
         ], 'EkynaCommerce', $locale);
 
         $body = $this->twig->render('@EkynaCommerce/Email/customer_coupons.html.twig', [
@@ -291,7 +290,7 @@ class Mailer
         foreach ($notify->getInvoices() as $invoice) {
             try {
                 $filename = $this
-                    ->commerceMailerHelper
+                    ->attachmentHelper
                     ->attachInvoice($message, $invoice);
             } catch (RuntimeException) {
                 $notify->setError(true);
@@ -307,7 +306,7 @@ class Mailer
         foreach ($notify->getShipments() as $shipment) {
             try {
                 $filename = $this
-                    ->commerceMailerHelper
+                    ->attachmentHelper
                     ->attachShipment($message, $shipment);
             } catch (RuntimeException) {
                 $notify->setError(true);
@@ -352,7 +351,7 @@ class Mailer
         foreach ($notify->getAttachments() as $attachment) {
             try {
                 $filename = $this
-                    ->commerceMailerHelper
+                    ->attachmentHelper
                     ->attach($message, $attachment);
             } catch (RuntimeException) {
                 $notify->setError(true);
@@ -384,7 +383,7 @@ class Mailer
             if ($notify->isIncludeForm()) {
                 try {
                     $filename = $this
-                        ->commerceMailerHelper
+                        ->attachmentHelper
                         ->attachSupplierOrder($message, $source);
 
                     $attachments[$filename] = $this->translator->trans('document.type.form', [], 'EkynaCommerce');
@@ -445,7 +444,7 @@ class Mailer
         $message
             ->subject('Notification failed')
             ->text("Notification failure\n\n" . $notify->getReport())
-            ->from($this->adminMailerHelper->getNotificationSender())
+            ->from($this->addressHelper->getNotificationSender())
             ->to(new Address($notify->getFrom()->getEmail(), $notify->getFrom()->getName()));
 
         $this->send($message);
@@ -461,15 +460,15 @@ class Mailer
         Address|string|array|bool $from = null
     ): Email {
         if (empty($to)) {
-            $to = $this->adminMailerHelper->getNotificationRecipients();
+            $to = $this->addressHelper->getNotificationRecipients();
         }
 
         if (false === $from) {
-            $from = $this->adminMailerHelper->getNoReply();
+            $from = $this->addressHelper->getNoReply();
         }
 
         if (empty($from)) {
-            $from = $this->adminMailerHelper->getNotificationSender();
+            $from = $this->addressHelper->getNotificationSender();
         }
 
         if (!is_array($to)) {

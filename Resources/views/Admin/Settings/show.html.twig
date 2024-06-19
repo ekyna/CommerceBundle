@@ -12,6 +12,15 @@
     'options': {'html': true},
     'label_col': 3
 }) }}
+<hr>
+{% for address in constant('Ekyna\\Bundle\\CommerceBundle\\Service\\Mailer\\AddressHelper::ADDRESSES') %}
+{{ show_row(attribute(settings.commerce, address ~ '_address'), 'text', {
+    'label': 'setting.address.' ~ address,
+    'label_trans_domain': 'EkynaCommerce',
+    'label_col': 3
+}) }}
+{% endfor %}
+<hr>
 <div class="row show-row">
     <div class="col-md-3 show-label">
         {{ 'setting.shipment_label.label'|trans({}, 'EkynaCommerce') }}

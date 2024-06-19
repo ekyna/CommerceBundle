@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
+use Ekyna\Bundle\CommerceBundle\Service\Mailer\AddressHelper;
 use Ekyna\Bundle\SettingBundle\Manager\SettingManagerInterface;
 use Ekyna\Component\Commerce\Accounting\Export\AccountingExporterInterface;
 use Symfony\Component\Console\Command\Command;
@@ -13,6 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 
 /**
@@ -26,6 +28,7 @@ class AccountingExportCommand extends Command
 
     public function __construct(
         private readonly AccountingExporterInterface $exporter,
+        private readonly AddressHelper               $helper,
         private readonly SettingManagerInterface     $settings,
         private readonly MailerInterface             $mailer
     ) {
@@ -61,9 +64,7 @@ class AccountingExportCommand extends Command
 
         $path = $this->exporter->export($year, $month);
 
-        if (empty($email = $input->getOption('email'))) {
-            $email = $this->settings->getParameter('general.admin_email');
-        }
+        $email = $this->getRecipient($input);
 
         $subject = sprintf(
             '[%s] Accounting %s',
@@ -75,7 +76,7 @@ class AccountingExportCommand extends Command
         $message
             ->subject($subject)
             ->text('See attached file.')
-            ->from($this->settings->getParameter('notification.no_reply'))
+            ->from($this->helper->getAdminHelper()->getNoReply())
             ->to($email)
             ->attach(
                 file_get_contents($path),
@@ -86,5 +87,14 @@ class AccountingExportCommand extends Command
         $this->mailer->send($message);
 
         return Command::SUCCESS;
+    }
+
+    private function getRecipient(InputInterface $input): Address
+    {
+        if (!empty($email = $input->getOption('email'))) {
+            return new Address($email);
+        }
+
+        return $this->helper->getBillingAddress();
     }
 }

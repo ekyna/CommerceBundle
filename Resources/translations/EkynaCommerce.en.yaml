@@ -1321,6 +1321,7 @@ quote:
     dashboard:
         title: Quotes to process
         none: No quote to process
+    outdated_projects_report: Rapport sur les devis obsolètes
 
 refund:
     label:
@@ -1557,6 +1558,11 @@ setting:
     invoice_mention: Invoice mention
     invoice_footer: Documents footer
     vat_display_mode: Default VAT display
+    address:
+        sales: Sales contact
+        billing: Billing contact
+        purchase: Purchase contact
+        support: Support contact
     shipment_label:
         label: Shipment label
         size: Size

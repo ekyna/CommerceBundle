@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Service\Settings;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Setting\ShipmentLabelType;
+use Ekyna\Bundle\CommerceBundle\Service\Mailer\AddressHelper;
 use Ekyna\Bundle\SettingBundle\Form\Type\I18nParameterType;
 use Ekyna\Bundle\SettingBundle\Model\I18nParameter;
 use Ekyna\Bundle\SettingBundle\Schema\AbstractSchema;
@@ -12,6 +13,7 @@ use Ekyna\Bundle\SettingBundle\Schema\LocalizedSchemaInterface;
 use Ekyna\Bundle\SettingBundle\Schema\LocalizedSchemaTrait;
 use Ekyna\Bundle\SettingBundle\Schema\SettingBuilder;
 use Ekyna\Bundle\UiBundle\Form\Type\TinymceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -49,17 +51,25 @@ class CommerceSettingsSchema extends AbstractSchema implements LocalizedSchemaIn
             ->setAllowedTypes('download', ['bool', 'null']);
 
         $builder
-            ->setDefaults(array_merge([
-                'invoice_mention' => $this->createI18nParameter(''),
-                'invoice_footer'  => $this->createI18nParameter('<p>Default invoice footer</p>'),
-                'shipment_label'  => $labelDefaults,
-            ], $this->defaults))
+            ->setDefaults(
+                array_merge([
+                    'invoice_mention' => $this->createI18nParameter(''),
+                    'invoice_footer'  => $this->createI18nParameter('<p>Default invoice footer</p>'),
+                    'shipment_label'  => $labelDefaults,
+                ], $this->defaults)
+            )
             ->setAllowedTypes('invoice_mention', I18nParameter::class)
             ->setAllowedTypes('invoice_footer', I18nParameter::class)
             ->setAllowedTypes('shipment_label', 'array')
             ->setNormalizer('shipment_label', function (Options $options, $value) use ($labelResolver) {
                 return $labelResolver->resolve($value);
             });
+
+        foreach (AddressHelper::ADDRESSES as $name) {
+            $builder
+                ->setDefault($name . '_address', null)
+                ->setAllowedTypes($name . '_address', ['string', 'null']);
+        }
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -97,6 +107,17 @@ class CommerceSettingsSchema extends AbstractSchema implements LocalizedSchemaIn
                     new Assert\Valid(),
                 ],
             ]);
+
+        foreach (AddressHelper::ADDRESSES as $name) {
+            $builder->add($name . '_address', EmailType::class, [
+                'label'       => t('setting.address.' . $name, [], 'EkynaCommerce'),
+                'required'    => false,
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Email(),
+                ],
+            ]);
+        }
     }
 
     public function getLabel(): TranslatableInterface

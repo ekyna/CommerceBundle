@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Report;
 
-use Ekyna\Bundle\AdminBundle\Service\Mailer\MailerHelper;
+use Ekyna\Bundle\AdminBundle\Service\Mailer\AddressHelper;
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Commerce\Report\ReportConfig;
 use Ekyna\Component\Commerce\Report\ReportGenerator;
@@ -33,7 +33,7 @@ class ReportMailer
         private readonly ReportGenerator     $generator,
         private readonly ReportRegistry      $registry,
         private readonly FormatterFactory    $formatterFactory,
-        private readonly MailerHelper        $mailerHelper,
+        private readonly AddressHelper       $mailerHelper,
         private readonly TranslatorInterface $translator,
         private readonly Environment         $twig,
         private readonly MailerInterface     $mailer

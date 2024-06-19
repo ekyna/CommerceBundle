@@ -27,7 +27,7 @@ use const PATHINFO_BASENAME;
  * @package Ekyna\Bundle\CommerceBundle\Service\Mailer
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-class MailerHelper
+class AttachmentHelper
 {
     public function __construct(
         private readonly FilesystemOperator     $filesystem,

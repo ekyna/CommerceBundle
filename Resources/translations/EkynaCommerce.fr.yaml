@@ -1355,6 +1355,7 @@ quote:
     dashboard:
         title: Devis à traiter
         none: Aucun devis à traiter
+    outdated_projects_report: Rapport sur les devis obsolètes
 
 refund:
     label:
@@ -1596,6 +1597,11 @@ setting:
     invoice_mention: Mentions sur factures
     invoice_footer: Pied de page documents
     vat_display_mode: Affichage TVA par défaut
+    address:
+        sales: Contact commercial
+        billing: Contact facturation
+        purchase: Contact achat
+        support: Contact SAV
     shipment_label:
         label: Étiquette expédition
         size: Format

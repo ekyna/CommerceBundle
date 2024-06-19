@@ -1,5 +1,10 @@
 {{ form_row(form.commerce.invoice_mention, {'label_col': 3, 'widget_col': 9}) }}
 {{ form_row(form.commerce.invoice_footer, {'label_col': 3, 'widget_col': 9}) }}
+<hr>
+{% for address in constant('Ekyna\\Bundle\\CommerceBundle\\Service\\Mailer\\AddressHelper::ADDRESSES') %}
+{{ form_row(attribute(form.commerce, address ~ '_address'), {'label_col': 3, 'widget_col': 9}) }}
+{% endfor %}
+<hr>
 <div class="form-group">
     {{ form_label(form.commerce.shipment_label) }}
     <div class="col-md-9">

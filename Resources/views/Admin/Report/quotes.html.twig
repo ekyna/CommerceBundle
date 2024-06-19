@@ -1,0 +1,83 @@
+{% extends "email.html.twig" %}
+
+{% block stylesheets %}
+    <style>
+        table { width:100%; border-spacing:0; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; }
+        td, th { font-size: 13px; padding: 2px 4px; border-top: 1px solid #ddd; border-left: 1px solid #ddd; }
+        td.right { text-align: right; }
+        td.alert { background-color: #ffddcc; }
+    </style>
+{% endblock stylesheets %}
+
+{% block width %}1200{% endblock %}
+
+{% block subject %}{{ title }}{% endblock subject %}
+
+{% block body %}
+    {% apply spaceless %}
+        <table>
+            <thead>
+            <tr>
+                <th>
+                    {{- 'field.number'|trans({}, 'EkynaUi') -}}
+                </th>
+                <th>
+                    {{- 'customer.label.singular'|trans({}, 'EkynaCommerce') -}}
+                </th>
+                <th>
+                    {{- 'field.title'|trans({}, 'EkynaUi') -}}
+                </th>
+                <th>
+                    {{- 'quote.field.project_date'|trans({}, 'EkynaCommerce') -}}
+                </th>
+                <th>
+                    {{- 'quote.field.project_trust'|trans({}, 'EkynaCommerce') -}}
+                </th>
+                <th>
+                    {{- 'quote.field.project_alive'|trans({}, 'EkynaCommerce') -}}
+                </th>
+                <th>
+                    {{- 'sale.field.net_total'|trans({}, 'EkynaCommerce') -}}
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for quote in quotes -%}
+                <tr>
+                    <td>
+                        <a href="{{ url('admin_ekyna_commerce_quote_read', {'quoteId': quote.id}) }}">
+                            {{- quote.number -}}
+                        </a>
+                    </td>
+                    <td>
+                        {{- quote.customer -}}
+                    </td>
+                    <td>
+                        {{- quote.title -}}
+                    </td>
+                    {% if quote.projectDate is not empty -%}
+                        <td class="right{% if quote.projectDate <= today %} alert{% endif %}">
+                            {{- quote.projectDate|format_datetime('short', 'none', locale=locale) -}}
+                        </td>
+                    {%- else -%}
+                        <td>&nbsp;</td>
+                    {%- endif %}
+                    <td class="right">
+                        {{- quote.projectTrust -}}
+                    </td>
+                    {% if quote.projectAlive is null %}
+                    <td class="alert"> ? </td>
+                    {% else %}
+                    <td>
+                        {{ ('value.' ~ (quote.projectAlive ? 'yes' : 'no'))|trans({}, 'EkynaUi') }}
+                    </td>
+                    {% endif %}
+                    <td class="right">
+                        {{- quote.netTotal|format_currency(commerce_default_currency) -}}
+                    </td>
+                </tr>
+            {%- endfor %}
+            </tbody>
+        </table>
+    {% endapply %}
+{% endblock %}
