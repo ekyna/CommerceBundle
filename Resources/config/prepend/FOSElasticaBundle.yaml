@@ -38,6 +38,42 @@ fos_elastica:
                 provider: { batch_size: 25 }
                 listener: ~
                 finder: ~
+        ekyna_commerce.order_invoice:
+            index_name: '%env(ELASTICSEARCH_NAME)%_commerce_order_invoice'
+            serializer:
+                groups: [ Search ]
+            properties:
+                number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+            persistence:
+                driver: orm
+                model: '%ekyna_commerce.class.order_invoice%'
+                provider: { batch_size: 25 }
+                listener: ~
+                finder: ~
+        ekyna_commerce.order_payment:
+            index_name: '%env(ELASTICSEARCH_NAME)%_commerce_order_payment'
+            serializer:
+                groups: [ Search ]
+            properties:
+                number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+            persistence:
+                driver: orm
+                model: '%ekyna_commerce.class.order_payment%'
+                provider: { batch_size: 25 }
+                listener: ~
+                finder: ~
+        ekyna_commerce.order_shipment:
+            index_name: '%env(ELASTICSEARCH_NAME)%_commerce_order_shipment'
+            serializer:
+                groups: [ Search ]
+            properties:
+                number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+            persistence:
+                driver: orm
+                model: '%ekyna_commerce.class.order_shipment%'
+                provider: { batch_size: 25 }
+                listener: ~
+                finder: ~
         ekyna_commerce.quote:
             index_name: '%env(ELASTICSEARCH_NAME)%_commerce_quote'
             serializer:

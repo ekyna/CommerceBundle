@@ -10,11 +10,11 @@ use Ekyna\Component\Resource\Search\Request;
 use Ekyna\Component\Resource\Search\Result;
 
 /**
- * Class SaleRepository
+ * Class AbstractSaleRepository
  * @package Ekyna\Bundle\CommerceBundle\Service\Search
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
-abstract class SaleRepository extends SearchRepository
+abstract class AbstractSaleRepository extends SearchRepository
 {
     /**
      * @inheritDoc

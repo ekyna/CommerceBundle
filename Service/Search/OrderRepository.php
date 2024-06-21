@@ -12,7 +12,7 @@ use Ekyna\Component\Resource\Search\Result;
  * @package Ekyna\Bundle\CommerceBundle\Service\Search
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class OrderRepository extends SaleRepository
+class OrderRepository extends AbstractSaleRepository
 {
     /**
      * @inheritDoc

@@ -17,6 +17,7 @@ use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\AddressNormali
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceItemNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceLineNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceNormalizer;
+use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\PaymentNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\RelayPointNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SaleItemNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ShipmentItemNormalizer;
@@ -29,6 +30,7 @@ use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceItemInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceLineInterface;
+use Ekyna\Component\Commerce\Payment\Model\PaymentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentItemInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentParcelInterface;
@@ -82,6 +84,14 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.normalizer.invoice_item', InvoiceItemNormalizer::class)
         ->parent('ekyna_resource.normalizer.abstract')
         ->call('setClass', [InvoiceItemInterface::class])
+        ->tag('serializer.normalizer')
+        ->tag('serializer.denormalizer');
+
+    // Payment normalizer
+    $services
+        ->set('ekyna_commerce.normalizer.payement', PaymentNormalizer::class)
+        ->parent('ekyna_resource.normalizer.abstract')
+        ->call('setClass', [PaymentInterface::class])
         ->tag('serializer.normalizer')
         ->tag('serializer.denormalizer');
 

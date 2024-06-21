@@ -14,8 +14,6 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-use function is_null;
-
 /**
  * Class QuoteReportCommand
  * @package Ekyna\Bundle\CommerceBundle\Command

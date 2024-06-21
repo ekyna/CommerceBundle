@@ -107,6 +107,9 @@ resources:
                 interface : Ekyna\Component\Commerce\Order\Manager\OrderInvoiceManagerInterface
                 class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Manager\OrderInvoiceManager
             factory: Ekyna\Bundle\CommerceBundle\Factory\InvoiceFactory
+            search:
+                class: Ekyna\Bundle\CommerceBundle\Service\Search\InvoiceRepository
+                global: true
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceType
             table: Ekyna\Bundle\CommerceBundle\Table\Type\OrderInvoiceType
             parent: ekyna_commerce.order
@@ -210,6 +213,9 @@ resources:
             repository:
                 interface : Ekyna\Component\Commerce\Order\Repository\OrderPaymentRepositoryInterface
                 class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderPaymentRepository
+            search:
+                class: Ekyna\Bundle\CommerceBundle\Service\Search\PaymentRepository
+                global: true
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderPaymentType
             table: Ekyna\Bundle\CommerceBundle\Table\Type\OrderPaymentType
             parent: ekyna_commerce.order
@@ -232,6 +238,9 @@ resources:
             #    interface : Ekyna\Component\Commerce\Order\Repository\OrderShipmentRepositoryInterface
             #    class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\OrderShipmentRepository
             factory: Ekyna\Bundle\CommerceBundle\Factory\ShipmentFactory
+            search:
+                class: Ekyna\Bundle\CommerceBundle\Service\Search\ShipmentRepository
+                global: true
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderShipmentType
             table: Ekyna\Bundle\CommerceBundle\Table\Type\OrderShipmentType
             parent: ekyna_commerce.order
