@@ -10,6 +10,7 @@
             <th>{{ 'field.status'|trans({}, 'EkynaUi') }}</th>
             <th>{{ 'field.created_at'|trans({}, 'EkynaUi') }}</th>
             <th>{{ 'field.completed_at'|trans({}, 'EkynaUi') }}</th>
+            {% block extra_headers %}{% endblock extra_headers %}
             <th></th>
         </tr>
         </thead>
@@ -43,6 +44,7 @@
                         <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
                     {%- endif -%}
                 </td>
+                {% block extra_cells %}{% endblock extra_cells %}
                 <td class="actions">
                     {{ payment_admin_actions(payment) }}
                     {% if payment.getDescription() is not empty -%}
@@ -59,7 +61,7 @@
             {% if payment.getDescription() is not empty -%}
                 <tr id="{{ paymentId ~ '_details' }}" style="display:none;">
                     <td>&nbsp;</td>
-                    <td colspan="5">
+                    <td colspan="{{ column_count|default(8) - 2 }}">
                         <p>{{ payment.getDescription()|nl2br }}</p>
                     </td>
                     <td>&nbsp;</td>
@@ -67,7 +69,7 @@
             {%- endif %}
         {% else %}
             <tr>
-                <td colspan="8" class="text-center">
+                <td colspan="{{ column_count|default(8) }}" class="text-center">
                     <em>{{ 'payment.alert.no_item'|trans({}, 'EkynaCommerce') }}</em>
                 </td>
             </tr>

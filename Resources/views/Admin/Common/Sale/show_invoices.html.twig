@@ -1,3 +1,5 @@
+{% set column_count = 10 %}
+
 {% apply spaceless %}
 <div class="table-responsive">
     <table class="table table-striped table-hover table-alt-head">
@@ -14,6 +16,7 @@
             {% endif %}
             <th>{{ 'field.created_at'|trans({}, 'EkynaUi') }}</th>
             <th>{{ 'shipment.label.singular'|trans({}, 'EkynaCommerce') }}</th>
+            {% block extra_headers %}{% endblock extra_headers %}
             <th></th>
         </tr>
         </thead>
@@ -72,6 +75,7 @@
                         {%- endif %}
                     {%- endif -%}
                 </td>
+                {% block extra_cells %}{% endblock extra_cells %}
                 <td class="actions">
                     <a href="{{ admin_resource_path(invoice, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Invoice\\RenderAction') }}"
                        id="{{ invoiceId }}_render"
@@ -118,7 +122,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="{{ prefix == 'credit' ? 9 : 10 }}" class="text-center">
+                <td colspan="{{ column_count|default(10) - (prefix == 'credit' ? 1 : 0) }}" class="text-center">
                     <em>{{ 'invoice.alert.no_item'|trans({}, 'EkynaCommerce') }}</em>
                 </td>
             </tr>

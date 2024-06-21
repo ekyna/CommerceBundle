@@ -81,6 +81,7 @@
         <div class="tab-pane" id="shipment-sender-address">
             {{ form_row(form.senderAddress) }}
         </div>
+        {% block extra_fields %}{% endblock extra_fields %}
     </div>
     {{ bootstrap_set_sizing('md') }}
     {{ form_rest(form) }}

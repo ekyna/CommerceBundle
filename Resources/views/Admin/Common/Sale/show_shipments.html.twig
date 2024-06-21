@@ -11,6 +11,7 @@
             <th>{{ 'shipment.field.tracking_number'|trans({}, 'EkynaCommerce') }}</th>
             <th>{{ 'shipment.field.shipped_at'|trans({}, 'EkynaCommerce') }}</th>
             <th>{{ 'invoice.label.singular'|trans({}, 'EkynaCommerce') }}</th>
+            {% block extra_headers %}{% endblock extra_headers %}
             <th></th>
         </tr>
         </thead>
@@ -54,6 +55,7 @@
                 <td id="{{ shipmentId }}_invoice">
                     {%- if shipment.invoice is not null %}{{ shipment.invoice.number }}{% endif -%}
                 </td>
+                {% block extra_cells %}{% endblock extra_cells %}
                 <td class="actions">
                     {# Gateway actions #}
                     {% if not shipment.sale.released -%}
@@ -121,7 +123,7 @@
             {% if details %}
             <tr id="{{ shipmentId ~ '_details' }}" style="display:none;">
                 <td>&nbsp;</td>
-                <td colspan="7">
+                <td colspan="{{ column_count|default(9) - 2 }}">
                     <table class="table table-alt table-striped table-condensed table-alt-head">
                         <thead>
                             <tr>
@@ -151,7 +153,7 @@
             {%- endif %}
         {% else %}
             <tr>
-                <td colspan="9" class="text-center">
+                <td colspan="{{ column_count|default(9) }}" class="text-center">
                     <em>{{ 'shipment.alert.no_item'|trans({}, 'EkynaCommerce') }}</em>
                 </td>
             </tr>

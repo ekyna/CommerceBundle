@@ -52,6 +52,8 @@
 
             {{ form_row(form.comment) }}
             {{ form_row(form.description) }}
+
+            {% block extra_fields %}{% endblock extra_fields %}
         </div>
         <div class="tab-pane" id="invoice-invoice-address">
             {{ form_row(form.customInvoiceAddress) }}
