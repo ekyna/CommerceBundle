@@ -231,6 +231,7 @@ class CustomerType extends AbstractResourceType
         parent::configureOptions($resolver);
 
         $resolver
+            ->setDefault('exportable', true)
             ->setDefault('parent', null)
             ->setAllowedTypes('parent', ['null', CustomerInterface::class]);
     }

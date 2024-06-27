@@ -104,12 +104,12 @@ class FlagRenderer
             ],
             self::RELEASABLE    => [
                 'label' => t('sale.flag.can_be_released', [], 'EkynaCommerce'),
-                'theme' => 'danger',
+                'theme' => 'warning',
                 'icon'  => 'check-circle-o',
             ],
             self::PREPARATION   => [
                 'label' => t('sale.field.preparation_note', [], 'EkynaCommerce'),
-                'theme' => 'warning',
+                'theme' => 'danger',
                 'icon'  => 'check-square-o',
             ],
             self::COMMENT       => [

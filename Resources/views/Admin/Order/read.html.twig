@@ -190,6 +190,11 @@
         {% endif %}
     </div>
     {%- endif %}
+    {% if order.preparationNote is not empty %}
+    <div class="alert alert-danger" style="clear:both">
+        {{ order.preparationNote }}
+    </div>
+    {% endif %}
     <h4 class="sub-header">
         {{- 'shipment.label.plural'|trans({}, 'EkynaCommerce') -}}
     </h4>
