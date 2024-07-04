@@ -129,7 +129,7 @@ return static function (ContainerConfigurator $container): void {
             service('mailer'),
             service('twig'),
             service('translator'),
-            service('ekyna_admin.helper.mailer.address'),
+            service('ekyna_commerce.helper.mailer.address'),
             service('ekyna_commerce.helper.mailer.attachment'),
         ]);
 

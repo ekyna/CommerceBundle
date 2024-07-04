@@ -165,9 +165,9 @@ class StockSubjectFormBuilder
     public function addWidthField(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => t('field.width', [], 'EkynaUi'),
+            'label'    => t('field.length', [], 'EkynaUi'),
             'attr'     => [
-                'placeholder' => t('field.width', [], 'EkynaUi'),
+                'placeholder' => t('field.length', [], 'EkynaUi'),
                 'input_group' => ['append' => Units::getSymbol(Units::MILLIMETER)],
             ],
             'required' => true,
@@ -181,9 +181,9 @@ class StockSubjectFormBuilder
     public function addHeightField(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => t('field.height', [], 'EkynaUi'),
+            'label'    => t('field.width', [], 'EkynaUi'),
             'attr'     => [
-                'placeholder' => t('field.height', [], 'EkynaUi'),
+                'placeholder' => t('field.width', [], 'EkynaUi'),
                 'input_group' => ['append' => Units::getSymbol(Units::MILLIMETER)],
             ],
             'required' => true,
@@ -197,9 +197,9 @@ class StockSubjectFormBuilder
     public function addDepthField(array $options = []): StockSubjectFormBuilder
     {
         $options = array_replace([
-            'label'    => t('field.depth', [], 'EkynaUi'),
+            'label'    => t('field.height', [], 'EkynaUi'),
             'attr'     => [
-                'placeholder' => t('field.depth', [], 'EkynaUi'),
+                'placeholder' => t('field.height', [], 'EkynaUi'),
                 'input_group' => ['append' => Units::getSymbol(Units::MILLIMETER)],
             ],
             'required' => true,

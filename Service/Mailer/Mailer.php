@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Service\Mailer;
 
 use Ekyna\Bundle\AdminBundle\Model\UserInterface;
-use Ekyna\Bundle\AdminBundle\Service\Mailer\AddressHelper;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes as BDocumentTypes;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderAttachmentTypes;
@@ -126,7 +125,19 @@ class Mailer
     {
         $order = $submit->getOrder();
 
-        $message = $this->createMessage($submit->getSubject(), $submit->getMessage(), $submit->getEmails());
+        $sender = $this->addressHelper->getPurchaseAddress();
+
+        $message = $this->createMessage(
+            $submit->getSubject(),
+            $submit->getMessage(),
+            $submit->getEmails(),
+            $sender
+        );
+
+        $user = $this->addressHelper->getAdminHelper()->getCurrentUserSender();
+        if ($user && ($user->getAddress() !== $sender->getAddress())) {
+            $message->addCc($user);
+        }
 
         // Form attachment
         $this
@@ -163,7 +174,7 @@ class Mailer
         $locale = $customer->getLocale();
 
         $subject = $this->translator->trans('ticket_message.notify.customer.subject', [
-            '%site_name%' => $this->addressHelper->getSiteName(),
+            '%site_name%' => $this->addressHelper->getAdminHelper()->getSiteName(),
         ], 'EkynaCommerce', $locale);
 
         $body = $this->twig->render('@EkynaCommerce/Email/customer_ticket_message.html.twig', [
@@ -228,7 +239,7 @@ class Mailer
         $locale = $customer->getLocale();
 
         $subject = $this->translator->trans('coupon.notify.customer.subject', [
-            '%site_name%' => $this->addressHelper->getSiteName(),
+            '%site_name%' => $this->addressHelper->getAdminHelper()->getSiteName(),
         ], 'EkynaCommerce', $locale);
 
         $body = $this->twig->render('@EkynaCommerce/Email/customer_coupons.html.twig', [
@@ -444,7 +455,7 @@ class Mailer
         $message
             ->subject('Notification failed')
             ->text("Notification failure\n\n" . $notify->getReport())
-            ->from($this->addressHelper->getNotificationSender())
+            ->from($this->addressHelper->getAdminHelper()->getNotificationSender())
             ->to(new Address($notify->getFrom()->getEmail(), $notify->getFrom()->getName()));
 
         $this->send($message);
@@ -459,16 +470,18 @@ class Mailer
         Address|string|array      $to = null,
         Address|string|array|bool $from = null
     ): Email {
+        $helper = $this->addressHelper->getAdminHelper();
+
         if (empty($to)) {
-            $to = $this->addressHelper->getNotificationRecipients();
+            $to = $helper->getNotificationRecipients();
         }
 
         if (false === $from) {
-            $from = $this->addressHelper->getNoReply();
+            $from = $helper->getNoReply();
         }
 
         if (empty($from)) {
-            $from = $this->addressHelper->getNotificationSender();
+            $from = $helper->getNotificationSender();
         }
 
         if (!is_array($to)) {
