@@ -26,14 +26,6 @@ return static function (ContainerConfigurator $container) {
             param('ekyna_commerce.default.currency'),
         ]);
 
-    // Stat exporter
-    $services
-        ->set('ekyna_commerce.exporter.stat', StatExporter::class)
-        ->args([
-            service('ekyna_commerce.provider.region'),
-            service('ekyna_commerce.calculator.stat'),
-        ]);
-
     // Stat updater
     $services
         ->set('ekyna_commerce.updater.stat', StatUpdater::class)

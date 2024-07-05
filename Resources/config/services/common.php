@@ -57,9 +57,6 @@ return static function (ContainerConfigurator $container) {
             service('doctrine'),
         ]);
 
-    // Region provider
-    $services->set('ekyna_commerce.provider.region', RegionProvider::class);
-
     // Country repository
     $services
         ->set('ekyna_commerce.repository.country', CountryRepository::class)

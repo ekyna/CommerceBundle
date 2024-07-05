@@ -1120,6 +1120,8 @@ order:
     label:
         singular: Commande
         plural: Commandes
+    field:
+        released: Clôturée
     header:
         list: Commandes <small>Liste des commandes</small>
         show: Détail de la commande <small>%name%</small>
@@ -1149,6 +1151,8 @@ order:
         cant_be_deleted: >
             Cette commande a des paiement(s) valide(s), des livraison(s)
             et/ou des facture(s) et ne peut être supprimée.
+        not_fully_shipped: Cette commande n'est pas entièrement expédiée.
+        not_fully_invoiced: Cette commande n'est pas entièrement facturée.
     dashboard:
         title: Commandes à traiter
         none: Aucune commande à traiter

@@ -17,7 +17,28 @@
 {% endblock actions %}
 
 {% block main %}
+    {% set not_fully_shipped = resource is not sale_fully_shipped %}
+    {% set not_fully_invoiced = resource is not sale_fully_invoiced %}
+    {% if not_fully_shipped or not_fully_shipped -%}
+    <div class="alert alert-warning">
+        {% if not_fully_shipped %}<p>{{ 'order.message.not_fully_shipped'|trans({}, 'EkynaCommerce') }}</p>{% endif %}
+        {% if not_fully_invoiced %}<p>{{ 'order.message.not_fully_invoiced'|trans({}, 'EkynaCommerce') }}</p>{% endif %}
+    </div>
+    {%- endif %}
     {{ form_start(form) }}
     {% include form_template %}
     {{ form_end(form) }}
 {% endblock main %}
+
+{% block side %}
+    {{ parent() }}
+    {% include '@EkynaCommerce/Admin/Common/Sale/Side/sale.html.twig' with {
+        'title': t('order.label.singular', [], 'EkynaCommerce'),
+        'sale': resource
+    } %}
+    {% if resource.customer is not null %}
+        {% include '@EkynaCommerce/Admin/Common/Sale/Side/customer.html.twig' with {
+            'customer': resource.customer
+        } %}
+    {% endif %}
+{% endblock side %}

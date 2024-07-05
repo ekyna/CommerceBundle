@@ -199,7 +199,6 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.exporter.order_invoice', OrderInvoiceExporter::class)
         ->args([
             service('ekyna_commerce.repository.order_invoice'),
-            service('ekyna_commerce.provider.region'),
             service('translator'),
         ]);
 

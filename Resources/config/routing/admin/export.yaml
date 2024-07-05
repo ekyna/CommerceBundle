@@ -82,13 +82,3 @@ admin_ekyna_commerce_export_supplier_order_item_paid_but_not_delivered:
     path: /paid-but-not-delivered-supplier-order-items
     methods: [GET]
     controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\SupplierOrderItemController::exportPaidButNotDelivered
-
-admin_ekyna_commerce_export_regions_orders_stats:
-    path: /regions-orders-stats
-    methods: [GET]
-    controller: \Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\StatController::regionsOrdersStats
-
-admin_ekyna_commerce_export_regions_invoices_stats:
-    path: /regions-invoices-stats
-    methods: [GET]
-    controller: Ekyna\Bundle\CommerceBundle\Controller\Admin\Export\InvoiceController::regionsInvoicesStats

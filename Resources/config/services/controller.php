@@ -107,16 +107,6 @@ return static function (ContainerConfigurator $container) {
         )
         ->public();
 
-    // Admin export stat controller
-    $services->set('ekyna_commerce.controller.admin.export.stat', Admin\Export\StatController::class)
-        ->args([
-            service('ekyna_commerce.exporter.stat'),
-            service('router'),
-            service('ekyna_ui.helper.flash'),
-            param('kernel.debug'),
-        ])
-        ->alias(Admin\Export\StatController::class, 'ekyna_commerce.controller.admin.export.stat')->public();
-
     // Admin order list abstract controller
     $services->set('ekyna_commerce.controller.admin.list.abstract', Admin\OrderList\AbstractListController::class)
         ->abstract()

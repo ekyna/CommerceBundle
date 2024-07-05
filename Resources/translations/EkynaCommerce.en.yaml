@@ -1087,6 +1087,8 @@ order:
     label:
         singular: Order
         plural: Orders
+    field:
+        released: Released
     header:
         list: Orders <small>List of orders</small>
         show: Order details <small>%name%</small>
@@ -1115,6 +1117,8 @@ order:
             This sample order can be closed if no other return is planned.
         cant_be_deleted: >
             This order has valid payment(s), shipment(s) or invoice(s) and therefore cannot be deleted.
+        not_fully_shipped: This order is not fully shipped.
+        not_fully_invoiced: This order is not fully invoiced.
     dashboard:
         title: Orders to process
         none: No order to process
