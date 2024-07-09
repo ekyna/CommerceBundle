@@ -31,6 +31,7 @@ use Ekyna\Bundle\CommerceBundle\Command\PaymentWatchCommand;
 use Ekyna\Bundle\CommerceBundle\Command\QuoteReportCommand;
 use Ekyna\Bundle\CommerceBundle\Command\ReportGenerateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\ReportRequestPurgeCommand;
+use Ekyna\Bundle\CommerceBundle\Command\SaleItemUpdatePriceCommand;
 use Ekyna\Bundle\CommerceBundle\Command\ShipmentLabelPurgeCommand;
 use Ekyna\Bundle\CommerceBundle\Command\StatCalculateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\StatUpdateCommand;
@@ -314,6 +315,16 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('doctrine.dbal.default_connection'),
             service('libphonenumber\PhoneNumberUtil'),
+        ])
+        ->tag('console.command');
+
+    // Sale item update price command
+    $services
+        ->set('ekyna_commerce.command.sale_item_update_price', SaleItemUpdatePriceCommand::class)
+        ->args([
+            service('ekyna_resource.repository.factory'),
+            service('ekyna_resource.manager.factory'),
+            service('ekyna_commerce.factory.amount_calculator'),
         ])
         ->tag('console.command');
 
