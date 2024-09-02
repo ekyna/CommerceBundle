@@ -50,6 +50,11 @@ class OrderType extends SaleType
                 'label'    => t('sale.field.origin_customer', [], 'EkynaCommerce'),
                 'required' => false,
             ])
+            ->add('inCharge', UserChoiceType::class, [
+                'label'    => t('customer.field.in_charge', [], 'EkynaCommerce'),
+                'roles'    => [],
+                'required' => false,
+            ])
             ->add('tags', TagChoiceType::class);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -72,12 +77,6 @@ class OrderType extends SaleType
                     'attr'     => [
                         'align_with_widget' => true,
                     ],
-                ])
-                ->add('inCharge', UserChoiceType::class, [
-                    'label'    => t('customer.field.in_charge', [], 'EkynaCommerce'),
-                    'roles'    => [],
-                    'required' => false,
-                    'disabled' => $order->getInCharge() && !$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN'),
                 ]);
         });
     }

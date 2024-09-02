@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Doctrine\ORM\Events;
+use Ekyna\Bundle\CommerceBundle\EventListener\InChargeSaleCopyListener;
 use Ekyna\Bundle\CommerceBundle\EventListener\SaleTransformListener;
 use Ekyna\Bundle\CommerceBundle\Factory\AbstractSaleFactory;
 use Ekyna\Bundle\CommerceBundle\Service\Checker\SaleItemsChecker;
@@ -95,14 +96,23 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.listener.sale_copy', SaleCopyListener::class)
         ->tag('kernel.event_listener', [
-            'event'  => SaleTransformEvents::INIT_TRANSFORM,
-            'method' => 'onInitTransform',
+            'event'    => SaleTransformEvents::INIT_TRANSFORM,
+            'method'   => 'onInitTransform',
             'priority' => 2048,
         ])
         ->tag('kernel.event_listener', [
-            'event'  => SaleTransformEvents::POST_COPY,
-            'method' => 'onPostCopy',
+            'event'    => SaleTransformEvents::POST_COPY,
+            'method'   => 'onPostCopy',
             'priority' => 2048,
+        ]);
+
+    // In Charge Sale copy event listener
+    $services
+        ->set('ekyna_commerce.listener.in_charge_sale_copy', InChargeSaleCopyListener::class)
+        ->tag('kernel.event_listener', [
+            'event'    => SaleTransformEvents::POST_COPY,
+            'method'   => 'onPostCopy',
+            'priority' => 0,
         ]);
 
     // Sale transform event listener

@@ -50,6 +50,11 @@ class QuoteType extends SaleType
                 'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
                 'required' => false,
             ])
+            ->add('inCharge', UserChoiceType::class, [
+                'label'    => t('customer.field.in_charge', [], 'EkynaCommerce'),
+                'roles'    => [],
+                'required' => false,
+            ])
             ->add('editable', CheckboxType::class, [
                 'label'    => t('quote.field.editable', [], 'EkynaCommerce'),
                 'required' => false,

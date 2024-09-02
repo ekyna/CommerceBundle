@@ -72,5 +72,6 @@
         <dd>{{ description|nl2br|raw }}</dd>
         {%- endif %}
     </dl>
+    {% block extra %}{% endblock extra %}
 </div>
 {% endapply %}
