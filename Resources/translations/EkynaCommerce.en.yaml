@@ -1914,7 +1914,8 @@ supplier_order:
         payment_paid_total: Supplier paid total
         payment_total: Supplier total
         payment_due_date: Supplier due date
-        payment_date: Supplier payment date
+        reverse_charge: Supplier payment date
+        tax_exempt: Reverse charge
         customs_tax: Customs taxes
         customs_vat: Customs VAT
         forwarder_fee: Forwarder fee

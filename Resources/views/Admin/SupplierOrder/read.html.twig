@@ -274,12 +274,23 @@
                     'label_col': 6
                 }) }}
             </div>
+        </div>
+        <div class="row">
             <div class="col-md-4">
                 {{ show_row(supplierOrder|supplier_order_weight_total, 'number', {
                     'label': 'sale.field.weight_total',
                     'label_trans_domain': 'EkynaCommerce',
                     'class': 'sale-weight-total',
                     'append': 'kg',
+                    'label_col': 6
+                }) }}
+            </div>
+            <div class="col-md-4">
+                {{ show_row(supplierOrder.reverseCharge, 'boolean', {
+                    'label': t('supplier_order.field.reverse_charge', {}, 'EkynaCommerce'),
+                    'color': true,
+                    'false_class': 'label label-default',
+                    'true_class': 'label label-warning',
                     'label_col': 6
                 }) }}
             </div>

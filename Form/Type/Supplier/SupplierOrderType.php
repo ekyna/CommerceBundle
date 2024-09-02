@@ -93,6 +93,13 @@ class SupplierOrderType extends AbstractResourceType
                 ->add('currency', Commerce\Common\CurrencyChoiceType::class, [
                     'disabled' => true,
                 ])
+                ->add('reverseCharge', Type\CheckboxType::class, [
+                    'label'    => t('supplier_order.field.reverse_charge', [], 'EkynaCommerce'),
+                    'required' => false,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ])
                 ->add('state', ConstantChoiceType::class, [
                     'label'    => t('field.status', [], 'EkynaUi'),
                     'class'    => BStates::class,

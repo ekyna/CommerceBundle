@@ -1954,6 +1954,7 @@ supplier_order:
         payment_total: Total fournisseur
         payment_due_date: Échéance fournisseur
         payment_date: Règlement fournisseur
+        reverse_charge: Autoliquidation
         customs_tax: Taxe douane
         customs_vat: TVA en douane
         forwarder_fee: Frais transitaire HT
