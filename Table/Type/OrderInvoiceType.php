@@ -9,6 +9,7 @@ use Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice\DeleteAction;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice\RenderAction;
 use Ekyna\Bundle\CommerceBundle\Table\Action\InvoiceDocumentActionType;
 use Ekyna\Bundle\CommerceBundle\Table\Column;
+use Ekyna\Bundle\ResourceBundle\Table\Filter\ResourceType;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Common\Locking\LockChecker;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
@@ -130,9 +131,15 @@ class OrderInvoiceType extends AbstractOrderListType
                 'property_path' => 'order.outstandingDate',
                 'position'      => 60,
             ])
+            ->addFilter('initiatorCustomer', ResourceType::class, [
+                'label'         => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
+                'property_path' => 'order.initiatorCustomer',
+                'resource'      => 'ekyna_commerce.customer',
+                'position'      => 70,
+            ])
             ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                 'label'    => t('field.created_at', [], 'EkynaUi'),
-                'position' => 70,
+                'position' => 80,
             ]);
 
         $builder->addAction('documents', InvoiceDocumentActionType::class, [
