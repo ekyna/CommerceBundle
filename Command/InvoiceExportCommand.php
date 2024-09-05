@@ -46,10 +46,10 @@ class InvoiceExportCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (empty($from = $input->getOption('from'))) {
-            $from = 'previous monday';
+            $from = 'first day of previous month';
         }
         if (empty($to = $input->getOption('to'))) {
-            $to = 'now';
+            $to = 'last day of previous month';
         }
 
         $from = new DateTime($from);
