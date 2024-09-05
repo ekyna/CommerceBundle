@@ -39,7 +39,7 @@ class InvoiceExportCommand extends Command
     {
         $this->addOption('from', 'f', InputOption::VALUE_REQUIRED, 'The `from` date');
         $this->addOption('to', 't', InputOption::VALUE_REQUIRED, 'The `to` date');
-        $this->addOption('email', null, InputOption::VALUE_REQUIRED, 'The `email` to send export to');
+        $this->addOption('email', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'The `email` to send export to');
         $this->addOption('filename', null, InputOption::VALUE_REQUIRED, 'The exported file name');
     }
 
@@ -101,12 +101,12 @@ class InvoiceExportCommand extends Command
         );
 
         if (empty($recipient = $input->getOption('email'))) {
-            $recipient = $this->reportEmail;
+            [$recipient] = $this->reportEmail;
         }
 
         $message = new Email();
         $message->from($this->reportEmail);
-        $message->to($recipient);
+        $message->to(...$recipient);
         $message->subject($subject);
         $message->text('See attachment');
         $message->attach(file_get_contents($path), $fileName, 'text/csv');
