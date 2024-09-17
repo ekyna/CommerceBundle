@@ -69,10 +69,13 @@ class InvoiceType extends AbstractResourceType
                 $locked = $this->lockChecker->isLocked($invoice)
                     && !$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
 
+                $locked = $this->lockChecker->isLocked($invoice);
+                $super = $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
+
                 $form->add('createdAt', Type\DateTimeType::class, [
                     'label'      => t('field.date', [], 'EkynaUi'),
                     'required'   => false,
-                    'disabled'   => $locked,
+                    'disabled'   => $locked && !$super,
                     'empty_data' => (new DateTime())->format('d/m/Y H:i'), // TODO Use the proper format !
                 ]);
 
@@ -80,12 +83,16 @@ class InvoiceType extends AbstractResourceType
                     $form->add('ignoreStock', Type\CheckboxType::class, [
                         'label'    => t('invoice.field.ignore_stock', [], 'EkynaCommerce'),
                         'required' => false,
-                        'disabled' => $locked,
+                        'disabled'   => $locked && !$super,
                         'help'     => t('invoice.help.ignore_stock', [], 'EkynaCommerce'),
                         'attr'     => [
                             'align_with_widget' => true,
                         ],
                     ]);
+                }
+
+                if ($locked) {
+                    return;
                 }
 
                 $disabledLines = true;

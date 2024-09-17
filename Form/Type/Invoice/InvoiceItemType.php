@@ -50,6 +50,7 @@ class InvoiceItemType extends AbstractResourceType
                 ],
                 'error_bubbling' => true,
             ])
+            // TODO Use \Ekyna\Bundle\CommerceBundle\Form\FormHelper::addQuantityType
             ->add('quantity', Type\NumberType::class, [
                 'label'          => t('field.quantity', [], 'EkynaUi'),
                 'scale'          => 3, // TODO Packaging format

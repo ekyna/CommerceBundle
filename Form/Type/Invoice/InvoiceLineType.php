@@ -9,13 +9,11 @@ use Ekyna\Bundle\CommerceBundle\Form\FormHelper;
 use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Component\Commerce\Common\Model\Units;
 use Ekyna\Component\Commerce\Document\Model\DocumentLineTypes;
-use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
 use Ekyna\Component\Commerce\Exception\RuntimeException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceAvailability;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceLineInterface;
 use Ekyna\Component\Commerce\Invoice\Resolver\AvailabilityResolverFactory;
-use Ekyna\Component\Commerce\Stock\Model\Availability;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -51,6 +49,7 @@ class InvoiceLineType extends AbstractResourceType
 
             FormHelper::addQuantityType($event->getForm(), $unit, [
                 'disabled'       => $disabled,
+                'empty_data' => new Decimal(0),
                 'error_bubbling' => true,
                 'attr'           => [
                     'class' => 'input-sm',

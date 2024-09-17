@@ -10,16 +10,20 @@
             {{- 'relay_point.label.singular'|trans({}, 'EkynaCommerce') -}}
         </a>
     </li>#}
+    {% if form.customInvoiceAddress is defined -%}
     <li>
         <a href="#invoice-invoice-address" id="toggle-invoice-address" data-toggle="tab">
             {{- 'sale.field.invoice_address'|trans({}, 'EkynaCommerce') -}}
         </a>
     </li>
+    {%- endif %}
+    {% if form.customDeliveryAddress is defined -%}
     <li>
         <a href="#invoice-delivery-address" id="toggle-delivery-address" data-toggle="tab">
             {{- 'sale.field.delivery_address'|trans({}, 'EkynaCommerce') -}}
         </a>
     </li>
+    {%- endif %}
 </ul>
 <div class="panel-body form-body">
     {{ bootstrap_set_style('horizontal') }}
@@ -44,7 +48,9 @@
                 </div>
             {% endif %}
 
+            {% if form.lines is defined -%}
             {{ form_row(form.lines) }}
+            {%- endif %}
 
             {% if form.items is defined -%}
             {{ form_row(form.items) }}
@@ -55,12 +61,16 @@
 
             {% block extra_fields %}{% endblock extra_fields %}
         </div>
+        {% if form.customInvoiceAddress is defined -%}
         <div class="tab-pane" id="invoice-invoice-address">
             {{ form_row(form.customInvoiceAddress) }}
         </div>
+        {%- endif %}
+        {% if form.customDeliveryAddress is defined -%}
         <div class="tab-pane" id="invoice-delivery-address">
             {{ form_row(form.customDeliveryAddress) }}
         </div>
+        {%- endif %}
     </div>
     {{ form_rest(form) }}
     {{ ivory_google_api() }}
