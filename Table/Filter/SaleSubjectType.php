@@ -31,6 +31,7 @@ use function Symfony\Component\Translation\t;
 class SaleSubjectType extends AbstractFilterType
 {
     private SubjectProviderRegistryInterface $registry;
+    private static int                       $itemCount = 0;
 
     public function __construct(SubjectProviderRegistryInterface $registry)
     {
@@ -82,33 +83,37 @@ class SaleSubjectType extends AbstractFilterType
             return false;
         }
 
+        $i = 'i' . ++self::$itemCount;
+
         /** @var SubjectIdentity $identity */
         $identity = $activeFilter->getValue();
         $qb = $adapter->getQueryBuilder();
         $alias = $qb->getRootAliases()[0];
         $qb
-            ->join($alias . '.items', 'i1')
-            ->leftJoin('i1.children', 'i2')
-            ->leftJoin('i2.children', 'i3')
-            ->leftJoin('i3.children', 'i4')
-            ->andWhere($qb->expr()->orX(
-                $qb->expr()->andX(
-                    $qb->expr()->eq('i1.subjectIdentity.provider', ':provider'),
-                    $qb->expr()->eq('i1.subjectIdentity.identifier', ':identifier')
-                ),
-                $qb->expr()->andX(
-                    $qb->expr()->eq('i2.subjectIdentity.provider', ':provider'),
-                    $qb->expr()->eq('i2.subjectIdentity.identifier', ':identifier')
-                ),
-                $qb->expr()->andX(
-                    $qb->expr()->eq('i3.subjectIdentity.provider', ':provider'),
-                    $qb->expr()->eq('i3.subjectIdentity.identifier', ':identifier')
-                ),
-                $qb->expr()->andX(
-                    $qb->expr()->eq('i4.subjectIdentity.provider', ':provider'),
-                    $qb->expr()->eq('i4.subjectIdentity.identifier', ':identifier')
+            ->join($alias . '.items', $i . '1')
+            ->leftJoin($i . '1.children', $i . '2')
+            ->leftJoin($i . '2.children', $i . '3')
+            ->leftJoin($i . '3.children', $i . '4')
+            ->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->andX(
+                        $qb->expr()->eq($i . '1.subjectIdentity.provider', ':provider'),
+                        $qb->expr()->eq($i . '1.subjectIdentity.identifier', ':identifier')
+                    ),
+                    $qb->expr()->andX(
+                        $qb->expr()->eq($i . '2.subjectIdentity.provider', ':provider'),
+                        $qb->expr()->eq($i . '2.subjectIdentity.identifier', ':identifier')
+                    ),
+                    $qb->expr()->andX(
+                        $qb->expr()->eq($i . '3.subjectIdentity.provider', ':provider'),
+                        $qb->expr()->eq($i . '3.subjectIdentity.identifier', ':identifier')
+                    ),
+                    $qb->expr()->andX(
+                        $qb->expr()->eq($i . '4.subjectIdentity.provider', ':provider'),
+                        $qb->expr()->eq($i . '4.subjectIdentity.identifier', ':identifier')
+                    )
                 )
-            ))
+            )
             ->setParameter('provider', $identity->getProvider())
             ->setParameter('identifier', $identity->getIdentifier());
 
