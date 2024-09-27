@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Route;
 
 use function clearstatcache;
+use function sprintf;
 
 /**
  * Class ExportAction
@@ -56,8 +57,10 @@ class ExportAction extends AbstractSaleAction implements RoutingActionInterface
             throw new InvalidArgumentException("Unexpected format '$format'");
         }
 
+        $internal = $this->request->query->getBoolean('internal');
+
         try {
-            $path = $exporter->export($sale);
+            $path = $exporter->export($sale, $internal);
         } catch (CommerceExceptionInterface $e) {
             if ($this->debug) {
                 throw $e;
@@ -73,9 +76,15 @@ class ExportAction extends AbstractSaleAction implements RoutingActionInterface
 
         $response = new BinaryFileResponse(new Stream($path));
 
+        $fileName = sprintf('%s%s.%s',
+            $sale->getNumber(),
+            $internal ? '_internal' : '',
+            $format
+        );
+
         $disposition = $response
             ->headers
-            ->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $sale->getNumber() . '.' . $format);
+            ->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $fileName);
 
         $response->headers->set('Content-Disposition', $disposition);
         $response->headers->set('Content-Type', 'text/csv');

@@ -26,25 +26,13 @@ use function Symfony\Component\Translation\t;
  */
 class SaleRenderer
 {
-    private ContextProviderInterface $contextProvider;
-    private ViewBuilder $viewBuilder;
-    private Environment $twig;
-    private UiRenderer     $uiRenderer;
-    private ResourceHelper $resourceHelper;
-
-
     public function __construct(
-        ContextProviderInterface $contextProvider,
-        ViewBuilder $viewBuilder,
-        Environment $twig,
-        UiRenderer $uiRenderer,
-        ResourceHelper $resourceHelper
+        private readonly ContextProviderInterface $contextProvider,
+        private readonly ViewBuilder              $viewBuilder,
+        private readonly Environment              $twig,
+        private readonly UiRenderer               $uiRenderer,
+        private readonly ResourceHelper           $resourceHelper
     ) {
-        $this->contextProvider = $contextProvider;
-        $this->viewBuilder = $viewBuilder;
-        $this->twig = $twig;
-        $this->uiRenderer = $uiRenderer;
-        $this->resourceHelper = $resourceHelper;
     }
 
     /**
@@ -103,12 +91,14 @@ class SaleRenderer
     {
         $actions = [];
 
-        $formats = ['CSV' => 'csv', 'Excel' => 'xls'];
+        $entries = [
+            'CSV'             => ['_format' => 'csv'],
+            'Excel'           => ['_format' => 'xls'],
+            'Excel (interne)' => ['_format' => 'xls', 'internal' => 1],
+        ];
 
-        foreach ($formats as $name => $format) {
-            $path = $this->resourceHelper->generateResourcePath($sale, ExportAction::class, [
-                '_format' => $format,
-            ]);
+        foreach ($entries as $name => $parameters) {
+            $path = $this->resourceHelper->generateResourcePath($sale, ExportAction::class, $parameters);
 
             $actions[$path] = $name;
         }
