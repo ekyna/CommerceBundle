@@ -1537,6 +1537,7 @@ sale:
         auto_discount: Remises auto.
         auto_notify: Notifications auto.
         auto_shipping: Frais de port auto.
+        auto_invoice: Facturation auto.
         availability: Dispo.
         net_unit: PU HT
         ati_unit: PU TTC

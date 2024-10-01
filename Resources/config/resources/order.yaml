@@ -28,7 +28,7 @@ resources:
                     read:
                         expose: true
                 admin_toggle:
-                    properties: [autoDiscount,autoShipping,autoNotify]
+                    properties: [autoDiscount,autoShipping,autoNotify,autoInvoice]
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Order\AbortAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Order\ExportToDeliverAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Order\PrepareAction: ~

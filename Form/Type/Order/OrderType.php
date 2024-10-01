@@ -38,6 +38,13 @@ class OrderType extends SaleType
         parent::buildForm($builder, $options);
 
         $builder
+            ->add('autoInvoice', CheckboxType::class, [
+                'label'    => t('sale.field.auto_invoice', [], 'EkynaCommerce'),
+                'required' => false,
+                'attr'     => [
+                    'align_with_widget' => true,
+                ],
+            ])
             ->add('project', ResourceSearchType::class, [
                 'resource' => 'ekyna_commerce.project',
                 'required' => false,

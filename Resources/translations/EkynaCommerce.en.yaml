@@ -1498,6 +1498,7 @@ sale:
         auto_discount: Auto discounts
         auto_notify: Auto notify
         auto_shipping: Auto shipping cost
+        auto_invoice: Auto invoicing
         availability: Available
         net_unit: UP exc-tax
         ati_unit: UP inc-tax
