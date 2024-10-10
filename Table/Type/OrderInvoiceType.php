@@ -53,6 +53,12 @@ class OrderInvoiceType extends AbstractOrderListType
                 'false_class' => 'label-success',
                 'position'    => 20,
             ])
+            ->addColumn('title', CType\Column\TextType::class, [
+                'label'         => t('field.title', [], 'EkynaUi'),
+                'property_path' => 'order.title',
+                'position'      => 30,
+                'visible'       => false,
+            ])
             ->addColumn('goodsBase', BType\Column\PriceType::class, [
                 'label'         => t('invoice.field.goods_base', [], 'EkynaCommerce'),
                 'currency_path' => 'currency',
