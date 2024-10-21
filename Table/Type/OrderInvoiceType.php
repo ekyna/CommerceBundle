@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
+use DateTime;
 use Ekyna\Bundle\AdminBundle\Action\UpdateAction;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice\DeleteAction;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice\RenderAction;
@@ -12,10 +13,14 @@ use Ekyna\Bundle\CommerceBundle\Table\Column;
 use Ekyna\Bundle\CommerceBundle\Table\Filter;
 use Ekyna\Bundle\TableBundle\Extension\Type as BType;
 use Ekyna\Component\Commerce\Common\Locking\LockChecker;
+use Ekyna\Component\Table\Context\ActiveFilter;
+use Ekyna\Component\Table\Context\Context;
+use Ekyna\Component\Table\Context\Profile\Profile;
 use Ekyna\Component\Table\Extension\Core\Type as CType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\Util\ColumnSort;
+use Ekyna\Component\Table\Util\FilterOperator;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 use function Symfony\Component\Translation\t;
@@ -38,7 +43,6 @@ class OrderInvoiceType extends AbstractOrderListType
         parent::buildTable($builder, $options);
 
         $builder
-            ->setExportable(true)
             ->addDefaultSort('createdAt', ColumnSort::DESC)
             ->addColumn('number', Column\OrderInvoiceType::class, [
                 'label'         => t('field.number', [], 'EkynaUi'),
@@ -130,25 +134,60 @@ class OrderInvoiceType extends AbstractOrderListType
             ->addFilter('saleTotal', CType\Filter\NumberType::class, [
                 'label'         => t('invoice.field.sale_total', [], 'EkynaCommerce'),
                 'property_path' => 'order.grandTotal',
-                'position'      => 50,
+                'position'      => 90,
+            ])
+            ->addFilter('paidTotal', CType\Filter\NumberType::class, [
+                'label'    => t('invoice.field.sale_paid', [], 'EkynaCommerce'),
+                'position' => 70,
             ])
             ->addFilter('outstandingDate', CType\Filter\DateTimeType::class, [
                 'label'         => t('sale.field.outstanding_date', [], 'EkynaCommerce'),
                 'property_path' => 'order.outstandingDate',
-                'position'      => 60,
+                'position'      => 80,
             ])
             ->addFilter('initiatorCustomer', Filter\CustomerType::class, [
                 'label'         => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
                 'property_path' => 'order.initiatorCustomer',
-                'position'      => 70,
+                'position'      => 90,
+            ])
+            ->addFilter('dueDate', CType\Filter\DateTimeType::class, [
+                'label'       => t('sale.field.outstanding_date', [], 'EkynaCommerce'),
+                'position' => 100,
             ])
             ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                 'label'    => t('field.created_at', [], 'EkynaUi'),
-                'position' => 80,
+                'position' => 110,
             ]);
 
         $builder->addAction('documents', InvoiceDocumentActionType::class, [
             'label' => t('invoice.button.documents', [], 'EkynaCommerce'),
         ]);
+
+        $context = new Context();
+        $context->setVisibleColumns(
+            [
+                'number',
+                'order',
+                'credit',
+                'customer',
+                'grandTotal',
+                'paidTotal',
+                'dueDate',
+                'createdAt',
+                'actions',
+            ]
+        );
+
+        $filter = (new ActiveFilter('paidTotal_0', 'paidTotal'));
+        $filter->setOperator(FilterOperator::EQUAL);
+        $filter->setValue(0);
+        $context->addActiveFilter($filter);
+
+        $filter = (new ActiveFilter('dueDate_1', 'dueDate'));
+        $filter->setOperator(FilterOperator::LOWER_THAN_OR_EQUAL);
+        $filter->setValue(new DateTime());
+        $context->addActiveFilter($filter);
+
+        $builder->addProfile(Profile::create('unpaid', 'Impayées', $context));
     }
 }

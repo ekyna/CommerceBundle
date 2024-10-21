@@ -40,7 +40,10 @@ abstract class AbstractOrderListType extends AbstractResourceType
                     ->setParameter('order', $order);
             });
 
-            $builder->setFilterable(false);
+            $builder
+                ->setFilterable(false)
+                ->setConfigurable(false)
+                ->setProfileable(false);
         } else {
             if (null !== $customer = $options['customer']) {
                 $source = $builder->getSource();
@@ -57,11 +60,11 @@ abstract class AbstractOrderListType extends AbstractResourceType
 
                 $builder
                     ->setFilterable(false)
+                    ->setConfigurable(false)
+                    ->setProfileable(false)
                     ->setPerPageChoices([100]);
             } else {
                 $builder
-                    ->setConfigurable(true)
-                    ->setProfileable(true)
                     ->addColumn('customer', Column\SaleCustomerType::class, [
                         'label'         => t('customer.label.singular', [], 'EkynaCommerce'),
                         'property_path' => 'order',
@@ -123,8 +126,13 @@ abstract class AbstractOrderListType extends AbstractResourceType
         parent::configureOptions($resolver);
 
         $resolver
-            ->setDefault('order', null)
-            ->setDefault('customer', null)
+            ->setDefaults([
+                'order'        => null,
+                'customer'     => null,
+                'exportable'   => true,
+                'configurable' => true,
+                'profileable'  => true,
+            ])
             ->setAllowedTypes('order', ['null', OrderInterface::class])
             ->setAllowedTypes('customer', ['null', CustomerInterface::class]);
     }
