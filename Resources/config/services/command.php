@@ -125,6 +125,7 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.command.invoice_export', InvoiceExportCommand::class)
         ->args([
+            service('doctrine.dbal.default_connection'),
             service('ekyna_commerce.repository.order_invoice'),
             service('mailer'), // TODO Report* mailer
             param('ekyna_resource.report_email'),

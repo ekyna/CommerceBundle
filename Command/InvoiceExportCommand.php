@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use DateTime;
+use Doctrine\DBAL\Connection;
 use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
 use Ekyna\Component\Resource\Helper\File\Csv;
 use Ekyna\Component\Resource\Model\DateRange;
@@ -28,6 +29,7 @@ class InvoiceExportCommand extends Command
     protected static $defaultName = 'ekyna:commerce:invoice:export';
 
     public function __construct(
+        private readonly Connection                      $connection,
         private readonly OrderInvoiceRepositoryInterface $repository,
         private readonly MailerInterface                 $mailer,
         private readonly string                          $reportEmail,
@@ -45,6 +47,8 @@ class InvoiceExportCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->connection->getConfiguration()->setSQLLogger(null);
+
         if (empty($from = $input->getOption('from'))) {
             $from = 'first day of previous month';
         }
@@ -101,7 +105,7 @@ class InvoiceExportCommand extends Command
         );
 
         if (empty($recipient = $input->getOption('email'))) {
-            [$recipient] = $this->reportEmail;
+            $recipient = [$this->reportEmail];
         }
 
         $message = new Email();
