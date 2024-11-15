@@ -94,7 +94,7 @@ class StatUpdateCommand extends Command
 
         /** @noinspection SqlDialectInspection */
         $result = $connection->executeQuery(
-            'SELECT DATE(o.created_at) AS date, MAX(o.updated_at) AS updated FROM commerce_order AS o GROUP BY date'
+            'SELECT DATE(o.accepted_at) AS date, MAX(o.updated_at) AS updated FROM commerce_order AS o GROUP BY date'
         );
         while (false !== $data = $result->fetchAssociative()) {
             $orderDates[$data['date']] = $data['updated'];
