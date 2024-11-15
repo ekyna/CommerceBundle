@@ -4,14 +4,10 @@ define(['jquery', 'select2'], function($) {
     /**
      * Subject choice widget
      */
-    $.fn.subjectChoiceWidget = function(config) {
-
-        config = $.extend({
-            limit: 8
-        }, config);
+    $.fn.subjectChoiceWidget = function() {
 
         this.each(function() {
-            var $this = $(this),
+            let $this = $(this),
                 select2initialized = false,
                 $provider = $this.find('.provider'),
                 $identifier = $this.find('.identifier'),
@@ -21,7 +17,7 @@ define(['jquery', 'select2'], function($) {
                 return;
             }
 
-            var providerChangeHandler = function() {
+            let providerChangeHandler = function() {
                 $subject.prop('disabled', true).off('change');
                 $identifier.val(null);
 
@@ -45,11 +41,12 @@ define(['jquery', 'select2'], function($) {
                     return;
                 }
 
-                var formatter = function(data) {
-                    if(!data.id)return 'Rechercher'; return $('<span>'+data.choice_label+'</span>');
+                let formatter = function(data) {
+                    if(!data.id)return 'Rechercher';
+                    return $('<span>[' + data.reference + '] ' + data.text + '</span>');
                 };
 
-                var $parent = $provider.closest('.modal');
+                let $parent = $provider.closest('.modal');
                 if (!$parent.length) {
                     $parent = null;
                 }
@@ -61,8 +58,8 @@ define(['jquery', 'select2'], function($) {
                         allowClear: true,
                         //selectOnClose: true, // For tests
                         minimumInputLength: 3,
-                        //templateResult: formatter,
-                        //templateSelection: formatter,
+                        templateResult: formatter,
+                        templateSelection: formatter,
                         dropdownParent: $parent,
                         ajax: {
                             delay: 300,

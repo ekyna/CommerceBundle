@@ -781,8 +781,8 @@
     <tr {{ block('widget_container_attributes') }}>
         <td style="padding-left:{{ level * 20 }}px">
             {{- item.saleItem.designation -}}
-            {%- if item.saleItem.description is not empty -%}
-                <br><p style="font-size:11px;padding-left:12px;">{{ item.saleItem.description|nl2br }}</p>
+            {%- if item.saleItem.descriptions is not empty -%}
+                <br><p style="font-size:11px;padding-left:12px;">{{ item.saleItem.descriptions|join('. ')|nl2br }}</p>
             {%- endif -%}
         </td>
         <td>{{ item.saleItem.reference }}</td>

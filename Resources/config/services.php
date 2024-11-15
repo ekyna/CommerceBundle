@@ -11,6 +11,7 @@ use Ekyna\Bundle\CommerceBundle\Install\CommerceInstaller;
 use Ekyna\Bundle\CommerceBundle\Service\Mailer\AddressHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Mailer\AttachmentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Mailer\Mailer;
+use Ekyna\Bundle\CommerceBundle\Service\Migration\SaleItemDescriptionMigrator;
 use Ekyna\Bundle\CommerceBundle\Service\Routing\RoutingLoader;
 use Ekyna\Bundle\CommerceBundle\Service\Security\TicketAttachmentVoter;
 use Ekyna\Bundle\CommerceBundle\Service\Security\TicketMessageVoter;
@@ -167,4 +168,11 @@ return static function (ContainerConfigurator $container): void {
             param('ekyna_commerce.default.currency'),
         ])
         ->tag('ekyna_install.installer', ['priority' => 97]);
+
+    // Sale item description migrator
+    $services
+        ->set('ekyna_commerce.migration.sale_item_description', SaleItemDescriptionMigrator::class)
+        ->args([
+            service('doctrine.dbal.default_connection'),
+        ]);
 };

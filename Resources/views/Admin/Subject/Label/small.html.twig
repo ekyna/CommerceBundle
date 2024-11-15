@@ -10,6 +10,8 @@
                 text-rendering: optimizeLegibility;
                 width: 100%;
                 height: 100%;
+                font-size: 11px;
+                line-height: 14px;
             }
 
             .label {
@@ -36,46 +38,32 @@
             overflow: hidden;
         }
 
-        .label > p {
-            flex: 1 1 initial;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-            text-overflow: ellipsis;
-            overflow: hidden;
-        }
-
         .label .barcode-image img {
             width: 100%;
             height: 100%;
         }
 
-        .label-small {
-            font-size: 12px;
-            line-height: 16px;
+        .label > .designation {
+            max-height: 28px;
         }
 
-        .label-small > .designation {
-            max-height: 32px;
-        }
-
-        .label-small > .references {
+        .label > .references {
             display: flex;
             justify-content: space-between;
         }
 
-        .label-small > .references > span {
+        .label > .references > span {
             flex: 1 1 initial;
         }
     </style>
 {% endblock styles %}
 
 {% block label %}
-    <div class="label label-small">
+    <div class="label">
         <p class="designation">{{ label.designation|default('&nbsp;')|raw }}</p>
         <p class="barcode-image">
             {%- if label.barcode is not empty -%}
-                <img alt="Barcode" src="data:image/png;base64,{{ label.barcode|barcode_128(256, 32) }}">
+                <img alt="Barcode" src="data:image/png;base64,{{ label.barcode|barcode_128(256, 28) }}">
             {%- else -%}
                 &nbsp;
             {%- endif -%}
@@ -83,6 +71,9 @@
         <p class="references">
             <span>{{ label.barcode|default('&nbsp;')|raw }}</span>
             <span>{{ label.reference|default('&nbsp;')|raw }}</span>
+            {% if label['reference_aliases'] is defined %}
+            <span>({{ label['reference_aliases']|join(', ') }})</span>
+            {% endif %}
         </p>
     </div>
 {% endblock label %}

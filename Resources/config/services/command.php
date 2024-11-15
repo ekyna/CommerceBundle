@@ -19,6 +19,7 @@ use Ekyna\Bundle\CommerceBundle\Command\InvoicePaidTotalUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceUpdateDataCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceUpdateMarginCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceUpdateTotalsCommand;
+use Ekyna\Bundle\CommerceBundle\Command\Migrate;
 use Ekyna\Bundle\CommerceBundle\Command\OrderDateModifyCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderDetachCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrdersStateCheckCommand;
@@ -386,6 +387,14 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.converter.currency'),
             service('ekyna_resource.registry.resource'),
             service('doctrine.orm.default_entity_manager'),
+        ])
+        ->tag('console.command');
+
+    // Migrate sale item description command
+    $services
+        ->set('ekyna_commerce.command.migrate.sale_item_description', Migrate\SaleItemDescriptionCommand::class)
+        ->args([
+            service('ekyna_commerce.migration.sale_item_description'),
         ])
         ->tag('console.command');
 };
