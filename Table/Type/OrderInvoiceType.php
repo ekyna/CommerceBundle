@@ -157,6 +157,11 @@ class OrderInvoiceType extends AbstractOrderListType
             ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                 'label'    => t('field.created_at', [], 'EkynaUi'),
                 'position' => 110,
+            ])
+            ->addFilter('tags', Filter\SaleTagsType::class, [
+                'property_path' => 'order.tags',
+                'collections'  => ['order.tags', 'order.itemsTags', 'order.customer.tags'],
+                'position'      => 120,
             ]);
 
         $builder->addAction('documents', InvoiceDocumentActionType::class, [

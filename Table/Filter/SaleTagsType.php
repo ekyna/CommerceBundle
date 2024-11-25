@@ -50,7 +50,7 @@ class SaleTagsType extends AbstractFilterType
         $clause = $operator === FilterOperator::IN || $operator === FilterOperator::MEMBER
             ? $qb->expr()->orX() : $qb->expr()->andX();
 
-        foreach (['tags', 'itemsTags', 'customer.tags'] as $path) {
+        foreach ($options['collections'] as $path) {
             $property = $adapter->getQueryBuilderPath($path);
             $clause->add(FilterUtil::buildExpression($property, $operator, $parameter));
         }
@@ -66,7 +66,9 @@ class SaleTagsType extends AbstractFilterType
             'label'        => t('tag.label.plural', [], 'EkynaCms'),
             'class'        => $this->tagClass,
             'entity_label' => 'name',
+            'collections'  => ['tags', 'itemsTags', 'customer.tags'],
         ]);
+        $resolver->setAllowedTypes('collections', 'array');
     }
 
     public function getParent(): ?string
