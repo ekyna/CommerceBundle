@@ -43,7 +43,7 @@ define(['jquery', 'select2'], function($) {
 
                 let formatter = function(data) {
                     if(!data.id)return 'Rechercher';
-                    return $('<span>[' + data.reference + '] ' + data.text + '</span>');
+                    return $('<span>[' + data.reference.at(0) + '] ' + data.text + '</span>');
                 };
 
                 let $parent = $provider.closest('.modal');
