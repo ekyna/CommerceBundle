@@ -300,7 +300,6 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.form_type.quote', QuoteType::class)
         ->args([
-            service('security.authorization_checker'),
             param('ekyna_commerce.default.currency'),
         ])
         ->tag('form.type')
