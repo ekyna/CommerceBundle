@@ -77,6 +77,9 @@
                     {%- else -%}
                         <span title="{{ row.designation }}">{{ row.designation -}}</span>
                     {%- endif -%}
+                    {%- if row.description is not empty -%}
+                        <br><p class="description">{{ row.description|nl2br }}</p>
+                    {%- endif -%}
                 </td>
                 <td>{{ row.reference }}</td>
                 <td class="text-right">
@@ -116,6 +119,9 @@
                                     <a href="{{ row.url }}" title="{{ row.designation }}">{{ row.designation }}</a>
                                 {%- else -%}
                                     <span title="{{ row.designation }}">{{ row.designation -}}</span>
+                                {%- endif -%}
+                                {%- if row.description is not empty -%}
+                                    <br><p class="description">{{ row.description|nl2br }}</p>
                                 {%- endif -%}
                             </td>
                             <td>{{ row.reference }}</td>

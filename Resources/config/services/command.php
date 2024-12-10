@@ -391,10 +391,10 @@ return static function (ContainerConfigurator $container) {
         ->tag('console.command');
 
     // Migrate sale item description command
-    $services
+    /*$services
         ->set('ekyna_commerce.command.migrate.sale_item_description', Migrate\SaleItemDescriptionCommand::class)
         ->args([
             service('ekyna_commerce.migration.sale_item_description'),
         ])
-        ->tag('console.command');
+        ->tag('console.command');*/
 };

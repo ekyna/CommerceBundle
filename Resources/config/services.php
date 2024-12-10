@@ -170,9 +170,9 @@ return static function (ContainerConfigurator $container): void {
         ->tag('ekyna_install.installer', ['priority' => 97]);
 
     // Sale item description migrator
-    $services
+    /*$services
         ->set('ekyna_commerce.migration.sale_item_description', SaleItemDescriptionMigrator::class)
         ->args([
             service('doctrine.dbal.default_connection'),
-        ]);
+        ]);*/
 };

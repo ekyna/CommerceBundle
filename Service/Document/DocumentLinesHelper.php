@@ -194,6 +194,7 @@ class DocumentLinesHelper
                     'url'         => $this->subjectHelper->generatePublicUrl($parent, false),
                     'reference'   => $parent->getReference(),
                     'quantity'    => null,
+                    'description' => null,
                 ];
 
                 $parentIds[] = $parent->getId();
@@ -214,6 +215,7 @@ class DocumentLinesHelper
                 'url'         => $this->subjectHelper->generatePublicUrl($item, false),
                 'reference'   => $item->getReference(),
                 'quantity'    => $line->getQuantity(),
+                'description' => implode(', ', $item->getDescriptions()),
             ];
         }
 
@@ -272,6 +274,7 @@ class DocumentLinesHelper
                     'url'         => $this->subjectHelper->generatePublicUrl($parent, false),
                     'reference'   => $parent->getReference(),
                     'quantity'    => null,
+                    'description' => null,
                 ];
 
                 $parentIds[] = $parent->getId();
@@ -292,6 +295,7 @@ class DocumentLinesHelper
                 'url'         => $this->subjectHelper->generatePublicUrl($item, false),
                 'reference'   => $item->getReference(),
                 'quantity'    => $entry->getQuantity(),
+                'description' => null,
             ];
         }
 

@@ -22,10 +22,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 abstract class AbstractViewType extends BaseType
 {
-    private UrlGeneratorInterface  $urlGenerator;
-    private TranslatorInterface    $translator;
-    private ResourceHelper         $resourceHelper;
-    private SubjectHelperInterface $subjectHelper;
+    protected UrlGeneratorInterface  $urlGenerator;
+    protected TranslatorInterface    $translator;
+    protected ResourceHelper         $resourceHelper;
+    protected SubjectHelperInterface $subjectHelper;
 
     public function setUrlGenerator(UrlGeneratorInterface $urlGenerator): void
     {
