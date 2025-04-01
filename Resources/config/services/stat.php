@@ -9,11 +9,15 @@ use Ekyna\Bundle\CommerceBundle\Dashboard\ExportWidget;
 use Ekyna\Bundle\CommerceBundle\Dashboard\StatWidget;
 use Ekyna\Bundle\CommerceBundle\Dashboard\StockWidget;
 use Ekyna\Bundle\CommerceBundle\Service\Stat\StatCalculator;
-use Ekyna\Bundle\CommerceBundle\Service\Stat\StatExporter;
 use Ekyna\Bundle\CommerceBundle\Service\Stat\StatUpdater;
+use Ekyna\Component\Commerce\Stat\StatHelper;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services();
+
+    // Stat helper
+    $services
+        ->set('ekyna_commerce.helper.stat', StatHelper::class);
 
     // Stat calculator
     $services
@@ -22,6 +26,7 @@ return static function (ContainerConfigurator $container) {
             service('doctrine'),
             service('ekyna_commerce.factory.amount_calculator'),
             service('ekyna_commerce.factory.margin_calculator'),
+            service('ekyna_commerce.helper.stat'),
             param('ekyna_commerce.class.order'),
             param('ekyna_commerce.default.currency'),
         ]);
@@ -31,6 +36,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.updater.stat', StatUpdater::class)
         ->args([
             service('ekyna_commerce.calculator.stat'),
+            service('ekyna_commerce.helper.stat'),
             service('doctrine'),
         ]);
 
@@ -39,6 +45,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.dashboard.stat_widget', StatWidget::class)
         ->args([
             service('doctrine'),
+            service('ekyna_commerce.helper.stat'),
         ])
         ->tag('ekyna_admin.dashboard_widget');
 

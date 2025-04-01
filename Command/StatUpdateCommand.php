@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Ekyna\Component\Commerce\Stat\StatHelperInterface;
 use Ekyna\Component\Commerce\Stat\Updater\StatUpdaterInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,7 +29,8 @@ class StatUpdateCommand extends Command
 
     public function __construct(
         private readonly StatUpdaterInterface   $updater,
-        private readonly EntityManagerInterface $manager
+        private readonly StatHelperInterface    $helper,
+        private readonly EntityManagerInterface $manager,
     ) {
         parent::__construct();
     }
@@ -64,11 +66,13 @@ class StatUpdateCommand extends Command
     {
         $name = 'Stock';
         $this->debug
-        && $output->write(sprintf(
-            '- %s %s ',
-            $name,
-            str_pad('.', 32 - mb_strlen($name), '.', STR_PAD_LEFT)
-        ));
+        && $output->write(
+            sprintf(
+                '- %s %s ',
+                $name,
+                str_pad('.', 32 - mb_strlen($name), '.', STR_PAD_LEFT)
+            )
+        );
 
         if ($this->updater->updateStockStat()) {
             $this->debug && $output->writeln("<info>created</info>\n");
@@ -111,11 +115,13 @@ class StatUpdateCommand extends Command
         foreach ($orderDates as $date => $updated) {
             $name = $date;
             $this->debug
-            && $output->write(sprintf(
-                '- %s %s ',
-                $name,
-                str_pad('.', 32 - mb_strlen($name), '.', STR_PAD_LEFT)
-            ));
+            && $output->write(
+                sprintf(
+                    '- %s %s ',
+                    $name,
+                    str_pad('.', 32 - mb_strlen($name), '.', STR_PAD_LEFT)
+                )
+            );
 
             if (!$this->force && isset($statDates[$date]) && $statDates[$date] > $updated) {
                 $this->debug && $output->writeln('<comment>skipped</comment>');
@@ -142,17 +148,19 @@ class StatUpdateCommand extends Command
 
         foreach ($updatedMonths as $month) {
             $this->debug
-            && $output->write(sprintf(
-                '- %s %s ',
-                $month,
-                str_pad('.', 32 - mb_strlen($month), '.', STR_PAD_LEFT)
-            ));
+            && $output->write(
+                sprintf(
+                    '- %s %s ',
+                    $month,
+                    str_pad('.', 32 - mb_strlen($month), '.', STR_PAD_LEFT)
+                )
+            );
 
             $d = new DateTime($month . '-01');
             if ($this->updater->updateMonthOrderStat($d, $this->force)) {
                 $this->debug && $output->writeln('<info>updated</info>');
 
-                $year = $d->format('Y');
+                $year = $this->helper->getYearForDate($d);
                 if (!in_array($year, $updatedYears, true)) {
                     $updatedYears[] = $year;
                 }
@@ -168,14 +176,15 @@ class StatUpdateCommand extends Command
 
         foreach ($updatedYears as $year) {
             $this->debug
-            && $output->write(sprintf(
-                '- %s %s ',
-                $year,
-                str_pad('.', 32 - mb_strlen($year), '.', STR_PAD_LEFT)
-            ));
+            && $output->write(
+                sprintf(
+                    '- %s %s ',
+                    $year,
+                    str_pad('.', 32 - mb_strlen($year), '.', STR_PAD_LEFT)
+                )
+            );
 
-            $d = new DateTime($year . '-01-01');
-            if ($this->updater->updateYearOrderStat($d, $this->force)) {
+            if ($this->updater->updateYearOrderStat($year, $this->force)) {
                 $this->debug && $output->writeln('<info>updated</info>');
 
                 $this->flush = true;

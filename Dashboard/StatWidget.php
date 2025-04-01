@@ -11,9 +11,13 @@ use Ekyna\Bundle\AdminBundle\Dashboard\Widget\WidgetInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleSources;
 use Ekyna\Component\Commerce\Stat\Entity\OrderStat;
 use Ekyna\Component\Commerce\Stat\Repository\OrderStatRepositoryInterface;
+use Ekyna\Component\Commerce\Stat\StatHelper;
+use Ekyna\Component\Resource\Model\DateRange;
 use OzdemirBurak\Iris\Color\Hex;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Twig\Environment;
+
+use function current;
 
 /**
  * Class StatisticsWidget
@@ -24,12 +28,12 @@ class StatWidget extends AbstractWidgetType
 {
     public const NAME = 'commerce_stat';
 
-    protected ManagerRegistry               $registry;
     protected ?OrderStatRepositoryInterface $orderStatRepository = null;
 
-    public function __construct(ManagerRegistry $registry)
-    {
-        $this->registry = $registry;
+    public function __construct(
+        protected readonly ManagerRegistry $registry,
+        protected readonly StatHelper      $helper,
+    ) {
     }
 
     public function render(WidgetInterface $widget, Environment $twig): string
@@ -41,17 +45,24 @@ class StatWidget extends AbstractWidgetType
         $currentDate = new DateTime();
         $compareDate = (clone $currentDate)->modify('-1 year');
 
+        // Day chart data
         $currentDay = $repository->findOneByDay($currentDate);
         $compareDay = $repository->findOneByDay($compareDate);
         $dailyChart = $this->buildDailyChart($currentDate);
 
+        // Month chart data
         $currentMonth = $repository->findOneByMonth($currentDate);
         $compareMonth = $repository->findOneByMonth($compareDate);
         $monthlyChart = $this->buildMonthlyChart($currentDate);
 
-        $currentYear = $repository->findOneByYear($currentDate);
-        $compareYear = $repository->findOneByYear($compareDate);
-        $aggregateYear = $repository->findSumByYear($compareDate);
+        // Year chart data
+        $currentYear = $this->helper->getYearForDate($currentDate);
+        $currentYear = $repository->findOneByYear($currentYear);
+
+        $compareYear = $this->helper->getYearForDate($compareDate);
+        $compareYear = $repository->findOneByYear($compareYear);
+
+        $aggregateYear = $this->buildAggregateYear($currentDate);
         $yearlyChart = $this->buildYearlyChart();
 
         /** @noinspection PhpUnhandledExceptionInspection */
@@ -67,6 +78,32 @@ class StatWidget extends AbstractWidgetType
             'aggregate_year' => $aggregateYear,
             'yearly_chart'   => $yearlyChart,
         ]);
+    }
+
+    private function buildAggregateYear(DateTime $currentDate): OrderStat
+    {
+        $currentRange = $this->helper->getYearRangeForDate($currentDate);
+        $currentRange->setEnd($currentDate);
+
+        $compareDate = (clone $currentDate)->modify('-1 year');
+        $compareRange = new DateRange(
+            $currentRange->getStart()->modify('-1 year'),
+            $compareDate
+        );
+
+        $data = $this
+            ->getOrderStatRepository()
+            ->findSumByDateRange($compareRange);
+
+        $year = $this->helper->getYearForDate($compareDate);
+
+        $result = new OrderStat();
+        $result
+            ->setDate($year)
+            ->setType(OrderStat::TYPE_YEAR)
+            ->loadResult(current($data));
+
+        return $result;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -353,6 +353,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.command.stat_update', StatUpdateCommand::class)
         ->args([
             service('ekyna_commerce.updater.stat'),
+            service('ekyna_commerce.helper.stat'),
             service('doctrine.orm.default_entity_manager'),
         ])
         ->tag('console.command');

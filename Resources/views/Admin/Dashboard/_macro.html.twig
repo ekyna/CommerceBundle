@@ -10,7 +10,7 @@
     <td>&dash;</td>
     <td>&dash;</td>
     <td>&dash;</td>
-    <td>&dash;</td>
+{#    <td>&dash;</td>#}
 {% else %}
     <td>{{ stat.date }}</td>{# TODO localize #}
     <td>{{ stat.revenue|format_currency(commerce_default_currency) }}</td>
@@ -18,7 +18,7 @@
     <td>{{ stat.margin|format_currency(commerce_default_currency) }}</td>
     <td>{{ stat.marginPercent|format_number }}%</td>
     <td>{{ stat.orders }}</td>
-    <td>{{ stat.average|format_currency(commerce_default_currency) }}</td>
+{#    <td>{{ stat.average|format_currency(commerce_default_currency) }}</td>#}
 {% endif %}
 </tr>
 {% endapply %}
@@ -71,7 +71,7 @@
             <th>{{ 'accounting.type.shipping'|trans({}, 'EkynaCommerce') }}</th>
             <th colspan="2">{{ 'dashboard.stat.field.margin'|trans({}, 'EkynaCommerce') }}</th>
             <th>{{ 'dashboard.stat.field.order'|trans({}, 'EkynaCommerce') }}</th>
-            <th>{{ 'dashboard.stat.field.average'|trans({}, 'EkynaCommerce') }}</th>
+{#            <th>{{ 'dashboard.stat.field.average'|trans({}, 'EkynaCommerce') }}</th>#}
         </tr>
         {{ macros.render_stat_line(current) }}
         {{ macros.render_stat_line(compare, 'compare') }}

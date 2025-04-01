@@ -20,6 +20,7 @@ use Ekyna\Component\Commerce\Order\Model\OrderStates;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Stat\Calculator\StatCalculatorInterface;
 use Ekyna\Component\Commerce\Stat\Calculator\StatFilter;
+use Ekyna\Component\Commerce\Stat\StatHelperInterface;
 use Ekyna\Component\Commerce\Stock\Entity\AbstractStockUnit;
 use Ekyna\Component\Commerce\Stock\Model\StockUnitStates;
 use Ekyna\Component\Resource\Doctrine\ORM\Hydrator\IdHydrator;
@@ -32,25 +33,17 @@ use LogicException;
  */
 class StatCalculator implements StatCalculatorInterface
 {
-    protected ManagerRegistry         $registry;
-    protected AmountCalculatorFactory $amountCalculatorFactory;
-    protected MarginCalculatorFactory $marginCalculatorFactory;
-    protected string                  $orderClass;
-    protected string                  $defaultCurrency;
-    protected bool                    $skipMode = false;
+    protected bool $skipMode = false;
 
     public function __construct(
-        ManagerRegistry         $registry,
-        AmountCalculatorFactory $amountCalculatorFactory,
-        MarginCalculatorFactory $marginCalculatorFactory,
-        string                  $orderClass,
-        string                  $defaultCurrency
+        protected readonly ManagerRegistry $registry,
+        protected readonly AmountCalculatorFactory $amountCalculatorFactory,
+        protected readonly MarginCalculatorFactory $marginCalculatorFactory,
+        protected readonly StatHelperInterface $statHelper,
+        protected readonly string $orderClass,
+        protected readonly string $defaultCurrency,
     ) {
-        $this->registry = $registry;
-        $this->amountCalculatorFactory = $amountCalculatorFactory;
-        $this->marginCalculatorFactory = $marginCalculatorFactory;
-        $this->orderClass = $orderClass;
-        $this->defaultCurrency = $defaultCurrency;
+
     }
 
     public function setSkipMode(bool $skip): void
@@ -94,31 +87,21 @@ class StatCalculator implements StatCalculatorInterface
     public function calculateMonthOrderStats(DateTimeInterface $date, StatFilter $filter = null): array
     {
         $from = clone $date;
-        $from
-            ->modify('first day of this month')
-            ->setTime(0, 0);
+        $from->modify('first day of this month');
+        $from->setTime(0, 0);
 
         $to = clone $date;
-        $to
-            ->modify('last day of this month')
-            ->setTime(23, 59, 59, 999999);
+        $to->modify('last day of this month');
+        $to->setTime(23, 59, 59, 999999);
 
         return $this->calculateOrdersStats($from, $to, $filter);
     }
 
-    public function calculateYearOrderStats(DateTimeInterface $date, StatFilter $filter = null): array
+    public function calculateYearOrderStats(string $year, StatFilter $filter = null): array
     {
-        $from = clone $date;
-        $from
-            ->modify('first day of january ' . $date->format('Y'))
-            ->setTime(0, 0);
+        $range = $this->statHelper->getYearRangeForYear($year);
 
-        $to = clone $date;
-        $to
-            ->modify('last day of december ' . $date->format('Y'))
-            ->setTime(23, 59, 59, 999999);
-
-        return $this->calculateOrdersStats($from, $to, $filter);
+        return $this->calculateOrdersStats($range->getStart(), $range->getEnd(), $filter);
     }
 
     /**
@@ -143,7 +126,7 @@ class StatCalculator implements StatCalculatorInterface
     protected function calculateOrdersStats(
         DateTimeInterface $from,
         DateTimeInterface $to,
-        StatFilter        $filter = null
+        StatFilter $filter = null
     ): array {
         $query = $this
             ->createStatQuery($filter)

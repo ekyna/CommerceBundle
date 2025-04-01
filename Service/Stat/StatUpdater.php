@@ -9,6 +9,7 @@ use Ekyna\Component\Commerce\Stat\Calculator\StatCalculatorInterface;
 use Ekyna\Component\Commerce\Stat\Entity\OrderStat;
 use Ekyna\Component\Commerce\Stat\Entity\StockStat;
 use Ekyna\Component\Commerce\Stat\Repository;
+use Ekyna\Component\Commerce\Stat\StatHelperInterface;
 use Ekyna\Component\Commerce\Stat\Updater\AbstractStatUpdater;
 
 use function get_class;
@@ -20,17 +21,15 @@ use function get_class;
  */
 class StatUpdater extends AbstractStatUpdater
 {
-    private ManagerRegistry $registry;
-
     private ?Repository\StockStatRepositoryInterface $stockStatRepository = null;
     private ?Repository\OrderStatRepositoryInterface $orderStatRepository = null;
 
-
-    public function __construct(StatCalculatorInterface $calculator, ManagerRegistry $manager)
-    {
-        parent::__construct($calculator);
-
-        $this->registry = $manager;
+    public function __construct(
+        StatCalculatorInterface $calculator,
+        StatHelperInterface $helper,
+        private readonly ManagerRegistry $registry
+    ) {
+        parent::__construct($calculator, $helper);
     }
 
     protected function persist(object $object): void
