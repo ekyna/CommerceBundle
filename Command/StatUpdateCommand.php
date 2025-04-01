@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Stat\StockStatUpdater;
 use Ekyna\Component\Commerce\Stat\StatHelperInterface;
 use Ekyna\Component\Commerce\Stat\Updater\StatUpdaterInterface;
 use Symfony\Component\Console\Command\Command;
@@ -28,7 +29,9 @@ class StatUpdateCommand extends Command
     private bool $debug;
 
     public function __construct(
-        private readonly StatUpdaterInterface   $updater,
+        private readonly StockStatUpdater       $stockStatUpdater,
+        private readonly StatUpdaterInterface   $orderStatUpdater,
+        private readonly StatUpdaterInterface   $invoiceStatUpdater,
         private readonly StatHelperInterface    $helper,
         private readonly EntityManagerInterface $manager,
     ) {
@@ -52,6 +55,8 @@ class StatUpdateCommand extends Command
 
         $this->updateOrderStat($output);
 
+        $this->updateInvoiceStat($output);
+
         if ($this->flush) {
             $this->manager->flush();
         }
@@ -64,6 +69,8 @@ class StatUpdateCommand extends Command
      */
     private function updateStockStat(OutputInterface $output): void
     {
+        $output->writeln("\n<info>Updating stock stats</info>\n");
+
         $name = 'Stock';
         $this->debug
         && $output->write(
@@ -74,7 +81,7 @@ class StatUpdateCommand extends Command
             )
         );
 
-        if ($this->updater->updateStockStat()) {
+        if ($this->stockStatUpdater->update()) {
             $this->debug && $output->writeln("<info>created</info>\n");
 
             $this->flush = true;
@@ -90,9 +97,11 @@ class StatUpdateCommand extends Command
      */
     private function updateOrderStat(OutputInterface $output): void
     {
+        $output->writeln("\n<info>Updating order stats</info>\n");
+
         $connection = $this->manager->getConnection();
 
-        $orderDates = $statDates = $updatedMonths = $updatedYears = [];
+        $orderDates = $statDates = [];
 
         /** ---------------------------- Day stats ---------------------------- */
 
@@ -112,7 +121,50 @@ class StatUpdateCommand extends Command
             $statDates[$data['date']] = $data['updated'];
         }
 
-        foreach ($orderDates as $date => $updated) {
+        $this->updateStats($output, $this->orderStatUpdater, $orderDates, $statDates);
+    }
+
+    /**
+     * Updates the order stats.
+     */
+    private function updateInvoiceStat(OutputInterface $output): void
+    {
+        $output->writeln("\n<info>Updating invoice stats</info>\n");
+
+        $connection = $this->manager->getConnection();
+
+        $invoiceDates = $statDates = [];
+
+        /** ---------------------------- Day stats ---------------------------- */
+
+        /** @noinspection SqlDialectInspection */
+        $result = $connection->executeQuery(
+            'SELECT DATE(o.created_at) AS date, MAX(o.updated_at) AS updated FROM commerce_order_invoice AS o GROUP BY date'
+        );
+        while (false !== $data = $result->fetchAssociative()) {
+            $invoiceDates[$data['date']] = $data['updated'];
+        }
+
+        /** @noinspection SqlDialectInspection */
+        $result = $connection->executeQuery(
+            'SELECT s.date, s.updated_at as updated FROM commerce_stat_invoice AS s ORDER BY s.date'
+        );
+        while (false !== $data = $result->fetchAssociative()) {
+            $statDates[$data['date']] = $data['updated'];
+        }
+
+        $this->updateStats($output, $this->invoiceStatUpdater, $invoiceDates, $statDates);
+    }
+
+    private function updateStats(
+        OutputInterface      $output,
+        StatUpdaterInterface $statUpdater,
+        array                $objectDates ,
+        array                $statDates
+    ): void {
+        $updatedMonths = $updatedYears = [];
+
+        foreach ($objectDates as $date => $updated) {
             $name = $date;
             $this->debug
             && $output->write(
@@ -129,7 +181,7 @@ class StatUpdateCommand extends Command
             }
 
             $d = new DateTime($date);
-            if ($this->updater->updateDayOrderStat($d, $this->force)) {
+            if ($statUpdater->updateDayOrderStat($d, $this->force)) {
                 $this->debug && $output->writeln('<info>updated</info>');
 
                 $month = $d->format('Y-m');
@@ -157,7 +209,7 @@ class StatUpdateCommand extends Command
             );
 
             $d = new DateTime($month . '-01');
-            if ($this->updater->updateMonthOrderStat($d, $this->force)) {
+            if ($statUpdater->updateMonthOrderStat($d, $this->force)) {
                 $this->debug && $output->writeln('<info>updated</info>');
 
                 $year = $this->helper->getYearForDate($d);
@@ -184,7 +236,7 @@ class StatUpdateCommand extends Command
                 )
             );
 
-            if ($this->updater->updateYearOrderStat($year, $this->force)) {
+            if ($statUpdater->updateYearOrderStat($year, $this->force)) {
                 $this->debug && $output->writeln('<info>updated</info>');
 
                 $this->flush = true;

@@ -8,8 +8,12 @@ use Ekyna\Bundle\CommerceBundle\Dashboard\DebtWidget;
 use Ekyna\Bundle\CommerceBundle\Dashboard\ExportWidget;
 use Ekyna\Bundle\CommerceBundle\Dashboard\StatWidget;
 use Ekyna\Bundle\CommerceBundle\Dashboard\StockWidget;
-use Ekyna\Bundle\CommerceBundle\Service\Stat\StatCalculator;
+use Ekyna\Bundle\CommerceBundle\Service\Stat\InvoiceStatCalculator;
+use Ekyna\Bundle\CommerceBundle\Service\Stat\OrderStatCalculator;
 use Ekyna\Bundle\CommerceBundle\Service\Stat\StatUpdater;
+use Ekyna\Bundle\CommerceBundle\Service\Stat\StockStatUpdater;
+use Ekyna\Component\Commerce\Stat\Entity\InvoiceStat;
+use Ekyna\Component\Commerce\Stat\Entity\OrderStat;
 use Ekyna\Component\Commerce\Stat\StatHelper;
 
 return static function (ContainerConfigurator $container) {
@@ -19,25 +23,49 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.helper.stat', StatHelper::class);
 
-    // Stat calculator
+    // Order Stat calculator
     $services
-        ->set('ekyna_commerce.calculator.stat', StatCalculator::class)
+        ->set('ekyna_commerce.calculator.stat.order', OrderStatCalculator::class)
         ->args([
-            service('doctrine'),
-            service('ekyna_commerce.factory.amount_calculator'),
-            service('ekyna_commerce.factory.margin_calculator'),
             service('ekyna_commerce.helper.stat'),
+            service('doctrine'),
             param('ekyna_commerce.class.order'),
-            param('ekyna_commerce.default.currency'),
         ]);
 
-    // Stat updater
+    // Invoice Stat calculator
     $services
-        ->set('ekyna_commerce.updater.stat', StatUpdater::class)
+        ->set('ekyna_commerce.calculator.stat.invoice', InvoiceStatCalculator::class)
         ->args([
-            service('ekyna_commerce.calculator.stat'),
             service('ekyna_commerce.helper.stat'),
             service('doctrine'),
+            param('ekyna_commerce.class.order_invoice'),
+        ]);
+
+    // Stock stat updater
+    $services
+        ->set('ekyna_commerce.updater.stat.stock', StockStatUpdater::class)
+        ->args([
+            service('doctrine'),
+        ]);
+
+    // Order Stat updater
+    $services
+        ->set('ekyna_commerce.updater.stat.order', StatUpdater::class)
+        ->args([
+            service('ekyna_commerce.calculator.stat.order'),
+            service('ekyna_commerce.helper.stat'),
+            service('doctrine'),
+            OrderStat::class,
+        ]);
+
+    // Invoice Stat updater
+    $services
+        ->set('ekyna_commerce.updater.stat.invoice', StatUpdater::class)
+        ->args([
+            service('ekyna_commerce.calculator.stat.invoice'),
+            service('ekyna_commerce.helper.stat'),
+            service('doctrine'),
+            InvoiceStat::class,
         ]);
 
     // Dashboard stat widget
@@ -46,6 +74,7 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('doctrine'),
             service('ekyna_commerce.helper.stat'),
+            service('security.authorization_checker'),
         ])
         ->tag('ekyna_admin.dashboard_widget');
 

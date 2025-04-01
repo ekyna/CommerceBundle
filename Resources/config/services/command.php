@@ -19,7 +19,6 @@ use Ekyna\Bundle\CommerceBundle\Command\InvoicePaidTotalUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceUpdateDataCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceUpdateMarginCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceUpdateTotalsCommand;
-use Ekyna\Bundle\CommerceBundle\Command\Migrate;
 use Ekyna\Bundle\CommerceBundle\Command\OrderDateModifyCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderDetachCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrdersStateCheckCommand;
@@ -34,7 +33,6 @@ use Ekyna\Bundle\CommerceBundle\Command\ReportGenerateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\ReportRequestPurgeCommand;
 use Ekyna\Bundle\CommerceBundle\Command\SaleItemUpdatePriceCommand;
 use Ekyna\Bundle\CommerceBundle\Command\ShipmentLabelPurgeCommand;
-use Ekyna\Bundle\CommerceBundle\Command\StatCalculateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\StatUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\StockIntegrityCommand;
 use Ekyna\Bundle\CommerceBundle\Command\StockUnitPriceUpdateCommand;
@@ -339,20 +337,13 @@ return static function (ContainerConfigurator $container) {
         ])
         ->tag('console.command');
 
-    // Stat calculate command
-    $services
-        ->set('ekyna_commerce.command.stat_calculate', StatCalculateCommand::class)
-        ->args([
-            service('ekyna_commerce.calculator.stat'),
-            service('doctrine.orm.default_entity_manager'),
-        ])
-        ->tag('console.command');
-
     // Stat update command
     $services
         ->set('ekyna_commerce.command.stat_update', StatUpdateCommand::class)
         ->args([
-            service('ekyna_commerce.updater.stat'),
+            service('ekyna_commerce.updater.stat.stock'),
+            service('ekyna_commerce.updater.stat.order'),
+            service('ekyna_commerce.updater.stat.invoice'),
             service('ekyna_commerce.helper.stat'),
             service('doctrine.orm.default_entity_manager'),
         ])

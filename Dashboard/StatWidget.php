@@ -8,13 +8,18 @@ use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\Type\AbstractWidgetType;
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\WidgetInterface;
-use Ekyna\Component\Commerce\Common\Model\SaleSources;
+use Ekyna\Bundle\CommerceBundle\Dashboard\Builder\OrderChartBuilder;
+use Ekyna\Bundle\CommerceBundle\Model\OrderInterface;
+use Ekyna\Bundle\CommerceBundle\Model\Permission;
+use Ekyna\Component\Commerce\Order\Model\OrderInvoiceInterface;
+use Ekyna\Component\Commerce\Stat\Entity\InvoiceStat;
 use Ekyna\Component\Commerce\Stat\Entity\OrderStat;
-use Ekyna\Component\Commerce\Stat\Repository\OrderStatRepositoryInterface;
+use Ekyna\Component\Commerce\Stat\Model\StatInterface;
+use Ekyna\Component\Commerce\Stat\Repository\StatRepositoryInterface;
 use Ekyna\Component\Commerce\Stat\StatHelper;
 use Ekyna\Component\Resource\Model\DateRange;
-use OzdemirBurak\Iris\Color\Hex;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
 
 use function current;
@@ -28,17 +33,42 @@ class StatWidget extends AbstractWidgetType
 {
     public const NAME = 'commerce_stat';
 
-    protected ?OrderStatRepositoryInterface $orderStatRepository = null;
-
     public function __construct(
-        protected readonly ManagerRegistry $registry,
-        protected readonly StatHelper      $helper,
+        protected readonly ManagerRegistry               $registry,
+        protected readonly StatHelper                    $helper,
+        protected readonly AuthorizationCheckerInterface $authorization,
     ) {
     }
 
     public function render(WidgetInterface $widget, Environment $twig): string
     {
-        $repository = $this->getOrderStatRepository();
+        $content = '';
+
+        if ($this->authorization->isGranted(Permission::STAT_CHART, OrderInterface::class)) {
+            $content .= $this->renderChars(
+                $this->registry->getRepository(OrderStat::class),
+                $twig,
+                'order'
+            );
+        }
+
+        if ($this->authorization->isGranted(Permission::STAT_CHART, OrderInvoiceInterface::class)) {
+            $content .= $this->renderChars(
+                $this->registry->getRepository(InvoiceStat::class),
+                $twig,
+                'invoice'
+            );
+        }
+
+        return $content;
+    }
+
+    public function renderChars(
+        StatRepositoryInterface $repository,
+        Environment             $twig,
+        string                  $type
+    ): string {
+        $builder = new OrderChartBuilder($repository, $this->helper);
 
         // TODO Cache
 
@@ -48,12 +78,12 @@ class StatWidget extends AbstractWidgetType
         // Day chart data
         $currentDay = $repository->findOneByDay($currentDate);
         $compareDay = $repository->findOneByDay($compareDate);
-        $dailyChart = $this->buildDailyChart($currentDate);
+        $dailyChart = $builder->buildDailyChart($currentDate);
 
         // Month chart data
         $currentMonth = $repository->findOneByMonth($currentDate);
         $compareMonth = $repository->findOneByMonth($compareDate);
-        $monthlyChart = $this->buildMonthlyChart($currentDate);
+        $monthlyChart = $builder->buildMonthlyChart($currentDate);
 
         // Year chart data
         $currentYear = $this->helper->getYearForDate($currentDate);
@@ -63,10 +93,11 @@ class StatWidget extends AbstractWidgetType
         $compareYear = $repository->findOneByYear($compareYear);
 
         $aggregateYear = $this->buildAggregateYear($currentDate);
-        $yearlyChart = $this->buildYearlyChart();
+        $yearlyChart = $builder->buildYearlyChart();
 
         /** @noinspection PhpUnhandledExceptionInspection */
         return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_stat.html.twig', [
+            'type' => $type,
             'current_day'    => $currentDay,
             'compare_day'    => $compareDay,
             'daily_chart'    => $dailyChart,
@@ -92,7 +123,8 @@ class StatWidget extends AbstractWidgetType
         );
 
         $data = $this
-            ->getOrderStatRepository()
+            ->registry
+            ->getRepository(OrderStat::class)
             ->findSumByDateRange($compareRange);
 
         $year = $this->helper->getYearForDate($compareDate);
@@ -100,7 +132,7 @@ class StatWidget extends AbstractWidgetType
         $result = new OrderStat();
         $result
             ->setDate($year)
-            ->setType(OrderStat::TYPE_YEAR)
+            ->setType(StatInterface::TYPE_YEAR)
             ->loadResult(current($data));
 
         return $result;
@@ -115,193 +147,6 @@ class StatWidget extends AbstractWidgetType
             'position' => 9999,
             'css_path' => 'bundles/ekynacommerce/css/admin-dashboard.css',
         ]);
-    }
-
-    protected function getOrderStatRepository(): OrderStatRepositoryInterface
-    {
-        if (null !== $this->orderStatRepository) {
-            return $this->orderStatRepository;
-        }
-
-        return $this->orderStatRepository = $this->registry->getRepository(OrderStat::class);
-    }
-
-    /**
-     * Builds the daily revenues chart config.
-     */
-    private function buildDailyChart(DateTime $currentDate): array
-    {
-        $repository = $this->getOrderStatRepository();
-
-        $currentRevenues = $repository->findDayRevenuesByMonth($currentDate);
-
-        $compareDate = (clone $currentDate)->modify('-1 year');
-        $compareRevenues = $repository->findDayRevenuesByMonth($compareDate);
-
-        $labels = array_map(function ($d) {
-            return (new DateTime($d))->format('j');
-        }, array_keys($currentRevenues));
-
-        return [
-            'type'    => 'line',
-            'data'    => [
-                'labels'   => $labels,
-                'datasets' => [
-                    [
-                        'label'                => $currentDate->format('M Y'),
-                        'borderColor'          => '#00838f',
-                        'backgroundColor'      => 'transparent',
-                        'pointBackgroundColor' => '#00838f',
-                        'pointBorderColor'     => 'transparent',
-                        'pointBorderWidth'     => 0,
-                        'data'                 => array_values($currentRevenues),
-                    ],
-                    [
-                        'label'           => $compareDate->format('M Y'),
-                        'backgroundColor' => '#ddd',
-                        'borderColor'     => 'transparent',
-                        'borderWidth'     => 0,
-                        'pointRadius'     => 0,
-                        'data'            => array_values($compareRevenues),
-                    ],
-                ],
-            ],
-            'options' => [
-                'title'  => ['display' => false],
-                'legend' => ['display' => false],
-                'layout' => ['padding' => ['top' => 12]],
-                'scales' => [
-                    'yAxes' => [
-                        [
-                            'ticks' => [
-                                'suggestedMin' => 0,
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * Builds the monthly revenues chart config.
-     */
-    private function buildMonthlyChart(DateTime $currentDate): array
-    {
-        $repository = $this->getOrderStatRepository();
-
-        $currentRevenues = $repository->findMonthRevenuesByYear($currentDate, true);
-
-        $compareDate = (clone $currentDate)->modify('-1 year');
-        $compareRevenues = $repository->findMonthRevenuesByYear($compareDate, true);
-
-        $labels = array_map(function ($d) {
-            return (new DateTime($d))->format('M');
-        }, array_keys($currentRevenues));
-
-        $datasets = [];
-        $stacks = [
-            [
-                'color'  => '#0277bd',
-                'date'   => $currentDate->format('Y'),
-                'stack'  => $currentDate->format('Y-m'),
-                'values' => $currentRevenues,
-            ],
-            [
-                'color'  => '#aaa',
-                'date'   => $compareDate->format('Y'),
-                'stack'  => $compareDate->format('Y-m'),
-                'values' => $compareRevenues,
-            ],
-        ];
-
-        foreach ($stacks as $stack) {
-            $hex = new Hex($stack['color']);
-
-            foreach (SaleSources::getSources() as $source) {
-                $datasets[] = [
-                    'label'           => ucfirst($source) . ' ' . $stack['date'],
-                    'stack'           => $stack['stack'],
-                    'backgroundColor' => (string)$hex,
-                    'data'            => array_values(array_map(function ($data) use ($source) {
-                        return $data[$source];
-                    }, $stack['values'])),
-                ];
-
-                $hex = new Hex((string)$hex->lighten(5));
-            }
-        }
-
-        return [
-            'type'    => 'bar',
-            'data'    => [
-                'labels'   => $labels,
-                'datasets' => $datasets,
-            ],
-            'options' => [
-                'title'  => ['display' => false],
-                'legend' => ['display' => false],
-                'layout' => ['padding' => ['top' => 12]],
-                'scales' => [
-                    'yAxes' => [
-                        [
-                            'ticks' => [
-                                'suggestedMin' => 0,
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * Builds the yearly revenues chart config.
-     */
-    private function buildYearlyChart(): array
-    {
-        $repository = $this->getOrderStatRepository();
-
-        $data = $repository->findYearRevenues();
-
-        // TODO use Hex()
-        $colors = array_slice([
-            '#bbdefb',
-            '#90caf9',
-            '#64b5f6',
-            '#42a5f5',
-            '#2196f3',
-            '#1e88e5',
-            '#1976d2',
-            '#1565c0',
-        ], -count($data));
-
-        return [
-            'type'    => 'bar',
-            'data'    => [
-                'labels'   => array_keys($data),
-                'datasets' => [
-                    [
-                        'backgroundColor' => $colors,
-                        'data'            => array_values($data),
-                    ],
-                ],
-            ],
-            'options' => [
-                'title'  => ['display' => false],
-                'legend' => ['display' => false],
-                'layout' => ['padding' => ['top' => 12]],
-                'scales' => [
-                    'yAxes' => [
-                        [
-                            'ticks' => [
-                                'suggestedMin' => 0,
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ];
     }
 
     public static function getName(): string

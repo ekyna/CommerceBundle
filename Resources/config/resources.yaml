@@ -3,3 +3,8 @@ namespaces:
         label: label
         trans_domain: EkynaCommerce
         prefix: /commerce
+
+permissions:
+    Ekyna\Bundle\CommerceBundle\Model\Permission::STAT_CHART:
+        label: permission.stat_chart
+        trans_domain: EkynaCommerce

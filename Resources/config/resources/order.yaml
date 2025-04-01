@@ -49,6 +49,8 @@ resources:
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\TransformAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\UpdateShipmentAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\UpdateStateAction: ~
+            permissions:
+                - Ekyna\Bundle\CommerceBundle\Model\Permission::STAT_CHART
 
         order_address:
             driver: doctrine/orm
@@ -130,6 +132,7 @@ resources:
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Invoice\UnlinkAction: ~
             permissions:
                 - list
+                - Ekyna\Bundle\CommerceBundle\Model\Permission::STAT_CHART
 
         order_invoice_item:
             driver: doctrine/orm

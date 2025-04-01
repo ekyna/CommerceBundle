@@ -297,16 +297,20 @@ dashboard:
             fall: À échoir
             total: Total
     stat:
-        title:
-            daily: CA journalier
-            monthly: CA mensuel
-            yearly: CA annuel
-            stock: Stock
+        stock: Stock
+        order:
+            daily: Comm. journalier
+            monthly: Comm. mensuel
+            yearly: Comm. annuel
+        invoice:
+            daily: Fact. journalier
+            monthly: Fact. mensuel
+            yearly: Fact. annuel
         field:
             revenue: CA
             margin: Marge
-            order: Cdes
-            average: Panier
+            count: Nb.
+            average: Moy.
 
 accounting:
     label:
@@ -1294,6 +1298,9 @@ payment_term:
         trigger: Déclencheur
     alert:
         empty_list: Aucune condition de paiement configuré
+
+permission:
+    stat_chart: Graphiques stat.
 
 pricing:
     field:

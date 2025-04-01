@@ -283,15 +283,19 @@ dashboard:
             fall: Fall due
             total: Total
     stat:
+        stock: Stock
         title:
-            daily: Dail revenues
-            monthly: Monthly revenues
-            yearly: Annual revenues
-            stock: Stock
+            daily: Daily orders
+            monthly: Monthly orders
+            yearly: Annual orders
+        invoice:
+            daily: Daily invoices
+            monthly: Monthly invoices
+            yearly: Annual invoices
         field:
-            revenue: Revenues
+            revenue: Revenue
             margin: Margin
-            order: Orders
+            count: Count
             average: Average
 
 accounting:
@@ -1260,6 +1264,9 @@ payment_term:
         trigger: Trigger
     alert:
         empty_list: No payment term configured
+
+permission:
+    stat_chart: Stat. charts
 
 pricing:
     field:

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Service\Stat;
 
 use Doctrine\Persistence\ManagerRegistry;
+use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Stat\Calculator\StatCalculatorInterface;
-use Ekyna\Component\Commerce\Stat\Entity\OrderStat;
-use Ekyna\Component\Commerce\Stat\Entity\StockStat;
-use Ekyna\Component\Commerce\Stat\Repository;
+use Ekyna\Component\Commerce\Stat\Model\StatInterface;
+use Ekyna\Component\Commerce\Stat\Repository\StatRepositoryInterface;
 use Ekyna\Component\Commerce\Stat\StatHelperInterface;
 use Ekyna\Component\Commerce\Stat\Updater\AbstractStatUpdater;
 
@@ -21,13 +21,13 @@ use function get_class;
  */
 class StatUpdater extends AbstractStatUpdater
 {
-    private ?Repository\StockStatRepositoryInterface $stockStatRepository = null;
-    private ?Repository\OrderStatRepositoryInterface $orderStatRepository = null;
+    private ?StatRepositoryInterface $repository = null;
 
     public function __construct(
-        StatCalculatorInterface $calculator,
-        StatHelperInterface $helper,
-        private readonly ManagerRegistry $registry
+        StatCalculatorInterface          $calculator,
+        StatHelperInterface              $helper,
+        private readonly ManagerRegistry $registry,
+        private readonly string          $statClass,
     ) {
         parent::__construct($calculator, $helper);
     }
@@ -37,21 +37,22 @@ class StatUpdater extends AbstractStatUpdater
         $this->registry->getManagerForClass(get_class($object))->persist($object);
     }
 
-    protected function getStockStatRepository(): Repository\StockStatRepositoryInterface
+    protected function getRepository(): StatRepositoryInterface
     {
-        if (null !== $this->stockStatRepository) {
-            return $this->stockStatRepository;
+        if (null !== $this->repository) {
+            return $this->repository;
         }
 
-        return $this->stockStatRepository = $this->registry->getRepository(StockStat::class);
+        $repository = $this->registry->getRepository($this->statClass);
+        if (!$repository instanceof StatRepositoryInterface) {
+            throw new UnexpectedTypeException($repository, StatRepositoryInterface::class);
+        }
+
+        return $this->repository = $repository;
     }
 
-    protected function getOrderStatRepository(): Repository\OrderStatRepositoryInterface
+    protected function createNewStat(): StatInterface
     {
-        if (null !== $this->orderStatRepository) {
-            return $this->orderStatRepository;
-        }
-
-        return $this->orderStatRepository = $this->registry->getRepository(OrderStat::class);
+        return new $this->statClass();
     }
 }

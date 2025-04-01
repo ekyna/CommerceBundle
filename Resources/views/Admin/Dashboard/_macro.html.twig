@@ -17,7 +17,7 @@
     <td>{{ stat.shipping|format_currency(commerce_default_currency) }}</td>
     <td>{{ stat.margin|format_currency(commerce_default_currency) }}</td>
     <td>{{ stat.marginPercent|format_number }}%</td>
-    <td>{{ stat.orders }}</td>
+    <td>{{ stat.count }}</td>
 {#    <td>{{ stat.average|format_currency(commerce_default_currency) }}</td>#}
 {% endif %}
 </tr>
@@ -70,7 +70,7 @@
             <th>{{ 'dashboard.stat.field.revenue'|trans({}, 'EkynaCommerce') }}</th>
             <th>{{ 'accounting.type.shipping'|trans({}, 'EkynaCommerce') }}</th>
             <th colspan="2">{{ 'dashboard.stat.field.margin'|trans({}, 'EkynaCommerce') }}</th>
-            <th>{{ 'dashboard.stat.field.order'|trans({}, 'EkynaCommerce') }}</th>
+            <th>{{ 'dashboard.stat.field.count'|trans({}, 'EkynaCommerce') }}</th>
 {#            <th>{{ 'dashboard.stat.field.average'|trans({}, 'EkynaCommerce') }}</th>#}
         </tr>
         {{ macros.render_stat_line(current) }}
