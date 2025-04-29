@@ -63,6 +63,7 @@ ekyna_commerce:
         duplicate_type: A template already exist for this type.
     order:
         sample_with_payments_or_invoices: A sample order cannot have payments or invoices.
+        required_company_number: Company number is required for business customer groups.
         unexpected_origin_customer: Please select a sales manager.
         customers_integrity: The sales manager is not linked to the selected accountable service.
     relay_point:

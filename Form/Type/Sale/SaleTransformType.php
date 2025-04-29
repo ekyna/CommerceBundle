@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\CurrencyChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Pricing\VatNumberType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodPickType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\LocaleChoiceType;
@@ -101,6 +102,15 @@ class SaleTransformType extends AbstractType
             /** @var SaleInterface $sale */
             $sale = $event->getData();
             $form = $event->getForm();
+
+            if ($sale instanceof OrderInterface) {
+                $form
+                    ->add('vatNumber', VatNumberType::class)
+                    ->add('companyNumber', Type\TextType::class, [
+                    'label'    => t('customer.field.company_number', [], 'EkynaCommerce'),
+                    'required' => (bool)$sale->getCustomerGroup()?->isBusiness(),
+                ]);
+            }
 
             if ($options['admin_mode']) {
                 $customer = $sale->getCustomer();

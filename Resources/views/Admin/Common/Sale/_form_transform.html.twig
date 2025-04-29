@@ -46,6 +46,17 @@
         {{ form_row(form.relayPoint) }}
     {% endif %}
 
+    {% if form.companyNumber is defined %}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.companyNumber, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.vatNumber, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+    {% endif %}
+
     {% if form.voucherNumber is defined %}
     <div class="row">
         <div class="col-md-6">
