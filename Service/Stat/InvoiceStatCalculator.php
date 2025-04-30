@@ -62,52 +62,31 @@ class InvoiceStatCalculator extends AbstractStatCalculator implements StatCalcul
         $cost = new Decimal(0);
         $count = new Decimal(0);
 
-        // Invoices
-        $query = $this
-            ->createStatQuery()
-            ->setParameter('credit', false)
-            ->setParameter('from', $range->getStart(), Types::DATETIME_MUTABLE)
-            ->setParameter('to', $range->getEnd(), Types::DATETIME_MUTABLE);
+        // Invoices / Credits
+        foreach ([false, true] as $credit) {
+            // Invoices and credits must be calculated separately to deal with credit negative values
+            $query = $this
+                ->createStatQuery()
+                ->setParameter('credit', $credit)
+                ->setParameter('from', $range->getStart(), Types::DATETIME_MUTABLE)
+                ->setParameter('to', $range->getEnd(), Types::DATETIME_MUTABLE);
 
-        if (null !== $data = $query->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR)) {
-            $data = array_map(static fn($val) => new Decimal((string)($val ?? 0)), $data);
+            if (null !== $data = $query->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR)) {
+                $data = array_map(static fn($val) => new Decimal((string)($val ?? 0)), $data);
 
-            $margin = new Margin(
-                $data['revenue_product'],
-                $data['revenue_shipping'],
-                $data['cost_product'],
-                $data['cost_supply'],
-                $data['cost_shipment'],
-            );
+                $margin = new Margin(
+                    $data['revenue_product'],
+                    $data['revenue_shipping'],
+                    $data['cost_product'],
+                    $data['cost_supply'],
+                    $data['cost_shipment'],
+                );
 
-            $revenue = $revenue->add($margin->getRevenueProduct());
-            $shipping = $shipping->add($margin->getRevenueShipment());
-            $cost = $cost->add($margin->getCostTotal(false));
-            $count = $count->add($data['count']);
-        }
-
-        // Credits
-        $query = $this
-            ->createStatQuery()
-            ->setParameter('credit', true)
-            ->setParameter('from', $range->getStart(), Types::DATETIME_MUTABLE)
-            ->setParameter('to', $range->getEnd(), Types::DATETIME_MUTABLE);
-
-        if (null !== $data = $query->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR)) {
-            $data = array_map(static fn($val) => new Decimal((string)($val ?? 0)), $data);
-
-            $margin = new Margin(
-                $data['revenue_product'],
-                $data['revenue_shipping'],
-                $data['cost_product'],
-                $data['cost_supply'],
-                $data['cost_shipment'],
-            );
-
-            $revenue = $revenue->sub($margin->getRevenueProduct());
-            $shipping = $shipping->sub($margin->getRevenueShipment());
-            $cost = $cost->sub($margin->getCostTotal(false));
-            $count = $count->sub($data['count']);
+                $revenue = $revenue->add($margin->getRevenueProduct());
+                $shipping = $shipping->add($margin->getRevenueShipment());
+                $cost = $cost->add($margin->getCostTotal(false));
+                $count = $count->add($data['count']);
+            }
         }
 
         return [

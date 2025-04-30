@@ -36,7 +36,7 @@ class SetExchangeRateAction extends AbstractSaleAction
             return new Response('', Response::HTTP_NOT_FOUND);
         }
 
-        if ($this->saleUpdater->updateExchangeRate($sale)) {
+        if ($this->saleUpdater->updateExchangeRate($sale, true)) {
             $event = $this->getManager()->update($sale);
 
             $this->addFlashFromEvent($event);
@@ -52,11 +52,11 @@ class SetExchangeRateAction extends AbstractSaleAction
     public static function configureAction(): array
     {
         return [
-            'name'       => 'commerce_sale_state_update',
+            'name'       => 'commerce_sale_set_exchange_rate',
             'permission' => Permission::UPDATE,
             'route'      => [
-                'name'     => 'admin_%s_state_update',
-                'path'     => '/state-update',
+                'name'     => 'admin_%s_set_exchange_rate',
+                'path'     => '/set-exchange-rate',
                 'resource' => true,
                 'methods'  => ['GET'],
             ],
