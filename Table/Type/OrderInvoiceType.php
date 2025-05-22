@@ -127,6 +127,11 @@ class OrderInvoiceType extends AbstractOrderListType
                 'label'    => t('credit.label.singular', [], 'EkynaCommerce'),
                 'position' => 20,
             ])
+            ->addFilter('title', CType\Filter\TextType::class, [
+                'label'         => t('field.title', [], 'EkynaUi'),
+                'property_path' => 'order.title',
+                'position'      => 30,
+            ])
             ->addFilter('grandTotal', CType\Filter\NumberType::class, [
                 'label'    => t('sale.field.ati_total', [], 'EkynaCommerce'),
                 'position' => 50,
