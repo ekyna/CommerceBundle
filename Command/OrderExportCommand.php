@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use DateTime;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
-use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceStates;
+use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
 use Ekyna\Component\Resource\Helper\File\Csv;
 use Ekyna\Component\Resource\Model\DateRange;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -22,19 +25,19 @@ use function gc_collect_cycles;
 use function sprintf;
 
 /**
- * Class InvoiceExportCommand
+ * Class OrderExportCommand
  * @package Ekyna\Bundle\CommerceBundle\Command
  * @author  Étienne Dauvergne <contact@ekyna.com>
  */
 #[AsCommand(
-    name: 'ekyna:commerce:invoice:export',
-    description: 'Exports invoices to CSV files.',
+    name: 'ekyna:commerce:order:export',
+    description: 'Exports orders to CSV files.',
 )]
-class InvoiceExportCommand extends Command
+class OrderExportCommand extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $manager,
-        private readonly OrderInvoiceRepositoryInterface $repository,
+        private readonly OrderRepositoryInterface $repository,
         private readonly MailerInterface $mailer,
         private readonly string $reportEmail,
     ) {
@@ -71,7 +74,7 @@ class InvoiceExportCommand extends Command
         $range = new DateRange($from, $to);
 
         $fileName = $input->getOption('filename') ?? sprintf(
-            'invoices_%s_%s.csv',
+            'orders_%s_%s.csv',
             $from->format('Y-m-d'),
             $to->format('Y-m-d')
         );
@@ -81,24 +84,35 @@ class InvoiceExportCommand extends Command
         $csv->addRow([
             'date',
             'number',
-            'type',
+            'customer',
+            'title',
             'country',
             'total',
+            'done',
+            'payment',
+            'shipment',
+            'invoice',
         ]);
 
         $page = 0;
-        while (!empty($invoices = $this->repository->findByCreatedAt($range, $page, 30))) {
-            foreach ($invoices as $invoice) {
-                $total = $invoice->getGoodsBase()
-                    ->sub($invoice->getDiscountBase())
-                    ->add($invoice->getShipmentBase());
+        while (!empty($orders = $this->repository->findByAcceptedAt($range, $page, 30))) {
+            foreach ($orders as $order) {
+                $done = ShipmentStates::STATE_COMPLETED === $order->getShipmentState()
+                && InvoiceStates::STATE_COMPLETED === $order->getInvoiceState()
+                    ? 'yes'
+                    : 'no';
 
                 $csv->addRow([
-                    $invoice->getCreatedAt()->format('Y-m-d'),
-                    $invoice->getNumber(),
-                    $invoice->isCredit() ? 'credit' : 'invoice',
-                    $invoice->getOrder()->getInvoiceAddress()->getCountry()->getCode(),
-                    ($invoice->isCredit() ? '-' : '') . $total->toFixed(2),
+                    $order->getCreatedAt()->format('Y-m-d'),
+                    $order->getNumber(),
+                    (string)$order->getCustomer(),
+                    $order->getTitle(),
+                    $order->getInvoiceAddress()->getCountry()->getCode(),
+                    $order->getGrandTotal()->toFixed(2),
+                    $done,
+                    $order->getPaymentState(),
+                    $order->getShipmentState(),
+                    $order->getInvoiceState(),
                 ]);
             }
 
@@ -111,7 +125,7 @@ class InvoiceExportCommand extends Command
         $path = $csv->close();
 
         $subject = sprintf(
-            'Invoices export from %s to %s',
+            'Orders export from %s to %s',
             $from->format('Y-m-d'),
             $to->format('Y-m-d')
         );

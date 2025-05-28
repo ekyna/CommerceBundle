@@ -21,6 +21,7 @@ use Ekyna\Bundle\CommerceBundle\Command\InvoiceUpdateMarginCommand;
 use Ekyna\Bundle\CommerceBundle\Command\InvoiceUpdateTotalsCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderDateModifyCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderDetachCommand;
+use Ekyna\Bundle\CommerceBundle\Command\OrderExportCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrdersStateCheckCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderStateUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderUpdateMarginCommand;
@@ -124,7 +125,7 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.command.invoice_export', InvoiceExportCommand::class)
         ->args([
-            service('doctrine.dbal.default_connection'),
+            service('doctrine.orm.default_entity_manager'),
             service('ekyna_commerce.repository.order_invoice'),
             service('mailer'), // TODO Report* mailer
             param('ekyna_resource.report_email'),
@@ -194,11 +195,22 @@ return static function (ContainerConfigurator $container) {
 
     // Order detach command
     $services
-        ->set('ekyna_commerce.command.detach', OrderDetachCommand::class)
+        ->set('ekyna_commerce.command.order.detach', OrderDetachCommand::class)
         ->args([
             service('ekyna_commerce.repository.order'),
             service('doctrine.orm.default_entity_manager'),
             service('ekyna_commerce.assigner.stock_unit'),
+        ])
+        ->tag('console.command');
+
+    // Order export command
+    $services
+        ->set('ekyna_commerce.command.order.export', OrderExportCommand::class)
+        ->args([
+            service('doctrine.orm.default_entity_manager'),
+            service('ekyna_commerce.repository.order'),
+            service('mailer'), // TODO Report* mailer
+            param('ekyna_resource.report_email'),
         ])
         ->tag('console.command');
 
