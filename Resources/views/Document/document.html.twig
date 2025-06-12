@@ -53,20 +53,21 @@
     </div>
     <div>
         <h2>{{ 'sale.field.invoice_address'|trans({}, 'EkynaCommerce') }}</h2>
-        <p>{{- subject.invoiceAddress|address -}}</p>
+        <p>{{- subject|document_invoice_address|address -}}</p>
     </div>
     <div>
         <h2>{{ 'sale.field.delivery_address'|trans({}, 'EkynaCommerce') }}</h2>
+        <p>{{- subject|document_delivery_address|address -}}</p>
+    </div>
+    {% set destination = subject|document_destination_address %}
+    {% if destination is not empty %}
+    <div>
+        <h2>{{ 'sale.field.destination_address'|trans({}, 'EkynaCommerce') }}</h2>
         <p>
-            {%- if subject.relayPoint is not empty -%}
-                {{ subject.relayPoint|address }}
-            {%- elseif subject.deliveryAddress is not empty -%}
-                {{ subject.deliveryAddress|address }}
-            {%- else -%}
-                {{ subject.invoiceAddress|address }}
-            {%- endif -%}
+            {{ destination|address }}
         </p>
     </div>
+    {% endif %}
 </div>
 {% endblock addresses %}
 
@@ -239,7 +240,9 @@
     {# TOTALS #}
     <tbody class="totals">
     <tr>
-        <td colspan="{{ columns_count - 2 }}" rowspan="{{ subject.ati ? 2 : 3 }}">&nbsp;</td>
+        <td colspan="{{ columns_count - 2 }}" rowspan="{{ subject.ati ? 2 : 3 }}">
+            {{ subject|document_incoterm|raw }}
+        </td>
         {% if subject.ati -%}
             <th>{{ 'sale.field.ati_total'|trans({}, 'EkynaCommerce') }}</th>
             <td class="total final text-right">

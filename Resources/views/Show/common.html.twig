@@ -61,6 +61,15 @@
 {% endapply %}
 {% endblock address %}
 
+{% block address_inline %}
+    {{- address['street'] -}}
+    {% if address['complement'] is not empty -%}, {{ address['complement'] -}}{%- endif -%}
+    {% if address['supplement'] is not empty -%}, {{ address['supplement'] -}}{%- endif -%}
+    {% if address['extra'] is not empty -%}, {{ address['extra'] -}}{%- endif -%}
+    , {{ address['postal_code'] }} {{ address['city'] -}}
+    , {{ address['country']|country -}}
+    {#{% if address['state'] is not empty %}, {{ address['state']|state }}{% endif %}#}
+{% endblock address_inline %}
 
 {%- block customer -%}
 {% apply spaceless %}

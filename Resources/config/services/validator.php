@@ -69,6 +69,7 @@ return static function (ContainerConfigurator $container) {
         // Sale validator
         ->set('ekyna_commerce.validator.sale', SaleValidator::class)
             ->args([
+                service('ekyna_commerce.repository.country'),
                 service('ekyna_commerce.registry.shipment_gateway'),
             ])
             ->tag('validator.constraint_validator')

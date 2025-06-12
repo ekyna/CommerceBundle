@@ -54,6 +54,27 @@
         {%- endif %}
     </div>
 </div>
+{% if sale.destinationAddress is not null -%}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row show-row">
+                <div class="col-md-4 show-label">
+                    {{ 'sale.field.destination_address'|trans({}, 'EkynaCommerce') }}
+                </div>
+                <div class="col-md-8">
+                    <div class="panel panel-default">
+                        <div class="panel-body" id="sale_deliveryAddress">
+                            {{ sale.destinationAddress|address }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            {{- show_row(sale.destinationAddress, 'google_map', map_params) -}}
+        </div>
+    </div>
+{%- endif %}
 {% if sale.relayPoint is not null -%}
 <div class="row">
     <div class="col-md-6">

@@ -7,33 +7,33 @@ define(['jquery', 'routing', 'ekyna-commerce/form/address'], function($, router)
     $.fn.saleAddressWidget = function() {
 
         this.each(function() {
-
-            var $this = $(this),
+            let $this = $(this),
                 mode = $this.data('mode'),
                 $customerChoice = $('#' + $this.data('customer-field')),
                 $sameCheckbox = $this.find('.sale-address-same'),
+                $setCheckbox = $this.find('.sale-address-set'),
                 $choiceSelect = $this.find('.sale-address-choice'),
                 $addressForm = $this.find('.sale-address').address();
 
             if (1 === $customerChoice.length) {
                 $customerChoice.on('change', function() {
+                    $choiceSelect.empty();
                     $choiceSelect
-                        .empty()
                         .append($('<option value>Choose</option>'))
                         .prop('disabled', true);
 
-                    var customerId = $(this).val();
+                    let customerId = $(this).val();
                     if (customerId) {
-                        var xhr = $.get(router.generate(
+                        let xhr = $.get(router.generate(
                             'admin_ekyna_commerce_customer_address_choice_list',
                             {customerId: customerId}
                         ));
                         xhr.done(function (data) {
-                            var isEmpty = $addressForm.address('isEmpty');
+                            let isEmpty = $addressForm.address('isEmpty');
                             if (typeof data.choices !== 'undefined') {
-                                for (var i in data.choices) {
+                                for (let i in data.choices) {
                                     if (data.choices.hasOwnProperty(i)) {
-                                        var addressData = data.choices[i];
+                                        let addressData = data.choices[i];
                                         $choiceSelect.append(
                                             $('<option />')
                                                 .attr('value', addressData.id)
@@ -75,24 +75,24 @@ define(['jquery', 'routing', 'ekyna-commerce/form/address'], function($, router)
             }
 
             $choiceSelect.on('change', function() {
-                var val = $choiceSelect.val();
+                let val = $choiceSelect.val();
                 if (!val) {
                     return;
                 }
 
-                var $option = $choiceSelect.find('option[value=' + $choiceSelect.val() + ']');
+                let $option = $choiceSelect.find('option[value=' + $choiceSelect.val() + ']');
                 if (0 === $option.length) {
                     return;
                 }
 
-                var data = $option.data('address');
+                let data = $option.data('address');
                 if (data && data.hasOwnProperty('id')) {
                     $addressForm.address('set', data);
                 }
             });
 
             if (1 === $sameCheckbox.length) {
-                var $wrapper = $this.find('.sale-address-wrap'),
+                let $wrapper = $this.find('.sale-address-wrap'),
                     toggleAddress = function () {
                         if ($sameCheckbox.prop('checked')) {
                             $wrapper.slideUp(function() {
@@ -107,6 +107,23 @@ define(['jquery', 'routing', 'ekyna-commerce/form/address'], function($, router)
                     };
 
                 $sameCheckbox.on('change', toggleAddress);
+                toggleAddress();
+            } else if (1 === $setCheckbox.length) {
+                let $wrapper = $this.find('.sale-address-wrap'),
+                    toggleAddress = function () {
+                        if ($setCheckbox.prop('checked')) {
+                            $wrapper.slideDown();
+                        } else {
+                            $wrapper.slideUp(function() {
+                                $addressForm.address('clear');
+                                if ($choiceSelect.length) {
+                                    $choiceSelect.val(null).trigger('change');
+                                }
+                            });
+                        }
+                    };
+
+                $setCheckbox.on('change', toggleAddress);
                 toggleAddress();
             }
         });

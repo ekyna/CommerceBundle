@@ -394,6 +394,7 @@ class CartController extends AbstractController
             [
                 'address_type'      => CartAddressType::class,
                 'validation_groups' => ['Default', 'Address'],
+                'mode'              => SaleType\SaleAddressType::MODE_INVOICE,
             ]
         );
     }
@@ -415,7 +416,7 @@ class CartController extends AbstractController
             [
                 'address_type'      => CartAddressType::class,
                 'validation_groups' => ['Default', 'Address'],
-                'delivery'          => true,
+                'mode'              => SaleType\SaleAddressType::MODE_DELIVERY,
             ]
         );
     }

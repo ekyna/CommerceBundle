@@ -27,50 +27,104 @@ use function Symfony\Component\Translation\t;
  */
 class SaleAddressType extends AbstractType
 {
-    private SerializerInterface                $serializer;
-    private ResourceRepositoryInterface        $customerRepository;
-    private CustomerAddressRepositoryInterface $customerAddressRepository;
-
+    public const MODE_INVOICE     = 'invoice';
+    public const MODE_DELIVERY    = 'delivery';
+    public const MODE_DESTINATION = 'destination';
 
     public function __construct(
-        SerializerInterface                $serializer,
-        ResourceRepositoryInterface        $customerRepository,
-        CustomerAddressRepositoryInterface $customerAddressRepository
+        private readonly SerializerInterface                $serializer,
+        private readonly ResourceRepositoryInterface        $customerRepository,
+        private readonly CustomerAddressRepositoryInterface $customerAddressRepository
     ) {
-        $this->serializer = $serializer;
-        $this->customerRepository = $customerRepository;
-        $this->customerAddressRepository = $customerAddressRepository;
+
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $propertyPath = 'invoiceAddress';
-        $required = true;
-
-        if ($options['delivery']) {
+        if ($options['mode'] === self::MODE_INVOICE) {
+            $required = true;
+            $section = 'billing';
+            $propertyPath = 'invoiceAddress';
+        } else {
             $required = false;
-            $propertyPath = 'deliveryAddress';
+            $section = 'shipping';
 
-            $builder->add('sameAddress', Type\CheckboxType::class, [
-                'label'    => t('sale.field.same_address', [], 'EkynaCommerce'),
-                'required' => false,
-                'attr'     => [
-                    'class'             => 'sale-address-same',
-                    'align_with_widget' => true,
-                ],
-            ]);
+            if ($options['mode'] === self::MODE_DELIVERY) {
+                $propertyPath = 'deliveryAddress';
+
+                $builder->add('sameAddress', Type\CheckboxType::class, [
+                    'label'    => t('sale.field.same_address', [], 'EkynaCommerce'),
+                    'required' => false,
+                    'attr'     => [
+                        'class'             => 'sale-address-same',
+                        'align_with_widget' => true,
+                    ],
+                ]);
+
+                $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event): void {
+                    $sale = $event->getData();
+
+                    // Check if data (sale) is set.
+                    if (!$sale instanceof SaleInterface) {
+                        return;
+                    }
+
+                    if ($sale->isSameAddress() && null !== $sale->getDeliveryAddress()) {
+                        $sale->setDeliveryAddress(null);
+
+                        $event->setData($sale);
+                    }
+                }, 2047);
+            } else {
+                $propertyPath = 'destinationAddress';
+
+                $builder->add('setAddress', Type\CheckboxType::class, [
+                    'label'    => t('button.set', [], 'EkynaUi'),
+                    'required' => false,
+                    'mapped'   => false,
+                    'attr'     => [
+                        'class'             => 'sale-address-set',
+                        'align_with_widget' => true,
+                    ],
+                ]);
+
+                $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) use ($options): void {
+                    $sale = $event->getData();
+                    $form = $event->getForm();
+
+                    $form->get('setAddress')->setData(null !== $sale->getDestinationAddress());
+                });
+
+                $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event): void {
+                    $form = $event->getForm();
+                    $sale = $event->getData();
+
+                    // Check if data (sale) is set.
+                    if (!$sale instanceof SaleInterface) {
+                        return;
+                    }
+
+                    $setAddress = $form->get('setAddress')->getData();
+                    if (!$setAddress && null !== $sale->getDestinationAddress()) {
+                        $sale->setDestinationAddress(null);
+
+                        $event->setData($sale);
+                    }
+                }, 2047);
+            }
         }
 
         $builder->add('address', $options['address_type'], [
             'label'         => false,
             'property_path' => $propertyPath,
             'required'      => $required,
-            'section'       => $options['delivery'] ? 'shipping' : 'billing',
+            'section'       => $section,
             'attr'          => [
                 'widget_col' => 12,
             ],
         ]);
 
+        // Choice field event handler
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             $sale = $event->getData();
             $form = $event->getForm();
@@ -100,6 +154,7 @@ class SaleAddressType extends AbstractType
             $this->buildChoiceField($form, $customer);
         }, 2048);
 
+        // Choice field event handler
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options): void {
             $data = $event->getData();
             $form = $event->getForm();
@@ -122,21 +177,6 @@ class SaleAddressType extends AbstractType
             }
 
             $this->buildChoiceField($form, $customer);
-        }, 2048);
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event): void {
-            $sale = $event->getData();
-
-            // Check if data (sale) is set.
-            if (!$sale instanceof SaleInterface) {
-                return;
-            }
-
-            if ($sale->isSameAddress() && null !== $sale->getDeliveryAddress()) {
-                $sale->setDeliveryAddress(null);
-
-                $event->setData($sale);
-            }
         }, 2048);
     }
 
@@ -186,26 +226,37 @@ class SaleAddressType extends AbstractType
     {
         if (!empty($options['customer_field'])) {
             $view->vars['attr']['data-customer-field'] = $view->parent->vars['id'] . '_' . $options['customer_field'];
-            $view->vars['attr']['data-mode'] = $options['delivery'] ? 'delivery' : 'invoice';
+            $view->vars['attr']['data-mode'] = $options['mode'] === self::MODE_INVOICE ? 'invoice' : 'delivery';
         }
 
         /** @var SaleInterface $sale */
         $sale = $form->getData();
 
-        $view->vars['wrapped'] = $options['delivery'] && $sale->isSameAddress();
+        $view->vars['wrapped'] = false;
+        if ($options['mode'] === self::MODE_DELIVERY) {
+            $view->vars['wrapped'] = $sale->isSameAddress();
+        } elseif ($options['mode'] === self::MODE_DESTINATION) {
+            $view->vars['wrapped'] = null === $sale->getDestinationAddress();
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
-                'delivery'       => false,
+                'mode'           => null,
                 'data_class'     => SaleInterface::class,
                 'address_type'   => null,
                 'customer_field' => null,
             ])
+            ->setAllowedTypes('mode', 'string')
             ->setAllowedTypes('address_type', 'string')
-            ->setAllowedTypes('customer_field', ['null', 'string']);
+            ->setAllowedTypes('customer_field', ['null', 'string'])
+            ->setAllowedValues('mode', [
+                self::MODE_INVOICE,
+                self::MODE_DELIVERY,
+                self::MODE_DESTINATION,
+            ]);
     }
 
     public function getBlockPrefix(): string

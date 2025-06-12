@@ -76,7 +76,6 @@ ekyna_commerce:
         no_customer:
             customer_group_is_required: Le groupe de client est requis si aucun client n'est sélectionné.
             email_is_required: L'email est requis si aucun client n'est sélectionné.
-            identity_is_required: L'identité est requise si aucun client n'est sélectionné.
         delivery_address:
             is_required: Veuillez saisir une addresse de livraison.
             should_be_null: L'adresse de livraison devrait être vide.
@@ -86,6 +85,7 @@ ekyna_commerce:
         delivery_address_must_be_set: Veuillez saisir une adresse de livraison.
         shipment_method_must_be_set: Veuillez sélectionner un mode de livraison.
         shipment_method_require_mobile: Le mode de livraison sélectionné nécéssite un numéro de téléphone mobile pour l'adresse de livraison.
+        incoterm_is_required: Veuillez configurer l'incoterm pour les ventes à l'étranger.
         voucher_must_be_set: Veuillez saisir votre bon d'achat.
         outstanding_overflow_is_forbidden: Les dépassement d'encours ne sont pas autorisés pour ce client.
         outstanding_limit_require_term: Veuillez choisir une condition de payment pour définir une limite d'encours.

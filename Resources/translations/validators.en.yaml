@@ -74,7 +74,6 @@ ekyna_commerce:
         no_customer:
             customer_group_is_required: The customer group is required if no customer is selected.
             email_is_required: Email is required if no customer is selected.
-            identity_is_required: Identity is required if no customer is selected.
         delivery_address:
             is_required: Please fill in the delivery address.
             should_be_null: Please leave the delivery address empty.
@@ -84,6 +83,7 @@ ekyna_commerce:
         delivery_address_must_be_set: Please fill in the delivery address.
         shipment_method_must_be_set: Please select the shipment method.
         shipment_method_require_mobile:  The select shipment method requires a mobile phone number.
+        incoterm_is_required: Please set the Incoterm for international sales.
         voucher_must_be_set: Please fill in your voucher number.
         outstanding_overflow_is_forbidden: Outstanding overflow is forbidden for this customer.
         outstanding_limit_require_term: Please select a payment term to define an outstanding limit.

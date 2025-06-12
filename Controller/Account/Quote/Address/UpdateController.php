@@ -59,6 +59,8 @@ class UpdateController implements ControllerInterface
             'number' => $quote->getNumber(),
         ]);
 
+        $mode = $type === 'delivery' ? SaleAddressType::MODE_DELIVERY : SaleAddressType::MODE_INVOICE;
+
         $form = $this->formFactory->create(SaleAddressType::class, $quote, [
             'method'            => 'post',
             'action'            => $action,
@@ -67,7 +69,7 @@ class UpdateController implements ControllerInterface
             ],
             'address_type'      => QuoteAddressType::class,
             'validation_groups' => ['Address'],
-            'delivery'          => $type === 'delivery',
+            'mode'              => $mode,
         ]);
 
         $form->handleRequest($request);

@@ -35,6 +35,7 @@ field:
     revenue: Chiffre d'affaire
     template: Modèle
     physical: Physique
+    incoterm: Incoterm
 
 value:
     prospect: Prospect
@@ -1539,6 +1540,7 @@ sale:
         address_choice: Carnet d'adresses
         invoice_address: Adresse de facturation
         delivery_address: Adresse de livraison
+        destination_address: Adresse de destination
         same_address: Même adresse
         tax_exempt: Hors taxe
         auto_discount: Remises auto.

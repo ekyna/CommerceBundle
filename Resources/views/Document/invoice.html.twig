@@ -37,40 +37,6 @@
 {% endblock mentions %}
 
 
-{% block addresses %}
-<div class="bloc addresses">
-    <div>
-        <h2>{{ 'customer.label.singular'|trans({}, 'EkynaCommerce') }}</h2>
-        <p>{{ subject.customer|customer }}</p>
-    </div>
-    <div>
-        <h2>{{ 'sale.field.invoice_address'|trans({}, 'EkynaCommerce') }}</h2>
-        <p>
-            {%- if subject.customInvoiceAddress -%}
-                {{- subject.customInvoiceAddress|address -}}
-            {%- else -%}
-                {{- subject.invoiceAddress|address -}}
-            {%- endif -%}
-        </p>
-    </div>
-    <div>
-        <h2>{{ 'sale.field.delivery_address'|trans({}, 'EkynaCommerce') }}</h2>
-        <p>
-            {%- if subject.customDeliveryAddress -%}
-                {{- subject.customDeliveryAddress|address -}}
-            {%- elseif subject.relayPoint is not empty -%}
-                {{ subject.relayPoint|address }}
-            {%- elseif subject.deliveryAddress is not empty -%}
-                {{ subject.deliveryAddress|address }}
-            {%- else -%}
-                {{ subject.invoiceAddress|address }}
-            {%- endif -%}
-        </p>
-    </div>
-</div>
-{% endblock addresses %}
-
-
 {% block misc %}
 {{- macro.render_invoice_payments(subject) -}}
 {{ parent() }}

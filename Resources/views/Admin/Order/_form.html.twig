@@ -101,12 +101,19 @@
                 {{ form_row(form.autoInvoice, {'label_col': 4, 'widget_col': 8}) }}
             </div>
             <div class="col-md-6">
-                {{ form_row(form.sample, {'label_col': 4, 'widget_col': 8}) }}
+                {{ form_row(form.incoterm, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
                 {{ form_row(form.taxExempt, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.sample, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
             </div>
             <div class="col-md-6">
                 {{ form_row(form.support, {'label_col': 4, 'widget_col': 8}) }}
@@ -121,6 +128,8 @@
         {{ form_row(form.deliveryAddress) }}
         <hr>
         {{ form_row(form.relayPoint) }}
+        <hr>
+        {{ form_row(form.destinationAddress) }}
     </div>
     <div class="tab-pane" id="{{ resource_name }}-information">
         <div class="row">

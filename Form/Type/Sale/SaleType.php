@@ -38,11 +38,9 @@ use function Symfony\Component\Translation\t;
  */
 class SaleType extends AbstractResourceType
 {
-    protected string $defaultCurrency;
-
-    public function __construct(string $defaultCurrency)
-    {
-        $this->defaultCurrency = $defaultCurrency;
+    public function __construct(
+        protected readonly string $defaultCurrency
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -81,13 +79,14 @@ class SaleType extends AbstractResourceType
                 'label'          => t('sale.field.invoice_address', [], 'EkynaCommerce'),
                 'address_type'   => $options['address_type'],
                 'inherit_data'   => true,
+                'mode'           => SaleAddressType::MODE_INVOICE,
                 'customer_field' => 'customer',
             ])
             ->add('deliveryAddress', SaleAddressType::class, [
                 'label'          => t('sale.field.delivery_address', [], 'EkynaCommerce'),
                 'address_type'   => $options['address_type'],
                 'inherit_data'   => true,
-                'delivery'       => true,
+                'mode'           => SaleAddressType::MODE_DELIVERY,
                 'customer_field' => 'customer',
             ])
             ->add('vatNumber', VatNumberType::class)

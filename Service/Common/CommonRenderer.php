@@ -10,12 +10,10 @@ use Ekyna\Component\Commerce\Common\Model\NotificationTypes as CTypes;
 use Ekyna\Component\Commerce\Common\Transformer\ArrayToAddressTransformer;
 use Ekyna\Component\Commerce\Customer\Model\CustomerContactInterface;
 use Ekyna\Component\Commerce\Customer\Model\NotificationsInterface;
-use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Twig\Environment;
 use Twig\TemplateWrapper;
 
 use function array_replace;
-use function is_array;
 
 /**
  * Class CommonRenderer
@@ -43,16 +41,24 @@ class CommonRenderer
      * Renders the address.
      *
      * @param array|AddressInterface $address
-     * @param array                  $options ('display_phones' and 'locale')
+     * @param array{
+     *     inline: bool,
+     *     display_phones: bool,
+     *     locale: bool
+     * } $options
+     *
+     * @return string
      */
-    public function renderAddress($address, array $options = []): string
+    public function renderAddress(array|AddressInterface $address, array $options = []): string
     {
+        $options = array_replace([
+            'inline'         => false,
+            'display_phones' => true,
+            'locale'         => null,
+        ], $options);
+
         if ($address instanceof AddressInterface) {
             $address = $this->addressTransformer->transformAddress($address);
-        }
-
-        if (!is_array($address)) {
-            throw new UnexpectedTypeException($address, ['array', AddressInterface::class]);
         }
 
         $address = array_replace([
@@ -75,12 +81,9 @@ class CommonRenderer
             'information' => null,
         ], $address);
 
-        $options = array_replace([
-            'display_phones' => true,
-            'locale'         => null,
-        ], $options);
+        $block = $options['inline'] ? 'address_inline' : 'address';
 
-        return $this->getTemplate()->renderBlock('address', [
+        return $this->getTemplate()->renderBlock($block, [
             'address' => $address,
             'options' => $options,
         ]);

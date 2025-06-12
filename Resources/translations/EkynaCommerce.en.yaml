@@ -35,6 +35,7 @@ field:
     revenue: Revenue
     template: Template
     physical: Physical
+    incoterm: Incoterm
 
 value:
     prospect: Prospect
@@ -1500,6 +1501,7 @@ sale:
         address_choice: Address book
         invoice_address: Billing address
         delivery_address: Shipping address
+        destination_address: Destination address
         same_address: Same address
         tax_exempt: Tax exempt
         auto_discount: Auto discounts

@@ -17,6 +17,7 @@ use Ekyna\Component\Commerce\Document\Event\SaleMentionEvent;
 use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentLineTypes;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Pricing\Resolver\TaxResolverInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use League\Flysystem\Filesystem;
@@ -148,6 +149,64 @@ class DocumentHelper
         }
 
         return $mentions;
+    }
+
+    public function getDocumentIncoterm(DocumentInterface $document): ?string
+    {
+        if (null === $incoterm = $document->getIncoterm()) {
+            return null;
+        }
+
+        $address = $this->getDocumentDeliveryAddress($document);
+
+        $address = $this->commonRenderer->renderAddress($address, ['inline' => true]);
+
+        $parts = ["INCOTERM: $incoterm $address"];
+
+        if (!empty($address = $this->getDocumentDestinationAddress($document))) {
+            $address = $this->commonRenderer->renderAddress($address, ['inline' => true]);
+
+            $parts[] = "Final destination: $address";
+        }
+
+        $parts[] = 'Incoterms® 2020';
+
+        return implode('<br>', $parts);
+    }
+
+    public function getDocumentInvoiceAddress(DocumentInterface $document): array
+    {
+        if ($document instanceof InvoiceInterface && !empty($address = $document->getCustomInvoiceAddress())) {
+            return $address;
+        }
+
+        return $document->getInvoiceAddress();
+    }
+
+    public function getDocumentDeliveryAddress(DocumentInterface $document): array
+    {
+        if ($document instanceof InvoiceInterface && !empty($address = $document->getCustomDeliveryAddress())) {
+            return $address;
+        }
+
+        if (!empty($address = $document->getRelayPoint())) {
+            return $address;
+        }
+
+        if (!empty($address = $document->getDeliveryAddress())) {
+            return $address;
+        }
+
+        return $document->getInvoiceAddress();
+    }
+
+    public function getDocumentDestinationAddress(DocumentInterface $document): ?array
+    {
+        if ($document instanceof InvoiceInterface && !empty($address = $document->getCustomDestinationAddress())) {
+            return $address;
+        }
+
+        return $document->getDestinationAddress();
     }
 
     /**

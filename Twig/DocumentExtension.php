@@ -40,6 +40,22 @@ class DocumentExtension extends AbstractExtension
                 [DocumentHelper::class, 'getDocumentMentions']
             ),
             new TwigFilter(
+                'document_invoice_address',
+                [DocumentHelper::class, 'getDocumentInvoiceAddress']
+            ),
+            new TwigFilter(
+                'document_delivery_address',
+                [DocumentHelper::class, 'getDocumentDeliveryAddress']
+            ),
+            new TwigFilter(
+                'document_destination_address',
+                [DocumentHelper::class, 'getDocumentDestinationAddress']
+            ),
+            new TwigFilter(
+                'document_incoterm',
+                [DocumentHelper::class, 'getDocumentIncoterm']
+            ),
+            new TwigFilter(
                 'shipment_mentions',
                 [DocumentHelper::class, 'getShipmentMentions']
             ),
