@@ -12,13 +12,10 @@ use Ekyna\Component\Commerce\Common\Export\SaleXlsExporter;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Resource\Action\Permission;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\File\Stream;
+use Ekyna\Component\Resource\Helper\File\File;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Route;
 
-use function clearstatcache;
 use function sprintf;
 
 /**
@@ -33,7 +30,7 @@ class ExportAction extends AbstractSaleAction implements RoutingActionInterface
 
     private SaleCsvExporter $csvExporter;
     private SaleXlsExporter $xlsExporter;
-    private bool            $debug;
+    private bool $debug;
 
     public function __construct(SaleCsvExporter $csvExporter, SaleXlsExporter $xlsExporter, bool $debug)
     {
@@ -51,8 +48,10 @@ class ExportAction extends AbstractSaleAction implements RoutingActionInterface
         $format = $this->request->getRequestFormat('csv');
         if ($format === 'csv') {
             $exporter = $this->csvExporter;
+            $mimeType = 'text/csv';
         } elseif ($format === 'xls') {
             $exporter = $this->xlsExporter;
+            $mimeType = 'application/vnd.ms-excel';
         } else {
             throw new InvalidArgumentException("Unexpected format '$format'");
         }
@@ -71,25 +70,17 @@ class ExportAction extends AbstractSaleAction implements RoutingActionInterface
             return $this->redirect($this->generateResourcePath($sale));
         }
 
-        // TODO Use $exporter->download() (same in account controller)
-        clearstatcache(true, $path);
-
-        $response = new BinaryFileResponse(new Stream($path));
-
-        $fileName = sprintf('%s%s.%s',
+        $fileName = sprintf(
+            '%s%s.%s',
             $sale->getNumber(),
             $internal ? '_internal' : '',
             $format
         );
 
-        $disposition = $response
-            ->headers
-            ->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $fileName);
-
-        $response->headers->set('Content-Disposition', $disposition);
-        $response->headers->set('Content-Type', 'text/csv');
-
-        return $response;
+        return File::buildResponse($path, [
+            'file_name' => $fileName,
+            'mime_type' => $mimeType,
+        ]);
     }
 
     public static function configureAction(): array

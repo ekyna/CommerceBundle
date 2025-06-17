@@ -86,7 +86,7 @@ class QuoteType extends AbstractResourceType
                 'position'    => 31,
                 'time_format' => 'none',
             ])
-            ->addColumn('projectTrust', CType\Column\NumberType::class, [
+            ->addColumn('projectTrust', Type\Column\ProjectTrustType::class, [
                 'label'    => t('quote.field.project_trust', [], 'EkynaCommerce'),
                 'position' => 32,
             ])
