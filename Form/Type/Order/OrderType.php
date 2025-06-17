@@ -55,6 +55,10 @@ class OrderType extends SaleType
                 'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
                 'required' => false,
             ])
+            ->add('followerCustomer', CustomerSearchType::class, [
+                'label'    => t('sale.field.follower_customer', [], 'EkynaCommerce'),
+                'required' => false,
+            ])
             ->add('originCustomer', CustomerSearchType::class, [
                 'label'    => t('sale.field.origin_customer', [], 'EkynaCommerce'),
                 'required' => false,

@@ -118,6 +118,7 @@ class QuoteType extends AbstractResourceType
             ])*/
             ->addColumn('inCharge', Type\Column\InChargeType::class, [
                 'position' => 90,
+                'visible'  => false,
             ])
             ->addColumn('tags', TagsType::class, [
                 'property_path' => 'allTags',
@@ -136,6 +137,13 @@ class QuoteType extends AbstractResourceType
                     'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
                     'resource' => 'ekyna_commerce.customer',
                     'position' => 61,
+                    'visible'  => false,
+                ])
+                ->addColumn('followerCustomer', ResourceType::class, [
+                    'label'    => t('sale.field.follower_customer', [], 'EkynaCommerce'),
+                    'resource' => 'ekyna_commerce.customer',
+                    'position' => 62,
+                    'visible'  => false,
                 ]);
         }
 

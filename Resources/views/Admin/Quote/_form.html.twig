@@ -136,7 +136,18 @@
         </div>
         <div class="row">
             <div class="col-md-6">
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.inCharge, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-6">
                 {{ form_row(form.initiatorCustomer, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.followerCustomer, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
         <div class="row">
@@ -144,7 +155,7 @@
                 {{ form_row(form.title, {'label_col': 4, 'widget_col': 8}) }}
             </div>
             <div class="col-md-6">
-                {{ form_row(form.inCharge, {'label_col': 4, 'widget_col': 8}) }}
+                {{ form_row(form.project, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
         <div class="row">
@@ -160,7 +171,6 @@
                 {{ form_row(form.projectAlive, {'label_col': 4, 'widget_col': 8}) }}
             </div>
         </div>
-        {{ form_row(form.project) }}
         <hr>
         {{ form_row(form.comment) }}
         {{ form_row(form.documentComment) }}

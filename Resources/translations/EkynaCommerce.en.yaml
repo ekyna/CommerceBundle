@@ -1498,6 +1498,7 @@ sale:
         details: Details
         origin_customer: Salesman
         initiator_customer: Initiator
+        follower_customer: Follower
         address_choice: Address book
         invoice_address: Billing address
         delivery_address: Shipping address

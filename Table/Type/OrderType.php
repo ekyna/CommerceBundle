@@ -166,6 +166,7 @@ class OrderType extends AbstractResourceType
             ->addColumn('originNumber', CType\Column\TextType::class, [
                 'label'    => t('sale.field.origin_number', [], 'EkynaCommerce'),
                 'position' => 50,
+                'visible'  => false,
             ])
             ->addColumn('grandTotal', Type\Column\CurrencyType::class, [
                 'label'    => t('sale.field.ati_total', [], 'EkynaCommerce'),
@@ -174,6 +175,7 @@ class OrderType extends AbstractResourceType
             ->addColumn('paidTotal', Type\Column\CurrencyType::class, [
                 'label'    => t('sale.field.paid_total', [], 'EkynaCommerce'),
                 'position' => 70,
+                'visible'  => false,
             ])
             ->addColumn('state', Type\Column\SaleStateType::class, [
                 'position' => 80,
@@ -233,9 +235,24 @@ class OrderType extends AbstractResourceType
             ]);
 
         if (null === $customer) {
-            $builder->addColumn('customer', Type\Column\SaleCustomerType::class, [
-                'position' => 30,
-            ]);
+            $builder
+                ->addColumn('customer', Type\Column\SaleCustomerType::class, [
+                    'position' => 30,
+                ])
+                ->addColumn('initiatorCustomer', ResourceColumn::class, [
+                    'label'         => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
+                    'resource'      => 'ekyna_commerce.customer',
+                    'position'      => 31,
+                    'visible'       => false,
+                    'sort_property' => ['company', 'firstName', 'lastName'],
+                ])
+                ->addColumn('followerCustomer', ResourceColumn::class, [
+                    'label'         => t('sale.field.follower_customer', [], 'EkynaCommerce'),
+                    'resource'      => 'ekyna_commerce.customer',
+                    'position'      => 32,
+                    'visible'       => false,
+                    'sort_property' => ['company', 'firstName', 'lastName'],
+                ]);
         }
 
         if (!empty($filters)) {
@@ -366,18 +383,22 @@ class OrderType extends AbstractResourceType
                 'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
                 'position' => 150,
             ])
+            ->addFilter('followerCustomer', Type\Filter\CustomerType::class, [
+                'label'    => t('sale.field.follower_customer', [], 'EkynaCommerce'),
+                'position' => 151,
+            ])
             ->addFilter('prospect', CType\Filter\BooleanType::class, [
                 'label'         => t('value.prospect', [], 'EkynaCommerce'),
                 'property_path' => 'customer.prospect',
-                'position'      => 151,
+                'position'      => 160,
             ])
             ->addFilter('international', CType\Filter\BooleanType::class, [
                 'label'         => t('value.international', [], 'EkynaCommerce'),
                 'property_path' => 'customer.international',
-                'position'      => 152,
+                'position'      => 161,
             ])
             ->addFilter('subject', Type\Filter\SaleSubjectType::class, [
-                'position' => 160,
+                'position' => 170,
             ]);
 
         $builder

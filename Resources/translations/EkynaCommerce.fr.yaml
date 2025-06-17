@@ -1537,6 +1537,7 @@ sale:
         details: Détail
         origin_customer: Commercial
         initiator_customer: Rapporteur
+        follower_customer: Suiveur
         address_choice: Carnet d'adresses
         invoice_address: Adresse de facturation
         delivery_address: Adresse de livraison
