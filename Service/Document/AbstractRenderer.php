@@ -5,17 +5,24 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
 use DateTimeInterface;
+use Ekyna\Bundle\CommerceBundle\Event\DocumentExtraEvent;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Resource\Exception\PdfException;
 use Ekyna\Component\Resource\Helper\PdfGenerator;
 use Ekyna\Component\Resource\Model\TimestampableInterface;
+use setasign\Fpdi\Fpdi;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Tomsgu\PdfMerger\PdfCollection;
+use Tomsgu\PdfMerger\PdfMerger;
 use Twig\Environment;
 
 use function array_replace;
+use function fclose;
 use function file_put_contents;
+use function fopen;
 use function sprintf;
 use function sys_get_temp_dir;
 use function uniqid;
@@ -27,10 +34,11 @@ use function uniqid;
  */
 abstract class AbstractRenderer implements RendererInterface
 {
-    protected readonly Environment  $twig;
-    protected readonly PdfGenerator $pdfGenerator;
-    protected readonly array        $config;
-    protected object                $subject;
+    protected readonly EventDispatcherInterface $dispatcher;
+    protected readonly Environment              $twig;
+    protected readonly PdfGenerator             $pdfGenerator;
+    protected readonly array                    $config;
+    protected object                            $subject;
 
     public function __construct(object $subject)
     {
@@ -39,6 +47,11 @@ abstract class AbstractRenderer implements RendererInterface
         }
 
         $this->subject = $subject;
+    }
+
+    public function setDispatcher(EventDispatcherInterface $dispatcher): void
+    {
+        $this->dispatcher = $dispatcher;
     }
 
     public function setTwig(Environment $twig): void
@@ -81,7 +94,42 @@ abstract class AbstractRenderer implements RendererInterface
             return $content;
         }
 
-        return $this->pdfGenerator->generateFromHtml($content);
+        $content = $this->pdfGenerator->generateFromHtml($content);
+
+        if (empty($extra = $this->getExtraPdfPaths())) {
+            return $content;
+        }
+
+        $collection = new PdfCollection();
+
+        $resource = fopen('php://memory', 'r+');
+        fputs($resource, $content);
+        rewind($resource);
+        $collection->addPdf($resource);
+
+        foreach ($extra as $path) {
+            $collection->addPdf($path);
+        }
+
+        $merger = new PdfMerger(new Fpdi());
+
+        $content = $merger->merge($collection, mode: PdfMerger::MODE_STRING);
+
+        fclose($resource);
+
+        return $content;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function getExtraPdfPaths(): array
+    {
+        $event = new DocumentExtraEvent($this->subject);
+
+        $this->dispatcher->dispatch($event);
+
+        return $event->getPaths();
     }
 
     public function respond(Request $request): Response

@@ -52,8 +52,8 @@ class DocumentHelper
         private readonly TaxResolverInterface     $taxResolver,
         private readonly SubjectHelperInterface   $subjectHelper,
         private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly array                    $config,
-        private readonly string                   $defaultLocale
+        private readonly DocumentAttributeHelper  $localeHelper,
+        private readonly array                    $config
     ) {
     }
 
@@ -68,9 +68,9 @@ class DocumentHelper
     public function getDocumentDesign(object $document, string $type = null): DocumentDesign
     {
         $design = clone $this->getDefaultDesign($document);
-        $design->setType($this->getDocumentType($document, $type));
+        $design->setType($this->localeHelper->getType($document, $type));
 
-        if ($sale = $this->getSale($document)) {
+        if ($sale = $this->localeHelper->getSale($document)) {
             $this->fillFromSale($design, $sale);
         }
 
@@ -297,7 +297,7 @@ class DocumentHelper
      */
     protected function getDefaultDesign(object $document): DocumentDesign
     {
-        $locale = $this->getLocale($document);
+        $locale = $this->localeHelper->getLocale($document);
 
         if (isset($this->defaultDesigns[$locale])) {
             return $this->defaultDesigns[$locale];
@@ -389,62 +389,5 @@ class DocumentHelper
         if (!empty($html = $customer->getDocumentFooter())) {
             $design->setFooterHtml($html);
         }
-    }
-
-    /**
-     * Returns the document type.
-     *
-     * @param object      $document
-     * @param string|null $default
-     *
-     * @return string|null
-     */
-    protected function getDocumentType(object $document, string $default = null): ?string
-    {
-        if ($document instanceof DocumentInterface) {
-            return $document->getType();
-        }
-
-        return $default;
-    }
-
-    /**
-     * Returns the document locale.
-     *
-     * @param object $document
-     *
-     * @return string
-     */
-    protected function getLocale(object $document): string
-    {
-        if ($document instanceof DocumentInterface) {
-            return $document->getLocale();
-        }
-
-        if ($document instanceof ShipmentInterface) {
-            return $document->getLocale();
-        }
-
-        return $this->defaultLocale;
-    }
-
-    /**
-     * Returns the document sale.
-     *
-     * @param object $document
-     *
-     * @return SaleInterface|null
-     */
-    protected function getSale(object $document): ?SaleInterface
-    {
-        if ($document instanceof DocumentInterface) {
-            return $document->getSale();
-        }
-
-        if ($document instanceof ShipmentInterface) {
-            return $document->getSale();
-        }
-
-        return null;
     }
 }

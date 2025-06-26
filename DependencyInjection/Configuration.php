@@ -10,10 +10,14 @@ use Ekyna\Bundle\CommerceBundle\Model\Genders;
 use Ekyna\Component\Commerce\Common\Context\Context;
 use Ekyna\Component\Commerce\Common\Locking\LockChecker;
 use Ekyna\Component\Commerce\Common\Model\AdjustmentModes;
+use Ekyna\Component\Commerce\Document\Model\DocumentInterface;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Features;
+use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Pricing\Model\VatDisplayModes;
+use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
+use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Exception;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -232,8 +236,12 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('accounting')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->scalarNode('default_customer')->defaultValue('10000000')->end()
-                        ->booleanNode('total_as_payment')->defaultFalse()->end()
+                        ->scalarNode('default_customer')
+                            ->defaultValue('10000000')
+                        ->end()
+                        ->booleanNode('total_as_payment')
+                            ->defaultFalse()
+                        ->end()
                     ->end()
                 ->end()
             ->end();
@@ -246,10 +254,42 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('document')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->scalarNode('design_class')->defaultValue(DocumentDesign::class)->end()
-                        ->scalarNode('primary_color')->defaultValue('#999999')->end()
-                        ->scalarNode('secondary_color')->defaultValue('#dddddd')->end()
-                        ->booleanNode('shipment_remaining_date')->defaultTrue()->end()
+                        ->arrayNode('extras')
+                            ->arrayPrototype()
+                                ->children()
+                                    ->arrayNode('paths')
+                                        ->requiresAtLeastOneElement()
+                                        ->useAttributeAsKey('locale')
+                                        ->scalarPrototype()->end()
+                                    ->end()
+                                    ->arrayNode('subjects')
+                                        ->scalarPrototype()
+                                            ->validate()
+                                                ->ifNotInArray([
+                                                    SupplierOrderInterface::class,
+                                                    ShipmentInterface::class,
+                                                    InvoiceInterface::class,
+                                                    DocumentInterface::class,
+                                                ])
+                                                ->thenInvalid('Invalid database driver %s')
+                                            ->end()
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->scalarNode('design_class')
+                            ->defaultValue(DocumentDesign::class)
+                        ->end()
+                        ->scalarNode('primary_color')
+                            ->defaultValue('#999999')
+                        ->end()
+                        ->scalarNode('secondary_color')
+                            ->defaultValue('#dddddd')
+                        ->end()
+                        ->booleanNode('shipment_remaining_date')
+                            ->defaultTrue()
+                        ->end()
                     ->end()
                 ->end()
             ->end();

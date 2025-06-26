@@ -147,7 +147,7 @@ class EkynaCommerceExtension extends Extension implements PrependExtensionInterf
     {
         $container
             ->getDefinition('ekyna_commerce.helper.document')
-            ->replaceArgument(7, array_replace([
+            ->replaceArgument(8, array_replace([
                 'logo_path' => '%ekyna_commerce.default.company_logo%',
             ], $config));
 
@@ -157,9 +157,14 @@ class EkynaCommerceExtension extends Extension implements PrependExtensionInterf
 
         $container
             ->getDefinition('ekyna_commerce.factory.document_renderer')
-            ->replaceArgument(2, [
-                'debug' => '%kernel.debug%',
+            ->replaceArgument(3, [
+                'extra_paths' => $config['extras'],
+                'debug'       => '%kernel.debug%',
             ]);
+
+        $container
+            ->getDefinition('ekyna_commerce.listener.document_extra')
+            ->replaceArgument(1, $config['extras']);
     }
 
     private function configureFeatures(array $config, ContainerBuilder $container, PhpFileLoader $loader): void

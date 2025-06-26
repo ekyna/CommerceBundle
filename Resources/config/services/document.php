@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Ekyna\Bundle\CommerceBundle\EventListener\DocumentExtraListener;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentLinesHelper;
-use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentPageBuilder;
+use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentAttributeHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Component\Commerce\Document\Builder\DocumentBuilder;
 use Ekyna\Component\Commerce\Document\Calculator\DocumentCalculator;
@@ -40,10 +41,27 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.factory.document_renderer', RendererFactory::class)
         ->lazy()
         ->args([
+            service('event_dispatcher'),
             service('twig'),
             service('ekyna_resource.generator.pdf'),
             abstract_arg('Renderer factory configuration'),
         ]);
+
+    // Document locale helper
+    $services
+        ->set('ekyna_commerce.helper.document_attribute', DocumentAttributeHelper::class)
+        ->args([
+            param('kernel.default_locale'),
+        ]);
+
+    // Document renderer factory
+    $services
+        ->set('ekyna_commerce.listener.document_extra', DocumentExtraListener::class)
+        ->args([
+            service('ekyna_commerce.helper.document_attribute'),
+            abstract_arg('Document extra listener configuration'),
+        ])
+        ->tag('kernel.event_listener');
 
     // Document helper
     $services
@@ -56,8 +74,8 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.resolver.tax'),
             service('ekyna_commerce.helper.subject'),
             service('event_dispatcher'),
+            service('ekyna_commerce.helper.document_attribute'),
             abstract_arg('Document helper configuration'),
-            param('kernel.default_locale'),
         ])
         ->tag('twig.runtime');
 

@@ -10,6 +10,7 @@ use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
 use Ekyna\Component\Resource\Helper\PdfGenerator;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
 
 /**
@@ -19,20 +20,17 @@ use Twig\Environment;
  */
 class RendererFactory
 {
-    protected Environment  $twig;
-    protected PdfGenerator $pdfGenerator;
-    protected array        $config;
+    protected array $config;
 
     public function __construct(
-        Environment  $twig,
-        PdfGenerator $pdfGenerator,
-        array        $config = []
+        private readonly EventDispatcherInterface $dispatcher,
+        private readonly Environment              $twig,
+        private readonly PdfGenerator             $pdfGenerator,
+        array                                     $config = []
     ) {
-        $this->twig = $twig;
-        $this->pdfGenerator = $pdfGenerator;
-
         $this->config = array_replace([
-            'debug' => false,
+            'extra_paths' => [],
+            'debug'       => false,
         ], $config);
     }
 
@@ -58,6 +56,7 @@ class RendererFactory
             throw new InvalidArgumentException('Unsupported subject.');
         }
 
+        $renderer->setDispatcher($this->dispatcher);
         $renderer->setTwig($this->twig);
         $renderer->setPdfGenerator($this->pdfGenerator);
         $renderer->setConfig($this->config);

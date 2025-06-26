@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin\OrderList;
 
-use DateTime;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererFactory;
 use Ekyna\Bundle\CommerceBundle\Service\Document\RendererInterface;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
 use Ekyna\Component\Resource\Action\Permission;
-use Ekyna\Component\Resource\Exception\PdfException;
 use Ekyna\Component\Resource\Repository\RepositoryFactoryInterface;
 use setasign\Fpdi\Fpdi;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,11 +23,8 @@ use Tomsgu\PdfMerger\PdfCollection;
 use Tomsgu\PdfMerger\PdfMerger;
 
 use function array_map;
-use function md5;
 use function reset;
 use function Symfony\Component\Translation\t;
-use function sys_get_temp_dir;
-use function uniqid;
 
 /**
  * Class AbstractDocumentController
@@ -124,16 +118,14 @@ abstract class AbstractDocumentController
         $fpdi = new Fpdi();
         $merger = new PdfMerger($fpdi);
 
-        $path = sys_get_temp_dir() . '/' . uniqid() . '.' . $format;
+        $content = $merger->merge($pdfCollection, mode: PdfMerger::MODE_STRING);
 
-        $merger->merge($pdfCollection, $path, PdfMerger::MODE_FILE);
-
-        $response = new BinaryFileResponse($path);
-        $response
-            ->setContentDisposition(
-                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                $name . '.pdf'
-            );
+        $response = new Response($content);
+        $header = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $name . '.pdf'
+        );
+        $response->headers->set('Content-Disposition', $header);
 
         return $response;
     }

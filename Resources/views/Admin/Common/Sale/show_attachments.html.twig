@@ -1,86 +1,40 @@
-{% apply spaceless %}
-<div class="table-responsive">
-    <table class="table table-striped table-hover table-alt-head">
-        <thead>
-        <tr>
-            <th>{{ 'field.file'|trans({}, 'EkynaUi') }}</th>
-            <th>{{ 'field.title'|trans({}, 'EkynaUi') }}</th>
-            <th>{{ 'field.date'|trans({}, 'EkynaUi') }}</th>
-            <th>{{ 'field.internal'|trans({}, 'EkynaCommerce') }}</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for attachment in attachments %}
-            {% set attachmentId = 'attachment_' ~ loop.index0 %}
-            {% set downloadPath = admin_resource_path(attachment, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Attachment\\DownloadAction') %}
-            <tr data-id="{{ attachment.id }}">
-                <td id="{{ attachmentId }}_filename">
-                    <a href="{{ downloadPath }}" target="_blank">{{ attachment }}</a>
-                </td>
-                <td id="{{ attachmentId }}_title">{{ attachment.title }}</td>
-                <td id="{{ attachmentId }}_createdAt">{{ attachment.createdAt|format_datetime('short', 'none') }}</td>
-                <td id="{{ attachmentId }}_internal">
-                    {% if attachment.internal %}
-                        <span class="label label-success">
-                            {{ 'value.yes'|trans({}, 'EkynaUi') }}
-                        </span>
-                    {% else %}
-                        <span class="label label-danger">
-                            {{ 'value.no'|trans({}, 'EkynaUi') }}
-                        </span>
-                    {% endif %}
-                </td>
-                <td class="actions">
-                    <a href="{{ downloadPath }}" class="btn btn-primary btn-xs" target="_blank"
-                       title="{{ 'button.download'|trans({}, 'EkynaUi') }}">
-                        <span class="fa fa-download"></span>
-                    </a>
-                    {%- if attachment.type is not null -%}
-                    <a href="{{ admin_resource_path(attachment, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Attachment\\ArchiveAction') }}"
-                       class="btn btn-default btn-xs"
-                       onclick="return confirm('{{ 'attachment.message.archive_confirm'|trans({}, 'EkynaCommerce')|escape('js') }}')"
-                       title="{{ 'button.archive'|trans({}, 'EkynaUi') }}">
-                        <span class="fa fa-archive"></span>
-                    </a>
-                    {% if sale|sale_support_document_type(attachment.type) -%}
-                        <a href="{{ admin_resource_path(attachment, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Sale\\Attachment\\GenerateAction') }}"
-                           class="btn btn-warning btn-xs"
-                           onclick="return confirm('{{ 'attachment.message.update_confirm'|trans({}, 'EkynaCommerce')|escape('js') }}')"
-                           title="{{ 'button.generate'|trans({}, 'EkynaUi') }}">
-                            <span class="fa fa-refresh"></span>
-                        </a>
-                    {%- endif %}
-                    {%- endif -%}
-                    <a href="{{ admin_resource_path(attachment, 'Ekyna\\Bundle\\AdminBundle\\Action\\UpdateAction') }}"
-                       class="btn btn-warning btn-xs"
-                       title="{{ 'button.edit'|trans({}, 'EkynaUi') }}">
-                        <span class="fa fa-pencil"></span>
-                    </a>
-                    <a href="{{ admin_resource_path(attachment, 'Ekyna\\Bundle\\AdminBundle\\Action\\DeleteAction') }}"
-                       class="btn btn-danger btn-xs"
-                       title="{{ 'button.remove'|trans({}, 'EkynaUi') }}">
-                        <span class="fa fa-trash"></span>
-                    </a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8" class="text-center">
-                    <em>{{ 'attachment.alert.no_item'|trans({}, 'EkynaCommerce') }}</em>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        {{ show_row(sale.documentComment, 'textarea', {
-            'label': 'sale.field.document_comment',
-            'label_trans_domain': 'EkynaCommerce',
-            'id': 'sale_documentComment',
-        }) }}
+{% extends '@EkynaCommerce/Admin/Common/Attachment/list.html.twig' %}
+
+
+{% block header_type %}{% endblock %}
+
+
+{% block cell_type %}{% endblock %}
+
+
+{% block cell_action_archive -%}
+    {%- if attachment.type is not null -%}
+        <a href="{{ admin_resource_path(attachment, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Attachment\\ArchiveAction') }}"
+           class="btn btn-default btn-xs"
+           onclick="return confirm('{{ 'attachment.message.archive_confirm'|trans({}, 'EkynaCommerce')|escape('js') }}')"
+           title="{{ 'button.archive'|trans({}, 'EkynaUi') }}">
+            <span class="fa fa-archive"></span>
+        </a>
+        {% if sale|sale_support_document_type(attachment.type) -%}
+            <a href="{{ admin_resource_path(attachment, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Sale\\Attachment\\GenerateAction') }}"
+               class="btn btn-warning btn-xs"
+               onclick="return confirm('{{ 'attachment.message.update_confirm'|trans({}, 'EkynaCommerce')|escape('js') }}')"
+               title="{{ 'button.generate'|trans({}, 'EkynaUi') }}">
+                <span class="fa fa-refresh"></span>
+            </a>
+        {%- endif %}
+    {%- endif -%}
+{%- endblock -%}
+
+
+{% block after_list %}
+    <div class="row">
+        <div class="col-md-12">
+            {{ show_row(sale.documentComment, 'textarea', {
+                'label': 'sale.field.document_comment',
+                'label_trans_domain': 'EkynaCommerce',
+                'id': 'sale_documentComment',
+            }) }}
+        </div>
     </div>
-</div>
-{% endapply %}
+{% endblock %}

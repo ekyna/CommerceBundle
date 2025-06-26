@@ -318,7 +318,10 @@
         {% include '@EkynaCommerce/Admin/SupplierOrder/Show/deliveries.html.twig' %}
     </div>
     <div class="tab-pane" id="{{ resource_name }}-attachments">
-        {% include '@EkynaCommerce/Admin/SupplierOrder/Show/attachments.html.twig' %}
+        {% include '@EkynaCommerce/Admin/SupplierOrder/Show/attachments.html.twig' with {
+            'supplierOrder': supplierOrder,
+            'attachments': supplierOrder.attachments
+        } only %}
     </div>
 {%- endblock main_contents %}
 
