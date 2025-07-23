@@ -8,6 +8,7 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
 use Ekyna\Component\Resource\Helper\File\Csv;
+use Ekyna\Component\Resource\Helper\File\Xls;
 use Ekyna\Component\Resource\Model\DateRange;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -16,6 +17,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use UnexpectedValueException;
 
 use function file_get_contents;
 use function gc_collect_cycles;
@@ -45,6 +47,7 @@ class InvoiceExportCommand extends Command
     {
         $this->addOption('from', 'f', InputOption::VALUE_REQUIRED, 'The `from` date');
         $this->addOption('to', 't', InputOption::VALUE_REQUIRED, 'The `to` date');
+        $this->addOption('format', null, InputOption::VALUE_REQUIRED, 'The file format', 'xls');
         $this->addOption(
             'email',
             null,
@@ -70,18 +73,31 @@ class InvoiceExportCommand extends Command
 
         $range = new DateRange($from, $to);
 
+        $format = $input->getOption('format');
+        if (!in_array($format, ['csv', 'xls'], true)) {
+            throw new UnexpectedValueException(sprintf("Expected 'xls' or 'csv', got '%s'", $format));
+        }
+
         $fileName = $input->getOption('filename') ?? sprintf(
-            'invoices_%s_%s.csv',
+            'invoices_%s_%s',
             $from->format('Y-m-d'),
             $to->format('Y-m-d')
         );
 
-        $csv = Csv::create($fileName);
+        if ($format === 'csv') {
+            $file = new Csv($fileName);
+            $mimeType = Csv::MIME_TYPE;
+        } else {
+            $file = new Xls($fileName);
+            $mimeType = Xls::MIME_TYPE;
+        }
 
-        $csv->addRow([
+        $file->setHeaders([
             'date',
             'number',
             'type',
+            'customer',
+            'title',
             'country',
             'total',
         ]);
@@ -93,10 +109,15 @@ class InvoiceExportCommand extends Command
                     ->sub($invoice->getDiscountBase())
                     ->add($invoice->getShipmentBase());
 
-                $csv->addRow([
+                $customer = $invoice->getOrder()->getCustomer()?->getCompany()
+                    ?? $invoice->getOrder()->getCompany();
+
+                $file->addRow([
                     $invoice->getCreatedAt()->format('Y-m-d'),
                     $invoice->getNumber(),
                     $invoice->isCredit() ? 'credit' : 'invoice',
+                    $customer,
+                    $invoice->getOrder()->getTitle(),
                     $invoice->getOrder()->getInvoiceAddress()->getCountry()->getCode(),
                     ($invoice->isCredit() ? '-' : '') . $total->toFixed(2),
                 ]);
@@ -108,7 +129,7 @@ class InvoiceExportCommand extends Command
             $page++;
         }
 
-        $path = $csv->close();
+        $path = $file->close();
 
         $subject = sprintf(
             'Invoices export from %s to %s',
@@ -125,7 +146,7 @@ class InvoiceExportCommand extends Command
         $message->to(...$recipient);
         $message->subject($subject);
         $message->text('See attachment');
-        $message->attach(file_get_contents($path), $fileName, 'text/csv');
+        $message->attach(file_get_contents($path), $fileName . '.' . $format, $mimeType);
 
         $this->mailer->send($message);
 

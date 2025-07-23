@@ -8,7 +8,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Order\OrderInvoiceExporter;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
 use Ekyna\Component\Commerce\Common\Util\DateUtil;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
-use Ekyna\Component\Resource\Helper\File\File;
+use Ekyna\Component\Resource\Helper\FileHelper;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -36,7 +36,7 @@ class InvoiceController
     public function dueInvoices(): Response
     {
         try {
-            $path = $this
+            $file = $this
                 ->orderInvoiceExporter
                 ->exportDueInvoices();
         } catch (CommerceExceptionInterface $e) {
@@ -49,9 +49,9 @@ class InvoiceController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('due-invoices-%s.csv', DateUtil::today());
+        $filename = sprintf('due-invoices-%s.xls', DateUtil::today());
 
-        return File::buildResponse($path, [
+        return $file->download([
             'file_name' => $filename,
         ]);
     }
@@ -62,7 +62,7 @@ class InvoiceController
     public function fallInvoices(): Response
     {
         try {
-            $path = $this
+            $file = $this
                 ->orderInvoiceExporter
                 ->exportFallInvoices();
         } catch (CommerceExceptionInterface $e) {
@@ -75,9 +75,9 @@ class InvoiceController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('fall-invoices-%s.csv', DateUtil::today());
+        $filename = sprintf('fall-invoices-%s.xls', DateUtil::today());
 
-        return File::buildResponse($path, [
+        return $file->download([
             'file_name' => $filename,
         ]);
     }

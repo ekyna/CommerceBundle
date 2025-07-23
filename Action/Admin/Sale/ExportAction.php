@@ -12,7 +12,7 @@ use Ekyna\Component\Commerce\Common\Export\SaleXlsExporter;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Resource\Action\Permission;
-use Ekyna\Component\Resource\Helper\File\File;
+use Ekyna\Component\Resource\Helper\FileHelper;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Route;
 
@@ -77,7 +77,7 @@ class ExportAction extends AbstractSaleAction implements RoutingActionInterface
             $format
         );
 
-        return File::buildResponse($path, [
+        return FileHelper::buildResponse($path, [
             'file_name' => $fileName,
             'mime_type' => $mimeType,
         ]);

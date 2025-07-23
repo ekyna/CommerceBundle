@@ -20,6 +20,7 @@ use Ekyna\Component\Commerce\Customer\Balance\BalanceBuilder;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Resource\Action\Permission;
 use Ekyna\Component\Resource\Helper\File\Csv;
+use Ekyna\Component\Resource\Helper\File\Xls;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -90,7 +91,8 @@ class BalanceAction extends AbstractAction implements AdminActionInterface
 
                 $lines = $this->serializer->normalize($balance, 'csv');
 
-                $file = Csv::create('balance.csv');
+                $file = new Xls('balance');
+
                 $file->addRows($lines);
 
                 if ($export->isClicked()) {

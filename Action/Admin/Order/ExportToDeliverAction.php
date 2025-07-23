@@ -16,7 +16,7 @@ use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
 use Ekyna\Bundle\ResourceBundle\Action\TemplatingTrait;
 use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use Ekyna\Component\Resource\Action\Permission;
-use Ekyna\Component\Resource\Helper\File\File;
+use Ekyna\Component\Resource\Helper\FileHelper;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Symfony\Component\Translation\t;
@@ -56,7 +56,7 @@ class ExportToDeliverAction extends AbstractAction implements AdminActionInterfa
         if ($form->isSubmitted() && $form->isValid()) {
             $path = $this->subjectOrderExporter->export($data);
 
-            return File::buildResponse($path, [
+            return FileHelper::buildResponse($path, [
                 'file_name' => 'orders-to-deliver.csv',
             ]);
         }

@@ -65,9 +65,7 @@ class ExportAction extends AbstractAction implements AdminActionInterface
             return $this
                 ->customerExporter
                 ->export($data)
-                ->download([
-                    'file_name' => 'customers.csv',
-                ]);
+                ->download();
         }
 
         $this->breadcrumbFromContext($this->context);

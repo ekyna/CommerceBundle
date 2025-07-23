@@ -8,7 +8,7 @@ use DateTime;
 use Ekyna\Bundle\CommerceBundle\Service\Order\OrderListExporter;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
-use Ekyna\Component\Resource\Helper\File\File;
+use Ekyna\Component\Resource\Helper\FileHelper;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -45,7 +45,7 @@ class OrderController
     public function remainingOrders(): Response
     {
         try {
-            $path = $this
+            $file = $this
                 ->orderListExporter
                 ->exportRemainingOrders();
         } catch (CommerceExceptionInterface $e) {
@@ -58,9 +58,9 @@ class OrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('remaining-orders-%s.csv', (new DateTime())->format('Y-m-d'));
+        $filename = sprintf('remaining-orders-%s.xls', (new DateTime())->format('Y-m-d'));
 
-        return File::buildResponse($path, [
+        return $file->download([
             'file_name' => $filename,
         ]);
     }
@@ -71,7 +71,7 @@ class OrderController
     public function dueOrders(): Response
     {
         try {
-            $path = $this
+            $file = $this
                 ->orderListExporter
                 ->exportDueOrders();
         } catch (CommerceExceptionInterface $e) {
@@ -84,9 +84,9 @@ class OrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('due-orders-%s.csv', (new DateTime())->format('Y-m-d'));
+        $filename = sprintf('due-orders-%s.xls', (new DateTime())->format('Y-m-d'));
 
-        return File::buildResponse($path, [
+        return $file->download([
             'file_name' => $filename,
         ]);
     }
@@ -97,7 +97,7 @@ class OrderController
     public function allDueOrders(): Response
     {
         try {
-            $path = $this
+            $archive = $this
                 ->orderListExporter
                 ->exportAllDueOrders();
         } catch (CommerceExceptionInterface $e) {
@@ -112,7 +112,7 @@ class OrderController
 
         $filename = sprintf('due-orders-%s.zip', (new DateTime())->format('Y-m-d'));
 
-        return File::buildResponse($path, [
+        return FileHelper::buildResponse($archive, [
             'file_name' => $filename,
         ]);
     }
@@ -123,7 +123,7 @@ class OrderController
     public function regularDueOrders(): Response
     {
         try {
-            $path = $this
+            $file = $this
                 ->orderListExporter
                 ->exportRegularDueOrders();
         } catch (CommerceExceptionInterface $e) {
@@ -136,9 +136,9 @@ class OrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('regular-due-orders-%s.csv', (new DateTime())->format('Y-m-d'));
+        $filename = sprintf('regular-due-orders-%s.xls', (new DateTime())->format('Y-m-d'));
 
-        return File::buildResponse($path, [
+        return $file->download([
             'file_name' => $filename,
         ]);
     }
@@ -149,7 +149,7 @@ class OrderController
     public function outstandingExpiredDueOrders(): Response
     {
         try {
-            $path = $this
+            $file = $this
                 ->orderListExporter
                 ->exportOutstandingExpiredDueOrders();
         } catch (CommerceExceptionInterface $e) {
@@ -162,9 +162,9 @@ class OrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('outstanding-expired-due-orders-%s.csv', (new DateTime())->format('Y-m-d'));
+        $filename = sprintf('outstanding-expired-due-orders-%s.xls', (new DateTime())->format('Y-m-d'));
 
-        return File::buildResponse($path, [
+        return $file->download([
             'file_name' => $filename,
         ]);
     }
@@ -175,7 +175,7 @@ class OrderController
     public function outstandingFallDueOrders(): Response
     {
         try {
-            $path = $this
+            $file = $this
                 ->orderListExporter
                 ->exportOutstandingFallDueOrders();
         } catch (CommerceExceptionInterface $e) {
@@ -188,9 +188,9 @@ class OrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('outstanding-fall-due-orders-%s.csv', (new DateTime())->format('Y-m-d'));
+        $filename = sprintf('outstanding-fall-due-orders-%s.xls', (new DateTime())->format('Y-m-d'));
 
-        return File::buildResponse($path, [
+        return $file->download([
             'file_name' => $filename,
         ]);
     }
@@ -201,7 +201,7 @@ class OrderController
     public function outstandingPendingDueOrders(): Response
     {
         try {
-            $path = $this
+            $file = $this
                 ->orderListExporter
                 ->exportOutstandingPendingDueOrders();
         } catch (CommerceExceptionInterface $e) {
@@ -214,9 +214,9 @@ class OrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('outstanding-pending-due-orders-%s.csv', (new DateTime())->format('Y-m-d'));
+        $filename = sprintf('outstanding-pending-due-orders-%s.xls', (new DateTime())->format('Y-m-d'));
 
-        return File::buildResponse($path, [
+        return $file->download([
             'file_name' => $filename,
         ]);
     }

@@ -7,8 +7,8 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Order;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\DBAL\Connection;
-use Ekyna\Component\Resource\Helper\File\Csv;
-use Ekyna\Component\Resource\Helper\File\File;
+use Ekyna\Component\Resource\Helper\File\AbstractFile;
+use Ekyna\Component\Resource\Helper\File\Xls;
 
 use function sprintf;
 
@@ -29,7 +29,7 @@ class OrderItemExporter
     /**
      * Exports the sample order's item lines.
      */
-    public function exportSamples(DateTimeInterface $from = null, DateTimeInterface $to = null): File
+    public function exportSamples(DateTimeInterface $from = null, DateTimeInterface $to = null): AbstractFile
     {
         if (!$from) {
             $from = new DateTime();
@@ -81,13 +81,15 @@ SQL;
             'to' => $to->format('Y-m-d H:i:s'),
         ]);
 
-        $csv = Csv::create(sprintf(
-            'sample-orders_%s_%s.csv',
-            $from->format('Y-m-d'),
-            $to->format('Y-m-d'))
+        $file = new Xls(
+            sprintf(
+                'sample-orders_%s_%s',
+                $from->format('Y-m-d'),
+                $to->format('Y-m-d')
+            )
         );
 
-        $csv->addRow([
+        $file->setHeaders([
             'Product',
             'Reference',
             'Designation',
@@ -102,9 +104,9 @@ SQL;
         ]);
 
         while ($data = $result->fetchAssociative()) {
-            $csv->addRow($data);
+            $file->addRow($data);
         }
 
-        return $csv;
+        return $file;
     }
 }

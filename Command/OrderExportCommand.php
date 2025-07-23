@@ -11,6 +11,7 @@ use Ekyna\Component\Commerce\Invoice\Model\InvoiceStates;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentStates;
 use Ekyna\Component\Resource\Helper\File\Csv;
+use Ekyna\Component\Resource\Helper\File\Xls;
 use Ekyna\Component\Resource\Model\DateRange;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -20,8 +21,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
+use UnexpectedValueException;
+
 use function file_get_contents;
 use function gc_collect_cycles;
+use function in_array;
 use function sprintf;
 
 /**
@@ -48,6 +52,7 @@ class OrderExportCommand extends Command
     {
         $this->addOption('from', 'f', InputOption::VALUE_REQUIRED, 'The `from` date');
         $this->addOption('to', 't', InputOption::VALUE_REQUIRED, 'The `to` date');
+        $this->addOption('format', null, InputOption::VALUE_REQUIRED, 'The file format', 'xls');
         $this->addOption(
             'email',
             null,
@@ -73,18 +78,29 @@ class OrderExportCommand extends Command
 
         $range = new DateRange($from, $to);
 
+        $format = $input->getOption('format');
+        if (!in_array($format, ['csv', 'xls'], true)) {
+            throw new UnexpectedValueException(sprintf("Expected 'xls' or 'csv', got '%s'", $format));
+        }
+
         $fileName = $input->getOption('filename') ?? sprintf(
-            'orders_%s_%s.csv',
+            'orders_%s_%s',
             $from->format('Y-m-d'),
             $to->format('Y-m-d')
         );
 
-        $csv = Csv::create($fileName);
+        if ($format === 'csv') {
+            $file = new Csv($fileName);
+            $mimeType = Csv::MIME_TYPE;
+        } else {
+            $file = new Xls($fileName);
+            $mimeType = Xls::MIME_TYPE;
+        }
 
-        $csv->addRow([
+        $file->addRow([
             'date',
             'number',
-            'customer',
+            'company',
             'title',
             'country',
             'total',
@@ -102,10 +118,13 @@ class OrderExportCommand extends Command
                     ? 'yes'
                     : 'no';
 
-                $csv->addRow([
+                $company = $order->getCustomer()?->getCompany()
+                    ?? $order->getCompany();
+
+                $file->addRow([
                     $order->getCreatedAt()->format('Y-m-d'),
                     $order->getNumber(),
-                    (string)$order->getCustomer(),
+                    $company,
                     $order->getTitle(),
                     $order->getInvoiceAddress()->getCountry()->getCode(),
                     $order->getGrandTotal()->toFixed(2),
@@ -122,7 +141,7 @@ class OrderExportCommand extends Command
             $page++;
         }
 
-        $path = $csv->close();
+        $path = $file->close();
 
         $subject = sprintf(
             'Orders export from %s to %s',
@@ -139,7 +158,7 @@ class OrderExportCommand extends Command
         $message->to(...$recipient);
         $message->subject($subject);
         $message->text('See attachment');
-        $message->attach(file_get_contents($path), $fileName, 'text/csv');
+        $message->attach(file_get_contents($path), $fileName . '.' . $format, $mimeType);
 
         $this->mailer->send($message);
 

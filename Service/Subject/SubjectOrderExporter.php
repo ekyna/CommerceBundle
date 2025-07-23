@@ -15,7 +15,7 @@ use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Subject\Entity\SubjectIdentity;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistryInterface;
-use Ekyna\Component\Resource\Helper\File\Csv;
+use Ekyna\Component\Resource\Helper\File\Xls;
 
 /**
  * Class SubjectOrderExporter
@@ -77,8 +77,8 @@ class SubjectOrderExporter
         }
         $headers[] = 'Admin URL';
 
-        $file = Csv::create('subject_pending_orders.csv');
-        $file->addRow($headers);
+        $file = new Xls('subject_pending_orders.xls');
+        $file->setHeaders($headers);
 
         foreach ($orders as $data) {
             $row = [

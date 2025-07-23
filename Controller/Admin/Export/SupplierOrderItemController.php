@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin\Export;
 
-use DateTime;
 use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierOrderItemExporter;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
 use Ekyna\Component\Commerce\Common\Util\DateUtil;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
-use Ekyna\Component\Resource\Helper\File\File;
+use Ekyna\Component\Resource\Helper\FileHelper;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -61,7 +60,7 @@ class SupplierOrderItemController
             DateUtil::today()
         );
 
-        return File::buildResponse($path, [
+        return FileHelper::buildResponse($path, [
             'file_name' => $filename,
         ]);
     }

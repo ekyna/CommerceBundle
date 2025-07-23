@@ -11,7 +11,7 @@ use Ekyna\Component\Commerce\Common\Export\SaleCsvExporter;
 use Ekyna\Component\Commerce\Common\Export\SaleXlsExporter;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
-use Ekyna\Component\Resource\Helper\File\File;
+use Ekyna\Component\Resource\Helper\FileHelper;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -69,7 +69,7 @@ class ExportController implements ControllerInterface
             return new RedirectResponse($redirect);
         }
 
-        return File::buildResponse($path, [
+        return FileHelper::buildResponse($path, [
             'file_name' => $order->getNumber() . '.' . $format,
             'mime_type' => $mimeType,
         ]);

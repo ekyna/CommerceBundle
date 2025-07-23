@@ -12,7 +12,7 @@ use Ekyna\Bundle\ResourceBundle\Action\AuthorizationTrait;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Resource\Action\Permission;
-use Ekyna\Component\Resource\Helper\File\Csv;
+use Ekyna\Component\Resource\Helper\FileHelper;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -47,7 +47,7 @@ class ExportOrdersAction extends AbstractAction implements AdminActionInterface
 
         $path = $this->subjectOrderExporter->export($data);
 
-        return Csv::buildResponse($path, [
+        return FileHelper::buildResponse($path, [
             'file_name' => $subject->getReference() . '_pending-orders.csv',
         ]);
     }

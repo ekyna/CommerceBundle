@@ -7,7 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Controller\Account;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\BalanceType;
 use Ekyna\Component\Commerce\Customer\Balance\Balance;
 use Ekyna\Component\Commerce\Customer\Balance\BalanceBuilder;
-use Ekyna\Component\Resource\Helper\File\Csv;
+use Ekyna\Component\Resource\Helper\File\Xls;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -66,10 +66,10 @@ class BalanceController implements ControllerInterface
 
                     $data = $this->serializer->normalize($balance, 'csv');
 
-                    $csv = Csv::create('balance.csv');
-                    $csv->addRows($data);
+                    $file = new Xls('balance');
+                    $file->addRows($data);
 
-                    return $csv->download();
+                    return $file->download();
                 }
             } else {
                 // TODO Fix data

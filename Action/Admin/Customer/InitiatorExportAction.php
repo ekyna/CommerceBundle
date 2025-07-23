@@ -37,14 +37,14 @@ class InitiatorExportAction extends AbstractAction implements AdminActionInterfa
         $type = $this->request->attributes->get('type');
 
         if ('order' === $type) {
-            $csv = $this->initiatorExporter->exportOrders($customer);
+            $file = $this->initiatorExporter->exportOrders($customer);
         } elseif ('quote' === $type) {
-            $csv = $this->initiatorExporter->exportQuotes($customer);
+            $file = $this->initiatorExporter->exportQuotes($customer);
         } else {
             throw new InvalidArgumentException('Expected \'order\' or \'quote\' as type.');
         }
 
-        return $csv->download();
+        return $file->download();
     }
 
     public static function configureAction(): array

@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Controller\Admin\Export;
 
-use DateTime;
 use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierOrderExporter;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
 use Ekyna\Component\Commerce\Common\Util\DateUtil;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
-use Ekyna\Component\Resource\Helper\File\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -46,7 +44,7 @@ class SupplierOrderController
     public function suppliersExpiredDueOrders(): Response
     {
         try {
-            $path = $this
+            $file = $this
                 ->supplierOrderExporter
                 ->exportSuppliersExpiredDueOrders();
         } catch (CommerceExceptionInterface $e) {
@@ -59,9 +57,9 @@ class SupplierOrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('suppliers-expired-due-orders-%s.csv', DateUtil::today());
+        $filename = sprintf('suppliers-expired-due-orders-%s.xls', DateUtil::today());
 
-        return File::buildResponse($path, [
+        return $file->download([
             'file_name' => $filename,
         ]);
     }
@@ -72,7 +70,7 @@ class SupplierOrderController
     public function suppliersFallDueOrders(): Response
     {
         try {
-            $path = $this
+            $file = $this
                 ->supplierOrderExporter
                 ->exportSuppliersFallDueOrders();
         } catch (CommerceExceptionInterface $e) {
@@ -85,9 +83,9 @@ class SupplierOrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('suppliers-fall-due-orders-%s.csv', DateUtil::today());
+        $filename = sprintf('suppliers-fall-due-orders-%s.xls', DateUtil::today());
 
-        return File::buildResponse($path, [
+        return $file->download([
             'file_name' => $filename,
         ]);
     }
@@ -98,7 +96,7 @@ class SupplierOrderController
     public function forwardersExpiredDueOrders(): Response
     {
         try {
-            $path = $this
+            $file = $this
                 ->supplierOrderExporter
                 ->exportForwardersExpiredDueOrders();
         } catch (CommerceExceptionInterface $e) {
@@ -111,9 +109,9 @@ class SupplierOrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('forwarders-expired-due-orders-%s.csv', DateUtil::today());
+        $filename = sprintf('forwarders-expired-due-orders-%s.xls', DateUtil::today());
 
-        return File::buildResponse($path, [
+        return $file->download([
             'file_name' => $filename,
         ]);
     }
@@ -124,7 +122,7 @@ class SupplierOrderController
     public function forwardersFallDueOrders(): Response
     {
         try {
-            $path = $this
+            $file = $this
                 ->supplierOrderExporter
                 ->exportForwardersFallDueOrders();
         } catch (CommerceExceptionInterface $e) {
@@ -137,9 +135,9 @@ class SupplierOrderController
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        $filename = sprintf('forwarders-fall-due-orders-%s.csv', DateUtil::today());
+        $filename = sprintf('forwarders-fall-due-orders-%s.xls', DateUtil::today());
 
-        return File::buildResponse($path, [
+        return $file->download([
             'file_name' => $filename,
         ]);
     }

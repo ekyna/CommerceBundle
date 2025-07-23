@@ -8,7 +8,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Export\ExportFormHelper;
 use Ekyna\Bundle\UiBundle\Service\FlashHelper;
 use Ekyna\Component\Commerce\Accounting\Export\AccountingExporterInterface;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
-use Ekyna\Component\Resource\Helper\File\File;
+use Ekyna\Component\Resource\Helper\FileHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -65,7 +65,7 @@ class AccountingController
 
         $filename = sprintf('accounting_%s.zip', $year . ($month ? '-' : '') . $month);
 
-        return File::buildResponse($path, [
+        return FileHelper::buildResponse($path, [
             'file_name' => $filename,
         ]);
     }
