@@ -45,29 +45,21 @@ class StatWidget extends AbstractWidgetType
         $content = '';
 
         if ($this->authorization->isGranted(Permission::STAT_CHART, OrderInterface::class)) {
-            $content .= $this->renderChars(
-                $this->registry->getRepository(OrderStat::class),
-                $twig,
-                'order'
-            );
+            $content .= $this->renderChars($twig, OrderStat::class);
         }
 
         if ($this->authorization->isGranted(Permission::STAT_CHART, OrderInvoiceInterface::class)) {
-            $content .= $this->renderChars(
-                $this->registry->getRepository(InvoiceStat::class),
-                $twig,
-                'invoice'
-            );
+            $content .= $this->renderChars($twig, InvoiceStat::class);
         }
 
         return $content;
     }
 
-    public function renderChars(
-        StatRepositoryInterface $repository,
-        Environment             $twig,
-        string                  $type
-    ): string {
+    public function renderChars(Environment $twig, string $class): string
+    {
+        /** @var StatRepositoryInterface $repository */
+        $repository = $this->registry->getRepository($class);
+
         $builder = new OrderChartBuilder($repository, $this->helper);
 
         // TODO Cache
@@ -92,12 +84,17 @@ class StatWidget extends AbstractWidgetType
         $compareYear = $this->helper->getYearForDate($compareDate);
         $compareYear = $repository->findOneByYear($compareYear);
 
-        $aggregateYear = $this->buildAggregateYear($currentDate);
+        $aggregateYear = $this->buildAggregateYear($class, $currentDate);
         $yearlyChart = $builder->buildYearlyChart();
+
+        $type = match ($class) {
+            OrderStat::class => 'order',
+            InvoiceStat::class => 'invoice',
+        };
 
         /** @noinspection PhpUnhandledExceptionInspection */
         return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_stat.html.twig', [
-            'type' => $type,
+            'type'           => $type,
             'current_day'    => $currentDay,
             'compare_day'    => $compareDay,
             'daily_chart'    => $dailyChart,
@@ -111,7 +108,7 @@ class StatWidget extends AbstractWidgetType
         ]);
     }
 
-    private function buildAggregateYear(DateTime $currentDate): OrderStat
+    private function buildAggregateYear(string $class, DateTime $currentDate): StatInterface
     {
         $currentRange = $this->helper->getYearRangeForDate($currentDate);
         $currentRange->setEnd($currentDate);
@@ -122,14 +119,15 @@ class StatWidget extends AbstractWidgetType
             $compareDate
         );
 
-        $data = $this
-            ->registry
-            ->getRepository(OrderStat::class)
-            ->findSumByDateRange($compareRange);
+        /** @var StatRepositoryInterface $repository */
+        $repository = $this->registry->getRepository($class);
+
+        $data = $repository->findSumByDateRange($compareRange);
 
         $year = $this->helper->getYearForDate($compareDate);
 
-        $result = new OrderStat();
+        /** @var StatInterface $result */
+        $result = new $class();
         $result
             ->setDate($year)
             ->setType(StatInterface::TYPE_YEAR)
