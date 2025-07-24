@@ -96,10 +96,10 @@ class InvoiceExportCommand extends Command
             'date',
             'number',
             'type',
-            'customer',
-            'title',
             'country',
             'total',
+            'customer',
+            'title',
         ]);
 
         $page = 0;
@@ -109,17 +109,14 @@ class InvoiceExportCommand extends Command
                     ->sub($invoice->getDiscountBase())
                     ->add($invoice->getShipmentBase());
 
-                $customer = $invoice->getOrder()->getCustomer()?->getCompany()
-                    ?? $invoice->getOrder()->getCompany();
-
                 $file->addRow([
                     $invoice->getCreatedAt()->format('Y-m-d'),
                     $invoice->getNumber(),
                     $invoice->isCredit() ? 'credit' : 'invoice',
-                    $customer,
-                    $invoice->getOrder()->getTitle(),
                     $invoice->getOrder()->getInvoiceAddress()->getCountry()->getCode(),
                     ($invoice->isCredit() ? '-' : '') . $total->toFixed(2),
+                    $invoice->getOrder()->getCompany(),
+                    $invoice->getOrder()->getTitle(),
                 ]);
             }
 
