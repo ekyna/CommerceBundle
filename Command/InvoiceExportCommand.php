@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Ekyna\Component\Commerce\Invoice\Resolver\InvoicePaymentResolverInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
 use Ekyna\Component\Resource\Helper\File\Csv;
 use Ekyna\Component\Resource\Helper\File\Xls;
@@ -19,6 +20,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use UnexpectedValueException;
 
+use function array_keys;
 use function file_get_contents;
 use function gc_collect_cycles;
 use function sprintf;
@@ -35,10 +37,11 @@ use function sprintf;
 class InvoiceExportCommand extends Command
 {
     public function __construct(
-        private readonly EntityManagerInterface $manager,
+        private readonly EntityManagerInterface          $manager,
         private readonly OrderInvoiceRepositoryInterface $repository,
-        private readonly MailerInterface $mailer,
-        private readonly string $reportEmail,
+        private readonly InvoicePaymentResolverInterface $resolver,
+        private readonly MailerInterface                 $mailer,
+        private readonly string                          $reportEmail,
     ) {
         parent::__construct();
     }
@@ -92,15 +95,27 @@ class InvoiceExportCommand extends Command
             $mimeType = Xls::MIME_TYPE;
         }
 
-        $file->setHeaders([
-            'date',
-            'number',
-            'type',
-            'country',
-            'total',
-            'customer',
-            'title',
-        ]);
+        $headers = [
+            'date'           => 22,
+            'number'         => 24,
+            'type'           => 16,
+            'country'        => 16,
+            'total HT'       => 20,
+            'customer'       => 50,
+            'customer_group' => 80,
+            'title'          => 64,
+            'total TTC'      => 20,
+        ];
+        for ($i = 0; $i < 4; ++$i) {
+            $headers += [
+                "P$i:date"   => 22,
+                "P$i:number" => 24,
+                "P$i:mode"   => 40,
+                "P$i:amount" => 20,
+            ];
+        }
+        $file->setHeaders(array_keys($headers));
+        $file->setColumnsWidths(array_values($headers));
 
         $page = 0;
         while (!empty($invoices = $this->repository->findByCreatedAt($range, $page, 30))) {
@@ -109,15 +124,35 @@ class InvoiceExportCommand extends Command
                     ->sub($invoice->getDiscountBase())
                     ->add($invoice->getShipmentBase());
 
-                $file->addRow([
+                $data = [
                     $invoice->getCreatedAt()->format('Y-m-d'),
                     $invoice->getNumber(),
                     $invoice->isCredit() ? 'credit' : 'invoice',
                     $invoice->getOrder()->getInvoiceAddress()->getCountry()->getCode(),
                     ($invoice->isCredit() ? '-' : '') . $total->toFixed(2),
+                    (string)$invoice->getOrder()->getCustomerGroup(),
                     $invoice->getOrder()->getCompany(),
                     $invoice->getOrder()->getTitle(),
-                ]);
+                    ($invoice->isCredit() ? '-' : '') . $invoice->getGrandTotal()->toFixed(2),
+                ];
+
+                $invoicePayments = $this->resolver->resolve($invoice);
+                foreach ($invoicePayments as $invoicePayment) {
+                    if ($payment = $invoicePayment->getPayment()) {
+                        $data[] = $payment->getCreatedAt()->format('Y-m-d');
+                        $data[] = $payment->getNumber();
+                        $data[] = $payment->getMethod()->getName();
+                        $data[] = $invoicePayment->getRealAmount()->toFixed(2);
+                    }
+                    if ($invoice = $invoicePayment->getInvoice()) {
+                        $data[] = $invoice->getCreatedAt()->format('Y-m-d');
+                        $data[] = $invoice->getNumber();
+                        $data[] = $invoice->isCredit() ? 'Credit' : 'Invoice';
+                        $data[] = $invoicePayment->getRealAmount()->toFixed(2);
+                    }
+                }
+
+                $file->addRow($data);
             }
 
             $this->manager->clear();

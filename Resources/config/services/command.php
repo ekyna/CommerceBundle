@@ -127,6 +127,7 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('doctrine.orm.default_entity_manager'),
             service('ekyna_commerce.repository.order_invoice'),
+            service('ekyna_commerce.resolver.invoice_payment'),
             service('mailer'), // TODO Report* mailer
             param('ekyna_resource.report_email'),
         ])
