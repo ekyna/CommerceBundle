@@ -23,19 +23,19 @@
     <p>
         <span class="text-alt">{{ 'field.date'|trans({}, 'EkynaUi') }}</span>
         {{- '&nbsp;' -}}
-        <strong>{{ date|format_datetime('long', 'none', locale=subject.locale) }}</strong>.
-        {{ macro.render_expires_at(subject) }}
+        <strong>{{ date|format_datetime('long', 'none', locale=locale) }}</strong>.
+        {{ macro.render_expires_at(subject, locale) }}
         {% if subject.sale.customer is not null -%}
             <span class="text-alt">{{ 'customer.label.singular'|trans({}, 'EkynaCommerce') }}</span>
             {{- '&nbsp;' -}}
             <strong>{{ subject.sale.customer.number }}</strong>.
         {%- endif %}
-        {{ macro.render_origin_customer(subject) }}
-        {{ macro.render_voucher_number(subject) }}
-        {{ macro.render_exchange_rate(subject) }}
-        {{ macro.render_shipment_method(subject) }}
+        {{ macro.render_origin_customer(subject, locale) }}
+        {{ macro.render_voucher_number(subject, locale) }}
+        {{ macro.render_exchange_rate(subject, locale) }}
+        {{ macro.render_shipment_method(subject, locale) }}
         {% if not subject.sale.sample -%}
-            {{ macro.render_payment_term(subject) }}
+            {{ macro.render_payment_term(subject, locale) }}
         {%- endif %}
     </p>
     {% if subject.comment is not empty -%}

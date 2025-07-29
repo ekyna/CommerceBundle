@@ -46,9 +46,7 @@ class SupplierTemplateChoiceType extends AbstractType
         $builder
             ->add('template', EntityType::class, [
                 'label'       => t('field.template', [], 'EkynaCommerce'),
-                'placeholder' => t('placeholder.template', [], 'EkynaCommerce'),
                 'class'       => $this->templateClass,
-                'required'    => false,
                 'select2'     => false,
                 'attr'        => [
                     'class' => 'template-choice',
@@ -77,7 +75,6 @@ class SupplierTemplateChoiceType extends AbstractType
         $resolver
             ->setRequired('order')
             ->setDefaults([
-                'required' => false,
                 'mapped'   => false,
             ])
             ->setAllowedTypes('order', SupplierOrderInterface::class);

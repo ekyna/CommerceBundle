@@ -17,19 +17,19 @@
     <p>
         <span class="text-alt">{{ 'field.date'|trans({}, 'EkynaUi') }}</span>
         {{- '&nbsp;' -}}
-        <strong>{{ subject.createdAt|format_datetime('long', 'none', locale=subject.locale) }}</strong>.
+        <strong>{{ subject.createdAt|format_datetime('long', 'none', locale=locale) }}</strong>.
         <span class="text-alt">{{ 'order.label.singular'|trans({}, 'EkynaCommerce') }}</span>
         {{- '&nbsp;' -}}
         <strong>{{ subject.sale.number }}</strong>.
-        {{ macro.render_voucher_number(subject) }}
-        {{ macro.render_customer_vat_number(subject) }}
-        {{ macro.render_exchange_rate(subject) }}
-        {{ macro.render_shipment_method(subject) }}
+        {{ macro.render_voucher_number(subject, locale) }}
+        {{ macro.render_customer_vat_number(subject, locale) }}
+        {{ macro.render_exchange_rate(subject, locale) }}
+        {{ macro.render_shipment_method(subject, locale) }}
         {% if not subject.credit -%}
-            {{ macro.render_payment_term(subject) }}
+            {{ macro.render_payment_term(subject, locale) }}
         {%- endif %}
     </p>
-    {{ get_setting('commerce.invoice_mention', subject.locale)|raw }}
+    {{ get_setting('commerce.invoice_mention', locale)|raw }}
     {% if subject.comment is not empty -%}
         <p>{{ subject.comment|nl2br }}</p>
     {%- endif %}
@@ -38,6 +38,6 @@
 
 
 {% block misc %}
-{{- macro.render_invoice_payments(subject) -}}
+{{- macro.render_invoice_payments(subject, locale) -}}
 {{ parent() }}
 {% endblock misc %}

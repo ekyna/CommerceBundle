@@ -1,9 +1,9 @@
 {% apply spaceless %}
 
-{% import '@EkynaCommerce/Document/macros.html.twig' as macro -%}
-
 {% set design = subject|document_design(type|default(null)) %}
-{% set locale = design.locale %}
+{% set locale = subject.locale %}
+
+{% import '@EkynaCommerce/Document/macros.html.twig' as macro -%}
 
 {# Before #}
 {% block before %}

@@ -20,7 +20,7 @@
 <div class="bloc">
     <p>
         <span class="text-alt">{{ 'field.date'|trans({}, 'EkynaUi') }}</span>
-        {{ subject.createdAt|format_datetime('long', 'none', locale=subject.locale) }}.
+        {{ subject.createdAt|format_datetime('long', 'none', locale=locale) }}.
         <span class="text-alt">{{ 'order.label.singular'|trans({}, 'EkynaCommerce') }}</span>&nbsp;
         <strong>{{ subject.sale.number }}</strong>.
         {% if subject.sale.customer is not null -%}
@@ -31,7 +31,7 @@
             <span class="text-alt">{{ 'sale.field.voucher_number'|trans({}, 'EkynaCommerce') }}</span>&nbsp;
             <strong>{{ subject.sale.voucherNumber }}</strong>.
         {%- endif %}
-        {{ macro.render_shipment_method(subject) }}
+        {{ macro.render_shipment_method(subject, locale) }}
     </p>
     {% if subject.sale.documentComment is not empty -%}
         <p>{{ subject.sale.documentComment|nl2br }}</p>
@@ -102,7 +102,7 @@
             <p>
                 {%- if remaining.eda is not null -%}
                     {{ 'document.mention.remaining_with_date'|trans({
-                        '%date%': remaining.eda|format_datetime('long', 'none', locale=subject.locale)
+                        '%date%': remaining.eda|format_datetime('long', 'none', locale=locale)
                     }, 'EkynaCommerce') }}
                 {%- else -%}
                     {{ 'document.mention.remaining_unknown'|trans({}, 'EkynaCommerce') }}

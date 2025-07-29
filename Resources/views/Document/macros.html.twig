@@ -19,7 +19,7 @@
 {%- endmacro -%}
 
 
-{%- macro render_voucher_number(subject) -%}
+{%- macro render_voucher_number(subject, locale) -%}
     {%- if subject.sale.voucherNumber is not empty -%}
         <span class="text-alt">{{ 'sale.field.voucher_number'|trans({}, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw }}</span>
         {{- '&nbsp;' -}}
@@ -28,12 +28,12 @@
 {%- endmacro -%}
 
 
-{%- macro render_shipment_method(subject) -%}
+{%- macro render_shipment_method(subject, locale) -%}
     {% if subject is shipment -%}
         <span class="text-alt">{{ 'shipment_method.label.singular'|trans({}, 'EkynaCommerce')|raw }}</span>
         {{- '&nbsp;' -}}
         <strong>
-            {{- subject.method.translate(subject.sale.locale).title -}}
+            {{- subject.method.translate(locale).title -}}
             &nbsp;({{ subject|shipment_weight|format_number }}&nbsp;kg)
         </strong>.
     {%- elseif subject.sale.shipmentLabel or subject.sale.shipmentMethod -%}
@@ -43,7 +43,7 @@
         {%- if subject.sale.shipmentLabel -%}
             {{- subject.sale.shipmentLabel -}}
         {%- else -%}
-            {{- subject.sale.shipmentMethod.translate(subject.locale).title -}}
+            {{- subject.sale.shipmentMethod.translate(locale).title -}}
         {%- endif -%}
         {%- if 0 < subject.sale.shipmentWeight -%}
             &nbsp;({{ subject.sale.shipmentWeight|format_number }}&nbsp;kg)
@@ -55,7 +55,7 @@
 {%- endmacro -%}
 
 
-{%- macro render_payment_term(subject) -%}
+{%- macro render_payment_term(subject, locale) -%}
     <span class="text-alt">{{ 'payment_term.label.singular'|trans({}, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw }}</span>
     {{- '&nbsp;' -}}
     {%- if 0 < subject.sale.depositTotal -%}
@@ -67,15 +67,15 @@
         </strong>.
     {%- endif %}
     {% if subject.sale.paymentTerm is not null -%}
-        <strong>{{ subject.sale.paymentTerm.translate(subject.locale).title }}</strong>.
+        <strong>{{ subject.sale.paymentTerm.translate(locale).title }}</strong>.
         {% if subject.credit is defined and not subject.credit and subject.dueDate is not null -%}
             <span class="text-alt">{{ 'document.mention.due_date'|trans({}, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw }}</span>
             {{- '&nbsp;' -}}
-            <strong>{{ subject.dueDate|format_datetime('long', 'none', locale=subject.locale) }}</strong>.
+            <strong>{{ subject.dueDate|format_datetime('long', 'none', locale=locale) }}</strong>.
         {%- elseif subject.sale.outstandingDate is not null -%}
             <span class="text-alt">{{ 'document.mention.due_date'|trans({}, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw }}</span>
             {{- '&nbsp;' -}}
-            <strong>{{ subject.sale.outstandingDate|format_datetime('long', 'none', locale=subject.locale) }}</strong>.
+            <strong>{{ subject.sale.outstandingDate|format_datetime('long', 'none', locale=locale) }}</strong>.
         {%- endif %}
     {%- elseif 0 < subject.sale.depositTotal -%}
         <strong>{{ 'document.mention.deposit_remaining'|trans({}, 'EkynaCommerce') }}</strong>.
@@ -86,7 +86,7 @@
 {%- endmacro -%}
 
 
-{%- macro render_exchange_rate(subject) -%}
+{%- macro render_exchange_rate(subject, locale) -%}
     {%- if subject.currency != commerce_default_currency -%}
         <span class="text-alt">{{ 'field.exchange_rate'|trans({}, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw }}</span>
         {{- '&nbsp;' -}}
@@ -95,7 +95,7 @@
 {%- endmacro -%}
 
 
-{%- macro render_origin_customer(subject) -%}
+{%- macro render_origin_customer(subject, locale) -%}
     {%- if subject.sale.originCustomer is defined and subject.sale.originCustomer is not null -%}
         <span class="text-alt">{{ 'sale.field.origin_customer'|trans({}, 'EkynaCommerce')|raw }}</span>
         {{- '&nbsp;' -}}
@@ -104,7 +104,7 @@
 {%- endmacro -%}
 
 
-{%- macro render_customer_vat_number(subject) -%}
+{%- macro render_customer_vat_number(subject, locale) -%}
     {%- if subject.sale.customer and subject.sale.customer.vatNumber -%}
         <span class="text-alt">{{ 'pricing.field.vat_number'|trans({}, 'EkynaCommerce') }}</span>
         {{- '&nbsp;' -}}
@@ -113,7 +113,7 @@
 {%- endmacro -%}
 
 
-{%- macro render_expires_at(subject) -%}
+{%- macro render_expires_at(subject, locale) -%}
     {% if subject.type == constant('Ekyna\\Component\\Commerce\\Document\\Model\\DocumentTypes::TYPE_QUOTE') %}
         {% if subject.sale is sale_quote %}
             {% set date = subject.sale.expiresAt %}
@@ -122,12 +122,12 @@
         {% endif %}
         <span class="text-alt">{{ 'field.valid_until'|trans({}, 'EkynaUi') }}</span>
         {{- '&nbsp;' -}}
-        <strong>{{ date|format_datetime('long', 'none', locale=subject.locale) }}</strong>.
+        <strong>{{ date|format_datetime('long', 'none', locale=locale) }}</strong>.
     {%- endif -%}
 {%- endmacro -%}
 
 
-{%- macro render_invoice_payments(subject) -%}
+{%- macro render_invoice_payments(subject, locale) -%}
 {%- apply spaceless -%}
     {% set payments = subject|invoice_payments(false) -%}
     {%- if payments is not empty -%}
@@ -153,7 +153,7 @@
         <tr>
             <td>{{ payment.payment.getNumber() }}</td>
             <td>{{ payment.payment.getMethod().title }}</td>
-            <td>{{ payment.payment.getCompletedAt()|format_datetime('short', 'short', locale=subject.locale) }}</td>
+            <td>{{ payment.payment.getCompletedAt()|format_datetime('short', 'short', locale=locale) }}</td>
             <td class="text-right">
                 {{- payment.amount|format_currency(payment.payment.getCurrency().code) -}}
             </td>

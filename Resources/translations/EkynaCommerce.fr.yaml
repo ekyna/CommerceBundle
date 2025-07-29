@@ -877,7 +877,7 @@ customer_position:
 
 gender:
     short:
-        mr: Mr
+        mr: M
         mrs: Mme
         miss: Melle
     long:
