@@ -22,6 +22,7 @@
         {{- '&nbsp;' -}}
         <strong>{{ subject.sale.number }}</strong>.
         {{ macro.render_voucher_number(subject, locale) }}
+        {{ macro.render_company_number(subject, locale) }}
         {{ macro.render_customer_vat_number(subject, locale) }}
         {{ macro.render_exchange_rate(subject, locale) }}
         {{ macro.render_shipment_method(subject, locale) }}

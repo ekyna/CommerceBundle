@@ -28,6 +28,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 use function Symfony\Component\Translation\t;
 
@@ -39,7 +40,8 @@ use function Symfony\Component\Translation\t;
 class SaleType extends AbstractResourceType
 {
     public function __construct(
-        protected readonly string $defaultCurrency
+        protected readonly AuthorizationCheckerInterface $authorizationChecker,
+        protected readonly string                        $defaultCurrency
     ) {
     }
 
@@ -119,6 +121,7 @@ class SaleType extends AbstractResourceType
             $sale = $event->getData();
             $form = $event->getForm();
 
+            $superAdmin = $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN');
             $locked = $sale instanceof CartInterface;
 
             if (!$currencyLocked = $sale->hasPayments()) {
@@ -165,7 +168,7 @@ class SaleType extends AbstractResourceType
                 ->add('taxExempt', Type\CheckboxType::class, [
                     'label'    => t('sale.field.tax_exempt', [], 'EkynaCommerce'),
                     'required' => false,
-                    'disabled' => $locked,
+                    'disabled' => $locked || !$superAdmin,
                     'attr'     => [
                         'align_with_widget' => true,
                     ],

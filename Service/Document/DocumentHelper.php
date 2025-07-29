@@ -90,16 +90,14 @@ class DocumentHelper
         $type = $document->getType();
         $locale = $document->getLocale();
 
-        $mentions = $this->getSaleMentions(
-            $document->getSale(), $document->getType(), $document->getLocale()
-        );
+        $mentions = $this->getSaleMentions($sale, $type, $locale);
 
         if ($rule = $document->getTaxRule() ?: $this->taxResolver->resolveSaleTaxRule($sale)) {
             $mentions = array_merge($mentions, $this->getMentions($rule, $type, $locale));
         }
 
         foreach ($document->getLinesByType(DocumentLineTypes::TYPE_GOOD) as $line) {
-            $list = $this->getSaleItemMentions($line->getSaleItem(), $document->getType(), $document->getLocale());
+            $list = $this->getSaleItemMentions($line->getSaleItem(), $type, $locale);
 
             if (empty($list)) {
                 continue;
@@ -128,7 +126,7 @@ class DocumentHelper
         $locale = $shipment->getSale()->getLocale();
         $sale = $shipment->getSale();
 
-        $mentions = $this->getSaleMentions($shipment->getSale(), $type, $locale);
+        $mentions = $this->getSaleMentions($sale, $type, $locale);
 
         if ($rule = $this->taxResolver->resolveSaleTaxRule($sale)) {
             $mentions = array_merge($mentions, $this->getMentions($rule, $type, $locale));
@@ -224,7 +222,7 @@ class DocumentHelper
 
         $mentions = $event->getMentions();
 
-        if (!$method = $sale->getPaymentMethod()) {
+        if (null === $method = $sale->getPaymentMethod()) {
             return $mentions;
         }
 

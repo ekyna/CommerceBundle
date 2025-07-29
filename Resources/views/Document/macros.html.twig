@@ -28,6 +28,15 @@
 {%- endmacro -%}
 
 
+{%- macro render_company_number(subject, locale) -%}
+    {%- if subject.sale.companyNumber is not empty -%}
+        <span class="text-alt">{{ 'customer.field.company_number'|trans({}, 'EkynaCommerce')|replace({' ': '&nbsp;'})|raw }}</span>
+        {{- '&nbsp;' -}}
+        <strong>{{ subject.sale.companyNumber }}</strong>.
+    {%- endif -%}
+{%- endmacro -%}
+
+
 {%- macro render_shipment_method(subject, locale) -%}
     {% if subject is shipment -%}
         <span class="text-alt">{{ 'shipment_method.label.singular'|trans({}, 'EkynaCommerce')|raw }}</span>

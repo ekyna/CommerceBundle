@@ -44,6 +44,7 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemConfigureType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemCreateFlow;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemSubjectType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleShipmentType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\GatewayDataType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\RelayPointType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Shipment\ShipmentMethodFactoryChoiceType;
@@ -91,9 +92,7 @@ return static function (ContainerConfigurator $container) {
     // Cart form type
     $services
         ->set('ekyna_commerce.form_type.cart', CartType::class)
-        ->args([
-            param('ekyna_commerce.default.currency'),
-        ])
+        ->parent('ekyna_commerce.form_type.sale')
         ->tag('form.type')
         ->tag('form.js', [ // TODO Define this somewhere else (duplicates)
             'selector' => '.commerce-sale',
@@ -213,9 +212,7 @@ return static function (ContainerConfigurator $container) {
     // Order form type
     $services
         ->set('ekyna_commerce.form_type.order', OrderType::class)
-        ->args([
-            param('ekyna_commerce.default.currency'),
-        ])
+        ->parent('ekyna_commerce.form_type.sale')
         ->tag('form.type')
         ->tag('form.js', [// TODO Define this somewhere else (duplicates)
             'selector' => '.commerce-sale',
@@ -298,9 +295,7 @@ return static function (ContainerConfigurator $container) {
     // Quote form type
     $services
         ->set('ekyna_commerce.form_type.quote', QuoteType::class)
-        ->args([
-            param('ekyna_commerce.default.currency'),
-        ])
+        ->parent('ekyna_commerce.form_type.sale')
         ->tag('form.type')
         ->tag('form.js', [ // TODO Define this somewhere else (duplicates)
             'selector' => '.commerce-sale',
@@ -566,6 +561,15 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.form_flow.sale_item_add', SaleItemCreateFlow::class)
         ->parent('craue.form.flow');
+
+    // Sale form type
+    $services
+        ->set('ekyna_commerce.form_type.sale', SaleType::class)
+        ->abstract()
+        ->args([
+            service('security.authorization_checker'),
+            param('ekyna_commerce.default.currency'),
+        ]);
 
     // Sale address form type
     $services
