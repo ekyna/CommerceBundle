@@ -21,6 +21,7 @@ use Symfony\Component\Mime\Email;
 use UnexpectedValueException;
 
 use function array_keys;
+use function array_values;
 use function file_get_contents;
 use function gc_collect_cycles;
 use function sprintf;
@@ -87,14 +88,6 @@ class InvoiceExportCommand extends Command
             $to->format('Y-m-d')
         );
 
-        if ($format === 'csv') {
-            $file = new Csv($fileName);
-            $mimeType = Csv::MIME_TYPE;
-        } else {
-            $file = new Xls($fileName);
-            $mimeType = Xls::MIME_TYPE;
-        }
-
         $headers = [
             'date'           => 22,
             'number'         => 24,
@@ -114,8 +107,17 @@ class InvoiceExportCommand extends Command
                 "P$i:amount" => 20,
             ];
         }
+
+        if ($format === 'csv') {
+            $file = new Csv($fileName);
+            $mimeType = Csv::MIME_TYPE;
+        } else {
+            $file = new Xls($fileName);
+            $mimeType = Xls::MIME_TYPE;
+            $file->setColumnsWidths(array_values($headers));
+        }
+
         $file->setHeaders(array_keys($headers));
-        $file->setColumnsWidths(array_values($headers));
 
         $page = 0;
         while (!empty($invoices = $this->repository->findByCreatedAt($range, $page, 30))) {
