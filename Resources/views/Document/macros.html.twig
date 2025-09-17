@@ -37,6 +37,15 @@
 {%- endmacro -%}
 
 
+{%- macro render_customer_vat_number(subject, locale) -%}
+    {%- if subject.sale.vatNumber is not empty -%}
+        <span class="text-alt">{{ 'pricing.field.vat_number'|trans({}, 'EkynaCommerce') }}</span>
+        {{- '&nbsp;' -}}
+        <strong>{{ subject.sale.vatNumber }}</strong>.
+    {%- endif -%}
+{%- endmacro -%}
+
+
 {%- macro render_shipment_method(subject, locale) -%}
     {% if subject is shipment -%}
         <span class="text-alt">{{ 'shipment_method.label.singular'|trans({}, 'EkynaCommerce')|raw }}</span>
@@ -109,15 +118,6 @@
         <span class="text-alt">{{ 'sale.field.origin_customer'|trans({}, 'EkynaCommerce')|raw }}</span>
         {{- '&nbsp;' -}}
         <strong>{{ subject.sale.originCustomer|identity }}</strong>.
-    {%- endif -%}
-{%- endmacro -%}
-
-
-{%- macro render_customer_vat_number(subject, locale) -%}
-    {%- if subject.sale.customer and subject.sale.customer.vatNumber -%}
-        <span class="text-alt">{{ 'pricing.field.vat_number'|trans({}, 'EkynaCommerce') }}</span>
-        {{- '&nbsp;' -}}
-        <strong>{{ subject.sale.customer.vatNumber }}</strong>.
     {%- endif -%}
 {%- endmacro -%}
 
