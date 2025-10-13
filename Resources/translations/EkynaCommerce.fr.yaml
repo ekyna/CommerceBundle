@@ -1807,6 +1807,7 @@ stock_adjustment:
     reason:
         faulty: Défectueux (débit)
         improper: Non conforme (débit)
+        disposal: Mise au rebut (débit)
         debit: Inventaire (débit)
         credit: Inventaire (crédit)
         found: Retrouvé (crédit)

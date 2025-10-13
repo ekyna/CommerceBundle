@@ -27,7 +27,7 @@
         <tbody>
         {% for attachment in attachments %}
             {% set attachmentId = 'attachment_' ~ loop.index0 %}
-            {% set downloadPath = admin_resource_path(attachment, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Attachment\\DownloadAction') %}
+            {% set downloadPath = admin_resource_path(attachment, download_action|default('Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Attachment\\DownloadAction')) %}
             <tr data-id="{{ attachment.id }}">
                 {% block cell_file -%}
                 <td id="{{ attachmentId }}_filename">

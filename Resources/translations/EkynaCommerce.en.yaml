@@ -1768,6 +1768,7 @@ stock_adjustment:
     reason:
         faulty: Faulty (debit)
         improper: Improper (debit)
+        disposal: Disposal (débit)
         debit: Inventory (debit)
         credit: Inventory (credit)
         found: Found (credit)
