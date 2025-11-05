@@ -14,6 +14,10 @@ ekyna_commerce:
         customer_groups_must_be_empty: Veuillez ne pas sélectionner de groupe de clients.
     address:
         invalid_zip_code: Ce code postal n'est pas valide.
+    bill_of_materials:
+        duplicate: >
+            Vous ne pouvez pas créer cette nomenclature parce qu'une autre nomenclature ({{ number }}) 
+            est configuré pour ce produit. Veuillez dupliquer la nomenclature existante.
     customer:
         hierarchy_overflow: Ce client est un contact facturation et ne peut être rattaché un autre contact facturation.
         non_zero_balance: Ce client a un solde d'encours ou d'avoir non nul et ne peut être rattaché à un contact facturation.
@@ -147,7 +151,7 @@ ekyna_commerce:
             Chaque ligne de la commande doit correspondre à un produit fournisseur unique.
         order_and_delivery_items_miss_match: |
             Au moins une ligne de la commande ne correspond pas aux lignes des livraisons.
-        null_estimated_date_of_arrival:
+        null_estimated_date_of_arrival: |
             Veuillez saisir une date de livraison.
     supplier_order_item:
         quantity_must_be_greater_than_or_equal_received: |
@@ -155,7 +159,7 @@ ekyna_commerce:
     supplier_delivery_item:
         quantity_must_be_lower_than_or_equal_ordered: |
             La quantité réceptionnée doit être inférieure ou égale à la quantité commandée (%max%).
-        order_item_miss_match:
+        order_item_miss_match: |
             Cette ligne ne correspond à aucune ligne de la commande fournisseur.
     supplier_delivery:
         unexpected_order_state: |
@@ -165,6 +169,12 @@ ekyna_commerce:
     supplier_product:
         duplicate_by_subject: |
             Une référence éxiste déjà pour cette liaison.
+        bom_without_subject: |
+            Une nomenclature doit être liée à un sujet.
+        bom_with_packing: |
+            Une nomenclature doit avoir un conditionnement de un.
+        recursive_bom: |
+            La récursivité n'est pas autorisée dans les nomenclatures.
     tax_rule:
         at_least_customer_or_business: |
             Veuillez cocher au moins 'Particulier' ou 'Entreprise'.

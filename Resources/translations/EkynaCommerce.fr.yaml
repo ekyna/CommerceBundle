@@ -36,6 +36,8 @@ field:
     template: Modèle
     physical: Physique
     incoterm: Incoterm
+    components: Composants
+    lines: Lignes
 
 value:
     prospect: Prospect
@@ -121,7 +123,7 @@ unit:
     cubic_meter:
         singular: Mètre cube
         plural: Mètres cube
-    litre:
+    liter:
         singular: Litre
         plural: Litres
     milliliter:
@@ -378,7 +380,7 @@ attachment:
         singular: Pièce jointe
         plural: Pièces jointes
     header:
-        new: Créer un nouvelle pièce jointe
+        new: Créer une nouvelle pièce jointe
         edit: Modifier la pièce jointe
         remove: Supprimer la pièce jointe
     button:
@@ -392,6 +394,40 @@ attachment:
         update_confirm: Souhaitez-vous réellement ré-éditer cette pièce jointe ?
         archive_confirm: Souhaitez-vous réellement archiver cette pièce jointe ?
         remove_confirm: Souhaitez-vous réellement supprimer cette pièce jointe ?
+
+bill_of_materials:
+    label:
+        singular: Nomenclature
+        plural: Nomenclatures
+    header:
+        list: Nomenclatures <small>Liste des nomenclatures</small>
+        show: Détail de la nomenclature <small>%name%</small>
+        new: Créer une nouvelle nomenclature
+        edit: Modifier la nomenclature <small>%name%</small>
+        remove: Supprimer la nomenclature <small>%name%</small>
+        validate: Valider la nomenclature <small>%name%</small>
+        archive: Archive la nomenclature <small>%name%</small>
+        duplicate: Dupliquer la nomenclature <small>%name%</small>
+    button:
+        list: Liste des nomenclatures
+        show: Détail de la nomenclature
+        new: Nouvelle nomenclature
+        edit: Modifier la nomenclature
+        remove: Supprimer la nomenclature
+    message:
+        cant_be_deleted: Seuls les brouillons de nomenclatures peuvent être supprimés.
+        validate: >
+            Êtes-vous sûr de vouloir <strong>valider</strong> cette nomenclature ?<br>
+            Il ne sera plus possible de la modifier à moins de dupliquer cette référence.
+        archive: >
+            Êtes-vous sûr de vouloir <strong>archiver</strong> cette nomenclature ?<br>
+            Elle ne sera plus utilisable dans les ordre de fabrication.
+        duplicate: >
+            Êtes-vous sûr de vouloir <strong>dupliquer</strong> cette nomenclature ?<br>
+            La version actuelle sera <strong>archivée</strong>.<br>
+            La nouvelle nouvelle version pourra être <strong>modifiée</strong> avant fabrication.
+    alert:
+        no_item: Aucune nomenclature configuré
 
 cart:
     label:
@@ -885,6 +921,9 @@ gender:
         mrs: Madame
         miss: Mademoiselle
 
+manufacture:
+    title: Fabrication
+
 marketing:
     title: Marketing
 
@@ -1312,6 +1351,52 @@ pricing:
     vat_display_mode:
         ati: TTC
         net: HT
+
+production_order:
+    label:
+        singular: Ordre de fabrication
+        plural: Ordres de fabrication
+    header:
+        list: Ordres de fabrication <small>Liste des ordres</small>
+        show: Détail de l'ordre <small>%name%</small>
+        new: Créer un nouvel ordre
+        edit: Modifier l'ordre <small>%name%</small>
+        remove: Supprimer l'ordre <small>%name%</small>
+        schedule: Supprimer l'ordre <small>%name%</small>
+        cancel: Annuler l'ordre <small>%name%</small>
+        upgrade: Mettre à niveau l'ordre <small>%name%</small>
+    button:
+        list: Liste des ordres
+        show: Détail de l'ordre
+        new: Nouvel ordre
+        edit: Modifier l'ordre
+        remove: Supprimer l'ordre
+        upgrade: Mettre à niveau l'ordre
+        gantt: Plannification
+    message:
+        schedule: >
+            Êtes-vous sûr de vouloir <strong>planifier</strong> cette ordre de fabrication ?
+        upgrade: >
+            Êtes-vous sûr de vouloir <strong>mettre à niveau</strong> cette ordre de fabrication ?
+        cancel: Confirmer l'annulation ?
+    alert:
+        no_item: Aucun ordre configuré
+        bom_is_not_valited: La nomenclature associée n'est pas validé !
+        order_cant_be_upgraded: Cet ordre de fabrication ne peut pas être mis à niveau.
+        order_cant_be_canceled: Cet ordre de fabrication ne peut pas être annulé.
+
+production:
+    label:
+        singular: Production
+        plural: Productions
+    header:
+        new: Créer une nouvelle production
+        edit: Modifier la production <small>%name%</small>
+        remove: Supprimer la production <small>%name%</small>
+    button:
+        new: Nouvelle production
+        edit: Modifier la production
+        remove: Supprimer la production
 
 project:
     label:
@@ -1785,6 +1870,8 @@ stock_unit:
         adjusted_quantity: Qte ajustée
         sold_quantity: Qte vendue
         shipped_quantity: Qte expédiée
+        reserved_quantity: Qte réservée
+        consummed_quantity: Qte consommée
     button:
         new: Créer une unité de stock
     alert:
@@ -2015,6 +2102,7 @@ supplier_product:
         show: Détail de la référence <small>%name%</small>
         new: Créer une nouvelle référence
         edit: Modifier la référence <small>%name%</small>
+        duplicate: Dupliquer la référence <small>%name%</small>
         remove: Supprimer la référence <small>%name%</small>
     button:
         list: Liste des références
@@ -2029,9 +2117,20 @@ supplier_product:
         eda: E.D.A.
         subject: Article
     help:
-        net_price: Pour la quantité du conditionnement.
+        net_price: Pour la quantité du conditionnement. #TODO Move to message (bellow)
     alert:
         no_item: Aucune référence fournisseur configuré
+
+supplier_product_component:
+    label:
+        singular: Composant
+        plural: Composants
+    header:
+        decompose: Décomposer la référence <small>%name%</small>
+    button:
+        decompose: Décomposer
+    message:
+        decompose: Êtes-vous sûr de vouloir décomposer ce composant ?
 
 supplier_carrier:
     label:

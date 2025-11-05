@@ -1,0 +1,257 @@
+{% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
+
+
+{% import '@EkynaCommerce/Admin/macros.html.twig' as macros %}
+
+
+{% block flashes %}
+    {{ parent() }}
+    {% if productionOrder.bom is not validated_bill_of_materials  %}
+    <div class="alert alert-danger alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        {{ 'production_order.alert.bom_is_not_valited'|trans({}, 'EkynaCommerce') }}
+    </div>
+    {% endif %}
+{% endblock %}
+
+
+{% block actions %}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\AdminBundle\\Action\\ListAction') }}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\ProductionOrder\\CreateAction') }}
+{% endblock actions %}
+
+
+{% block main_actions %}
+    {% if productionOrder|production_order_can_be_upgraded %}
+        {{ admin_resource_btn(productionOrder, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\ProductionOrder\\UpgradeAction') }}
+    {% endif %}
+
+    {% if productionOrder is new_production_order %}
+        {{ admin_resource_btn(productionOrder, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\ProductionOrder\\ScheduleAction') }}
+    {% endif %}
+
+    {% if
+        productionOrder is new_production_order
+        or productionOrder is scheduled_production_order
+    %}
+        {{ admin_resource_btn(productionOrder, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\ProductionOrder\\CancelAction') }}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock main_actions %}
+
+
+{% block main_tabs -%}
+    <li class="active">
+        <a href="#{{ resource_name }}-general" id="toggle-general" data-toggle="tab">
+            {{- 'field.general'|trans({}, 'EkynaUi') -}}
+        </a>
+    </li>
+{%- endblock main_tabs %}
+
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        <div class="row">
+            <div class="col-md-6">
+                {{- show_row(productionOrder.number|ui_clipboard_copy, 'text', {
+                    'label': t('field.number', [], 'EkynaUi'),
+                    'label_col': 4
+                }) -}}
+            </div>
+            <div class="col-md-6">
+                {{- show_row(productionOrder.state|enum_badge, 'text', {
+                    'label': t('field.status', [], 'EkynaUi'),
+                    'label_col': 4
+                }) -}}
+            </div>
+        </div>
+        {{ macros.show_subject(productionOrder, t('subject.label.singular', [], 'EkynaCommerce')) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{- show_row(productionOrder.bom, 'resource', {
+                    'label_col': 4
+                }) -}}
+            </div>
+            <div class="col-md-6">
+                {{- show_row(productionOrder|production_order_quantity, 'text', {
+                    'label': t('field.quantity', [], 'EkynaUi'),
+                    'label_col': 4
+                }) -}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{- show_row(productionOrder.startAt, 'datetime', {
+                    'label': t('field.start_date', [], 'EkynaUi'),
+                    'label_col': 4
+                }) -}}
+            </div>
+            <div class="col-md-6">
+                {{- show_row(productionOrder.endAt, 'datetime', {
+                    'label': t('field.end_date', [], 'EkynaUi'),
+                    'label_col': 4
+                }) -}}
+            </div>
+        </div>
+    </div>
+    {#  TODO display production order stock unit (produced subject) #}
+{%- endblock main_contents %}
+
+{% block post_main %}
+
+    {# Production items #}
+
+    <div class="sub-header">
+        <h2>{{ 'field.components'|trans({}, 'EkynaCommerce')|raw }}</h2>
+    </div>
+    <div id="production-item-list" class="table-responsive">
+        <style>
+            #production-item-list > table > thead > tr > th.actions > a,
+            #production-item-list > table > tbody > tr > td.actions > a {
+                display: inline-block;
+                width: 18px;
+                height: 18px;
+                text-align: center;
+                font-size: 14px;
+            }
+        </style>
+        <table class="table table-condensed table-stripped table-alt-head">
+            <thead>
+            <tr>
+                <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.total'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.buy_net_price'|trans({}, 'EkynaCommerce') }}</th>
+                <th>{{ 'field.total'|trans({}, 'EkynaUi') }}</th>
+                <th class="actions">
+                    <a class="toggle-all-assignments" href="javascript: void(0)" title="Afficher les détails">
+                        <i class="fa fa-info-circle"></i>
+                    </a>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in productionOrder.items %}
+                {% set itemId = 'item_' ~ loop.index0 ~ '_' -%}
+                <tr>
+                    <td>{{ item.reference|ui_clipboard_copy }}</td>
+                    <td>
+                        {% set subject = item|subject_get(false) %}
+                        {% set url = subject ? subject|subject_private_url : null %}
+                        {% if url is not null -%}
+                            <a href="{{ url }}" class="show-entity"{{ admin_resource_summary(subject) }}>
+                        {%- endif %}
+                                {{ item.reference ~ ' - ' ~ item.designation }}
+                        {% if url is not null -%}
+                            </a>
+                        {%- endif %}
+                    </td>
+                    <td class="text-right">
+                        {{- item.quantity|format_number -}}
+                    </td>
+                    <td class="text-right">
+                        {{- item.totalQuantity|format_number -}}
+                        {{- item|production_item_missing_quantity -}}
+                    </td>
+                    <td class="text-right">
+                        {{ item|production_item_cost|format_currency(commerce_default_currency) }}
+                    </td>
+                    <td class="text-right">
+                        {{ item|production_item_total_cost|format_currency(commerce_default_currency) }}
+                    </td>
+                    <td class="actions">
+                        {% set information_id = itemId ~ '_information' %}
+                        {% if item.hasStockAssignments() -%}
+                            <a href="javascript: void(0)"
+                               title="Afficher les information"
+                               data-toggle-details="{{ information_id }}"
+                               class="text-muted">
+                                <i class="fa fa-tasks"></i>
+                            </a>
+                        {%- endif %}
+                    </td>
+                </tr>
+                {% if item.hasStockAssignments() -%}
+                    <tr class="stock-assignments" id="{{ information_id }}" style="display:none">
+                        <td colspan="7">
+                            {{ render_stock_assignments(item, {'production': true}) }}
+                        </td>
+                    </tr>
+                {%- endif %}
+            {% endfor %}{# End For each items #}
+            <tr>
+                <td colspan="5"></td>
+                <td class="text-right">
+                    <strong>
+                        {{ productionOrder|production_order_cost|format_currency(commerce_default_currency) }}
+                    </strong>
+                </td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    {# Productions #}
+    {% if productionOrder is stockable_production_order %}
+
+    <div class="sub-header">
+        <h2>{{ 'production.label.plural'|trans({}, 'EkynaCommerce')|raw }}</h2>
+    </div>
+    <div class="actions">
+        {% if productionOrder|production_order_can_be_produced -%}
+        {{ admin_resource_btn('ekyna_commerce.production', 'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction', {
+            'label': t('production.button.new', [], 'EkynaCommerce'),
+            'parameters': {
+                'parent': productionOrder.id,
+            }
+        }) }}
+        {%- endif %}
+    </div>
+    <div id="production-list" class="table-responsive">
+        <table class="table table-condensed table-stripped table-alt-head">
+            <thead>
+            <tr>
+                <th>{{ 'field.date'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for production in productionOrder.productions %}
+                {% set productionId = 'production_' ~ loop.index0 ~ '_' -%}
+                <tr>
+                    <td>
+                        {{ production.createdAt|format_datetime }}
+                    </td>
+                    <td>
+                        {{- production.quantity|format_number -}}
+                    </td>
+                    <td class="actions">
+                        {{ admin_resource_btn(production, 'Ekyna\\Bundle\\AdminBundle\\Action\\UpdateAction', {
+                            'size': 'xs',
+                        }) }}
+                        {{ admin_resource_btn(production, 'Ekyna\\Bundle\\AdminBundle\\Action\\DeleteAction', {
+                            'size': 'xs',
+                        }) }}
+                    </td>
+                </tr>
+            {% endfor %}{# End For each items #}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+{% endblock post_main %}
+
+{% block stylesheets -%}
+    {{ parent() }}
+    <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/stock-view.css')) }}" type="text/css" rel="stylesheet"/>
+{%- endblock stylesheets %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['ekyna-commerce/admin/production-order']);</script>
+{% endblock javascripts %}

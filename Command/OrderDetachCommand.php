@@ -74,6 +74,6 @@ class OrderDetachCommand extends Command
             $this->detachSaleItemRecursively($child);
         }
 
-        $this->stockAssigner->detachSaleItem($item);
+        $this->stockAssigner->detachOrderItem($item);
     }
 }

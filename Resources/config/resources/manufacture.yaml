@@ -1,0 +1,75 @@
+resources:
+    ekyna_commerce:
+        bill_of_materials:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Manufacture\Model\BillOfMaterialsInterface
+                class: Ekyna\Component\Commerce\Manufacture\Entity\BillOfMaterials
+            repository:
+                interface: Ekyna\Component\Commerce\Manufacture\Repository\BillOfMaterialsRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\BillOfMaterialsRepository
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Manufacture\BillOfMaterialsType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\BillOfMaterialsType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    form: '@EkynaCommerce/Admin/BillOfMaterials/_form.html.twig'
+                    read: '@EkynaCommerce/Admin/BillOfMaterials/read.html.twig'
+                    duplicate: true
+                Ekyna\Bundle\CommerceBundle\Action\Admin\BillOfMaterials\ValidateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\BillOfMaterials\ArchiveAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\BillOfMaterials\DuplicateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\BillOfMaterials\CreatePOAction: ~
+
+        bom_component:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Manufacture\Model\BOMComponentInterface
+                class: Ekyna\Component\Commerce\Manufacture\Entity\BOMComponent
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Manufacture\BOMComponentType
+            trans_domain: EkynaCommerce
+            parent: ekyna_commerce.bill_of_materials
+
+        production_order:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Manufacture\Model\ProductionOrderInterface
+                class: Ekyna\Component\Commerce\Manufacture\Entity\ProductionOrder
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Manufacture\ProductionOrderType
+            table: Ekyna\Bundle\CommerceBundle\Table\Type\ProductionOrderType
+            trans_domain: EkynaCommerce
+            actions:
+                admin_crud:
+                    form: '@EkynaCommerce/Admin/ProductionOrder/_form.html.twig'
+                    create: false
+                    list: '@EkynaCommerce/Admin/ProductionOrder/list.html.twig'
+                    read: '@EkynaCommerce/Admin/ProductionOrder/read.html.twig'
+                    update: '@EkynaCommerce/Admin/ProductionOrder/update.html.twig'
+                    delete: '@EkynaCommerce/Admin/ProductionOrder/delete.html.twig'
+                Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\CreateAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\ScheduleAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\CancelAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\UpgradeAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\GanttAction: ~
+
+        production_item:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Manufacture\Model\ProductionItemInterface
+                class: Ekyna\Component\Commerce\Manufacture\Entity\ProductionItem
+            trans_domain: EkynaCommerce
+            parent: ekyna_commerce.production_order
+
+        production:
+            driver: doctrine/orm
+            entity:
+                interface: Ekyna\Component\Commerce\Manufacture\Model\ProductionInterface
+                class: Ekyna\Component\Commerce\Manufacture\Entity\Production
+            form: Ekyna\Bundle\CommerceBundle\Form\Type\Manufacture\ProductionType
+            trans_domain: EkynaCommerce
+            parent: ekyna_commerce.production_order
+            actions:
+                admin_crud:
+                    form: '@EkynaCommerce/Admin/Production/_form.html.twig'
+                    read: false
+                    list: false

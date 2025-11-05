@@ -1,0 +1,27 @@
+{% extends '@EkynaAdmin/Entity/Crud/_form_default.html.twig' %}
+
+
+{% block main_tabs -%}
+    <li class="active">
+        <a href="#{{ resource_name }}-general" id="toggle-general" data-toggle="tab">
+            {{ 'field.general'|trans({}, 'EkynaUi') }}
+        </a>
+    </li>
+{%- endblock main_tabs %}
+
+
+{% block main_contents -%}
+    <div class="tab-pane active" id="{{ resource_name }}-general">
+        {{ form_row(form.bom) }}
+        {{ form_row(form.warehouse) }}
+        {{ form_row(form.quantity) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.startAt, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.endAt, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+    </div>
+{%- endblock main_contents %}

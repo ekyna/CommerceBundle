@@ -20,7 +20,7 @@ class SupplierOrderItemEventSubscriber extends BaseSubscriber
     {
         try {
             parent::onPreDelete($event);
-        } catch (IllegalOperationException $e) {
+        } catch (IllegalOperationException) {
             $event->addMessage(ResourceMessage::create(
                 'supplier_order.message.relative_stock_unit_is_shipped',
                 ResourceMessage::TYPE_ERROR

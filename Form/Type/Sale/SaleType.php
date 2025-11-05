@@ -48,6 +48,11 @@ class SaleType extends AbstractResourceType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('number', Type\TextType::class, [
+                'label'    => t('field.number', [], 'EkynaUi'),
+                'required' => false,
+                'disabled' => true,
+            ])
             ->add('customer', CustomerSearchType::class, [
                 'required' => false,
             ])
@@ -208,11 +213,6 @@ class SaleType extends AbstractResourceType
                     'label'    => t('sale.field.origin_number', [], 'EkynaCommerce'),
                     'required' => false,
                     'disabled' => $locked,
-                ])
-                ->add('number', Type\TextType::class, [
-                    'label'    => t('field.number', [], 'EkynaUi'),
-                    'required' => false,
-                    'disabled' => null !== $sale->getId(),
                 ])
                 ->add('depositTotal', MoneyType::class, [
                     'label'    => t('sale.field.deposit_total', [], 'EkynaCommerce'),

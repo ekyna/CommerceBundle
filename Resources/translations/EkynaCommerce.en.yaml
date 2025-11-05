@@ -36,6 +36,8 @@ field:
     template: Template
     physical: Physical
     incoterm: Incoterm
+    components: Components
+    lines: Lines
 
 value:
     prospect: Prospect
@@ -372,11 +374,45 @@ attachment:
         edit: Edit the attachment
         remove: Remove the attachment
     alert:
-        no_item: Not attachment configured
+        no_item: No attachment configured
     message:
         update_confirm: Are you sure you wan to update this attachment ?
         archive_confirm: Are you sure you wan to archive this attachment ?
         remove_confirm: Are you sure you wan to remove this attachment ?
+
+bill_of_material:
+    label:
+        singular: Bill of material
+        plural: Bill of materials
+    header:
+        list: Bill of materials <small>BOMs list</small>
+        show: BOM details <small>%name%</small>
+        new: Create a new BOM
+        edit: Edit the BOM <small>%name%</small>
+        remove: Remove the BOM <small>%name%</small>
+        validate: Validate the BOM <small>%name%</small>
+        archive: Archive the BOM <small>%name%</small>
+        duplicate: Duplicate the BOM <small>%name%</small>
+    button:
+        list: BOMs list
+        show: BOM details
+        new: New BOM
+        edit: Edit the BOM
+        remove: Remove the BOM
+    message:
+        cant_be_deleted: Only draft bill of materials can be deleted.
+        validate: >
+            Are you sure you want to <strong>validate</strong> this bill of materials?<br>
+            It will no longer be possible unless you duplicate this reference.
+        archive: >
+            Are you sure you want to <strong>archive</strong> this bill of materials?<br>
+            It will no longer be avaiable for production order.
+        duplicate: >
+            Are you sure you want to <strong>duplicate</strong> this bill of materials?<br>
+            The current version will be <strong>archived</strong>.<br>
+            The new version can be <strong>modified</strong> before manufacturing.
+    alert:
+        no_item: No BOM configured
 
 cart:
     label:
@@ -869,6 +905,9 @@ gender:
         mrs: Mistress
         miss: Miss
 
+manufacture:
+    title: Manufacture
+
 marketing:
     title: Marketing
 
@@ -1278,6 +1317,52 @@ pricing:
     vat_display_mode:
         ati: Inc. tax.
         net: Exc. tax.
+
+production_order:
+    label:
+        singular: Production order
+        plural: Production orders
+    header:
+        list: Production orders <small>List of orders</small>
+        show: Production order details <small>%name%</small>
+        new: Create a new production order
+        edit: Edit production order <small>%name%</small>
+        remove: Remove production order <small>%name%</small>
+        schedule: Schedule the order <small>%name%</small>
+        cancel: Cancel the order <small>%name%</small>
+        upgrade: Upgrade the order <small>%name%</small>
+    button:
+        list: Production orders list
+        show: PO details
+        new: New PO
+        edit: Edit PO
+        remove: Remove PO
+        upgrade: Upgrade PO
+        gantt: Planning
+    message:
+        schedule: >
+            Are you sure you want to <strong>schedule</strong> this production order?
+        upgrade: >
+            Are you sure you want to <strong>upgrade</strong> this production order?
+        cancel: Confirm cancellation?
+    alert:
+        no_item: No project configured
+        bom_is_not_valited: The associated bill of materials is not validated!
+        order_cant_be_upgraded: This production order can't be upgraded.
+        order_cant_be_canceled: This production order can't be canceled.
+
+production:
+    label:
+        singular: Production
+        plural: Productions
+    header:
+        new: Create a new production
+        edit: Edit production <small>%name%</small>
+        remove: Remove production order <small>%name%</small>
+    button:
+        new: New production
+        edit: Edit production
+        remove: Remove production
 
 project:
     label:
@@ -1746,6 +1831,8 @@ stock_unit:
         adjusted_quantity: Adjusted qty
         sold_quantity: Sold qty
         shipped_quantity: Shipped qty
+        reserved_quantity: Reserved qty
+        consummed_quantity: Consummed qty
     button:
         new: Create a new stock unit
     alert:
@@ -1976,6 +2063,7 @@ supplier_product:
         show: Reference details <small>%name%</small>
         new: Create a new reference
         edit: Edit the reference <small>%name%</small>
+        duplicate: Duplicate the reference <small>%name%</small>
         remove: Remove the reference <small>%name%</small>
     button:
         list: References list
@@ -1988,11 +2076,21 @@ supplier_product:
         ordered_stock: Ordered stock
         ordered: Ordered
         eda: E.D.A.
-        subject: Product
     help:
-        net_price: For the packing quantity.
+        net_price: For the packing quantity. # TODO Move to message (bellow)
     alert:
         no_item: No supplier reference configured
+
+supplier_product_component:
+    label:
+        singular: Component
+        plural: Components
+    header:
+        decompose: Expand the reference <small>%name%</small>
+    button:
+        decompose: Expand
+    message:
+        decompose: Do you confirm component decomposition ?
 
 supplier_carrier:
     label:

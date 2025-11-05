@@ -1,0 +1,1 @@
+define(["jquery"],function(l){"use strict";l(document).on("click","#production-item-list a.toggle-all-assignments",function(t){t.stopPropagation(),t.preventDefault();let e=l(t.currentTarget),i=e.closest("#production-item-list"),n=i.find("tr.stock-assignments"),s=n.filter(":not(:visible)").length,o=n.filter(":visible").length;return o<s?n.show():n.hide(),!1})});

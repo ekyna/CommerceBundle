@@ -198,6 +198,25 @@
 {%- endblock ekyna_commerce_attachment_widget -%}
 
 
+{#{%- block ekyna_commerce_bom_component_widget -%}
+    {{- bootstrap_backup_form_settings() -}}
+    {{- bootstrap_set_sizing('sm') -}}
+    <div class="ekyna-collection-item">
+        {{- form_errors(form) -}}
+        <div class="row">
+            <div class="col-md-8">
+                {{- form_widget(form.subjectIdentity) -}}
+            </div>
+            <div class="col-md-4">
+                {{- form_widget(form.quantity) -}}
+            </div>
+        </div>
+        {{- form_rest(form) -}}
+    </div>
+    {{- bootstrap_restore_form_settings() -}}
+{%- endblock ekyna_commerce_bom_component_widget -%}#}
+
+
 {%- block ekyna_commerce_sale_coupon_widget -%}
     {{- form_label(form.code) -}}
     {{- form_widget(form.code) -}}

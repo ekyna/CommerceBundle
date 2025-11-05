@@ -1,0 +1,45 @@
+{% extends '@EkynaAdmin/Entity/Crud/update.html.twig' %}
+
+{% block title %}
+    <h1>{{ (context.config.transPrefix ~ '.header.duplicate')|trans({'%name%': resource}, context.config.transDomain)|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}{% endblock actions %}
+
+{% block main %}
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+    <div class="form-body">
+        {{ bootstrap_set_style('horizontal') }}
+        {{ bootstrap_set_col_size('md') }}
+        {{ form_errors(form, {'global_errors': true}) }}
+
+        {{ form_row(form.designation) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.reference, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.netPrice, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.weight, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.packing, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.availableStock, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.orderedStock, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+
+        {{ form_rest(form) }}
+    </div>
+    {{ form_end(form) }}
+{% endblock main %}

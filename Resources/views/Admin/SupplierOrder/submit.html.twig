@@ -12,7 +12,7 @@
 {% endblock actions %}
 
 {% block main %}
-    {% include '@EkynaCommerce/Admin/SupplierOrder/Show/items.html.twig' with {'supplierOrder': resource} only %}
+    {% include '@EkynaCommerce/Admin/SupplierOrder/Read/items.html.twig' with {'supplierOrder': resource} only %}
 
     {{ form_start(form) }}
     <div class="form-body">

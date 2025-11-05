@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
-use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
 
 /**
  * Class SupplierOrderSubmit
@@ -13,86 +14,41 @@ use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
 class SupplierOrderSubmit
 {
     /**
-     * @var SupplierOrderInterface
+     * @var array<int, string>
      */
-    private $order;
+    private array  $emails     = [];
+    private string $subject    = '';
+    private string $message    = '';
+    private bool   $confirm    = false;
+    private bool   $sendEmail  = true;
+    private bool   $sendLabels = false;
 
-    /**
-     * @var string[]
-     */
-    private $emails;
-
-    /**
-     * @var string
-     */
-    private $subject;
-
-    /**
-     * @var string
-     */
-    private $message;
-
-    /**
-     * @var bool
-     */
-    private $confirm = false;
-
-    /**
-     * @var bool
-     */
-    private $sendEmail = true;
-
-    /**
-     * @var bool
-     */
-    private $sendLabels = false;
-
-
-    /**
-     * Constructor.
-     *
-     * @param SupplierOrderInterface $order
-     */
-    public function __construct(SupplierOrderInterface $order)
-    {
-        $this->order = $order;
-
-        // For validation
-        if (in_array($this->order->getState(), [SupplierOrderStates::STATE_NEW, SupplierOrderStates::STATE_CANCELED], true)) {
-            $this->order
-                ->setState(SupplierOrderStates::STATE_ORDERED)
-                ->setOrderedAt(new \DateTime());
-        }
+    public function __construct(
+        private readonly SupplierOrderInterface $order
+    ) {
     }
 
-    /**
-     * Returns the order.
-     *
-     * @return SupplierOrderInterface
-     */
-    public function getOrder()
+    public function getOrder(): SupplierOrderInterface
     {
         return $this->order;
     }
 
     /**
-     * Returns the emails.
+     * Returns the recipients emails.
      *
-     * @return string[]
+     * @return array<int, string>
      */
-    public function getEmails()
+    public function getEmails(): array
     {
         return $this->emails;
     }
 
     /**
-     * Sets the emails.
+     * Sets the recipients emails.
      *
-     * @param string[] $emails
-     *
-     * @return SupplierOrderSubmit
+     * @param array<int, string> $emails
      */
-    public function setEmails(array $emails)
+    public function setEmails(array $emails): self
     {
         $this->emails = $emails;
 
@@ -101,20 +57,14 @@ class SupplierOrderSubmit
 
     /**
      * Returns the subject.
-     *
-     * @return string
      */
-    public function getSubject(): ?string
+    public function getSubject(): string
     {
         return $this->subject;
     }
 
     /**
      * Sets the subject.
-     *
-     * @param string $subject
-     *
-     * @return SupplierOrderSubmit
      */
     public function setSubject(string $subject): self
     {
@@ -125,22 +75,16 @@ class SupplierOrderSubmit
 
     /**
      * Returns the message.
-     *
-     * @return string
      */
-    public function getMessage()
+    public function getMessage(): string
     {
         return $this->message;
     }
 
     /**
      * Sets the message.
-     *
-     * @param string $message
-     *
-     * @return SupplierOrderSubmit
      */
-    public function setMessage($message)
+    public function setMessage(string $message): self
     {
         $this->message = $message;
 
@@ -148,23 +92,17 @@ class SupplierOrderSubmit
     }
 
     /**
-     * Returns the confirm.
-     *
-     * @return bool
+     * Returns user confirmation.
      */
-    public function isConfirm()
+    public function isConfirm(): bool
     {
         return $this->confirm;
     }
 
     /**
-     * Sets the confirm.
-     *
-     * @param bool $confirm
-     *
-     * @return SupplierOrderSubmit
+     * Sets user confirmation.
      */
-    public function setConfirm($confirm)
+    public function setConfirm(bool $confirm): self
     {
         $this->confirm = $confirm;
 
@@ -173,50 +111,37 @@ class SupplierOrderSubmit
 
     /**
      * Returns whether to send the email.
-     *
-     * @return bool
      */
-    public function isSendEmail()
+    public function isSendEmail(): bool
     {
         return $this->sendEmail;
     }
 
     /**
      * Sets whether to send the email.
-     *
-     * @param bool $send
-     *
-     * @return SupplierOrderSubmit
      */
-    public function setSendEmail($send)
+    public function setSendEmail(bool $send): self
     {
-        $this->sendEmail = (bool)$send;
+        $this->sendEmail = $send;
 
         return $this;
     }
 
     /**
      * Returns whether to send the labels.
-     *
-     * @return bool
      */
-    public function isSendLabels()
+    public function isSendLabels(): bool
     {
         return $this->sendLabels;
     }
 
     /**
      * Sets whether to send the labels.
-     *
-     * @param bool $send
-     *
-     * @return SupplierOrderSubmit
      */
-    public function setSendLabels($send)
+    public function setSendLabels(bool $send): self
     {
-        $this->sendLabels = (bool)$send;
+        $this->sendLabels = $send;
 
         return $this;
     }
 }
-

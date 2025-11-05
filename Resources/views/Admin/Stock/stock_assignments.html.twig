@@ -8,8 +8,20 @@
             <th class="text-right">{{ 'stock_unit.field.ordered_quantity'|trans({}, 'EkynaCommerce') }}</th>
             <th class="text-right">{{ 'stock_unit.field.received_quantity'|trans({}, 'EkynaCommerce') }}</th>
             <th class="text-right">{{ 'stock_unit.field.adjusted_quantity'|trans({}, 'EkynaCommerce') }}</th>
-            <th class="text-right">{{ 'stock_unit.field.sold_quantity'|trans({}, 'EkynaCommerce') }}</th>
-            <th class="text-right">{{ 'stock_unit.field.shipped_quantity'|trans({}, 'EkynaCommerce') }}</th>
+            <th class="text-right">
+                {% if production %}
+                    {{ 'stock_unit.field.reserved_quantity'|trans({}, 'EkynaCommerce') }}
+                {% else %}
+                    {{ 'stock_unit.field.sold_quantity'|trans({}, 'EkynaCommerce') }}
+                {% endif %}
+            </th>
+            <th class="text-right">
+                {% if production %}
+                    {{ 'stock_unit.field.consummed_quantity'|trans({}, 'EkynaCommerce') }}
+                {% else %}
+                    {{ 'stock_unit.field.shipped_quantity'|trans({}, 'EkynaCommerce') }}
+                {% endif %}
+            </th>
             <th class="text-right">{{ 'field.estimated_date_of_arrival'|trans({}, 'EkynaCommerce') }}</th>
             <th class="text-right">{{ 'field.buy_net_price'|trans({}, 'EkynaCommerce') }}</th>
             {% if actions %}<th></th>{% endif %}

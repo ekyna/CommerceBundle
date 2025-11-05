@@ -8,7 +8,7 @@ use Ekyna\Bundle\CommerceBundle\Model\AdjustmentModes;
 use Ekyna\Bundle\CommerceBundle\Model\AdjustmentTypes;
 use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
-use Ekyna\Bundle\ResourceBundle\Model\ConstantsInterface;
+use Ekyna\Bundle\ResourceBundle\Model\Filter;
 use Ekyna\Bundle\UiBundle\Form\Type\CollectionPositionType;
 use Ekyna\Component\Commerce\Common\Model\AdjustmentModes as AM;
 use Ekyna\Component\Commerce\Common\Model\AdjustmentTypes as AT;
@@ -51,7 +51,7 @@ class AdjustmentType extends AbstractResourceType
                 'label'             => t('field.type', [], 'EkynaUi'),
                 'class'             => AdjustmentTypes::class,
                 'filter'            => $options['types'],
-                'filter_mode'       => ConstantsInterface::FILTER_RESTRICT,
+                'filter_mode'       => Filter::RESTRICT,
                 'preferred_choices' => [AT::TYPE_DISCOUNT],
                 'select2'           => false,
                 'attr'              => [
@@ -62,7 +62,7 @@ class AdjustmentType extends AbstractResourceType
                 'label'             => t('field.mode', [], 'EkynaUi'),
                 'class'             => AdjustmentModes::class,
                 'filter'            => $options['modes'],
-                'filter_mode'       => ConstantsInterface::FILTER_RESTRICT,
+                'filter_mode'       => Filter::RESTRICT,
                 'preferred_choices' => [AM::MODE_PERCENT],
                 'select2'           => false,
                 'attr'              => [

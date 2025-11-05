@@ -8,21 +8,15 @@ use Ekyna\Bundle\AdminBundle\Action\AdminActionInterface;
 use Ekyna\Bundle\AdminBundle\Action\Util\BreadcrumbTrait;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierOrderSubmitType;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderSubmit;
-use Ekyna\Bundle\CommerceBundle\Service\Mailer\Mailer;
+use Ekyna\Bundle\CommerceBundle\Service\Supplier\SubmitHelper;
 use Ekyna\Bundle\ResourceBundle\Action\AbstractAction;
 use Ekyna\Bundle\ResourceBundle\Action\FormTrait;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
-use Ekyna\Bundle\ResourceBundle\Action\ManagerTrait;
-use Ekyna\Bundle\ResourceBundle\Action\ResourceEventDispatcherTrait;
 use Ekyna\Bundle\ResourceBundle\Action\TemplatingTrait;
-use Ekyna\Bundle\UiBundle\Action\FlashTrait;
 use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
-use Ekyna\Component\Commerce\Supplier\Event\SupplierOrderEvents;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
-use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderStates;
 use Ekyna\Component\Resource\Action\Permission;
-use Ekyna\Component\Resource\Exception\PdfException;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -37,17 +31,12 @@ class SubmitAction extends AbstractAction implements AdminActionInterface
 {
     use FormTrait;
     use HelperTrait;
-    use ResourceEventDispatcherTrait;
-    use ManagerTrait;
-    use FlashTrait;
     use BreadcrumbTrait;
     use TemplatingTrait;
 
-    private Mailer $mailer;
-
-    public function __construct(Mailer $mailer)
-    {
-        $this->mailer = $mailer;
+    public function __construct(
+        private readonly SubmitHelper $submitHelper
+    ) {
     }
 
     public function __invoke(): Response
@@ -58,41 +47,15 @@ class SubmitAction extends AbstractAction implements AdminActionInterface
             throw new UnexpectedTypeException($resource, SupplierOrderInterface::class);
         }
 
-        $submit = new SupplierOrderSubmit($resource);
-        $submit->setEmails([$resource->getSupplier()->getEmail()]);
+        $submit = $this->submitHelper->prepare($resource);
 
         $form = $this->createSubmitForm($submit);
 
         $form->handleRequest($this->request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $event = $this->resourceEventDispatcher->createResourceEvent($resource);
-            $this->resourceEventDispatcher->dispatch($event, SupplierOrderEvents::PRE_SUBMIT);
-
-            if (!$event->isPropagationStopped()) {
-                $resource->setState(SupplierOrderStates::STATE_ORDERED);
-
-                $event = $this->getManager()->update($resource);
-
-                $this->addFlashFromEvent($event);
-
-                if (!$event->hasErrors()) {
-                    if ($submit->isSendEmail()) {
-                        try {
-                            if ($this->mailer->sendSupplierOrderSubmit($submit)) {
-                                $this->addFlash(t('supplier_order.message.submit.success', [], 'EkynaCommerce'), 'success');
-                            } else {
-                                $this->addFlash(t('supplier_order.message.submit.failure', [], 'EkynaCommerce'), 'danger');
-                            }
-                        } catch (PdfException $e) {
-                            $this->addFlash(t('document.message.failed_to_generate', [], 'EkynaCommerce'), 'danger');
-                        }
-                    }
-
-                    // TODO Post submit event ?
-
-                    return $this->redirect($this->generateResourcePath($this->context->getResource()));
-                }
+            if ($this->submitHelper->submit($submit)) {
+                return $this->redirect($this->generateResourcePath($this->context->getResource()));
             }
         }
 

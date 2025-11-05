@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Doctrine\ORM\Events;
 use Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer;
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\StockAdjustmentEventSubscriber;
 use Ekyna\Component\Commerce\Stock\Assigner\StockUnitAssigner;
 use Ekyna\Component\Commerce\Stock\Cache\StockAssignmentCache;
 use Ekyna\Component\Commerce\Stock\Cache\StockUnitCache;
+use Ekyna\Component\Commerce\Stock\Calculator\AssignableCostCalculator;
 use Ekyna\Component\Commerce\Stock\Dispatcher\StockAssignmentDispatcher;
 use Ekyna\Component\Commerce\Stock\EventListener\AbstractStockUnitListener;
 use Ekyna\Component\Commerce\Stock\Export\StockSubjectLogExporter;
-use Ekyna\Component\Commerce\Stock\Linker\StockUnitLinker;
+use Ekyna\Component\Commerce\Stock\Linker\ProductionOrderLinker;
+use Ekyna\Component\Commerce\Stock\Linker\SupplierOrderLinker;
 use Ekyna\Component\Commerce\Stock\Logger\StockLogger;
 use Ekyna\Component\Commerce\Stock\Manager\StockAssignmentManager;
 use Ekyna\Component\Commerce\Stock\Manager\StockUnitManager;
@@ -68,6 +71,19 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.cache.stock_unit', StockUnitCache::class)
         ->tag('resource.event_subscriber');
 
+    // Assignable cost calculator
+    $services
+        ->set('ekyna_commerce.calculator.assignable_cost', AssignableCostCalculator::class)
+        ->lazy() // To prevent 'ekyna_commerce.guesser.subject_cost' cyclic redundancy
+        ->args([
+            service('ekyna_commerce.helper.subject'),
+            service('ekyna_commerce.guesser.subject_cost'),
+        ])
+        ->tag('doctrine.event_listener', [
+            'event'      => Events::onClear,
+            'connection' => 'default',
+        ]);
+
     // Stock unit resolver
     $services
         ->set('ekyna_commerce.resolver.stock_unit', StockUnitResolver::class)
@@ -96,7 +112,6 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.updater.stock_unit', StockUnitUpdater::class)
         ->args([
             service('ekyna_resource.orm.persistence_helper'),
-            service('ekyna_commerce.resolver.stock_unit'),
             service('ekyna_commerce.manager.stock_unit'),
             service('ekyna_commerce.handler.stock_overflow'),
         ]);
@@ -111,7 +126,6 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('ekyna_resource.orm.persistence_helper'),
             service('ekyna_commerce.cache.stock_assignment'),
-            service('ekyna_commerce.helper.factory'),
         ])
         ->tag('resource.event_subscriber');
 
@@ -153,14 +167,24 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.helper.subject'),
         ]);
 
-    // Stock unit linker
+    // Supplier order [stock unit] linker
     $services
-        ->set('ekyna_commerce.linker.stock_unit', StockUnitLinker::class)
+        ->set('ekyna_commerce.linker.supplier_order', SupplierOrderLinker::class)
         ->args([
             service('ekyna_resource.orm.persistence_helper'),
             service('ekyna_commerce.calculator.supplier_order_item'),
             service('ekyna_commerce.updater.stock_unit'),
             service('ekyna_commerce.resolver.stock_unit'),
+        ]);
+
+    // Production order [stock unit] linker
+    $services
+        ->set('ekyna_commerce.linker.production_order', ProductionOrderLinker::class)
+        ->args([
+            service('ekyna_commerce.resolver.stock_unit'),
+            service('ekyna_commerce.updater.stock_unit'),
+            service('ekyna_commerce.calculator.production_price'),
+            service('ekyna_resource.orm.persistence_helper'),
         ]);
 
     // Stock subject updater

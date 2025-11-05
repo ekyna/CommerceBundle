@@ -15,11 +15,9 @@ use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
  */
 class SupplierHelper
 {
-    private SupplierOrderCalculatorInterface $calculator;
-
-    public function __construct(SupplierOrderCalculatorInterface $calculator)
-    {
-        $this->calculator = $calculator;
+    public function __construct(
+        private readonly SupplierOrderCalculatorInterface $orderCalculator,
+    ) {
     }
 
     /**
@@ -27,7 +25,7 @@ class SupplierHelper
      */
     public function calculateWeightTotal(SupplierOrderInterface $order): Decimal
     {
-        return $this->calculator->calculateWeightTotal($order);
+        return $this->orderCalculator->calculateWeightTotal($order);
     }
 
     /**
@@ -35,7 +33,7 @@ class SupplierHelper
      */
     public function calculateItemsTotal(SupplierOrderInterface $order): Decimal
     {
-        return $this->calculator->calculateItemsTotal($order);
+        return $this->orderCalculator->calculateItemsTotal($order);
     }
 
     /**
@@ -43,7 +41,7 @@ class SupplierHelper
      */
     public function calculateTax(SupplierOrderInterface $order): Decimal
     {
-        return $this->calculator->calculatePaymentTax($order);
+        return $this->orderCalculator->calculatePaymentTax($order);
     }
 
     /**
@@ -51,6 +49,6 @@ class SupplierHelper
      */
     public function calculateTotal(SupplierOrderInterface $order): Decimal
     {
-        return $this->calculator->calculatePaymentTotal($order);
+        return $this->orderCalculator->calculatePaymentTotal($order);
     }
 }

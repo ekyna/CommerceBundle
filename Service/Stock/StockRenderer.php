@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Service\Stock;
 
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Group;
-use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
+use Ekyna\Component\Commerce\Stock\Model\AssignableInterface;
+use Ekyna\Component\Commerce\Stock\Model\AssignmentInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
 use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
@@ -105,18 +106,25 @@ class StockRenderer
     /**
      * Renders the stock assignments list.
      *
-     * @param StockAssignmentInterface[] $assignments
-     * @param array                      $options
+     * @param AssignableInterface|array<AssignmentInterface> $assignments
+     * @param array                                          $options
      *
      * @return string
      */
-    public function renderStockAssignments(array $assignments, array $options = []): string
-    {
+    public function renderStockAssignments(
+        AssignableInterface|array $assignments,
+        array                     $options = []
+    ): string {
+        if ($assignments instanceof AssignableInterface) {
+            $assignments = $assignments->getStockAssignments()->toArray();
+        }
+
         $options = array_replace([
-            'template' => $this->assignmentTemplate,
-            'prefix'   => 'stockAssignments',
-            'class'    => null,
-            'actions'  => true,
+            'template'   => $this->assignmentTemplate,
+            'prefix'     => 'stockAssignments',
+            'class'      => null,
+            'production' => false,
+            'actions'    => true,
         ], $options);
 
         $id = $options['id'] ?? $options['prefix'] . '_' . uniqid();
@@ -126,7 +134,9 @@ class StockRenderer
             $classes = array_unique(array_merge($classes, explode(' ', $options['class'])));
         }
 
-        $normalized = $this->normalizer->normalize($assignments, 'json', ['groups' => [Group::STOCK_ASSIGNMENT]]);
+        $normalized = $this->normalizer->normalize($assignments, 'json', [
+            'groups' => [Group::STOCK_ASSIGNMENT],
+        ]);
 
         return $this->twig->render($options['template'], [
             'stockAssignments' => $normalized,
@@ -134,6 +144,7 @@ class StockRenderer
             'id'               => $id,
             'classes'          => implode(' ', $classes),
             'actions'          => $options['actions'],
+            'production'       => $options['production'],
         ]);
     }
 

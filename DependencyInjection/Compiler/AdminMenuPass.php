@@ -34,12 +34,20 @@ class AdminMenuPass implements CompilerPassInterface
         'position' => 11,
     ];
 
+    public const MANUFACTURE_GROUP = [
+        'name'     => 'manufacture',
+        'label'    => 'manufacture.title',
+        'domain'   => 'EkynaCommerce',
+        'icon'     => 'wrench',
+        'position' => 12,
+    ];
+
     public const MARKETING_GROUP = [
         'name'     => 'marketing',
         'label'    => 'marketing.title',
         'domain'   => 'EkynaCommerce',
         'icon'     => 'tags',
-        'position' => 12,
+        'position' => 13,
     ];
 
     private readonly PoolHelper $helper;
@@ -52,6 +60,7 @@ class AdminMenuPass implements CompilerPassInterface
 
         $this->addSalesMenu();
         $this->addSupplierMenu();
+        $this->addManufactureMenu();
         $this->addMarketingMenu();
         $this->addSettingMenu();
     }
@@ -148,19 +157,41 @@ class AdminMenuPass implements CompilerPassInterface
                 'position' => 2,
             ])
             ->addEntry([
+                'name'     => 'supplier_products',
+                'resource' => 'ekyna_commerce.supplier_product',
+                'position' => 3,
+            ])
+            ->addEntry([
                 'name'     => 'supplier_carriers',
                 'resource' => 'ekyna_commerce.supplier_carrier',
-                'position' => 3,
+                'position' => 4,
             ])
             ->addEntry([
                 'name'     => 'supplier_templates',
                 'resource' => 'ekyna_commerce.supplier_template',
-                'position' => 4,
+                'position' => 5,
             ])
             ->addEntry([
                 'name'     => 'warehouses',
                 'resource' => 'ekyna_commerce.warehouse',
-                'position' => 5,
+                'position' => 6,
+            ]);
+    }
+
+    private function addManufactureMenu(): void
+    {
+        $this
+            ->helper
+            ->addGroup(self::MANUFACTURE_GROUP)
+            ->addEntry([
+                'name'     => 'bill_of_materials',
+                'resource' => 'ekyna_commerce.bill_of_materials',
+                'position' => 1,
+            ])
+            ->addEntry([
+                'name'     => 'production_order',
+                'resource' => 'ekyna_commerce.production_order',
+                'position' => 2,
             ]);
     }
 

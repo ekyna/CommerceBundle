@@ -9,7 +9,7 @@ use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Component\Commerce\Common\Model\Units;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentItemInterface;
-use Ekyna\Component\Commerce\Stock\Model\StockAssignmentsInterface;
+use Ekyna\Component\Commerce\Stock\Model\AssignableInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -92,7 +92,7 @@ class ShipmentItemType extends AbstractResourceType
 
         // Geocode
         $geocodes = [];
-        if ($saleItem instanceof StockAssignmentsInterface) {
+        if ($saleItem instanceof AssignableInterface) {
             foreach ($saleItem->getStockAssignments() as $assignment) {
                 $geocodes = array_merge($geocodes, $assignment->getStockUnit()->getGeocodes());
             }

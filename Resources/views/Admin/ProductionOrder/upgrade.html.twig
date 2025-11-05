@@ -1,0 +1,10 @@
+{% extends '@EkynaAdmin/Entity/Crud/delete.html.twig' %}
+
+{% block title %}
+    <h1>{{ (context.config.transPrefix ~ '.header.upgrade')|trans({'%name%': resource}, context.config.transDomain)|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\AdminBundle\\Action\\ListAction') }}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\ProductionOrder\\CreateAction') }}
+{% endblock %}

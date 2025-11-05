@@ -10,6 +10,7 @@ use Ekyna\Bundle\CommerceBundle\Form\ShipmentMethodCreateFlow;
 use Ekyna\Bundle\CommerceBundle\Form\StockSubjectFormBuilder;
 use Ekyna\Bundle\CommerceBundle\Form\SubjectFormBuilder;
 use Ekyna\Bundle\CommerceBundle\Form\SupplierOrderCreateFlow;
+use Ekyna\Bundle\CommerceBundle\Form\SupplierProductCreateFlow;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Account\ProfileType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Account\RegistrationType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Cart\CartType;
@@ -24,6 +25,8 @@ use Ekyna\Bundle\CommerceBundle\Form\Type\Common\MoneyType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\BalanceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Customer\CustomerType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Export\MonthExportType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Manufacture\BillOfMaterialsChoiceType;
+use Ekyna\Bundle\CommerceBundle\Form\Type\Manufacture\ProductionType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyModelChoiceType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Notify\NotifyType;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Order\OrderInvoiceLineType;
@@ -86,6 +89,14 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('ekyna_commerce.transformer.array_address'),
             service('validator'),
+        ])
+        ->tag('form.type');
+
+    // Bill of materials choice form type
+    $services
+        ->set('ekyna_commerce.form_type.bill_of_materials_choice', BillOfMaterialsChoiceType::class)
+        ->args([
+            service('ekyna_commerce.helper.subject'),
         ])
         ->tag('form.type');
 
@@ -291,6 +302,14 @@ return static function (ContainerConfigurator $container) {
             'selector' => '.commerce-price',
             'path'     => 'ekyna-commerce/form/price',
         ]);
+
+    // Production form type
+    $services
+        ->set('ekyna_commerce.form_type.production', ProductionType::class)
+        ->args([
+            service('ekyna_commerce.calculator.production'),
+        ])
+        ->tag('form.type');
 
     // Quote form type
     $services
@@ -515,7 +534,7 @@ return static function (ContainerConfigurator $container) {
         ])
         ->tag('form.type');
 
-    // Supplier order item form type
+    // Supplier order create form flow
     $services
         ->set('ekyna_commerce.form_flow.supplier_order_create', SupplierOrderCreateFlow::class)
         ->parent('craue.form.flow')
@@ -546,6 +565,14 @@ return static function (ContainerConfigurator $container) {
         ->tag('form.js', [
             'selector' => '.commerce-supplier-template',
             'path'     => 'ekyna-commerce/form/supplier-template-choice',
+        ]);
+
+    // Supplier product create form flow
+    $services
+        ->set('ekyna_commerce.form_flow.supplier_product_create', SupplierProductCreateFlow::class)
+        ->parent('craue.form.flow')
+        ->args([
+            service('ekyna_commerce.updater.supplier_order'),
         ]);
 
     // Supplier product form type

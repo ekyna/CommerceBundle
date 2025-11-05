@@ -35,7 +35,7 @@ use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentItemInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentParcelInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockAdjustmentInterface;
-use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
+use Ekyna\Component\Commerce\Stock\Model\AssignmentInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
 
 return static function (ContainerConfigurator $container) {
@@ -165,6 +165,7 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.factory.formatter'),
             service('ekyna_commerce.converter.currency'),
             service('ekyna_commerce.helper.constants'),
+            service('ekyna_resource.helper.enum'),
             service('ekyna_resource.helper'),
         ])
         ->call('setClass', [StockUnitInterface::class])
@@ -191,9 +192,10 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('ekyna_commerce.factory.formatter'),
             service('ekyna_commerce.helper.constants'),
+            service('ekyna_resource.helper.enum'),
             service('ekyna_resource.helper'),
         ])
-        ->call('setClass', [StockAssignmentInterface::class])
+        ->call('setClass', [AssignmentInterface::class])
         ->tag('serializer.normalizer')
         ->tag('serializer.denormalizer');
 

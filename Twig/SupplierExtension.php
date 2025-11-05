@@ -23,7 +23,6 @@ use Twig\TwigTest;
  */
 class SupplierExtension extends AbstractExtension
 {
-
     public function getFunctions(): array
     {
         return [

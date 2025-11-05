@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Model;
 
 use Ekyna\Bundle\ResourceBundle\Model\AbstractConstants;
+use Ekyna\Bundle\ResourceBundle\Model\Filter;
 use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes as Types;
 use Ekyna\Component\Commerce\Quote\Model\QuoteInterface;
@@ -43,7 +44,7 @@ final class DocumentTypes extends AbstractConstants
      */
     public static function getSaleChoices(): array
     {
-        return self::getChoices(Types::getSaleTypes(), self::FILTER_RESTRICT);
+        return self::getChoices(Types::getSaleTypes(), Filter::RESTRICT);
     }
 
     /**
@@ -53,7 +54,7 @@ final class DocumentTypes extends AbstractConstants
      */
     public static function getInvoiceChoices(): array
     {
-        return self::getChoices(Types::getInvoiceTypes(), self::FILTER_RESTRICT);
+        return self::getChoices(Types::getInvoiceTypes(), Filter::RESTRICT);
     }
 
     /**
@@ -63,7 +64,7 @@ final class DocumentTypes extends AbstractConstants
      */
     public static function getSaleAndInvoiceChoices(): array
     {
-        return self::getChoices(Types::getSaleAndInvoiceTypes(), self::FILTER_RESTRICT);
+        return self::getChoices(Types::getSaleAndInvoiceTypes(), Filter::RESTRICT);
     }
 
     /**
@@ -73,7 +74,7 @@ final class DocumentTypes extends AbstractConstants
      */
     public static function getShipmentChoices(): array
     {
-        return self::getChoices(Types::getShipmentTypes(), self::FILTER_RESTRICT);
+        return self::getChoices(Types::getShipmentTypes(), Filter::RESTRICT);
     }
 
     public static function getTranslationDomain(): ?string

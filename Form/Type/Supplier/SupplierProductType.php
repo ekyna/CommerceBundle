@@ -26,78 +26,84 @@ class SupplierProductType extends AbstractResourceType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('designation', Symfony\TextType::class, [
-                'label' => t('field.designation', [], 'EkynaUi'),
-            ])
-            ->add('reference', Symfony\TextType::class, [
-                'label' => t('field.reference', [], 'EkynaUi'),
-            ])
-            ->add('taxGroup', TaxGroupChoiceType::class)
-            ->add('physical', Symfony\CheckboxType::class, [
-                'label'   => t('field.physical', [], 'EkynaCommerce'),
-                'required' => false,
-                'attr'     => [
-                    'align_with_widget' => true,
-                ],
-            ])
-            ->add('weight', Symfony\NumberType::class, [
-                'label'   => t('field.weight', [], 'EkynaUi'),
-                'decimal' => true,
-                'scale'   => 3,
-                'attr'    => [
-                    'input_group' => ['append' => 'Kg'],
-                ],
-            ])
-            ->add('availableStock', Symfony\NumberType::class, [
-                'label'   => t('field.available_stock', [], 'EkynaCommerce'),
-                'decimal' => true,
-                'scale'   => 3, // TODO Packaging format
-            ])
-            ->add('orderedStock', Symfony\NumberType::class, [
-                'label'   => t('supplier_product.field.ordered_stock', [], 'EkynaCommerce'),
-                'decimal' => true,
-                'scale'   => 3, // TODO Packaging format
-            ])
-            ->add('packing', Symfony\NumberType::class, [
-                'label'   => t('field.packing', [], 'EkynaCommerce'),
-                'decimal' => true,
-                'scale'   => 3, // TODO Packaging format
-            ])
-            ->add('estimatedDateOfArrival', Symfony\DateType::class, [
-                'label'    => t('field.replenishment_eda', [], 'EkynaCommerce'),
-                'required' => false,
-            ])
-            ->add('subjectIdentity', Commerce\Subject\SubjectChoiceType::class, [
-                'label'     => t('supplier_product.field.subject', [], 'EkynaCommerce'),
-                'lock_mode' => true,
-                'required'  => false,
-                'context'   => SubjectProviderInterface::CONTEXT_SUPPLIER,
-            ]);
-
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            /** @var SupplierProductInterface $data */
-            $data = $event->getData();
+            $form = $event->getForm();
 
-            if (null === $data) {
-                throw new LogicException('Supplier product must be set at this point.');
+            /** @var SupplierProductInterface $product */
+            $product = $event->getData();
+
+            // Step 1: Supplier is not selected
+            if (null === $supplier = $product->getSupplier()) {
+                $form->add('supplier', SupplierChoiceType::class);
+
+                return;
             }
-            if (null === $supplier = $data->getSupplier()) {
-                throw new LogicException("Supplier product's supplier must be set at this point.");
-            }
+
             if (null === $currency = $supplier->getCurrency()) {
                 throw new LogicException("Supplier's currency must be set at this point.");
             }
 
-            $form = $event->getForm();
-
-            $form->add('netPrice', Symfony\MoneyType::class, [
-                'label'    => t('field.net_price', [], 'EkynaCommerce'),
-                'currency' => $currency->getCode(),
-                'decimal'  => true,
-                'scale'    => 5,
-                'help' => t('supplier_product.help.net_price', [], 'EkynaCommerce'),
-            ]);
+            $form
+                ->add('supplier', SupplierChoiceType::class, [
+                    'disabled' => true,
+                    /* TODO (?) 'attr'     => [
+                        'class' => 'order-supplier',
+                    ],*/
+                ])
+                ->add('designation', Symfony\TextType::class, [
+                    'label' => t('field.designation', [], 'EkynaUi'),
+                ])
+                ->add('reference', Symfony\TextType::class, [
+                    'label'    => t('field.reference', [], 'EkynaUi'),
+                ])
+                ->add('netPrice', Symfony\MoneyType::class, [
+                    'label'    => t('field.net_price', [], 'EkynaCommerce'),
+                    'currency' => $currency->getCode(),
+                    'decimal'  => true,
+                    'scale'    => 5,
+                    'help'     => t('supplier_product.help.net_price', [], 'EkynaCommerce'),
+                ])
+                ->add('taxGroup', TaxGroupChoiceType::class)
+                ->add('physical', Symfony\CheckboxType::class, [
+                    'label'    => t('field.physical', [], 'EkynaCommerce'),
+                    'required' => false,
+                    'attr'     => [
+                        'align_with_widget' => true,
+                    ],
+                ])
+                ->add('weight', Symfony\NumberType::class, [
+                    'label'   => t('field.weight', [], 'EkynaUi'),
+                    'decimal' => true,
+                    'scale'   => 3,
+                    'attr'    => [
+                        'input_group' => ['append' => 'Kg'],
+                    ],
+                ])
+                ->add('availableStock', Symfony\NumberType::class, [
+                    'label'    => t('field.available_stock', [], 'EkynaCommerce'),
+                    'decimal'  => true,
+                    'scale'    => 3, // TODO Packaging format
+                ])
+                ->add('orderedStock', Symfony\NumberType::class, [
+                    'label'    => t('supplier_product.field.ordered_stock', [], 'EkynaCommerce'),
+                    'decimal'  => true,
+                    'scale'    => 3, // TODO Packaging format
+                ])
+                ->add('packing', Symfony\NumberType::class, [
+                    'label'    => t('field.packing', [], 'EkynaCommerce'),
+                    'decimal'  => true,
+                    'scale'    => 3, // TODO Packaging format
+                ])
+                ->add('estimatedDateOfArrival', Symfony\DateType::class, [
+                    'label'    => t('field.replenishment_eda', [], 'EkynaCommerce'),
+                    'required' => false,
+                ])
+                ->add('subjectIdentity', Commerce\Subject\SubjectChoiceType::class, [
+                    'label'     => t('subject.label.singular', [], 'EkynaCommerce'),
+                    'lock_mode' => true,
+                    'required'  => false,
+                    'context'   => SubjectProviderInterface::CONTEXT_SUPPLIER,
+                ]);
         });
     }
 }

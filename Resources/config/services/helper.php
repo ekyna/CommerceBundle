@@ -20,8 +20,10 @@ use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentLabelRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Shipment\ShipmentRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Stock\ResupplyAlertHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectCostHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
+use Ekyna\Bundle\CommerceBundle\Service\Supplier\SubmitHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Supplier\SupplierRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Widget\WidgetHelper;
@@ -56,6 +58,14 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.helper.widget'),
             service('twig'),
             abstract_arg('Widget renderer configuration'),
+        ])
+        ->tag('twig.runtime');
+
+    // Subject cost helper
+    $services
+        ->set('ekyna_commerce.helper.subject_cost', SubjectCostHelper::class)
+        ->args([
+            service('ekyna_commerce.guesser.subject_cost'),
         ])
         ->tag('twig.runtime');
 
@@ -115,8 +125,8 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.helper.stock_subject_quantity', StockSubjectQuantityHelper::class)
         ->args([
-            service('ekyna_commerce.helper.subject'),
             service('ekyna_commerce.calculator.invoice_subject'),
+            service('ekyna_commerce.helper.subject'),
         ]);
 
     // Stock subject quantity helper
@@ -267,6 +277,17 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.calculator.supplier_order'),
         ])
         ->tag('twig.runtime');
+
+    // Supplier submit helper
+    $services
+        ->set('ekyna_commerce.helper.supplier_submit', SubmitHelper::class)
+        ->args([
+            service('ekyna_commerce.repository.supplier_template'),
+            service('ekyna_resource.event_dispatcher'),
+            service('ekyna_commerce.manager.supplier_order'),
+            service('ekyna_ui.helper.flash'),
+            service('ekyna_commerce.mailer'),
+        ]);
 
     // Supplier helper
     $services

@@ -1,14 +1,33 @@
 {% extends '@EkynaAdmin/Entity/Crud/read.html.twig' %}
 
+
 {% import '@EkynaCommerce/Admin/macros.html.twig' as macros %}
+
 
 {% block actions %}
     {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\SupplierProduct\\CreateAction') }}
 {% endblock actions %}
 
+
 {% block main_contents -%}
     {% set currency = supplierProduct.supplier.currency.code %}
     <div class="tab-pane active" id="{{ resource_name }}-general">
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(supplierProduct.supplier, 'resource', {
+                    'label_col': 4
+                }) }}
+            </div>
+            <div class="col-md-6">
+                {{ show_row(supplierProduct.physical, 'boolean', {
+                    'label': t('field.physical', [], 'EkynaCommerce'),
+                    'color': true,
+                    'true_class': 'label label-success',
+                    'false_class': 'label label-warning',
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
         {{ show_row(supplierProduct.designation, 'text', {
             'label': t('field.designation', [], 'EkynaUi')
         }) }}
@@ -70,17 +89,6 @@
                 }) }}
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                {{ show_row(supplierProduct.physical, 'boolean', {
-                    'label': t('field.physical', [], 'EkynaCommerce'),
-                    'color': true,
-                    'true_class': 'label label-success',
-                    'false_class': 'label label-warning',
-                    'label_col': 4
-                }) }}
-            </div>
-        </div>
-        {{ macros.show_subject(supplierProduct, t('supplier_product.field.subject', [], 'EkynaCommerce')) }}
+        {{ macros.show_subject(supplierProduct, t('subject.label.singular', [], 'EkynaCommerce')) }}
     </div>
 {%- endblock main_contents %}

@@ -13,7 +13,7 @@ use Ekyna\Component\Commerce\Invoice\Calculator\InvoiceSubjectCalculatorInterfac
 use Ekyna\Component\Commerce\Order\Model as Order;
 use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentSubjectCalculatorInterface;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
-use Ekyna\Component\Commerce\Stock\Model\StockAssignmentInterface;
+use Ekyna\Component\Commerce\Stock\Model\AssignmentInterface;
 use Ekyna\Component\Commerce\Stock\Prioritizer\PrioritizeCheckerInterface;
 use Exception;
 
@@ -348,7 +348,7 @@ class OrderViewType extends AbstractViewType
             ]);
 
             $class = 'text-muted';
-            /** @var StockAssignmentInterface $assignment */
+            /** @var AssignmentInterface $assignment */
             foreach ($assignments as $assignment) {
                 if (!$assignment->isFullyShipped() && !$assignment->isFullyShippable()) {
                     $class = 'text-danger';

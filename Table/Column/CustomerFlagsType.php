@@ -13,6 +13,9 @@ use Ekyna\Component\Table\Column\ColumnInterface;
 use Ekyna\Component\Table\Extension\Core\Type\Column\ColumnType;
 use Ekyna\Component\Table\Source\RowInterface;
 use Ekyna\Component\Table\View\CellView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Class CustomerFlagsType
@@ -43,6 +46,14 @@ class CustomerFlagsType extends AbstractColumnType
         $view->vars['value'] = $this
             ->renderer
             ->renderCustomerFlags($customer, ['badge' => false]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'label'         => t('field.tags', [], 'EkynaUi'),
+            'property_path' => false,
+        ]);
     }
 
     public function getBlockPrefix(): string

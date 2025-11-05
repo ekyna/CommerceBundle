@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use DateTime;
-use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectLabelRenderer;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectCostHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectLabelRenderer;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectInterface;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
-use Ekyna\Component\Commerce\Subject\Guesser\SubjectCostGuesserInterface;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -57,7 +57,7 @@ class SubjectExtension extends AbstractExtension
             ),
             new TwigFilter(
                 'subject_purchase_cost',
-                [SubjectCostGuesserInterface::class, 'guess']
+                [SubjectCostHelper::class, 'guess']
             ),
         ];
     }

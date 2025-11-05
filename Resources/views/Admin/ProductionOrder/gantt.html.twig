@@ -1,0 +1,19 @@
+{% extends '@EkynaAdmin/Entity/content.html.twig' %}
+
+{% block page_title %}Production order schedule{% endblock page_title %}
+
+{% block content %}
+
+    <div id="production_orders_gantt" style="height:800px"></div>
+
+{% endblock content %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ absolute_url(asset('bundles/ekynaui/lib/dhtmlx-gantt/dhtmlxgantt.css')) }}" rel="stylesheet" type="text/css"/>
+{% endblock stylesheets %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">require(['ekyna-commerce/admin/production-order-gantt']);</script>
+{% endblock javascripts %}

@@ -6,8 +6,10 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Common\Model\Units;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -34,22 +36,38 @@ class SaleQuantitiesType extends AbstractType
 
                 $createItemQuantityForm =
                     function (SaleItemInterface $item, $path = 'items')
-                    use ($form, $options, &$createItemQuantityForm): void {
+                    use ($form, &$createItemQuantityForm): void {
                         if (!$item->isImmutable()) {
-                            $constraints = [
-                                new Constraints\NotBlank(),
-                                new Constraints\GreaterThanOrEqual(['value' => 1]),
-                            ];
+                            if (0 === $precision = Units::getPrecision($item->getUnit())) {
+                                $type = IntegerType::class;
+                                $options = [
+                                    'attr'        => [
+                                        'min' => 1,
+                                    ],
+                                    'constraints' => [
+                                        new Constraints\NotBlank(),
+                                        new Constraints\GreaterThanOrEqual(['value' => 1]),
+                                    ],
+                                ];
+                            } else {
+                                $type = NumberType::class;
+                                $options = [
+                                    'scale'       => $precision,
+                                    'attr'        => [
+                                        'min' => 0,
+                                    ],
+                                    'constraints' => [
+                                        new Constraints\NotBlank(),
+                                        new Constraints\GreaterThan(['value' => 0]),
+                                    ],
+                                ];
+                            }
 
-                            $form->add('item_' . $item->getId(), IntegerType::class, [
+                            $form->add('item_' . $item->getId(), $type, array_replace([
                                 'label'         => false,
                                 'decimal'       => true,
                                 'property_path' => $path . '[' . $item->getId() . '].quantity',
-                                'attr'          => [
-                                    'min' => 1,
-                                ],
-                                'constraints'   => $constraints,
-                            ]);
+                            ], $options));
                         }
 
                         foreach ($item->getChildren() as $child) {

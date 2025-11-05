@@ -7,7 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Supplier;
 use Ekyna\Bundle\CommerceBundle\Model\PaymentStates as BStates;
 use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
-use Ekyna\Bundle\ResourceBundle\Model\ConstantsInterface;
+use Ekyna\Bundle\ResourceBundle\Model\Filter;
 use Ekyna\Component\Commerce\Common\Model\CurrencyInterface;
 use Ekyna\Component\Commerce\Exception\LogicException;
 use Ekyna\Component\Commerce\Payment\Model\PaymentStates as CStates;
@@ -36,7 +36,7 @@ class SupplierPaymentType extends AbstractResourceType
                 'label'       => t('field.status', [], 'EkynaUi'),
                 'class'       => BStates::class,
                 'filter'      => CStates::getSupplierPaymentStates(),
-                'filter_mode' => ConstantsInterface::FILTER_RESTRICT,
+                'filter_mode' => Filter::RESTRICT,
             ])
             ->add('toForwarder', CheckboxType::class, [
                 'label'    => t('supplier_payment.field.to_forwarder', [], 'EkynaCommerce'),

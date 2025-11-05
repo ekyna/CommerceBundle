@@ -58,13 +58,11 @@ resources:
                 global: true
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Supplier\SupplierProductType
             table: Ekyna\Bundle\CommerceBundle\Table\Type\SupplierProductType
-            parent: ekyna_commerce.supplier
             trans_domain: EkynaCommerce
             actions:
                 admin_crud:
                     templates: '@EkynaCommerce/Admin/SupplierProduct'
                     create: false
-                    list: false
                     update:
                         redirect_to_parent: false
                 Ekyna\Bundle\CommerceBundle\Action\Admin\SupplierProduct\CreateAction: ~

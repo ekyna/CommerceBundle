@@ -1,4 +1,5 @@
 {% apply spaceless %}
+<div class="table-responsive">
 <table class="table table-condensed table-stripped table-alt-head">
     <thead>
     <tr>
@@ -20,7 +21,7 @@
     {% set itemId = 'item_' ~ loop.index0 ~ '_' -%}
     {% set received = item|supplier_order_item_received_quantity %}
     {% set partial = supplierOrder.hasDeliveries() and (received < item.quantity) %}
-    <tr{% if partial %} class="danger"{% endif %}>
+    <tr class="item{% if partial %} danger{% endif %}">
         <td id="{{ itemId ~ 'designation' }}">
             {% if item.product is not null -%}
             <a href="{{ admin_resource_path(item.product) }}">
@@ -92,7 +93,7 @@
             </a>
         </td>
     </tr>
-    {%- endfor %}
+    {%- endfor %}{# End For each items #}
     <tr>
         <td colspan="4" class="text-right">
             <strong>{{ 'supplier_order.field.items_total'|trans({}, 'EkynaCommerce') }}</strong>
@@ -114,4 +115,5 @@
     {%- endif -%}
     </tbody>
 </table>
+</div>
 {% endapply %}

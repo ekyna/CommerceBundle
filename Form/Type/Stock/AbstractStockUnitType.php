@@ -11,6 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
+use function is_null;
 use function Symfony\Component\Translation\t;
 
 /**
@@ -39,7 +40,9 @@ abstract class AbstractStockUnitType extends AbstractResourceType
             $stockUnit = $event->getData();
             $form = $event->getForm();
 
-            $disabled = null !== $stockUnit->getSupplierOrderItem();
+            $disabled =
+                !is_null($stockUnit->getSupplierOrderItem())
+                || !is_null($stockUnit->getProductionOrder());
 
             $form
                 ->add('netPrice', SF\NumberType::class, [

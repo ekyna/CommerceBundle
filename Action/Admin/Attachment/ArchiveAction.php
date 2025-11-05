@@ -68,7 +68,7 @@ class ArchiveAction extends AbstractAction implements AdminActionInterface
                 'label'        => 'button.archive',
                 'trans_domain' => 'EkynaUi',
                 'theme'        => 'default',
-                'icon'         => 'archive',
+                'icon'         => 'fa fa-archive',
             ],
         ];
     }

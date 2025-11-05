@@ -14,6 +14,7 @@ use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\StockUnitNorma
 use Ekyna\Component\Commerce\Common\Currency\CurrencyConverterInterface;
 use Ekyna\Component\Commerce\Common\Util\FormatterFactory;
 use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
+use Ekyna\Component\Resource\Helper\EnumHelper;
 
 /**
  * Class StockUnitNormalizer
@@ -22,19 +23,14 @@ use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
  */
 class StockUnitNormalizer extends BaseNormalizer
 {
-    protected ConstantsHelper $constantHelper;
-    protected ResourceHelper  $resourceHelper;
-
     public function __construct(
-        FormatterFactory           $formatterFactory,
-        CurrencyConverterInterface $currencyConverter,
-        ConstantsHelper            $constantHelper,
-        ResourceHelper             $resourceHelper
+        FormatterFactory                   $formatterFactory,
+        CurrencyConverterInterface         $currencyConverter,
+        protected readonly ConstantsHelper $constantHelper,
+        protected readonly EnumHelper      $enumHelper,
+        protected readonly ResourceHelper  $resourceHelper
     ) {
         parent::__construct($formatterFactory, $currencyConverter);
-
-        $this->constantHelper = $constantHelper;
-        $this->resourceHelper = $resourceHelper;
     }
 
     /**
@@ -56,17 +52,28 @@ class StockUnitNormalizer extends BaseNormalizer
             $actions = [];
 
             if (self::contextHasGroup(Group::STOCK_UNIT, $context)) {
-                if (null !== $supplierOrderItem = $object->getSupplierOrderItem()) {
-                    $supplierOrder = $supplierOrderItem->getOrder();
+                if (null !== $item = $object->getSupplierOrderItem()) {
+                    $order = $item->getOrder();
 
                     $actions[] = [
                         'label' => sprintf(
                             '%s (%s)',
-                            $supplierOrder->getNumber(),
-                            $this->constantHelper->renderSupplierOrderStateLabel($supplierOrder)
+                            $order->getNumber(),
+                            $this->constantHelper->renderSupplierOrderStateLabel($order)
                         ),
-                        'href'  => $this->resourceHelper->generateResourcePath($supplierOrder, ReadAction::class),
-                        'theme' => SupplierOrderStates::getTheme($supplierOrder->getState()),
+                        'href'  => $this->resourceHelper->generateResourcePath($order, ReadAction::class),
+                        'theme' => SupplierOrderStates::getTheme($order->getState()),
+                        'modal' => false,
+                    ];
+                } elseif (null !== $order = $object->getProductionOrder()) {
+                    $actions[] = [
+                        'label' => sprintf(
+                            '%s (%s)',
+                            $order->getNumber(),
+                            $this->enumHelper->label($order->getState())
+                        ),
+                        'href'  => $this->resourceHelper->generateResourcePath($order, ReadAction::class),
+                        'theme' => $order->getState()->color(),
                         'modal' => false,
                     ];
                 }

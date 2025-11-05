@@ -13,6 +13,8 @@ module.exports = function (grunt, options) {
                     'src/Ekyna/Bundle/CommerceBundle/Resources/private/less/form.less',
                 'src/Ekyna/Bundle/CommerceBundle/Resources/public/tmp/css/sale-view.css':
                     'src/Ekyna/Bundle/CommerceBundle/Resources/private/less/sale-view.less',
+                'src/Ekyna/Bundle/CommerceBundle/Resources/public/tmp/css/stock-view.css':
+                    'src/Ekyna/Bundle/CommerceBundle/Resources/private/less/stock-view.less',
                 'src/Ekyna/Bundle/CommerceBundle/Resources/public/tmp/css/admin-dashboard.css':
                     'src/Ekyna/Bundle/CommerceBundle/Resources/private/less/admin-dashboard.less',
                 'src/Ekyna/Bundle/CommerceBundle/Resources/public/tmp/css/support.css':

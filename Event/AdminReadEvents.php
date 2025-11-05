@@ -11,11 +11,13 @@ namespace Ekyna\Bundle\CommerceBundle\Event;
  */
 final class AdminReadEvents
 {
-    public const CART             = 'ekyna_commerce.cart.admin_read';
-    public const CUSTOMER         = 'ekyna_commerce.customer.admin_read';
-    public const ORDER            = 'ekyna_commerce.order.admin_read';
-    public const QUOTE            = 'ekyna_commerce.quote.admin_read';
-    public const SUPPLIER         = 'ekyna_commerce.supplier.admin_read';
-    public const SUPPLIER_ORDER   = 'ekyna_commerce.supplier_order.admin_read';
-    public const SUPPLIER_PRODUCT = 'ekyna_commerce.supplier_product.admin_read';
+    public const BILL_OF_MATERIALS = 'ekyna_commerce.bill_of_materials.admin_read';
+    public const CART              = 'ekyna_commerce.cart.admin_read';
+    public const CUSTOMER          = 'ekyna_commerce.customer.admin_read';
+    public const ORDER             = 'ekyna_commerce.order.admin_read';
+    public const PRODUCTION_ORDER  = 'ekyna_commerce.production_order.admin_read';
+    public const QUOTE             = 'ekyna_commerce.quote.admin_read';
+    public const SUPPLIER          = 'ekyna_commerce.supplier.admin_read';
+    public const SUPPLIER_ORDER    = 'ekyna_commerce.supplier_order.admin_read';
+    public const SUPPLIER_PRODUCT  = 'ekyna_commerce.supplier_product.admin_read';
 }

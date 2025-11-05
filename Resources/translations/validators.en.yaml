@@ -14,6 +14,10 @@ ekyna_commerce:
         customer_groups_must_be_empty: Please leave the customer group field empty.
     address:
         invalid_zip_code: This postal code is not valid.
+    bill_of_materials:
+        duplicate: >
+            You cannot create this bill of materials because another bill of materials ({{ number }}) 
+            is configured for this product. Please duplicate the existing bill of materials.
     customer:
         hierarchy_overflow: This customer is an accountable service and cannot be attached to antoher accountable service.
         non_zero_balance: This customer has a non zero outstanding or credit balance and cannot be attached to accountable service.
@@ -163,6 +167,12 @@ ekyna_commerce:
     supplier_product:
         duplicate_by_subject: |
             A reference already exists for this subject.
+        bom_without_subject: |
+            A nomenclature must be linked to a subject.
+        bom_with_packing:
+            A bill of materials must have a packing of one.
+        recursive_bom: |
+            Recursion is not allowed in BOMs.
     tax_rule:
         at_least_customer_or_business: |
             Please select at least 'Customer' or 'Business'.

@@ -97,7 +97,7 @@ class FlagRenderer
                 'theme' => 'purple',
                 'icon'  => 'cube',
             ],
-            self::SUPPORT        => [
+            self::SUPPORT       => [
                 'label' => t('field.support', [], 'EkynaCommerce'),
                 'theme' => 'amber',
                 'icon'  => 'wrench',

@@ -1,6 +1,7 @@
 define(['jquery', 'select2'], function($) {
     "use strict";
 
+
     /**
      * Subject choice widget
      */
@@ -43,7 +44,11 @@ define(['jquery', 'select2'], function($) {
 
                 let formatter = function(data) {
                     if(!data.id)return 'Rechercher';
-                    return $('<span>[' + data.reference.at(0) + '] ' + data.text + '</span>');
+                    try {
+                        return $('<span>[' + data.reference.at(0) + '] ' + data.text + '</span>');
+                    } catch (e) {
+                        return $('<span>' + data.text + '</span>');
+                    }
                 };
 
                 let $parent = $provider.closest('.modal');

@@ -12,6 +12,7 @@ use Ekyna\Bundle\CommerceBundle\Action\Admin\Order;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\NotifyModel;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Payment;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\PaymentMethod;
+use Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Sale;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Shipment;
@@ -157,6 +158,15 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.action.payment_method.create', PaymentMethod\CreateAction::class)
             ->args([
                 service('ekyna_commerce.form_flow.payment_method_create'),
+            ])
+            ->tag('ekyna_resource.action')
+
+        // Production order method actions --------------------------------------------------------------------
+
+        ->set('ekyna_commerce.action.production_order.upgrade', ProductionOrder\UpgradeAction::class)
+            ->args([
+                service('ekyna_commerce.helper.manufacture'),
+                service('ekyna_commerce.repository.bill_of_materials'),
             ])
             ->tag('ekyna_resource.action')
 
@@ -349,6 +359,8 @@ return static function (ContainerConfigurator $container) {
 
         ->set('ekyna_commerce.action.supplier_product.create', SupplierProduct\CreateAction::class)
             ->args([
+                service('ekyna_commerce.form_flow.supplier_product_create'),
+                service('ekyna_commerce.repository.supplier'),
                 service('ekyna_commerce.helper.subject'),
             ])
             ->tag('ekyna_resource.action')
@@ -389,7 +401,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set('ekyna_commerce.action.supplier_order.submit', SupplierOrder\SubmitAction::class)
             ->args([
-                service('ekyna_commerce.mailer'),
+                service('ekyna_commerce.helper.supplier_submit'),
             ])
             ->tag('ekyna_resource.action')
 

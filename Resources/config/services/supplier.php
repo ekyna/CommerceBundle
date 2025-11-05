@@ -85,6 +85,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.factory.supplier_product', SupplierProductFactory::class)
         ->args([
             service('ekyna_commerce.repository.tax_group'),
+            service('ekyna_commerce.helper.subject'),
         ]);
 
     // Supplier abstract (resource) event listener
@@ -92,7 +93,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.listener.abstract_supplier', AbstractListener::class)
         ->abstract()
         ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
-        ->call('setStockUnitLinker', [service('ekyna_commerce.linker.stock_unit')])
+        ->call('setStockUnitLinker', [service('ekyna_commerce.linker.supplier_order')])
         ->call('setStockUnitUpdater', [service('ekyna_commerce.updater.stock_unit')]);
 
     // Supplier order (resource) event listener

@@ -205,12 +205,7 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.calculator.item_cost', ItemCostCalculator::class)
         ->args([
-            service('ekyna_commerce.helper.subject'),
-            service('ekyna_commerce.guesser.subject_cost'),
-        ])
-        ->tag('doctrine.event_listener', [
-            'event'      => Events::onClear,
-            'connection' => 'default',
+            service('ekyna_commerce.calculator.assignable_cost'),
         ]);
 
     // Amount calculator factory

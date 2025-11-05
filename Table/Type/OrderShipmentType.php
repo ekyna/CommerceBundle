@@ -46,6 +46,7 @@ class OrderShipmentType extends AbstractOrderListType
                 'property_path' => 'order',
                 'position'      => 30,
             ])*/
+            // TODO add destination country
             ->addColumn('method', CType\Column\TextType::class, [
                 'label'         => t('field.method', [], 'EkynaUi'),
                 'property_path' => 'method.name',

@@ -29,27 +29,15 @@ use function Symfony\Component\Translation\t;
  */
 class SubjectChoiceType extends AbstractType
 {
-    private SubjectProviderRegistryInterface $providerRegistry;
-    private ResourceHelper                   $resourceHelper;
-    private TranslatorInterface              $translator;
-
-
     public function __construct(
-        SubjectProviderRegistryInterface $registry,
-        ResourceHelper                   $resourceHelper,
-        TranslatorInterface              $translator
+        private readonly SubjectProviderRegistryInterface $providerRegistry,
+        private readonly ResourceHelper                   $resourceHelper,
+        private readonly TranslatorInterface              $translator
     ) {
-        $this->providerRegistry = $registry;
-        $this->resourceHelper = $resourceHelper;
-        $this->translator = $translator;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // TODO default choice based on current subject
-        // TODO Prevent submit event on subject field (to disable validation of choice list).
-        // TODO transformation (provider/identifier  <=>  subject)
-
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
             $form = $event->getForm();
             /** @var SubjectIdentity $identity */
@@ -64,7 +52,8 @@ class SubjectChoiceType extends AbstractType
                     ->getProviderByName($identity->getProvider())
                     ->reverseTransform($identity);
 
-                $subjectChoices[(string)$subject] = $subject->getId();
+                $label = sprintf('[%s] %s', $subject->getReference(), $subject);
+                $subjectChoices[$label] = $subject->getId();
                 $subjectRequired = true;
 
                 if ($options['lock_mode']) {

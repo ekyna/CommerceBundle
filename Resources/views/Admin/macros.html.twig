@@ -10,12 +10,14 @@
                 {% if subject is null %}
                     <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
                 {% else %}
-                    {% set url = subject|subject_private_url %}
-                    {% if url is not null %}
-                        <a href="{{ url }}" class="show-entity"{{ admin_resource_summary(subject) }}>{{ subject }}</a>
-                    {% else %}
-                        {{ subject }}
-                    {% endif %}
+                    {% set url = subject|subject_private_url -%}
+                    {% if url is not null -%}
+                        <a href="{{ url }}" class="show-entity"{{ admin_resource_summary(subject) }}>
+                    {%- endif %}
+                    {{ subject.reference ~ ' - ' ~ subject }}
+                    {% if url is not null -%}
+                        </a>
+                    {%- endif %}
                 {% endif %}
             </div>
         </div>

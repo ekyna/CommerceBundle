@@ -15,6 +15,7 @@ use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Symfony\Component\HttpFoundation\Response;
 
+use function array_replace;
 use function array_replace_recursive;
 
 /**
@@ -57,7 +58,7 @@ class CreateAction extends BaseAction
             $options['modes'] = AdjustmentModes::MODE_PERCENT;
         }
 
-        return $options;
+        return array_replace(parent::getFormOptions(), $options);
     }
 
     protected function onPostPersist(): ?Response

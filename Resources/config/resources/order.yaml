@@ -190,13 +190,12 @@ resources:
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\DeleteAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Adjustment\UpdateAction: ~
 
-        order_item_stock_assignment:
+        order_item_assignment:
             driver: doctrine/orm
             entity:
-                interface: Ekyna\Component\Commerce\Order\Model\OrderItemStockAssignmentInterface
-                class: Ekyna\Component\Commerce\Order\Entity\OrderItemStockAssignment
+                class: Ekyna\Component\Commerce\Order\Entity\OrderItemAssignment
             parent: ekyna_commerce.order_item
-            trans_prefix: sale_item
+            trans_prefix: assignment
             trans_domain: EkynaCommerce
 
         order_notification:

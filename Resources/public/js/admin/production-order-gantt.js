@@ -1,0 +1,1 @@
+define(["dhtmlx-gantt"],function(t){"use strict";const r=t.gantt;r.init("production_orders_gantt"),r.parse({tasks:[{id:1,text:"Project #2",start_date:"01-04-2025",duration:18,progress:.4},{id:2,text:"Task #1",start_date:"02-04-2025",duration:8,progress:.6},{id:3,text:"Task #2",start_date:"11-04-2025",duration:8,progress:.6}]})});

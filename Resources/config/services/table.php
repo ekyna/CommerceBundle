@@ -172,10 +172,27 @@ return static function (ContainerConfigurator $container) {
         ])
         ->tag('table.column_type');
 
+    // Production order quantity column type
+    $services
+        ->set('ekyna_commerce.table_column_type.production_order_quantity', Column\ProductionOrderQuantityType::class)
+        ->args([
+            service('ekyna_commerce.helper.manufacture'),
+        ])
+        ->tag('table.column_type');
+
     // Quote(s) column type
     $services
         ->set('ekyna_commerce.table_column_type.quote', Column\QuoteType::class)
         ->args([
+            service('ekyna_resource.helper'),
+        ])
+        ->tag('table.column_type');
+
+    // Subject reference column type
+    $services
+        ->set('ekyna_commerce.table_column_type.subject_reference', Column\SubjectReferenceType::class)
+        ->args([
+            service('ekyna_commerce.helper.subject'),
             service('ekyna_resource.helper'),
         ])
         ->tag('table.column_type');
@@ -349,6 +366,14 @@ return static function (ContainerConfigurator $container) {
     // Sale subject filter type
     $services
         ->set('ekyna_commerce.table_filter_type.sale_subject', Filter\SaleSubjectType::class)
+        ->args([
+            service('ekyna_commerce.registry.subject_provider'),
+        ])
+        ->tag('table.filter_type');
+
+    // Subject reference filter type
+    $services
+        ->set('ekyna_commerce.table_filter_type.subject_reference', Filter\SubjectReferenceType::class)
         ->args([
             service('ekyna_commerce.registry.subject_provider'),
         ])

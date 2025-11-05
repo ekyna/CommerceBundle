@@ -94,6 +94,11 @@ class StockExtension extends AbstractExtension
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
+                'render_stock_assignments',
+                [StockRenderer::class, 'renderStockAssignments'],
+                ['is_safe' => ['html']]
+            ),
+            new TwigFunction(
                 'render_subjects_stock',
                 [StockRenderer::class, 'renderSubjectsStock'],
                 ['is_safe' => ['html']]

@@ -7,7 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Quote;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Common\AttachmentType;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentTypes as BTypes;
 use Ekyna\Bundle\ResourceBundle\Form\Type\ConstantChoiceType;
-use Ekyna\Bundle\ResourceBundle\Model\ConstantsInterface;
+use Ekyna\Bundle\ResourceBundle\Model\Filter;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes as CTypes;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -32,7 +32,7 @@ class QuoteAttachmentType extends AttachmentType
             'label'       => t('field.type', [], 'EkynaUi'),
             'class'       => BTypes::class,
             'filter'      => [CTypes::TYPE_VOUCHER],
-            'filter_mode' => ConstantsInterface::FILTER_RESTRICT,
+            'filter_mode' => Filter::RESTRICT,
             'required'    => false,
         ]);
     }

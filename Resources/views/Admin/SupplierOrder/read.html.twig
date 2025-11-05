@@ -44,6 +44,11 @@
         </a>
     </li>
     <li>
+        <a href="#{{ resource_name }}-details" id="toggle-details" data-toggle="tab">
+            {{ 'sale.field.details'|trans({}, 'EkynaCommerce') }}
+        </a>
+    </li>
+    <li>
         <a href="#{{ resource_name }}-deliveries" id="toggle-deliveries" data-toggle="tab">
             {{ 'supplier_order.tab.deliveries'|trans({}, 'EkynaCommerce') }}
         </a>
@@ -311,14 +316,15 @@
             'label_trans_domain': 'EkynaCommerce',
             'id': 'order_description',
         }) }}
-        <hr>
-        {% include '@EkynaCommerce/Admin/SupplierOrder/Show/items.html.twig' %}
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-details">
+        {% include '@EkynaCommerce/Admin/SupplierOrder/Read/items.html.twig' %}
     </div>
     <div class="tab-pane" id="{{ resource_name }}-deliveries">
-        {% include '@EkynaCommerce/Admin/SupplierOrder/Show/deliveries.html.twig' %}
+        {% include '@EkynaCommerce/Admin/SupplierOrder/Read/deliveries.html.twig' %}
     </div>
     <div class="tab-pane" id="{{ resource_name }}-attachments">
-        {% include '@EkynaCommerce/Admin/SupplierOrder/Show/attachments.html.twig' with {
+        {% include '@EkynaCommerce/Admin/SupplierOrder/Read/attachments.html.twig' with {
             'supplierOrder': supplierOrder,
             'attachments': supplierOrder.attachments
         } only %}
@@ -333,6 +339,7 @@
         {% if not supplierOrder.paid %}
         {{ admin_resource_btn('ekyna_commerce.supplier_payment', 'Ekyna\\Bundle\\AdminBundle\\Action\\CreateAction', {
             'label': t('payment.button.new', [], 'EkynaCommerce'),
+            'parameters': {}
         }) }}
         {% endif %}
     </div>
@@ -347,3 +354,8 @@
         {% include '@EkynaCommerce/Admin/Supplier/_side.html.twig' with {'supplier': supplierOrder.supplier } %}
     {% endif %}
 {%- endblock side %}
+
+{% block stylesheets -%}
+    {{ parent() }}
+    <link href="{{ absolute_url(asset('bundles/ekynacommerce/css/stock-view.css')) }}" type="text/css" rel="stylesheet"/>
+{%- endblock stylesheets %}
