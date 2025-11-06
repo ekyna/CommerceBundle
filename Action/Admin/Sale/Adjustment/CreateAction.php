@@ -40,6 +40,9 @@ class CreateAction extends BaseAction
         if (!$parent instanceof AdjustableInterface) {
             throw new UnexpectedTypeException($parent, AdjustableInterface::class);
         }
+        if ($parent instanceof SaleInterface) {
+            $adjustment->setMode(AdjustmentModes::MODE_FLAT);
+        }
 
         $parent->addAdjustment($adjustment);
 
@@ -48,14 +51,15 @@ class CreateAction extends BaseAction
 
     protected function getFormOptions(): array
     {
-        $options = [
-            'types' => [
-                AdjustmentTypes::TYPE_DISCOUNT,
-            ],
-        ];
+        $options = [];
 
-        if ($this->context->getResource() instanceof SaleItemInterface) {
-            $options['modes'] = AdjustmentModes::MODE_PERCENT;
+        if ($this->context->getParentResource() instanceof SaleInterface) {
+            $options = [
+                'modes' => [
+                    AdjustmentModes::MODE_PERCENT,
+                    AdjustmentModes::MODE_FLAT,
+                ],
+            ];
         }
 
         return array_replace(parent::getFormOptions(), $options);

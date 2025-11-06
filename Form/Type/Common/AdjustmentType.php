@@ -52,7 +52,6 @@ class AdjustmentType extends AbstractResourceType
                 'class'             => AdjustmentTypes::class,
                 'filter'            => $options['types'],
                 'filter_mode'       => Filter::RESTRICT,
-                'preferred_choices' => [AT::TYPE_DISCOUNT],
                 'select2'           => false,
                 'attr'              => [
                     'placeholder' => t('field.type', [], 'EkynaUi'),
@@ -63,7 +62,6 @@ class AdjustmentType extends AbstractResourceType
                 'class'             => AdjustmentModes::class,
                 'filter'            => $options['modes'],
                 'filter_mode'       => Filter::RESTRICT,
-                'preferred_choices' => [AM::MODE_PERCENT],
                 'select2'           => false,
                 'attr'              => [
                     'placeholder' => t('field.mode', [], 'EkynaUi'),
@@ -87,8 +85,8 @@ class AdjustmentType extends AbstractResourceType
         $resolver
             ->setDefaults([
                 'designations' => [],
-                'types'        => [],
-                'modes'        => [],
+                'types'        => [AT::TYPE_DISCOUNT],
+                'modes'        => [AM::MODE_PERCENT],
             ])
             ->setAllowedTypes('designations', 'array')
             ->setAllowedTypes('types', 'array')
