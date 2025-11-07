@@ -2,12 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Ekyna\Bundle\CommerceBundle\Action\Admin\Order;
+namespace Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder;
 
+use Ekyna\Bundle\AdminBundle\Action\AdminActionInterface;
+use Ekyna\Bundle\ResourceBundle\Action\AbstractAction;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
 use Ekyna\Bundle\ResourceBundle\Action\ManagerTrait;
 use Ekyna\Bundle\UiBundle\Action\FlashTrait;
-use Ekyna\Component\Commerce\Stock\Prioritizer\OrderPrioritizerInterface;
+use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
+use Ekyna\Component\Commerce\Manufacture\Model\ProductionOrderInterface;
+use Ekyna\Component\Commerce\Stock\Prioritizer\ProductionPrioritizerInterface;
 use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,20 +19,20 @@ use function Symfony\Component\Translation\t;
 
 /**
  * Class PrioritizeAction
- * @package Ekyna\Bundle\CommerceBundle\Action\Admin\Order
- * @author  Étienne Dauvergne <contact@ekyna.com>
+ * @package Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder
+ * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class PrioritizeAction extends AbstractOrderAction
+class PrioritizeAction extends AbstractAction implements AdminActionInterface
 {
     use ManagerTrait;
     use FlashTrait;
     use HelperTrait;
 
-    private OrderPrioritizerInterface $stockPrioritizer;
+    private ProductionPrioritizerInterface $prioritizer;
 
-    public function __construct(OrderPrioritizerInterface $stockPrioritizer)
+    public function __construct(ProductionPrioritizerInterface $stockPrioritizer)
     {
-        $this->stockPrioritizer = $stockPrioritizer;
+        $this->prioritizer = $stockPrioritizer;
     }
 
     public function __invoke(): Response
@@ -37,14 +41,15 @@ class PrioritizeAction extends AbstractOrderAction
             return new Response('', Response::HTTP_NOT_FOUND);
         }
 
-        if (!$order = $this->getOrder()) {
-            return new Response('', Response::HTTP_NOT_FOUND);
+        $order = $this->context->getResource();
+        if (!$order instanceof ProductionOrderInterface) {
+            throw new UnexpectedTypeException($order, ProductionOrderInterface::class);
         }
 
         $redirect = $this->redirectToReferer($this->generateResourcePath($order));
 
         $changed = $this
-            ->stockPrioritizer
+            ->prioritizer
             ->prioritize($order);
 
         if ($changed) {
@@ -67,8 +72,8 @@ class PrioritizeAction extends AbstractOrderAction
     public static function configureAction(): array
     {
         return [
-            'name'       => 'commerce_order_prioritize',
-            'permission' => Permission::UPDATE, // TODO PREPARE ? or CREATE on ekyna_commerce.shipment ?
+            'name'       => 'commerce_production_order_prioritize',
+            'permission' => Permission::UPDATE,
             'route'      => [
                 'name'     => 'admin_%s_prioritize',
                 'path'     => '/prioritize',

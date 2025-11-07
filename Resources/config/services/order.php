@@ -24,6 +24,7 @@ use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\OrderShipmentItemEvent
 use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\StockUnitEventSubscriber;
 use Ekyna\Component\Commerce\Bridge\Symfony\Order\OrderMarginInvalidator;
 use Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator;
+use Ekyna\Component\Commerce\Common\Preparer\OrderPreparer;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Resolver\OrderStateResolver;
 use Ekyna\Component\Commerce\Order\Updater\OrderInvoiceUpdater;
@@ -82,6 +83,18 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.updater.order_invoice', OrderInvoiceUpdater::class)
         ->args([
             service('ekyna_commerce.factory.invoice_margin_calculator'),
+        ]);
+
+    // Order preparer
+    $services
+        ->set('ekyna_commerce.preparer.order', OrderPreparer::class)
+        ->lazy()
+        ->args([
+            service('ekyna_resource.event_dispatcher'),
+            service('ekyna_commerce.prioritizer.checker.order'),
+            service('ekyna_commerce.prioritizer.order'),
+            service('ekyna_commerce.builder.shipment'),
+            service('ekyna_commerce.helper.factory'),
         ]);
 
     // Order margin invalidator

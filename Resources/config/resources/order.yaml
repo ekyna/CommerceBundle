@@ -165,6 +165,7 @@ resources:
             trans_prefix: sale_item
             trans_domain: EkynaCommerce
             actions:
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Order\Item\PrioritizeAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\AddAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\ConfigureAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\CreateAction: ~
@@ -172,7 +173,6 @@ resources:
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveDownAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveUpAction: ~
-                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\PrioritizeAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\SyncSubjectAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\UpdateAction: ~
 

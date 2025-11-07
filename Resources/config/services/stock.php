@@ -20,8 +20,11 @@ use Ekyna\Component\Commerce\Stock\Logger\StockLogger;
 use Ekyna\Component\Commerce\Stock\Manager\StockAssignmentManager;
 use Ekyna\Component\Commerce\Stock\Manager\StockUnitManager;
 use Ekyna\Component\Commerce\Stock\Overflow\OverflowHandler;
-use Ekyna\Component\Commerce\Stock\Prioritizer\PrioritizeChecker;
-use Ekyna\Component\Commerce\Stock\Prioritizer\StockPrioritizer;
+use Ekyna\Component\Commerce\Stock\Prioritizer\AbstractPrioritizer;
+use Ekyna\Component\Commerce\Stock\Prioritizer\OrderPrioritizeChecker;
+use Ekyna\Component\Commerce\Stock\Prioritizer\ProductionPrioritizeChecker;
+use Ekyna\Component\Commerce\Stock\Prioritizer\ProductionPrioritizer;
+use Ekyna\Component\Commerce\Stock\Prioritizer\OrderPrioritizer;
 use Ekyna\Component\Commerce\Stock\Provider\WarehouseProvider;
 use Ekyna\Component\Commerce\Stock\Resolver\StockUnitResolver;
 use Ekyna\Component\Commerce\Stock\Resolver\StockUnitStateResolver;
@@ -196,26 +199,43 @@ return static function (ContainerConfigurator $container) {
             abstract_arg('Stock subject defaults'),
         ]);
 
-    // Stock prioritize checker
+    // Order stock prioritize checker
     $services
-        ->set('ekyna_commerce.prioritizer.checker', PrioritizeChecker::class)
+        ->set('ekyna_commerce.prioritizer.checker.order', OrderPrioritizeChecker::class)
         ->args([
             service('ekyna_commerce.helper.subject'),
         ])
         ->tag('twig.runtime');
 
-    // Stock prioritizer
+    // Production order stock prioritize checker
     $services
-        ->set('ekyna_commerce.prioritizer.stock', StockPrioritizer::class)
+        ->set('ekyna_commerce.prioritizer.checker.production', ProductionPrioritizeChecker::class)
+        ->args([
+                   service('ekyna_commerce.helper.subject'),
+               ])
+        ->tag('twig.runtime');
+
+    // Abstract stock prioritizer
+    $services
+        ->set('ekyna_commerce.prioritizer.abstract', AbstractPrioritizer::class)
+        ->abstract()
         ->args([
             service('ekyna_commerce.resolver.stock_unit'),
             service('ekyna_commerce.assigner.stock_unit'),
             service('ekyna_commerce.manager.stock_unit'),
             service('ekyna_commerce.cache.stock_unit'),
-            service('ekyna_commerce.manager.stock_assignment'),
             service('ekyna_commerce.dispatcher.stock_assignment'),
-            service('ekyna_commerce.prioritizer.checker'),
         ]);
+
+    // Order stock prioritizer
+    $services
+        ->set('ekyna_commerce.prioritizer.order', OrderPrioritizer::class)
+        ->parent('ekyna_commerce.prioritizer.abstract');
+
+    // Production order stock prioritizer
+    $services
+        ->set('ekyna_commerce.prioritizer.production', ProductionPrioritizer::class)
+        ->parent('ekyna_commerce.prioritizer.abstract');
 
     // Stock renderer
     $services

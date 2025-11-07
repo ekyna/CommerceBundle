@@ -60,12 +60,17 @@ notice:
         <strong>subject to change without prior notice</strong>
         due to currency fluctuation.
 
+prioritize:
+    success: Some of the products has been reassigned for shipment.
+    failure: No product has been reassigned for shipment.
+
 button:
     print_label: Print label
     toggle_quantities: All / None
     add_to_cart: Add to cart
     pre_order: Pre order
     resupply_alert: Resupply alert
+    prioritize: Reassign stocks
 
 status:
     accepted: Accepted
@@ -1507,7 +1512,6 @@ sale:
             edit: Change shipping cost
     button:
         recalculate: Recalculate
-        prioritize: Reassign stocks
         prepare: Prepare shipment
         abort: Cancel shipment preparation
         check_items: Check lines integrity
@@ -1558,8 +1562,6 @@ sale:
     prioritize:
         same_sale: Allow to pick stock from this sale's previous lines.
         info: Some of this order lines can be reassigned to get available stock for shipment.
-        success: Some of the products has been reassigned for shipment.
-        failure: No product has been reassigned for shipment.
     message:
         transform_prevented: This sale cannot be transformed.
         provide_customer_or_data: >

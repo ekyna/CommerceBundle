@@ -60,12 +60,17 @@ notice:
         <strong>sujet à variation sans préavis</strong>
         selon les variations des taux de change.
 
+prioritize:
+    success: Certains articles ont pu être réassignés pour expédition.
+    failure: Aucun article n'a pu être réassigné pour expédition.
+
 button:
     print_label: Étiquette
     toggle_quantities: Tout / Aucun
     add_to_cart: Ajouter au panier
     pre_order: Pré-commander
     resupply_alert: Alerte réassort
+    prioritize: Réassigner le stock
 
 status:
     accepted: Acceptée
@@ -1362,7 +1367,7 @@ production_order:
         new: Créer un nouvel ordre
         edit: Modifier l'ordre <small>%name%</small>
         remove: Supprimer l'ordre <small>%name%</small>
-        schedule: Supprimer l'ordre <small>%name%</small>
+        schedule: Planifier l'ordre <small>%name%</small>
         cancel: Annuler l'ordre <small>%name%</small>
         upgrade: Mettre à niveau l'ordre <small>%name%</small>
     button:
@@ -1543,7 +1548,6 @@ sale:
             edit: Modifier les frais de port
     button:
         recalculate: Recalculer
-        prioritize: Réassigner le stock
         prepare: Préparer l'expédition
         abort: Annuler la préparation
         check_items: Vérifier l'intégrité des lignes
@@ -1596,8 +1600,6 @@ sale:
         info: >
             Certaines lignes de cette commande peuvent être réassignées pour
             tenter d'obtenir du stock disponible pour l'expédition.
-        success: Certains articles ont pu être réassignés pour expédition.
-        failure: Aucun article n'a pu être réassigné pour expédition.
     message:
         transform_prevented: Cette vente ne peut pas être transformée.
         provide_customer_or_data: >

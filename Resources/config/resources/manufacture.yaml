@@ -46,11 +46,12 @@ resources:
                     read: '@EkynaCommerce/Admin/ProductionOrder/read.html.twig'
                     update: '@EkynaCommerce/Admin/ProductionOrder/update.html.twig'
                     delete: '@EkynaCommerce/Admin/ProductionOrder/delete.html.twig'
-                Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\CreateAction: ~
-                Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\ScheduleAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\CancelAction: ~
-                Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\UpgradeAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\CreateAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\GanttAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\PrioritizeAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\ScheduleAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\UpgradeAction: ~
 
         production_item:
             driver: doctrine/orm
@@ -59,6 +60,14 @@ resources:
                 class: Ekyna\Component\Commerce\Manufacture\Entity\ProductionItem
             trans_domain: EkynaCommerce
             parent: ekyna_commerce.production_order
+
+        production_item_assignment:
+            driver: doctrine/orm
+            entity:
+                class: Ekyna\Component\Commerce\Manufacture\Entity\ProductionItemAssignment
+            parent: ekyna_commerce.production_item
+            trans_prefix: assignment
+            trans_domain: EkynaCommerce
 
         production:
             driver: doctrine/orm

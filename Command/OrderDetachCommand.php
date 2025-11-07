@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Order\Model\OrderItemInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderStates;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Stock\Assigner\StockUnitAssignerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
  * Class DetachSaleItemCommand
@@ -54,7 +56,12 @@ class OrderDetachCommand extends Command
             return 1;
         }
 
-        // TODO Warning / Confirmation
+        // Confirmation
+        $helper = new QuestionHelper();
+        $question = new ConfirmationQuestion('Continue with this action?', false);
+        if (!$helper->ask($input, $output, $question)) {
+            return Command::SUCCESS;
+        }
 
         foreach ($order->getItems() as $item) {
             $this->detachSaleItemRecursively($item);
@@ -68,7 +75,7 @@ class OrderDetachCommand extends Command
         return 0;
     }
 
-    private function detachSaleItemRecursively(SaleItemInterface $item): void
+    private function detachSaleItemRecursively(OrderItemInterface $item): void
     {
         foreach ($item->getChildren() as $child) {
             $this->detachSaleItemRecursively($child);

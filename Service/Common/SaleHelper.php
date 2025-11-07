@@ -56,7 +56,7 @@ class SaleHelper
     public static function isSaleStockable(Common\SaleInterface $sale): bool
     {
         if ($sale instanceof Order\OrderInterface) {
-            return Order\OrderStates::isStockableState($sale->getState());
+            return Order\OrderStates::isStockableState($sale);
         }
 
         return false;

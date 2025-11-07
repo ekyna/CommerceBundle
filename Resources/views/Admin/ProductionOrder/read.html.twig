@@ -22,6 +22,10 @@
 
 
 {% block main_actions %}
+    {% if productionOrder|production_can_prioritize %}
+        {{ admin_resource_btn(productionOrder, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\ProductionOrder\\PrioritizeAction') }}
+    {% endif %}
+
     {% if productionOrder|production_order_can_be_upgraded %}
         {{ admin_resource_btn(productionOrder, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\ProductionOrder\\UpgradeAction') }}
     {% endif %}

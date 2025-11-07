@@ -14,13 +14,13 @@
         {{ 'shipment.message.sale_is_not_stockable'|trans({}, 'EkynaCommerce')|raw }}
     </div>
     {% endif %}
-    {% if shipment.sale|stock_can_prioritize %}
+    {% if shipment.sale|order_can_prioritize %}
     <div class="alert alert-info">
         <p>{{ 'sale.prioritize.info'|trans({}, 'EkynaCommerce')|raw }}</p>
         <p>
             <a href="{{ admin_resource_path(shipment.sale, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Order\\PrioritizeAction') }}?_redirect={{ admin_resource_path(shipment, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Shipment\\CreateAction') }}"
                class="btn btn-sm btn-primary">
-                {{ 'sale.button.prioritize'|trans({}, 'EkynaCommerce') }}
+                {{ 'button.prioritize'|trans({}, 'EkynaCommerce') }}
             </a>
         </p>
     </div>

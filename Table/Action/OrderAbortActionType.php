@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Table\Action;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Ekyna\Component\Commerce\Common\Preparer\SalePreparerInterface;
+use Ekyna\Component\Commerce\Common\Preparer\OrderPreparerInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Table\Action\AbstractActionType;
 use Ekyna\Component\Table\Action\ActionInterface;
@@ -20,10 +20,10 @@ use function Symfony\Component\Translation\t;
  */
 class OrderAbortActionType extends AbstractActionType
 {
-    private SalePreparerInterface $salePreparer;
+    private OrderPreparerInterface $salePreparer;
     private EntityManagerInterface $entityManager;
 
-    public function __construct(SalePreparerInterface $salePreparer, EntityManagerInterface $entityManager)
+    public function __construct(OrderPreparerInterface $salePreparer, EntityManagerInterface $entityManager)
     {
         $this->salePreparer = $salePreparer;
         $this->entityManager = $entityManager;

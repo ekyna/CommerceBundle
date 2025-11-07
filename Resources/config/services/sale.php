@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Doctrine\ORM\Events;
 use Ekyna\Bundle\CommerceBundle\EventListener\InChargeSaleCopyListener;
 use Ekyna\Bundle\CommerceBundle\EventListener\SaleTransformListener;
 use Ekyna\Bundle\CommerceBundle\Factory\AbstractSaleFactory;
@@ -26,7 +25,6 @@ use Ekyna\Component\Commerce\Common\EventListener\AbstractSaleItemListener;
 use Ekyna\Component\Commerce\Common\EventListener\AbstractSaleListener;
 use Ekyna\Component\Commerce\Common\EventListener\SaleDiscountListener;
 use Ekyna\Component\Commerce\Common\Helper\FactoryHelper;
-use Ekyna\Component\Commerce\Common\Preparer\SalePreparer;
 use Ekyna\Component\Commerce\Common\Resolver\DiscountResolver;
 use Ekyna\Component\Commerce\Common\Resolver\SaleStateResolverFactory;
 use Ekyna\Component\Commerce\Common\Transformer\SaleCopierFactory;
@@ -148,18 +146,6 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.calculator.payment'),
             service('ekyna_commerce.calculator.invoice_subject'),
             service('ekyna_commerce.releaser.outstanding'),
-        ]);
-
-    // Sale preparer
-    $services
-        ->set('ekyna_commerce.preparer.sale', SalePreparer::class)
-        ->lazy()
-        ->args([
-            service('ekyna_resource.event_dispatcher'),
-            service('ekyna_commerce.prioritizer.checker'),
-            service('ekyna_commerce.prioritizer.stock'),
-            service('ekyna_commerce.builder.shipment'),
-            service('ekyna_commerce.helper.factory'),
         ]);
 
     // Discount resolver

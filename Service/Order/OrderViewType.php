@@ -14,7 +14,7 @@ use Ekyna\Component\Commerce\Order\Model as Order;
 use Ekyna\Component\Commerce\Shipment\Calculator\ShipmentSubjectCalculatorInterface;
 use Ekyna\Component\Commerce\Shipment\Resolver\ShipmentPriceResolverInterface;
 use Ekyna\Component\Commerce\Stock\Model\AssignmentInterface;
-use Ekyna\Component\Commerce\Stock\Prioritizer\PrioritizeCheckerInterface;
+use Ekyna\Component\Commerce\Stock\Prioritizer\OrderPrioritizeCheckerInterface;
 use Exception;
 
 use function sprintf;
@@ -26,13 +26,13 @@ use function sprintf;
  */
 class OrderViewType extends AbstractViewType
 {
-    private readonly PrioritizeCheckerInterface         $prioritizeChecker;
+    private readonly OrderPrioritizeCheckerInterface    $prioritizeChecker;
     private readonly StockRenderer                      $stockRenderer;
     private readonly InvoiceSubjectCalculatorInterface  $invoiceCalculator;
     private readonly ShipmentSubjectCalculatorInterface $shipmentCalculator;
     private readonly ShipmentPriceResolverInterface     $shipmentPriceResolver;
 
-    public function setPrioritizeChecker(PrioritizeCheckerInterface $prioritizeChecker): void
+    public function setPrioritizeChecker(OrderPrioritizeCheckerInterface $prioritizeChecker): void
     {
         $this->prioritizeChecker = $prioritizeChecker;
     }
@@ -65,15 +65,15 @@ class OrderViewType extends AbstractViewType
 
         $view->vars['attr']['data-type'] = 'order';
 
-        if ($this->prioritizeChecker->canPrioritizeSale($sale)) {
+        if ($this->prioritizeChecker->check($sale)) {
             // Prioritize button
             $prioritizePath = $this->resourceUrl($sale, Admin\Order\PrioritizeAction::class);
             $view->addButton(new View\Button(
                 $prioritizePath,
-                $this->trans('sale.button.prioritize', [], 'EkynaCommerce'),
+                $this->trans('button.prioritize', [], 'EkynaCommerce'),
                 'fa fa-level-up', [
                     'id'      => 'order_prioritize',
-                    'title'   => $this->trans('sale.button.prioritize', [], 'EkynaCommerce'),
+                    'title'   => $this->trans('button.prioritize', [], 'EkynaCommerce'),
                     'class'   => 'btn btn-sm btn-warning',
                     'confirm' => $this->trans('sale.confirm.prioritize', [], 'EkynaCommerce'),
                 ]
@@ -331,10 +331,10 @@ class OrderViewType extends AbstractViewType
         }
 
         // Prioritize
-        if ($this->prioritizeChecker->canPrioritizeSaleItem($item)) {
-            $prioritizePath = $this->resourceUrl($item, Admin\Sale\Item\PrioritizeAction::class);
+        if ($this->prioritizeChecker->checkItem($item)) {
+            $prioritizePath = $this->resourceUrl($item, Admin\Order\Item\PrioritizeAction::class);
             $view->addAction(new View\Action($prioritizePath, 'fa fa-level-up', [
-                'title'           => $this->trans('sale.button.prioritize', [], 'EkynaCommerce'),
+                'title'           => $this->trans('button.prioritize', [], 'EkynaCommerce'),
                 'data-sale-modal' => null,
                 'class'           => 'text-primary',
             ]));

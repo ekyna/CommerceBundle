@@ -17,7 +17,7 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.table_column_action.order_prepare', Action\OrderPrepareActionType::class)
         ->args([
-            service('ekyna_commerce.preparer.sale'),
+            service('ekyna_commerce.preparer.order'),
             service('doctrine.orm.default_entity_manager'),
         ])
         ->tag('table.action_type');
@@ -26,7 +26,7 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.table_column_action.order_abort', Action\OrderAbortActionType::class)
         ->args([
-            service('ekyna_commerce.preparer.sale'),
+            service('ekyna_commerce.preparer.order'),
             service('doctrine.orm.default_entity_manager'),
         ])
         ->tag('table.action_type');

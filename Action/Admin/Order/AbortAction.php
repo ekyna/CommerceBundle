@@ -7,7 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Action\Admin\Order;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
 use Ekyna\Bundle\ResourceBundle\Action\ManagerTrait;
 use Ekyna\Bundle\UiBundle\Action\FlashTrait;
-use Ekyna\Component\Commerce\Common\Preparer\SalePreparerInterface;
+use Ekyna\Component\Commerce\Common\Preparer\OrderPreparerInterface;
 use Ekyna\Component\Commerce\Order\Model\OrderShipmentInterface;
 use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,9 +25,9 @@ class AbortAction extends AbstractOrderAction
     use FlashTrait;
     use HelperTrait;
 
-    private SalePreparerInterface $salePreparer;
+    private OrderPreparerInterface $salePreparer;
 
-    public function __construct(SalePreparerInterface $salePreparer)
+    public function __construct(OrderPreparerInterface $salePreparer)
     {
         $this->salePreparer = $salePreparer;
     }

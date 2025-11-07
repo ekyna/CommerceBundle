@@ -93,7 +93,7 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.view_type.order', OrderViewType::class)
         ->parent('ekyna_commerce.view_type.abstract')
-        ->call('setPrioritizeChecker', [service('ekyna_commerce.prioritizer.checker')])
+        ->call('setPrioritizeChecker', [service('ekyna_commerce.prioritizer.checker.order')])
         ->call('setStockRenderer', [service('ekyna_commerce.renderer.stock')])
         ->call('setInvoiceCalculator', [service('ekyna_commerce.calculator.invoice_subject')])
         ->call('setShipmentSubjectCalculator', [service('ekyna_commerce.calculator.shipment_subject')])

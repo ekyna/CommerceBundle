@@ -8,7 +8,8 @@ use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Stock\AvailabilityHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Stock\StockRenderer;
 use Ekyna\Component\Commerce\Stock\Model\StockSubjectModes;
-use Ekyna\Component\Commerce\Stock\Prioritizer\PrioritizeChecker;
+use Ekyna\Component\Commerce\Stock\Prioritizer\OrderPrioritizeChecker;
+use Ekyna\Component\Commerce\Stock\Prioritizer\ProductionPrioritizeChecker;
 use Ekyna\Component\Commerce\Stock\Provider\WarehouseProvider;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -61,8 +62,12 @@ class StockExtension extends AbstractExtension
                 ['is_safe' => ['html']]
             ),
             new TwigFilter(
-                'stock_can_prioritize',
-                [PrioritizeChecker::class, 'canPrioritizeSale']
+                'order_can_prioritize',
+                [OrderPrioritizeChecker::class, 'check']
+            ),
+            new TwigFilter(
+                'production_can_prioritize',
+                [ProductionPrioritizeChecker::class, 'check']
             ),
         ];
     }
