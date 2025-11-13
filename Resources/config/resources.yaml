@@ -5,6 +5,9 @@ namespaces:
         prefix: /commerce
 
 permissions:
+    Ekyna\Bundle\CommerceBundle\Model\Permission::DASHBOARD_EXPORT:
+        label: permission.dashboard_export
+        trans_domain: EkynaCommerce
     Ekyna\Bundle\CommerceBundle\Model\Permission::STAT_CHART:
         label: permission.stat_chart
         trans_domain: EkynaCommerce

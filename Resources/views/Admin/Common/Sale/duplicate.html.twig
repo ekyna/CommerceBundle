@@ -24,3 +24,8 @@
     {% include form_template %}
     {{ form_end(form) }}
 {% endblock main %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ ivory_google_api() }}
+{% endblock javascripts %}

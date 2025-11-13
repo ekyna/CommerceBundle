@@ -33,12 +33,21 @@ class OrderType extends SaleType
         parent::buildForm($builder, $options);
 
         $builder
+            ->add('invoiceAddress', SaleAddressType::class, [
+                'label'          => t('sale.field.invoice_address', [], 'EkynaCommerce'),
+                'address_type'   => $options['address_type'],
+                'inherit_data'   => true,
+                'mode'           => SaleAddressType::MODE_INVOICE,
+                'customer_field' => 'customer',
+                'required'       => true,
+            ])
             ->add('destinationAddress', SaleAddressType::class, [
                 'label'          => t('sale.field.destination_address', [], 'EkynaCommerce'),
                 'address_type'   => $options['address_type'],
                 'inherit_data'   => true,
                 'mode'           => SaleAddressType::MODE_DESTINATION,
                 'customer_field' => 'customer',
+                'required'       => false,
             ])
             ->add('autoInvoice', CheckboxType::class, [
                 'label'    => t('sale.field.auto_invoice', [], 'EkynaCommerce'),
@@ -78,7 +87,7 @@ class OrderType extends SaleType
                 FormEvents::PRE_SUBMIT    => 2048,
                 FormEvents::POST_SUBMIT   => 2048,
             ],
-            ['destinationAddress']
+            ['invoiceAddress', 'destinationAddress']
         );
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {

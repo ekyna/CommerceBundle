@@ -42,11 +42,9 @@ class SaleAddressType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if ($options['mode'] === self::MODE_INVOICE) {
-            $required = true;
             $section = 'billing';
             $propertyPath = 'invoiceAddress';
         } else {
-            $required = false;
             $section = 'shipping';
 
             if ($options['mode'] === self::MODE_DELIVERY) {
@@ -117,7 +115,7 @@ class SaleAddressType extends AbstractType
         $builder->add('address', $options['address_type'], [
             'label'         => false,
             'property_path' => $propertyPath,
-            'required'      => $required,
+            'required'      => $options['required'],
             'section'       => $section,
             'attr'          => [
                 'widget_col' => 12,

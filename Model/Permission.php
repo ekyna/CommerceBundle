@@ -11,7 +11,8 @@ namespace Ekyna\Bundle\CommerceBundle\Model;
  */
 class Permission
 {
-    public const STAT_CHART = 'stat_chart';
+    public const DASHBOARD_EXPORT = 'dashboard_export';
+    public const STAT_CHART       = 'stat_chart';
 
     private function __construct()
     {

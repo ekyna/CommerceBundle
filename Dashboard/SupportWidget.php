@@ -7,11 +7,14 @@ namespace Ekyna\Bundle\CommerceBundle\Dashboard;
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\Type\AbstractWidgetType;
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\WidgetInterface;
 use Ekyna\Bundle\CommerceBundle\Table\Type\TicketType;
+use Ekyna\Component\Commerce\Support\Model\TicketInterface;
 use Ekyna\Component\Commerce\Support\Repository\TicketRepositoryInterface;
+use Ekyna\Component\Resource\Action\Permission;
 use Ekyna\Component\Table\Extension\Core\Source\ArraySource;
 use Ekyna\Component\Table\TableFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
 
 use function Symfony\Component\Translation\t;
@@ -25,22 +28,21 @@ class SupportWidget extends AbstractWidgetType
 {
     public const NAME = 'commerce_support';
 
-    protected TicketRepositoryInterface $ticketRepository;
-    protected TableFactoryInterface     $tableFactory;
-    protected RequestStack              $requestStack;
-
     public function __construct(
-        TicketRepositoryInterface $repository,
-        TableFactoryInterface     $tableFactory,
-        RequestStack              $requestStack
+        protected readonly AuthorizationCheckerInterface $authorizationChecker,
+        protected readonly TicketRepositoryInterface     $ticketRepository,
+        protected readonly TableFactoryInterface         $tableFactory,
+        protected readonly RequestStack                  $requestStack
     ) {
-        $this->ticketRepository = $repository;
-        $this->tableFactory = $tableFactory;
-        $this->requestStack = $requestStack;
+
     }
 
     public function render(WidgetInterface $widget, Environment $twig): string
     {
+        if (!$this->authorizationChecker->isGranted(Permission::READ, TicketInterface::class)) {
+            return '';
+        }
+
         $tickets = $this
             ->tableFactory
             ->createTable('tickets', TicketType::class, [

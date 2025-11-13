@@ -7,10 +7,14 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Common;
 use Ekyna\Bundle\GoogleBundle\Form\Type\CoordinateType;
 use Ekyna\Bundle\UiBundle\Form\Type\PhoneNumberType;
 use Ekyna\Bundle\UiBundle\Form\Util\FormUtil;
+use Ekyna\Component\Commerce\Common\Model\AddressInterface;
+use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use libphonenumber\PhoneNumberType as PhoneType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -115,7 +119,7 @@ class AddressType extends AbstractType
             ])
             ->add('country', CountryChoiceType::class, [
                 'required' => $options['required'],
-                'select2'  => $options['select2'],
+                'select2'  => false,
                 'attr'     => [
                     'class'        => 'address-country',
                     'autocomplete' => $section . 'country',
@@ -192,6 +196,18 @@ class AddressType extends AbstractType
                 'map_height' => 260,
             ], $options['coordinate_options']));
         }
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event): void {
+            $address = $event->getData();
+
+            foreach (['street', 'postalCode', 'city', 'country'] as $child) {
+                if (!empty($address[$child])) {
+                    return;
+                }
+            }
+
+            $event->setData(null);
+        });
     }
 
     public function finishView(FormView $view, FormInterface $form, array $options): void

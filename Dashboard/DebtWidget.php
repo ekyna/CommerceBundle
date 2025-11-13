@@ -6,10 +6,13 @@ namespace Ekyna\Bundle\CommerceBundle\Dashboard;
 
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\Type\AbstractWidgetType;
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\WidgetInterface;
+use Ekyna\Bundle\CommerceBundle\Model\Permission;
+use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderInvoiceRepositoryInterface;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
 use Ekyna\Component\Commerce\Supplier\Repository\SupplierOrderRepositoryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
 
 /**
@@ -21,23 +24,21 @@ class DebtWidget extends AbstractWidgetType
 {
     public const NAME = 'commerce_debt';
 
-    protected OrderInvoiceRepositoryInterface  $invoiceRepository;
-    protected OrderRepositoryInterface         $orderRepository;
-    protected SupplierOrderRepositoryInterface $supplierOrderRepository;
-
     public function __construct(
-        OrderInvoiceRepositoryInterface $invoiceRepository,
-        OrderRepositoryInterface $orderRepository,
-        SupplierOrderRepositoryInterface $supplierOrderRepository
+        protected readonly OrderInvoiceRepositoryInterface  $invoiceRepository,
+        protected readonly OrderRepositoryInterface         $orderRepository,
+        protected readonly SupplierOrderRepositoryInterface $supplierOrderRepository,
+        protected readonly AuthorizationCheckerInterface    $authorizationChecker,
     ) {
-        $this->invoiceRepository = $invoiceRepository;
-        $this->orderRepository = $orderRepository;
-        $this->supplierOrderRepository = $supplierOrderRepository;
+
     }
 
     public function render(WidgetInterface $widget, Environment $twig): string
     {
+        $export = $this->authorizationChecker->isGranted(Permission::DASHBOARD_EXPORT, OrderInterface::class);
+
         return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_debt.html.twig', [
+            'export'           => $export,
             'due_invoices'     => $this->invoiceRepository->getDueTotal(),
             'fall_invoices'    => $this->invoiceRepository->getFallTotal(),
             'remaining_orders' => $this->orderRepository->getRemainingTotal(),

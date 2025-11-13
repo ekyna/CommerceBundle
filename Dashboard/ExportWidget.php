@@ -6,8 +6,11 @@ namespace Ekyna\Bundle\CommerceBundle\Dashboard;
 
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\Type\AbstractWidgetType;
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\WidgetInterface;
+use Ekyna\Bundle\CommerceBundle\Model\Permission;
 use Ekyna\Bundle\CommerceBundle\Service\Export\ExportFormHelper;
+use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
 
 /**
@@ -20,7 +23,8 @@ class ExportWidget extends AbstractWidgetType
     public const NAME = 'commerce_export';
 
     public function __construct(
-        private readonly ExportFormHelper $formHelper
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly ExportFormHelper $formHelper,
     ) {
     }
 
@@ -31,6 +35,10 @@ class ExportWidget extends AbstractWidgetType
 
     public function render(WidgetInterface $widget, Environment $twig): string
     {
+        if (!$this->authorizationChecker->isGranted(Permission::DASHBOARD_EXPORT, OrderInterface::class)) {
+            return '';
+        }
+
         $accountingForm = $this->formHelper->createMonthForm('admin_ekyna_commerce_export_accounting');
         $costsForm = $this->formHelper->createMonthForm('admin_ekyna_commerce_export_invoice_costs');
         $samplesForm = $this->formHelper->createRangeForm('admin_ekyna_commerce_export_sample_order_items');

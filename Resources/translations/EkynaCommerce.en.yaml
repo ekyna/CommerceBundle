@@ -1311,6 +1311,7 @@ payment_term:
         empty_list: No payment term configured
 
 permission:
+    dashboard_export: Export (dashboard)
     stat_chart: Stat. charts
 
 pricing:

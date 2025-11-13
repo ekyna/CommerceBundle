@@ -74,6 +74,7 @@ class CountryChoiceType extends AbstractType
                 'preferred_choices'         => function (string $code) use ($userCountry) {
                     return strtoupper($code) === strtoupper($userCountry->getCode());
                 },
+                'placeholder' => t('value.undefined', [], 'EkynaUi')
             ])
             ->setAllowedTypes('enabled', 'bool')
             ->setNormalizer('attr', function (Options $options, $value) {

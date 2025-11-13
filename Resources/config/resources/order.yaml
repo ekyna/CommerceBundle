@@ -50,6 +50,7 @@ resources:
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\UpdateShipmentAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\UpdateStateAction: ~
             permissions:
+                - Ekyna\Bundle\CommerceBundle\Model\Permission::DASHBOARD_EXPORT
                 - Ekyna\Bundle\CommerceBundle\Model\Permission::STAT_CHART
 
         order_address:

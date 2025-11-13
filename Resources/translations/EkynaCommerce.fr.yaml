@@ -1345,6 +1345,7 @@ payment_term:
         empty_list: Aucune condition de paiement configuré
 
 permission:
+    dashboard_export: Export (dashboard)
     stat_chart: Graphiques stat.
 
 pricing:

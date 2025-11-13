@@ -35,12 +35,21 @@ class QuoteType extends SaleType
         parent::buildForm($builder, $options);
 
         $builder
+            ->add('invoiceAddress', SaleAddressType::class, [
+                'label'          => t('sale.field.invoice_address', [], 'EkynaCommerce'),
+                'address_type'   => $options['address_type'],
+                'inherit_data'   => true,
+                'mode'           => SaleAddressType::MODE_INVOICE,
+                'customer_field' => 'customer',
+                'required'       => false,
+            ])
             ->add('destinationAddress', SaleAddressType::class, [
                 'label'          => t('sale.field.destination_address', [], 'EkynaCommerce'),
                 'address_type'   => $options['address_type'],
                 'inherit_data'   => true,
                 'mode'           => SaleAddressType::MODE_DESTINATION,
                 'customer_field' => 'customer',
+                'required'       => false,
             ])
             ->add('project', ResourceSearchType::class, [
                 'resource' => 'ekyna_commerce.project',
@@ -107,7 +116,7 @@ class QuoteType extends SaleType
                 FormEvents::PRE_SUBMIT    => 2048,
                 FormEvents::POST_SUBMIT   => 2048,
             ],
-            ['destinationAddress']
+            ['invoiceAddress', 'destinationAddress']
         );
     }
 

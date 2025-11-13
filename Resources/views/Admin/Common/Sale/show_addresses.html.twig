@@ -7,20 +7,24 @@
                 {{ 'sale.field.invoice_address'|trans({}, 'EkynaCommerce') }}
             </div>
             <div class="col-md-8">
-                <div class="panel panel-default" id="sale_invoiceAddress">
-                    <div class="panel-body">
-                    {%- if sale.invoiceAddress is not null -%}
+                {%- if sale.invoiceAddress is not null -%}
+                <div class="panel panel-default">
+                    <div class="panel-body" id="sale_invoiceAddress">
                         {{ sale.invoiceAddress|address }}
-                    {%- else -%}
-                        <p><em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em></p>
-                    {%- endif -%}
                     </div>
                 </div>
+                {%- else -%}
+                <div class="show-widget show-widget-inline" id="sale_invoiceAddress">
+                    <em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em>
+                </div>
+                {%- endif -%}
             </div>
         </div>
     </div>
     <div class="col-md-6">
-        {{- show_row(sale.invoiceAddress, 'google_map', map_params) -}}
+        {% if sale.invoiceAddress is not null %}
+            {{- show_row(sale.invoiceAddress, 'google_map', map_params) -}}
+        {% endif %}
     </div>
 </div>
 <div class="row">
@@ -30,50 +34,48 @@
                 {{ 'sale.field.delivery_address'|trans({}, 'EkynaCommerce') }}
             </div>
             <div class="col-md-8">
-            {%- if not sale.sameAddress -%}
-                <div class="panel panel-default">
-                    <div class="panel-body" id="sale_deliveryAddress">
-                    {%- if sale.deliveryAddress is not null -%}
-                        {{ sale.deliveryAddress|address }}
-                    {%- else -%}
-                        <p><em>{{ 'value.undefined'|trans({}, 'EkynaUi') }}</em></p>
-                    {%- endif -%}
-                    </div>
+            {%- if sale.deliveryAddress is not null -%}
+            <div class="panel panel-default">
+                <div class="panel-body" id="sale_deliveryAddress">
+                    {{ sale.deliveryAddress|address }}
                 </div>
+            </div>
             {%- else -%}
-                <div class="show-widget show-widget-inline" id="sale_deliveryAddress">
-                    <em>{{ 'sale.field.same_address'|trans({}, 'EkynaCommerce') }}</em>
-                </div>
+            <div class="show-widget show-widget-inline" id="sale_deliveryAddress">
+                <em>{{ 'sale.field.same_address'|trans({}, 'EkynaCommerce') }}</em>
+            </div>
             {%- endif -%}
             </div>
         </div>
     </div>
     <div class="col-md-6">
-        {% if not sale.sameAddress -%}
+        {% if sale.deliveryAddress is not null -%}
             {{- show_row(sale.deliveryAddress, 'google_map', map_params) -}}
         {%- endif %}
     </div>
 </div>
 {% if sale.destinationAddress is not null -%}
-    <div class="row">
-        <div class="col-md-6">
-            <div class="row show-row">
-                <div class="col-md-4 show-label">
-                    {{ 'sale.field.destination_address'|trans({}, 'EkynaCommerce') }}
-                </div>
-                <div class="col-md-8">
-                    <div class="panel panel-default">
-                        <div class="panel-body" id="sale_deliveryAddress">
-                            {{ sale.destinationAddress|address }}
-                        </div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="row show-row">
+            <div class="col-md-4 show-label">
+                {{ 'sale.field.destination_address'|trans({}, 'EkynaCommerce') }}
+            </div>
+            <div class="col-md-8">
+                <div class="panel panel-default">
+                    <div class="panel-body" id="sale_destinationAddress">
+                        {{ sale.destinationAddress|address }}
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            {{- show_row(sale.destinationAddress, 'google_map', map_params) -}}
-        </div>
     </div>
+    <div class="col-md-6">
+        {% if sale.destinationAddress is not null -%}
+            {{- show_row(sale.destinationAddress, 'google_map', map_params) -}}
+        {%- endif %}
+    </div>
+</div>
 {%- endif %}
 {% if sale.relayPoint is not null -%}
 <div class="row">

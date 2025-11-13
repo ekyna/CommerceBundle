@@ -24,3 +24,9 @@
     {% include '@EkynaCommerce/Admin/Common/Sale/_form_transform.html.twig' %}
     {{ form_end(form) }}
 {% endblock main %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ ivory_google_api() }}
+{% endblock javascripts %}
+

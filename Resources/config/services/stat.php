@@ -93,6 +93,7 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.repository.order_invoice'),
             service('ekyna_commerce.repository.order'),
             service('ekyna_commerce.repository.supplier_order'),
+            service('security.authorization_checker'),
         ])
         ->tag('ekyna_admin.dashboard_widget');
 
@@ -100,6 +101,7 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.dashboard.export_widget', ExportWidget::class)
         ->args([
+            service('security.authorization_checker'),
             service('ekyna_commerce.helper.export_form'),
         ])
         ->tag('ekyna_admin.dashboard_widget');

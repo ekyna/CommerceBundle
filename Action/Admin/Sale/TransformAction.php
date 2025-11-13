@@ -15,7 +15,6 @@ use Ekyna\Bundle\ResourceBundle\Action\TemplatingTrait;
 use Ekyna\Bundle\ResourceBundle\Action\TranslatorTrait;
 use Ekyna\Bundle\UiBundle\Action\FlashTrait;
 use Ekyna\Bundle\UiBundle\Form\Type\FormActionsType;
-use Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Factory\AbstractSaleFactory;
 use Ekyna\Component\Commerce\Common\Factory\SaleFactoryInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\TransformationTargets;

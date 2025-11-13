@@ -82,19 +82,13 @@ class SaleType extends AbstractResourceType
                     'autocomplete' => 'email',
                 ],
             ])
-            ->add('invoiceAddress', SaleAddressType::class, [
-                'label'          => t('sale.field.invoice_address', [], 'EkynaCommerce'),
-                'address_type'   => $options['address_type'],
-                'inherit_data'   => true,
-                'mode'           => SaleAddressType::MODE_INVOICE,
-                'customer_field' => 'customer',
-            ])
             ->add('deliveryAddress', SaleAddressType::class, [
                 'label'          => t('sale.field.delivery_address', [], 'EkynaCommerce'),
                 'address_type'   => $options['address_type'],
                 'inherit_data'   => true,
                 'mode'           => SaleAddressType::MODE_DELIVERY,
                 'customer_field' => 'customer',
+                'required'       => false,
             ])
             ->add('vatNumber', VatNumberType::class)
             ->add('vatValid', Type\CheckboxType::class, [
@@ -236,7 +230,7 @@ class SaleType extends AbstractResourceType
                 FormEvents::PRE_SUBMIT   => 2048,
                 FormEvents::POST_SUBMIT  => 2048,
             ],
-            ['invoiceAddress', 'deliveryAddress']
+            ['deliveryAddress']
         );
     }
 

@@ -133,6 +133,7 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.dashboard.support_widget', SupportWidget::class)
         ->args([
+            service('security.authorization_checker'),
             service('ekyna_commerce.repository.ticket'),
             service('table.factory'),
             service('request_stack'),
