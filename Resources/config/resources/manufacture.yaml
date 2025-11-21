@@ -8,6 +8,7 @@ resources:
             repository:
                 interface: Ekyna\Component\Commerce\Manufacture\Repository\BillOfMaterialsRepositoryInterface
                 class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\BillOfMaterialsRepository
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\BOMNormalizer
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Manufacture\BillOfMaterialsType
             table: Ekyna\Bundle\CommerceBundle\Table\Type\BillOfMaterialsType
             trans_domain: EkynaCommerce
@@ -15,6 +16,7 @@ resources:
                 admin_crud:
                     form: '@EkynaCommerce/Admin/BillOfMaterials/_form.html.twig'
                     read: '@EkynaCommerce/Admin/BillOfMaterials/read.html.twig'
+                    summary: '@EkynaCommerce/Admin/BillOfMaterials/summary.html.twig'
                     duplicate: true
                 Ekyna\Bundle\CommerceBundle\Action\Admin\BillOfMaterials\ValidateAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\BillOfMaterials\ArchiveAction: ~

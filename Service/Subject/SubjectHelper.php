@@ -237,9 +237,24 @@ class SubjectHelper extends BaseHelper implements SubjectHelperInterface
     }
 
     /**
-     * @param SubjectReferenceInterface|SubjectInterface $subject
+     * @param array<int, SubjectReferenceInterface> $references
+     *
+     * @return array<SubjectInterface>
      */
-    private function resolveSubject($subject): ?SubjectInterface
+    public function getReferencesSubjects(array $references): array
+    {
+        $subjects = [];
+
+        foreach ($references as $reference) {
+            if (null !== $subject = $this->resolveSubject($reference)) {
+                $subjects[] = $subject;
+            }
+        }
+
+        return $subjects;
+    }
+
+    private function resolveSubject(SubjectReferenceInterface|SubjectInterface $subject): ?SubjectInterface
     {
         if ($subject instanceof SubjectReferenceInterface) {
             if (null === $subject = $this->resolve($subject, false)) {

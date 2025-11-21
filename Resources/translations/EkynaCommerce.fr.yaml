@@ -550,7 +550,7 @@ checkout:
             Veuillez <a href="%url%">ajouter votre bon d'achat</a> si vous souhaitez utiliser votre encours.
     shipment:
         total_weight: Poids total de votre commande
-        free_shipping: Offert
+        free_shipping: Franco de port
         mobile_required: Ce mode d'expédition nécessite un numéro de téléphone mobile.
 
 country:

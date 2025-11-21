@@ -11,8 +11,6 @@ use Ekyna\Component\Commerce\Manufacture\Model\POState;
 use Ekyna\Component\Commerce\Manufacture\Model\ProductionItemInterface;
 use Ekyna\Component\Commerce\Manufacture\Model\ProductionOrderInterface;
 use Ekyna\Component\Commerce\Manufacture\Repository\BillOfMaterialsRepositoryInterface;
-
-use Ekyna\Component\Commerce\Subject\Entity\SubjectIdentity;
 use Ekyna\Component\Commerce\Subject\Model\SubjectInterface;
 
 use function sprintf;
@@ -34,6 +32,11 @@ class ManufactureHelper
     public function getBOMBySubject(SubjectInterface $subject): array
     {
         return $this->bomRepository->findBySubject($subject);
+    }
+
+    public function getBOMsByComponentSubject(SubjectInterface $subject): array
+    {
+        return $this->bomRepository->findValidatedByComponentWithSubject($subject);
     }
 
     public function canOrderBeUpgraded(ProductionOrderInterface $order): bool

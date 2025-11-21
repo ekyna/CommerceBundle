@@ -14,6 +14,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketMessageNormalizer;
 use Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Helper\SubjectNormalizerHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\AddressNormalizer;
+use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\BOMNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceItemNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceLineNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceNormalizer;
@@ -62,6 +63,13 @@ return static function (ContainerConfigurator $container) {
         ])
         ->call('setFormatterFactory', [service('ekyna_commerce.factory.formatter')])
         ->tag('serializer.normalizer', ['priority' => 1024]);
+
+    // BIll of materials normalizer
+    $services
+        ->set('ekyna_commerce.normalizer.bill_of_materials', BOMNormalizer::class)
+        ->args([
+            service('ekyna_commerce.helper.subject'),
+        ]);
 
     // Invoice normalizer
     $services

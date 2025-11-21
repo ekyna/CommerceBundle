@@ -120,6 +120,7 @@ class BillOfMaterialsType extends AbstractResourceType
 
         $resolver
             ->setDefault('subject', null)
+            ->setDefault('resource_summary', true)
             ->setAllowedTypes('subject', ['null', SubjectInterface::class]);
     }
 }

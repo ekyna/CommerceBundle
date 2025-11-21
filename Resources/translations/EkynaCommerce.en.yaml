@@ -536,7 +536,7 @@ checkout:
             Please <a href="%url%">add your voucher</a> if you want to use outstanding balance.
     shipment:
         total_weight: Your order total weight
-        free_shipping: Free
+        free_shipping: Carriage free
         mobile_required: This shipment method requires a mobile phone number.
 
 country:

@@ -50,6 +50,10 @@ class ManufactureExtension extends AbstractExtension
                 [ManufactureHelper::class, 'getBOMBySubject']
             ),
             new TwigFilter(
+                'subject_bill_of_materials_component',
+                [ManufactureHelper::class, 'getBOMsByComponentSubject']
+            ),
+            new TwigFilter(
                 'production_order_can_be_produced',
                 [ManufactureHelper::class, 'canOrderBeProduced']
             ),

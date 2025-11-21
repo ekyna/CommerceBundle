@@ -31,6 +31,10 @@ class SubjectExtension extends AbstractExtension
                 [SubjectHelper::class, 'resolve']
             ),
             new TwigFilter(
+                'subject_references_subjects',
+                [SubjectHelper::class, 'getReferencesSubjects']
+            ),
+            new TwigFilter(
                 'subject_add_to_cart_button',
                 [SubjectHelper::class, 'renderAddToCartButton'],
                 ['is_safe' => ['html']]
