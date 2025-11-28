@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Command;
 
 use DateTime;
-use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceStates;
 use Ekyna\Component\Commerce\Order\Repository\OrderRepositoryInterface;
@@ -104,6 +103,9 @@ class OrderExportCommand extends Command
             'title',
             'country',
             'total',
+            'CA',
+            'shipping',
+            'margin',
             'done',
             'payment',
             'shipment',
@@ -121,6 +123,8 @@ class OrderExportCommand extends Command
                 $company = $order->getCustomer()?->getCompany()
                     ?? $order->getCompany();
 
+                $margin = $order->getMargin();
+
                 $file->addRow([
                     $order->getCreatedAt()->format('Y-m-d'),
                     $order->getNumber(),
@@ -128,6 +132,9 @@ class OrderExportCommand extends Command
                     $order->getTitle(),
                     $order->getInvoiceAddress()->getCountry()->getCode(),
                     $order->getGrandTotal()->toFixed(2),
+                    $margin->getRevenueProduct()->toFixed(2),
+                    $margin->getRevenueShipment()->toFixed(2),
+                    $margin->getTotal(false)->toFixed(2),
                     $done,
                     $order->getPaymentState(),
                     $order->getShipmentState(),

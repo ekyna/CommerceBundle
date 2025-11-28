@@ -93,7 +93,10 @@ class InvoiceExportCommand extends Command
             'number'         => 24,
             'type'           => 16,
             'country'        => 16,
-            'total HT'       => 20,
+            'total'          => 20,
+            'CA'             => 20,
+            'shipping'       => 20,
+            'margin'         => 20,
             'customer'       => 50,
             'customer_group' => 80,
             'title'          => 64,
@@ -126,12 +129,17 @@ class InvoiceExportCommand extends Command
                     ->sub($invoice->getDiscountBase())
                     ->add($invoice->getShipmentBase());
 
+                $margin = $invoice->getMargin();
+
                 $data = [
                     $invoice->getCreatedAt()->format('Y-m-d'),
                     $invoice->getNumber(),
                     $invoice->isCredit() ? 'credit' : 'invoice',
                     $invoice->getOrder()->getInvoiceAddress()->getCountry()->getCode(),
                     ($invoice->isCredit() ? '-' : '') . $total->toFixed(2),
+                    $margin->getRevenueProduct()->toFixed(2),
+                    $margin->getRevenueShipment()->toFixed(2),
+                    $margin->getTotal(false)->toFixed(2),
                     (string)$invoice->getOrder()->getCustomerGroup(),
                     $invoice->getOrder()->getCompany(),
                     $invoice->getOrder()->getTitle(),
