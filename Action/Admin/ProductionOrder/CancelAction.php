@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder;
 
-use DateTime;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\AbstractStateAction;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Manufacture\Model\POState;

@@ -30,6 +30,8 @@ class DuplicateAction extends BaseAction
             throw new UnexpectedTypeException($source, BillOfMaterialsInterface::class);
         }
 
+        // TODO Prevent if there is at least one pending production order
+
         if (BOMState::VALIDATED !== $source->getState()) {
             $this->addFlash('Unexpected state', ResourceMessage::TYPE_ERROR);
 

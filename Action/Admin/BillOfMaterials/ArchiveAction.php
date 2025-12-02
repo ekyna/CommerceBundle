@@ -18,6 +18,8 @@ use function Symfony\Component\Translation\t;
  */
 class ArchiveAction extends AbstractStateAction
 {
+    // TODO Prevent if there is at least one pending production order
+
     protected function configureTransition(): array
     {
         return [

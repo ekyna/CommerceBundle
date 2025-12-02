@@ -30,7 +30,8 @@
         {{ admin_resource_btn(productionOrder, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\ProductionOrder\\UpgradeAction') }}
     {% endif %}
 
-    {% if productionOrder is new_production_order %}
+    {% if productionOrder is new_production_order
+        or productionOrder is canceled_production_order %}
         {{ admin_resource_btn(productionOrder, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\ProductionOrder\\ScheduleAction') }}
     {% endif %}
 

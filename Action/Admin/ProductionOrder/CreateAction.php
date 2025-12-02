@@ -12,6 +12,8 @@ use Ekyna\Component\Commerce\Manufacture\Model\ProductionOrderInterface;
 use Ekyna\Component\Commerce\Manufacture\Repository\BillOfMaterialsRepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 
+use function array_replace_recursive;
+
 /**
  * Class CreateAction
  * @package Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder
@@ -39,5 +41,16 @@ class CreateAction extends BaseAction
         }
 
         return parent::onInit();
+    }
+
+    public static function configureAction(): array
+    {
+        return array_replace_recursive(parent::configureAction(), [
+            'options'    => [
+                'template'      => '@EkynaCommerce/Admin/ProductionOrder/create.html.twig',
+                'form_template' => '@EkynaCommerce/Admin/ProductionOrder/_form.html.twig',
+                'serialization' => ['groups' => ['Default'], 'admin' => true],
+            ],
+        ]);
     }
 }

@@ -10,6 +10,7 @@ use Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\BillOfMaterial
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\GenderValidator;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\InvoiceLineValidator;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\PaymentValidator;
+use Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\ProductionOrderValidator;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\ProductionValidator;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\RelayPointValidator;
 use Ekyna\Component\Commerce\Bridge\Symfony\Validator\Constraints\SaleItemAvailabilityValidator;
@@ -79,6 +80,14 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.validator.production', ProductionValidator::class)
         ->args([
             service('ekyna_commerce.calculator.production'),
+        ])
+        ->tag('validator.constraint_validator');
+
+    // Production order validator
+    $services
+        ->set('ekyna_commerce.validator.production_order', ProductionOrderValidator::class)
+        ->args([
+            service('ekyna_commerce.calculator.production_order'),
         ])
         ->tag('validator.constraint_validator');
 

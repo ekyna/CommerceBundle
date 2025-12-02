@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Manufacture;
 
 use Ekyna\Component\Commerce\Manufacture\Calculator\ProductionItemCalculator;
 use Ekyna\Component\Commerce\Manufacture\Calculator\ProductionOrderCalculator;
+use Ekyna\Component\Commerce\Manufacture\Model\BillOfMaterialsInterface;
 use Ekyna\Component\Commerce\Manufacture\Model\BOMState;
 use Ekyna\Component\Commerce\Manufacture\Model\POState;
 use Ekyna\Component\Commerce\Manufacture\Model\ProductionItemInterface;
@@ -32,6 +33,11 @@ class ManufactureHelper
     public function getBOMBySubject(SubjectInterface $subject): array
     {
         return $this->bomRepository->findBySubject($subject);
+    }
+
+    public function getValidatedBOMBySubject(SubjectInterface $subject): ?BillOfMaterialsInterface
+    {
+        return $this->bomRepository->findOneValidatedBySubject($subject);
     }
 
     public function getBOMsByComponentSubject(SubjectInterface $subject): array

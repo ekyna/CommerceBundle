@@ -71,6 +71,7 @@ button:
     pre_order: Pré-commander
     resupply_alert: Alerte réassort
     prioritize: Réassigner le stock
+    manufacture: Fabriquer
 
 status:
     accepted: Acceptée

@@ -37,7 +37,7 @@ class ScheduleAction extends AbstractStateAction
     {
         return [
             'resource'    => ProductionOrderInterface::class,
-            'from_states' => [POState::NEW],
+            'from_states' => [POState::NEW, POState::CANCELED],
             'to_state'    => POState::SCHEDULED,
             'message'     => t('production_order.message.schedule', [], 'EkynaCommerce'),
             'form_data'   => true,
@@ -75,7 +75,7 @@ class ScheduleAction extends AbstractStateAction
                 'label'        => 'button.schedule',
                 'trans_domain' => 'EkynaUi',
                 'theme'        => 'default',
-                'icon'         => 'fa fa-calendar',
+                'icon'         => 'calendar',
             ],
             'options'    => [
                 'form_template' => '@EkynaCommerce/Admin/ProductionOrder/_form_schedule.html.twig',

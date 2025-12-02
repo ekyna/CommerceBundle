@@ -1,0 +1,33 @@
+{% extends '@EkynaAdmin/Entity/Crud/create.html.twig' %}
+
+
+{% block actions %}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\AdminBundle\\Action\\ListAction') }}
+    {{ admin_resource_btn(context.config.id, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\ProductionOrder\\CreateAction') }}
+{% endblock actions %}
+
+
+{% block main %}
+    {{ parent() }}
+    {% if productionOrder.bom -%}
+        {% set subject = productionOrder.bom|subject_get(true) -%}
+        {% if subject is not null -%}
+            <div class="show-body" style="margin-top:30px">
+                <div id="stock-view">
+                    {{ render_subject_stock_view(subject, {'prefix': 'product'}) }}
+                </div>
+                <hr>
+                {{ render_subject_stock_units(subject, {
+                    'prefix': 'product_stockUnit',
+                    'id': 'stock-units-view'
+                }) }}
+            </div>
+        {%- endif %}
+    {%- endif %}
+{% endblock main %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ absolute_url(asset('bundles/ekynaproduct/css/admin/product.css')) }}" rel="stylesheet" type="text/css"/>
+{% endblock stylesheets %}
