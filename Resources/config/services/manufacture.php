@@ -137,7 +137,10 @@ return static function (ContainerConfigurator $container) {
 
     // Production calculator
     $services
-        ->set('ekyna_commerce.calculator.production', ProductionCalculator::class);
+        ->set('ekyna_commerce.calculator.production', ProductionCalculator::class)
+        ->args([
+            service('ekyna_commerce.helper.subject'),
+        ]);
 
     // Production item calculator
     $services
