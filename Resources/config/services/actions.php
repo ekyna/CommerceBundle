@@ -136,6 +136,23 @@ return static function (ContainerConfigurator $container) {
         ])
         ->tag('ekyna_resource.action');
 
+    // Order item actions --------------------------------------------------------------------
+    $services
+        ->set('ekyna_commerce.action.order_item.prioritize', Order\Item\PrioritizeAction::class)
+        ->args([
+            service('ekyna_commerce.prioritizer.checker.order'),
+            service('ekyna_commerce.prioritizer.order'),
+        ])
+        ->tag('ekyna_resource.action');
+    $services
+        ->set('ekyna_commerce.action.order_item.sync_subject', Order\Item\SyncSubjectAction::class)
+        ->args([
+            service('ekyna_commerce.helper.sale_item'),
+            service('ekyna_commerce.prioritizer.checker.order'),
+            service('ekyna_commerce.prioritizer.order'),
+        ])
+        ->tag('ekyna_resource.action');
+
     // Payment actions --------------------------------------------------------------------
     $services
         ->set('ekyna_commerce.action.payment.create', Payment\CreateAction::class)
@@ -295,13 +312,6 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.action.sale_item.move', Item\MoveAction::class)
         ->args([
             service('ekyna_resource.orm.listener_toggler'),
-        ])
-        ->tag('ekyna_resource.action');
-    $services
-        ->set('ekyna_commerce.action.sale_item.prioritize', Order\Item\PrioritizeAction::class)
-        ->args([
-            service('ekyna_commerce.prioritizer.checker.order'),
-            service('ekyna_commerce.prioritizer.order'),
         ])
         ->tag('ekyna_resource.action');
     $services

@@ -55,11 +55,17 @@ class SyncSubjectAction extends AbstractAction implements AdminActionInterface
             // TODO Add error message to sale view
         }
 
+        $this->postSync($item);
+
         if ($this->request->isXmlHttpRequest()) {
             return $this->buildXhrSaleViewResponse($item->getRootSale());
         }
 
         return $this->redirectToReferer($this->generateResourcePath($item->getRootSale()));
+    }
+
+    protected function postSync(SaleItemInterface $item): void
+    {
     }
 
     public static function configureAction(): array
