@@ -227,6 +227,25 @@ return static function (ContainerConfigurator $container) {
         ])
         ->alias(Api\ShipmentGatewayController::class, 'ekyna_commerce.controller.api.shipment_gateway')->public();
 
+    // Api production order list controller
+    $services->set('ekyna_commerce.controller.api.production_order.list', Api\ProductionOrder\ListController::class)
+        ->args([
+            service('ekyna_commerce.repository.production_order'),
+            service('serializer'),
+        ])
+        ->alias(Api\ProductionOrder\ListController::class, 'ekyna_commerce.controller.api.production_order.list')
+        ->public();
+
+    // Api production order update controller
+    $services->set('ekyna_commerce.controller.api.production_order.update', Api\ProductionOrder\UpdateController::class)
+        ->args([
+            service('ekyna_commerce.repository.production_order'),
+            service('serializer'),
+            service('validator'),
+            service('ekyna_commerce.manager.production_order'),
+        ])
+        ->alias(Api\ProductionOrder\UpdateController::class, 'ekyna_commerce.controller.api.production_order.update')
+        ->public();
 
     // Abstract cart controller
     // TODO Rework (too much deps)

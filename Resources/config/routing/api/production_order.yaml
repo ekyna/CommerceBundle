@@ -1,0 +1,15 @@
+ekyna_commerce_api_production_order_list:
+    path: /
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Api\ProductionOrder\ListController
+    methods: GET
+    options:
+        expose: true
+
+ekyna_commerce_api_production_order_update:
+    path: /{id}
+    controller: Ekyna\Bundle\CommerceBundle\Controller\Api\ProductionOrder\UpdateController
+    methods: POST
+    requirements:
+        id: \d+
+    options:
+        expose: true

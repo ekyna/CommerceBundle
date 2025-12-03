@@ -1,17 +1,47 @@
-{% extends '@EkynaAdmin/Entity/content.html.twig' %}
+{% extends '@EkynaAdmin/base.html.twig' %}
+
 
 {% block page_title %}Production order schedule{% endblock page_title %}
 
-{% block content %}
 
-    <div id="production_orders_gantt" style="height:800px"></div>
+{% block body %}
+    {%- include '@EkynaAdmin/Layout/navbar.html.twig' -%}
+    <div style="padding-top:48px;box-sizing:border-box;height:100%">
+        {#{{ knp_menu_render('ekyna_admin.breadcrumb', {
+            'template': '@EkynaAdmin/Layout/breadcrumb.html.twig'
+        }) }}#}
+        <div id="production_orders_gantt" style="min-height:100%"></div>
+    </div>
+{% endblock body %}
 
-{% endblock content %}
 
 {% block stylesheets %}
     {{ parent() }}
     <link href="{{ absolute_url(asset('bundles/ekynaui/lib/dhtmlx-gantt/dhtmlxgantt.css')) }}" rel="stylesheet" type="text/css"/>
+    <style>
+    :root {
+        /* https://docs.dhtmlx.com/gantt/desktop__custom_skins.html */
+        --dhx-gantt-font-size: 11px;
+    }
+    .read_button{
+        margin-top: 1px;
+        /*background-image:url("common/v_complete.png");*/
+        /*width: 20px;*/
+    }
+    .gantt_task_drag {
+        top: 0;
+        height: 100%;
+        width: 20px;
+    }
+    .gantt_task_drag.task_left {
+        left: -10px;
+    }
+    .gantt_task_drag.task_right {
+        right: -10px;
+    }
+    </style>
 {% endblock stylesheets %}
+
 
 {% block javascripts %}
     {{ parent() }}

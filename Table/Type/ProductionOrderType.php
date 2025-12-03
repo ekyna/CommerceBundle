@@ -70,7 +70,7 @@ class ProductionOrderType extends AbstractResourceType
             ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'resource' => $this->dataClass,
-                'actions'         => [
+                'actions'  => [
                     ScheduleAction::class => [
                         'filter' => function (RowInterface $row): bool {
                             /** @var ProductionOrderInterface $order */

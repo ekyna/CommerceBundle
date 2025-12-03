@@ -19,6 +19,7 @@ use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceItemNor
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceLineNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\PaymentNormalizer;
+use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ProductionOrderNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\RelayPointNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SaleItemNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ShipmentItemNormalizer;
@@ -41,6 +42,11 @@ use Ekyna\Component\Commerce\Stock\Model\StockUnitInterface;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services();
+
+    /**
+     * TODO Remove parent definition, setClass calls and serializer tags as they are automatically added in
+     * @see \Ekyna\Component\Resource\Bridge\Symfony\Serializer\SerializerExtension::addTagsAndCalls
+     **/
 
     // Address normalizer
     $services
@@ -102,6 +108,14 @@ return static function (ContainerConfigurator $container) {
         ->call('setClass', [PaymentInterface::class])
         ->tag('serializer.normalizer')
         ->tag('serializer.denormalizer');
+
+    // Production order normalizer
+    $services
+        ->set('ekyna_commerce.normalizer.production_order', ProductionOrderNormalizer::class)
+        ->args([
+            service('ekyna_commerce.helper.subject'),
+            service('ekyna_commerce.calculator.production_order'),
+        ]);
 
     // Relay point normalizer
     $services

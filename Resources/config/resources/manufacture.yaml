@@ -37,6 +37,10 @@ resources:
             entity:
                 interface: Ekyna\Component\Commerce\Manufacture\Model\ProductionOrderInterface
                 class: Ekyna\Component\Commerce\Manufacture\Entity\ProductionOrder
+            repository:
+                interface: Ekyna\Component\Commerce\Manufacture\Repository\ProductionOrderRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\ProductionOrderRepository
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ProductionOrderNormalizer
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Manufacture\ProductionOrderType
             table: Ekyna\Bundle\CommerceBundle\Table\Type\ProductionOrderType
             trans_domain: EkynaCommerce
@@ -45,7 +49,9 @@ resources:
                     form: '@EkynaCommerce/Admin/ProductionOrder/_form.html.twig'
                     create: false
                     list: '@EkynaCommerce/Admin/ProductionOrder/list.html.twig'
-                    read: '@EkynaCommerce/Admin/ProductionOrder/read.html.twig'
+                    read:
+                        template: '@EkynaCommerce/Admin/ProductionOrder/read.html.twig'
+                        expose: true
                     update: '@EkynaCommerce/Admin/ProductionOrder/update.html.twig'
                     delete: '@EkynaCommerce/Admin/ProductionOrder/delete.html.twig'
                 Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\CancelAction: ~
