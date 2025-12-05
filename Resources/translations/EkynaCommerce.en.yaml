@@ -1353,7 +1353,7 @@ production_order:
             Are you sure you want to <strong>upgrade</strong> this production order?
         cancel: Confirm cancellation?
     alert:
-        no_item: No project configured
+        no_item: No production order configured
         bom_is_not_valited: The associated bill of materials is not validated!
         order_cant_be_upgraded: This production order can't be upgraded.
         order_cant_be_canceled: This production order can't be canceled.

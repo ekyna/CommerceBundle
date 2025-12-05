@@ -1,0 +1,54 @@
+<div id="production-order-list" class="table-responsive">
+    <table class="table table-condensed table-stripped table-alt-head">
+        <thead>
+        <tr>
+            <th>{{ 'field.number'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.status'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.start_date'|trans({}, 'EkynaUi') }}</th>
+            <th>{{ 'field.end_date'|trans({}, 'EkynaUi') }}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+            <tr>
+                <td>
+                    <a href="{{ admin_resource_path(order, 'Ekyna\\Bundle\\AdminBundle\\Action\\ReadAction') }}">
+                        {{ order.number }}
+                    </a>
+                </td>
+                <td>
+                    {{- order.quantity|format_number -}}
+                </td>
+                <td>
+                    {{- order.state|enum_badge -}}
+                </td>
+                <td>
+                    {{ order.startAt|format_datetime }}
+                </td>
+                <td>
+                    {{ order.endAt|format_datetime }}
+                </td>
+                <td class="actions">
+                    {{ admin_resource_btn(order, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\ProductionOrder\\ScheduleAction', {
+                        'size': 'xs', 'label': '',
+                    }) }}
+                    {{ admin_resource_btn(order, 'Ekyna\\Bundle\\AdminBundle\\Action\\UpdateAction', {
+                        'size': 'xs', 'label': '',
+                    }) }}
+                    {{ admin_resource_btn(order, 'Ekyna\\Bundle\\AdminBundle\\Action\\DeleteAction', {
+                        'size': 'xs', 'label': '',
+                    }) }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6" class="text-center">
+                    <em>{{ 'production_order.alert.no_item'|trans([], 'EkynaCommerce') }}</em>
+                </td>
+            </tr>
+        {% endfor %}{# End For each items #}
+        </tbody>
+    </table>
+</div>

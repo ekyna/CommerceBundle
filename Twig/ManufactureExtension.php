@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
 use Ekyna\Bundle\CommerceBundle\Service\Manufacture\ManufactureHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Manufacture\ManufactureRenderer;
 use Ekyna\Component\Commerce\Manufacture\Calculator\BillOfMaterialsCalculator;
 use Ekyna\Component\Commerce\Manufacture\Calculator\ProductionPriceCalculator;
 use Ekyna\Component\Commerce\Manufacture\Model\BillOfMaterialsInterface;
@@ -13,6 +14,7 @@ use Ekyna\Component\Commerce\Manufacture\Model\POState;
 use Ekyna\Component\Commerce\Manufacture\Model\ProductionOrderInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 use Twig\TwigTest;
 
 /**
@@ -22,6 +24,17 @@ use Twig\TwigTest;
  */
 class ManufactureExtension extends AbstractExtension
 {
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction(
+                'render_subject_production_orders',
+                [ManufactureRenderer::class, 'renderSubjectProductionOrders'],
+                ['is_safe' => ['html']]
+            )
+        ];
+    }
+
     public function getFilters(): array
     {
         return [

@@ -9,7 +9,7 @@ use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Ekyna\Component\Commerce\Manufacture\Model\ProductionOrderInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -27,8 +27,11 @@ class ProductionOrderType extends AbstractResourceType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('quantity', NumberType::class, [
+            ->add('quantity', IntegerType::class, [
                 'label' => t('field.quantity', [], 'EkynaUi'),
+                'attr' => [
+                    'min' => 1,
+                ],
             ])
             ->add('startAt', DateTimeType::class, [
                 'label'    => t('field.start_date', [], 'EkynaUi'),

@@ -1387,7 +1387,7 @@ production_order:
             Êtes-vous sûr de vouloir <strong>mettre à niveau</strong> cette ordre de fabrication ?
         cancel: Confirmer l'annulation ?
     alert:
-        no_item: Aucun ordre configuré
+        no_item: Aucun ordre de fabrication configuré
         bom_is_not_valited: La nomenclature associée n'est pas validé !
         order_cant_be_upgraded: Cet ordre de fabrication ne peut pas être mis à niveau.
         order_cant_be_canceled: Cet ordre de fabrication ne peut pas être annulé.

@@ -23,6 +23,16 @@
             {{- 'field.general'|trans({}, 'EkynaUi') -}}
         </a>
     </li>
+    <li>
+        <a href="#{{ resource_name }}-components" id="toggle-components" data-toggle="tab">
+            {{- 'field.components'|trans({}, 'EkynaCommerce') -}}
+        </a>
+    </li>
+    <li>
+        <a href="#{{ resource_name }}-orders" id="toggle-orders" data-toggle="tab">
+            {{- 'production_order.label.plural'|trans({}, 'EkynaCommerce') -}}
+        </a>
+    </li>
 {%- endblock main_tabs %}
 
 
@@ -59,60 +69,56 @@
         </div>
         {{ macros.show_subject(billOfMaterials, t('subject.label.singular', [], 'EkynaCommerce')) }}
     </div>
-{%- endblock main_contents %}
-
-
-{% block post_main %}
-<div class="sub-header">
-    <h2>{{ 'field.components'|trans({}, 'EkynaCommerce')|raw }}</h2>
-</div>
-<div id="bill-of-materials-components" class="table-responsive">
-    <table class="table table-condensed table-striped">
-        <thead>
-        <tr>
-            <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
-            <th>{{ 'subject.label.singular'|trans({}, 'EkynaCommerce') }}</th>
-            <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
-            <th>{{ 'field.buy_net_price'|trans([], 'EkynaCommerce') }}</th>
-            <th>{{ 'field.total'|trans({}, 'EkynaUi') }}</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for component in billOfMaterials.components -%}
-            {% set subject = component|subject_get(false) %}
+    <div class="tab-pane" id="{{ resource_name }}-components">
+        <table class="table table-condensed table-striped">
+            <thead>
             <tr>
-                <td>
-                    {{ subject.reference|ui_clipboard_copy }}
-                </td>
-                <td>
-                    {% set url = subject|subject_private_url %}
-                    {% if url is not null %}
-                        <a href="{{ url }}" class="show-entity"{{ admin_resource_summary(subject) }}>{{ subject }}</a>
-                    {% else %}
-                        {{ subject }}
-                    {% endif %}
-                </td>
+                <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'subject.label.singular'|trans({}, 'EkynaCommerce') }}</th>
+                <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
+                <th>{{ 'field.buy_net_price'|trans([], 'EkynaCommerce') }}</th>
+                <th>{{ 'field.total'|trans({}, 'EkynaUi') }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for component in billOfMaterials.components -%}
+                {% set subject = component|subject_get(false) %}
+                <tr>
+                    <td>
+                        {{ subject.reference|ui_clipboard_copy }}
+                    </td>
+                    <td>
+                        {% set url = subject|subject_private_url %}
+                        {% if url is not null %}
+                            <a href="{{ url }}" class="show-entity"{{ admin_resource_summary(subject) }}>{{ subject }}</a>
+                        {% else %}
+                            {{ subject }}
+                        {% endif %}
+                    </td>
+                    <td class="text-right">
+                        {# TODO Packaging format #}
+                        {{- component.quantity|format_number -}}
+                    </td>
+                    <td class="text-right">
+                        {{- subject|subject_purchase_cost.getTotal(false)|format_currency(commerce_default_currency) -}}
+                    </td>
+                    <td class="text-right">
+                        {{ component|bom_component_total_cost.getTotal(false)|format_currency(commerce_default_currency) }}
+                    </td>
+                </tr>
+            {%- endfor %}
+            <tr>
+                <td colspan="4"></td>
                 <td class="text-right">
-                    {# TODO Packaging format #}
-                    {{- component.quantity|format_number -}}
-                </td>
-                <td class="text-right">
-                    {{- subject|subject_purchase_cost.getTotal(false)|format_currency(commerce_default_currency) -}}
-                </td>
-                <td class="text-right">
-                    {{ component|bom_component_total_cost.getTotal(false)|format_currency(commerce_default_currency) }}
+                    <strong>
+                        {{ billOfMaterials|bill_of_materials_cost.getTotal(false)|format_currency(commerce_default_currency) }}
+                    </strong>
                 </td>
             </tr>
-        {%- endfor %}
-        <tr>
-            <td colspan="4"></td>
-            <td class="text-right">
-                <strong>
-                    {{ billOfMaterials|bill_of_materials_cost.getTotal(false)|format_currency(commerce_default_currency) }}
-                </strong>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-{% endblock post_main %}
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane" id="{{ resource_name }}-orders">
+        {{- render_subject_production_orders(billOfMaterials|subject_get) -}}
+    </div>
+{%- endblock main_contents %}

@@ -6,6 +6,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Ekyna\Bundle\CommerceBundle\EventListener\BillOfMaterialsListener;
 use Ekyna\Bundle\CommerceBundle\Service\Manufacture\ManufactureHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Manufacture\ManufactureRenderer;
 use Ekyna\Component\Commerce\Common\Generator\DefaultGenerator;
 use Ekyna\Component\Commerce\Manufacture\Calculator\BillOfMaterialsCalculator;
 use Ekyna\Component\Commerce\Manufacture\Calculator\ProductionCalculator;
@@ -159,6 +160,15 @@ return static function (ContainerConfigurator $container) {
         ->tag('twig.runtime');
 
     // Production renderer
+    $services
+        ->set('ekyna_commerce.renderer.manufacture', ManufactureRenderer::class)
+        ->args([
+            service('ekyna_commerce.repository.production_order'),
+            service('twig'),
+        ])
+        ->tag('twig.runtime');
+
+    // Production helper
     $services
         ->set('ekyna_commerce.helper.manufacture', ManufactureHelper::class)
         ->args([
