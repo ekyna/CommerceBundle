@@ -126,7 +126,7 @@ class OrderExportCommand extends Command
                 $margin = $order->getMargin();
 
                 $file->addRow([
-                    $order->getCreatedAt()->format('Y-m-d'),
+                    $order->getAcceptedAt()->format('Y-m-d'),
                     $order->getNumber(),
                     $company,
                     $order->getTitle(),
