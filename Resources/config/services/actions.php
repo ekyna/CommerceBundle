@@ -291,6 +291,7 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.form_flow.sale_item_add'),
             service('ekyna_commerce.provider.context'),
             service('ekyna_commerce.helper.factory'),
+            service('ekyna_commerce.helper.subject'),
             service('ekyna_commerce.helper.sale'),
             service('event_dispatcher'),
         ])

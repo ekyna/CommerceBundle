@@ -10,6 +10,7 @@ use Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\XhrTrait;
 use Ekyna\Bundle\CommerceBundle\Event\SaleItemModalEvent;
 use Ekyna\Bundle\CommerceBundle\Form\Type\Sale\SaleItemCreateFlow;
 use Ekyna\Bundle\CommerceBundle\Service\SaleHelper;
+use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use Ekyna\Bundle\UiBundle\Model\Modal;
 use Ekyna\Component\Commerce\Common\Context\ContextProvider;
 use Ekyna\Component\Commerce\Common\Helper\FactoryHelperInterface;
@@ -33,25 +34,16 @@ class AddAction extends AbstractCreateFlowAction
 {
     use XhrTrait;
 
-    private ContextProvider          $contextProvider;
-    private FactoryHelperInterface   $factoryHelper;
-    private SaleHelper               $saleHelper;
-    private EventDispatcherInterface $eventDispatcher;
-
     public function __construct(
         FormFlowInterface        $flow,
-        ContextProvider          $contextProvider,
-        FactoryHelperInterface   $factoryHelper,
-        SaleHelper               $saleHelper,
-        EventDispatcherInterface $eventDispatcher
+        protected readonly ContextProvider          $contextProvider,
+        protected readonly FactoryHelperInterface   $factoryHelper,
+        protected readonly SubjectHelperInterface   $subjectHelper,
+        protected readonly SaleHelper               $saleHelper,
+        protected readonly EventDispatcherInterface $eventDispatcher
     ) {
         /** @var SaleItemCreateFlow $flow */
         parent::__construct($flow);
-
-        $this->contextProvider = $contextProvider;
-        $this->factoryHelper = $factoryHelper;
-        $this->saleHelper = $saleHelper;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     protected function createResource(): ResourceInterface
@@ -64,7 +56,20 @@ class AddAction extends AbstractCreateFlowAction
 
         $this->contextProvider->setContext($sale);
 
-        return $this->factoryHelper->createItemForSale($sale);
+        $item = $this->factoryHelper->createItemForSale($sale);
+
+        if ($this->request->query->has('provider') && $this->request->query->has('identifier')) {
+            $subject = $this->subjectHelper->find(
+                $this->request->query->get('provider'),
+                $this->request->query->getInt('identifier')
+            );
+
+            if ($subject) {
+                $this->subjectHelper->assign($item, $subject);
+            }
+        }
+
+        return $item;
     }
 
     protected function doPersist(): ResourceEventInterface

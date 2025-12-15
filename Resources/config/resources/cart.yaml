@@ -93,7 +93,8 @@ resources:
             trans_prefix: sale_item
             trans_domain: EkynaCommerce
             actions:
-                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\AddAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\AddAction:
+                    expose: true
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\ConfigureAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\CreateAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\DeleteAction: ~

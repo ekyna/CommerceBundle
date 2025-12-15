@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Form\Type\Sale;
 
 use Craue\FormFlowBundle\Form\FormFlow;
+use Craue\FormFlowBundle\Form\FormFlowInterface;
 use Ekyna\Bundle\CommerceBundle\Form\Type;
+use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 
 /**
  * Class SaleItemCreateFlow
@@ -26,6 +28,14 @@ class SaleItemCreateFlow extends FormFlow
                         'sale_item_create_flow_choice',
                     ],
                 ],
+                'skip' => function($estimatedCurrentStepNumber, FormFlowInterface $flow): bool {
+                    $data = $flow->getFormData();
+                    if (!$data instanceof SaleItemInterface) {
+                        return false;
+                    }
+
+                    return $data->getSubjectIdentity()->hasIdentity();
+                },
             ],
             [
                 'label'        => 'configure',
