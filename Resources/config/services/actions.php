@@ -297,6 +297,15 @@ return static function (ContainerConfigurator $container) {
         ])
         ->tag('ekyna_resource.action');
     $services
+        ->set('ekyna_commerce.action.sale_item.add_subject', Item\AddSubjectAction::class)
+        ->args([
+            service('ekyna_commerce.provider.context'),
+            service('ekyna_commerce.helper.factory'),
+            service('ekyna_commerce.helper.subject'),
+            service('ekyna_commerce.helper.sale_item'),
+        ])
+        ->tag('ekyna_resource.action');
+    $services
         ->set('ekyna_commerce.action.sale_item.configure', Item\ConfigureAction::class)
         ->args([
             service('event_dispatcher'),
