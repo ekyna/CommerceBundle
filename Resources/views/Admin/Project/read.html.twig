@@ -16,17 +16,17 @@
 
 {% block post_main -%}
     <div class="sub-header">
-        <h2>{{ 'order.label.plural'|trans({}, 'EkynaCommerce')|raw }}</h2>
-    </div>
-    {{ ekyna_table_render(admin_resource_table('ekyna_commerce.order', {
-        'source': project.orders.toArray(),
-        'filterable': false,
-    })) }}
-    <div class="sub-header">
         <h2>{{ 'quote.label.plural'|trans({}, 'EkynaCommerce')|raw }}</h2>
     </div>
     {{ ekyna_table_render(admin_resource_table('ekyna_commerce.quote', {
         'source': project.quotes.toArray(),
+        'filterable': false,
+    })) }}
+    <div class="sub-header">
+        <h2>{{ 'order.label.plural'|trans({}, 'EkynaCommerce')|raw }}</h2>
+    </div>
+    {{ ekyna_table_render(admin_resource_table('ekyna_commerce.order', {
+        'source': project.orders.toArray(),
         'filterable': false,
     })) }}
 {%- endblock post_main %}
