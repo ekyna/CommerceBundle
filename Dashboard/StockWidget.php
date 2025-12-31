@@ -8,9 +8,12 @@ use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\Type\AbstractWidgetType;
 use Ekyna\Bundle\AdminBundle\Dashboard\Widget\WidgetInterface;
+use Ekyna\Bundle\CommerceBundle\Model\Permission;
+use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Stat\Entity\StockStat;
 use Ekyna\Component\Commerce\Stat\Repository\StockStatRepositoryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
 
 /**
@@ -22,17 +25,21 @@ class StockWidget extends AbstractWidgetType
 {
     public const NAME = 'commerce_stock';
 
-    protected ManagerRegistry               $registry;
     protected ?StockStatRepositoryInterface $stockStatRepository = null;
 
-
-    public function __construct(ManagerRegistry $registry)
-    {
-        $this->registry = $registry;
+    public function __construct(
+        protected readonly AuthorizationCheckerInterface $authorizationChecker,
+        protected readonly ManagerRegistry               $registry
+    ) {
     }
 
     public function render(WidgetInterface $widget, Environment $twig): string
     {
+        // TODO Specific permission
+        if (!$this->authorizationChecker->isGranted(Permission::DASHBOARD_EXPORT, OrderInterface::class)) {
+            return '';
+        }
+
         $current = $this->getStockStatRepository()->findOneByDay();
 
         return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_stock.html.twig', [

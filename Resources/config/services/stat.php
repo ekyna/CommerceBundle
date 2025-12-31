@@ -82,6 +82,7 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.dashboard.stock_widget', StockWidget::class)
         ->args([
+            service('security.authorization_checker'),
             service('doctrine'),
         ])
         ->tag('ekyna_admin.dashboard_widget');

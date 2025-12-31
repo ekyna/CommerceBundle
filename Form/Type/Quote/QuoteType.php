@@ -16,7 +16,6 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -83,14 +82,7 @@ class QuoteType extends SaleType
                 'label'    => t('quote.field.project_date', [], 'EkynaCommerce'),
                 'required' => false,
             ])
-            ->add('projectTrust', IntegerType::class, [
-                'label'    => t('quote.field.project_trust', [], 'EkynaCommerce'),
-                'required' => false,
-                'attr'     => [
-                    'min' => 1,
-                    'max' => 10,
-                ],
-            ])
+            ->add('projectTrust', QuoteProjectTrustType::class)
             ->add('projectAlive', ChoiceType::class, [
                 'label'                     => t('quote.field.project_alive', [], 'EkynaCommerce'),
                 'choices'                   => [

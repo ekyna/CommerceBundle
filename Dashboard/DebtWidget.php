@@ -35,10 +35,12 @@ class DebtWidget extends AbstractWidgetType
 
     public function render(WidgetInterface $widget, Environment $twig): string
     {
-        $export = $this->authorizationChecker->isGranted(Permission::DASHBOARD_EXPORT, OrderInterface::class);
+        if (!$this->authorizationChecker->isGranted(Permission::DASHBOARD_EXPORT, OrderInterface::class)) {
+            return '';
+        }
 
         return $twig->render('@EkynaCommerce/Admin/Dashboard/widget_debt.html.twig', [
-            'export'           => $export,
+            'export'           => true, // TODO Remove
             'due_invoices'     => $this->invoiceRepository->getDueTotal(),
             'fall_invoices'    => $this->invoiceRepository->getFallTotal(),
             'remaining_orders' => $this->orderRepository->getRemainingTotal(),

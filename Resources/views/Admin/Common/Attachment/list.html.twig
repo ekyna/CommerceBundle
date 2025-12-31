@@ -25,13 +25,16 @@
         </tr>
         </thead>
         <tbody>
+        {% set dlAction = download_action|default('Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Attachment\\DownloadAction') %}
         {% for attachment in attachments %}
-            {% set attachmentId = 'attachment_' ~ loop.index0 %}
-            {% set downloadPath = admin_resource_path(attachment, download_action|default('Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Attachment\\DownloadAction')) %}
+            {% set attachmentId = 'attachment_' ~ loop.index0 -%}
+            {% set downloadPath = admin_resource_access(attachment, dlAction) ? admin_resource_path(attachment, download_action|default('Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Attachment\\DownloadAction')) : null -%}
             <tr data-id="{{ attachment.id }}">
                 {% block cell_file -%}
                 <td id="{{ attachmentId }}_filename">
-                    <a href="{{ downloadPath }}" target="_blank">{{ attachment }}</a>
+                    {% if downloadPath is not null %}<a href="{{ downloadPath }}" target="_blank">{% endif %}
+                        {{ attachment }}
+                    {% if downloadPath is not null %}</a>{% endif %}
                 </td>
                 {%- endblock %}
                 {% block cell_type -%}
@@ -64,12 +67,14 @@
                 {%- endblock %}
                 {% block cell_actions -%}
                 <td class="actions">
+                    {% if downloadPath is not null -%}
                     <a href="{{ downloadPath }}" class="btn btn-primary btn-xs" target="_blank"
                        title="{{ 'button.download'|trans({}, 'EkynaUi') }}">
                         <span class="fa fa-download"></span>
                     </a>
+                    {%- endif %}
                     {% block cell_action_archive -%}
-                    {% if attachment.type is not null -%}
+                    {% if attachment.type is not null and admin_resource_access(attachment, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Attachment\\ArchiveAction') -%}
                     <a href="{{ admin_resource_path(attachment, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Attachment\\ArchiveAction') }}"
                        class="btn btn-default btn-xs"
                        onclick="return confirm('{{ 'attachment.message.archive_confirm'|trans({}, 'EkynaCommerce')|escape('js') }}')"
@@ -79,18 +84,22 @@
                     {%- endif %}
                     {%- endblock %}
                     {% block cell_action_update -%}
+                    {% if admin_resource_access(attachment, 'Ekyna\\Bundle\\AdminBundle\\Action\\UpdateAction') -%}
                     <a href="{{ admin_resource_path(attachment, 'Ekyna\\Bundle\\AdminBundle\\Action\\UpdateAction') }}"
                        class="btn btn-warning btn-xs"
                        title="{{ 'button.edit'|trans({}, 'EkynaUi') }}">
                         <span class="fa fa-pencil"></span>
                     </a>
+                    {%- endif %}
                     {%- endblock %}
                     {% block cell_action_delete -%}
+                    {% if admin_resource_access(attachment, 'Ekyna\\Bundle\\AdminBundle\\Action\\DeleteAction') -%}
                     <a href="{{ admin_resource_path(attachment, 'Ekyna\\Bundle\\AdminBundle\\Action\\DeleteAction') }}"
                        class="btn btn-danger btn-xs"
                        title="{{ 'button.remove'|trans({}, 'EkynaUi') }}">
                         <span class="fa fa-trash"></span>
                     </a>
+                    {%- endif %}
                     {%- endblock %}
                 </td>
                 {%- endblock %}

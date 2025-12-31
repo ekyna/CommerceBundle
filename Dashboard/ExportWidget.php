@@ -24,7 +24,7 @@ class ExportWidget extends AbstractWidgetType
 
     public function __construct(
         private readonly AuthorizationCheckerInterface $authorizationChecker,
-        private readonly ExportFormHelper $formHelper,
+        private readonly ExportFormHelper              $formHelper,
     ) {
     }
 
