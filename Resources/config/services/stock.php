@@ -80,7 +80,7 @@ return static function (ContainerConfigurator $container) {
         ->lazy() // To prevent 'ekyna_commerce.guesser.subject_cost' cyclic redundancy
         ->args([
             service('ekyna_commerce.helper.subject'),
-            service('ekyna_commerce.guesser.subject_cost'),
+            service('ekyna_commerce.calculator.subject_cost'),
         ])
         ->tag('doctrine.event_listener', [
             'event'      => Events::onClear,

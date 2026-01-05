@@ -6,6 +6,8 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectLabelRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectOrderExporter;
+use Ekyna\Component\Commerce\Subject\Calculator\SubjectCostCalculator;
+use Ekyna\Component\Commerce\Subject\Calculator\SubjectCostCalculatorInterface;
 use Ekyna\Component\Commerce\Subject\Guesser\SubjectCostGuesser;
 use Ekyna\Component\Commerce\Subject\Guesser\SubjectCostGuesserInterface;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderRegistry;
@@ -15,6 +17,16 @@ return static function (ContainerConfigurator $container) {
 
     // Subject provider registry
     $services->set('ekyna_commerce.registry.subject_provider', SubjectProviderRegistry::class);
+
+    // Subject cost guesser
+    $services
+        ->set('ekyna_commerce.calculator.subject_cost', SubjectCostCalculator::class)
+        ->args([
+            service('ekyna_commerce.guesser.subject_cost'),
+            service('ekyna_commerce.repository.bill_of_materials'),
+            service('ekyna_commerce.calculator.bill_of_materials'),
+        ])
+        ->alias(SubjectCostCalculatorInterface::class, 'ekyna_commerce.calculator.subject_cost');
 
     // Subject cost guesser
     $services

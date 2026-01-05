@@ -61,7 +61,7 @@ class SubjectExtension extends AbstractExtension
             ),
             new TwigFilter(
                 'subject_purchase_cost',
-                [SubjectCostHelper::class, 'guess']
+                [SubjectCostHelper::class, 'calculate']
             ),
         ];
     }

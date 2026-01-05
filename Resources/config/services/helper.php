@@ -65,7 +65,7 @@ return static function (ContainerConfigurator $container) {
     $services
         ->set('ekyna_commerce.helper.subject_cost', SubjectCostHelper::class)
         ->args([
-            service('ekyna_commerce.guesser.subject_cost'),
+            service('ekyna_commerce.calculator.subject_cost'),
         ])
         ->tag('twig.runtime');
 

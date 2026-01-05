@@ -74,7 +74,8 @@
         }) }}
     </div>
     <div class="col-md-6">
-        {{ show_row(sale.projectTrust, 'number', {
+        {% set trust = quote.projectTrust ? (quote.projectTrust * 10) ~ '%' : '-' %}
+        {{ show_row(trust, 'text', {
             'label': t('quote.field.project_trust', {}, 'EkynaCommerce'),
             'id': 'sale_projectTrust',
             'label_col': 4
