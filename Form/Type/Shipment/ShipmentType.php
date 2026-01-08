@@ -122,7 +122,7 @@ class ShipmentType extends AbstractResourceType
                     ->add('trackingNumber', Type\TextType::class, [
                         'label'    => t('shipment.field.tracking_number', [], 'EkynaCommerce'),
                         'required' => false,
-                        'disabled' => !empty($shipment->getTrackingNumber()),
+                        'disabled' => $locked && !empty($shipment->getTrackingNumber()),
                         'attr'     => [
                             'placeholder'  => t('shipment.field.tracking_number', [], 'EkynaCommerce'),
                             'autocomplete' => 'off',

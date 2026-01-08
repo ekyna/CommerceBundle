@@ -48,6 +48,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.exporter.subject_stock_log', StockSubjectLogExporter::class)
         ->args([
             service('ekyna_commerce.repository.supplier_delivery_item'),
+            service('ekyna_commerce.repository.production'),
             service('ekyna_commerce.repository.order_shipment_item'),
             service('ekyna_commerce.helper.stock_unit'),
         ]);

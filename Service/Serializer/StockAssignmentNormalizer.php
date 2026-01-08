@@ -78,17 +78,17 @@ class StockAssignmentNormalizer extends BaseNormalizer
 
     private function addOrderData(array &$data, OrderInterface $order): void
     {
-        $data['summary'] = $this->resourceHelper->generateResourcePath($order, SummaryAction::class);
         $data['actions'] = [
             [
-                'label' => sprintf(
+                'label'   => sprintf(
                     '%s (%s)',
                     $order->getNumber(),
                     $this->constantHelper->renderOrderStateLabel($order)
                 ),
-                'href'  => $this->resourceHelper->generateResourcePath($order, ReadAction::class),
-                'theme' => OrderStates::getTheme($order->getState()),
-                'modal' => false,
+                'href'    => $this->resourceHelper->generateResourcePath($order, ReadAction::class),
+                'summary' => $this->resourceHelper->generateResourcePath($order, SummaryAction::class),
+                'theme'   => OrderStates::getTheme($order->getState()),
+                'modal'   => false,
             ],
         ];
     }
@@ -101,14 +101,15 @@ class StockAssignmentNormalizer extends BaseNormalizer
 
         $data['actions'] = [
             [
-                'label' => sprintf(
+                'label'   => sprintf(
                     '%s (%s)',
                     $order->getNumber(),
                     $this->constantHelper->renderSupplierOrderStateLabel($order)
                 ),
-                'href'  => $this->resourceHelper->generateResourcePath($order, ReadAction::class),
-                'theme' => SupplierOrderStates::getTheme($order->getState()),
-                'modal' => false,
+                'href'    => $this->resourceHelper->generateResourcePath($order, ReadAction::class),
+                'summary' => $this->resourceHelper->generateResourcePath($order, SummaryAction::class),
+                'theme'   => SupplierOrderStates::getTheme($order->getState()),
+                'modal'   => false,
             ],
         ];
     }
@@ -117,14 +118,15 @@ class StockAssignmentNormalizer extends BaseNormalizer
     {
         $data['actions'] = [
             [
-                'label' => sprintf(
+                'label'   => sprintf(
                     '%s (%s)',
                     $order->getNumber(),
                     $this->enumHelper->label($order->getState())
                 ),
-                'href'  => $this->resourceHelper->generateResourcePath($order, ReadAction::class),
-                'theme' => $order->getState()->color(),
-                'modal' => false,
+                'href'    => $this->resourceHelper->generateResourcePath($order, ReadAction::class),
+                'summary' => $this->resourceHelper->generateResourcePath($order, SummaryAction::class),
+                'theme'   => $order->getState()->color(),
+                'modal'   => false,
             ],
         ];
     }

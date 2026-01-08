@@ -54,6 +54,7 @@ resources:
                         expose: true
                     update: '@EkynaCommerce/Admin/ProductionOrder/update.html.twig'
                     delete: '@EkynaCommerce/Admin/ProductionOrder/delete.html.twig'
+                    summary: '@EkynaCommerce/Admin/ProductionOrder/summary.html.twig'
                 Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\CancelAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\CreateAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\ProductionOrder\GanttAction: ~
@@ -66,6 +67,7 @@ resources:
             entity:
                 interface: Ekyna\Component\Commerce\Manufacture\Model\ProductionItemInterface
                 class: Ekyna\Component\Commerce\Manufacture\Entity\ProductionItem
+            normalizer: Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ProductionItemNormalizer
             trans_domain: EkynaCommerce
             parent: ekyna_commerce.production_order
 
@@ -82,6 +84,9 @@ resources:
             entity:
                 interface: Ekyna\Component\Commerce\Manufacture\Model\ProductionInterface
                 class: Ekyna\Component\Commerce\Manufacture\Entity\Production
+            repository:
+                interface: Ekyna\Component\Commerce\Manufacture\Repository\ProductionRepositoryInterface
+                class: Ekyna\Component\Commerce\Bridge\Doctrine\ORM\Repository\ProductionRepository
             form: Ekyna\Bundle\CommerceBundle\Form\Type\Manufacture\ProductionType
             trans_domain: EkynaCommerce
             parent: ekyna_commerce.production_order

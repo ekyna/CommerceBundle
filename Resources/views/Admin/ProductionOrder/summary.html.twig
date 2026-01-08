@@ -1,0 +1,33 @@
+{% apply spaceless %}
+<p style="font-size:18px">{{ text }}</p>
+<div>
+    <dl class="dl-horizontal">
+        <dt>{{ 'field.start_date'|trans({}, 'EkynaUi') }}</dt>
+        <dd>{{ start_date }}</dd>
+        <dt>{{ 'field.end_date'|trans({}, 'EkynaUi') }}</dt>
+        <dd>{{ end_date }}</dd>
+        <dt>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</dt>
+        <dd>{{ produced }} / {{ quantity }}</dd>
+    </dl>
+</div>
+<table class="table table-condensed table-alt-head">
+<thead>
+    <tr>
+        <th>{{ 'field.designation'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'field.reference'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'field.quantity'|trans({}, 'EkynaUi') }}</th>
+        <th>{{ 'field.total'|trans({}, 'EkynaUi') }}</th>
+    </tr>
+</thead>
+<tbody>
+{% for item in items %}
+    <tr>
+        <td>{{ item.designation }}</td>
+        <td>{{ item.reference }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.total }}</td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+{% endapply %}

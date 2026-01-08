@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Service\Serializer;
 
 use Ekyna\Bundle\AdminBundle\Action\ReadAction;
+use Ekyna\Bundle\AdminBundle\Action\SummaryAction;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\StockUnit\CreateAdjustmentAction;
 use Ekyna\Bundle\CommerceBundle\Model\SupplierOrderStates;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
@@ -56,33 +57,36 @@ class StockUnitNormalizer extends BaseNormalizer
                     $order = $item->getOrder();
 
                     $actions[] = [
-                        'label' => sprintf(
+                        'label'   => sprintf(
                             '%s (%s)',
                             $order->getNumber(),
                             $this->constantHelper->renderSupplierOrderStateLabel($order)
                         ),
-                        'href'  => $this->resourceHelper->generateResourcePath($order, ReadAction::class),
-                        'theme' => SupplierOrderStates::getTheme($order->getState()),
-                        'modal' => false,
+                        'href'    => $this->resourceHelper->generateResourcePath($order, ReadAction::class),
+                        'summary' => $this->resourceHelper->generateResourcePath($order, SummaryAction::class),
+                        'theme'   => SupplierOrderStates::getTheme($order->getState()),
+                        'modal'   => false,
                     ];
                 } elseif (null !== $order = $object->getProductionOrder()) {
                     $actions[] = [
-                        'label' => sprintf(
+                        'label'   => sprintf(
                             '%s (%s)',
                             $order->getNumber(),
                             $this->enumHelper->label($order->getState())
                         ),
-                        'href'  => $this->resourceHelper->generateResourcePath($order, ReadAction::class),
-                        'theme' => $order->getState()->color(),
-                        'modal' => false,
+                        'href'    => $this->resourceHelper->generateResourcePath($order, ReadAction::class),
+                        'summary' => $this->resourceHelper->generateResourcePath($order, SummaryAction::class),
+                        'theme'   => $order->getState()->color(),
+                        'modal'   => false,
                     ];
                 }
 
                 $actions[] = [
-                    'label' => '<i class="fa fa-pencil"></i>',
-                    'href'  => $this->resourceHelper->generateResourcePath($object, CreateAdjustmentAction::class),
-                    'theme' => 'success',
-                    'modal' => true,
+                    'label'   => '<i class="fa fa-pencil"></i>',
+                    'href'    => $this->resourceHelper->generateResourcePath($object, CreateAdjustmentAction::class),
+                    'summary' => null,
+                    'theme'   => 'success',
+                    'modal'   => true,
                 ];
             }
 

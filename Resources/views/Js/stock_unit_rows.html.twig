@@ -17,7 +17,9 @@
         <td id="{{ stock_unit_id ~ '_netPrice' }}" class="text-right">{{ stock_unit.net_price|raw }}</td>
         <td class="actions">
         {% for action in stock_unit.actions -%}
-            <a href="{{ action.href }}" class="btn btn-xs btn-{{ action.theme }}"{% if action.modal %} data-stock-unit-modal data-rel="{{ stock_unit_id }}"{% endif %}>
+            <a href="{{ action.href }}" class="btn btn-xs btn-{{ action.theme }}"
+                {%- if action.summary %} data-summary="{{ action.summary }}"{% endif -%}
+                {%- if action.modal %} data-stock-unit-modal data-rel="{{ stock_unit_id }}"{% endif %}>
                 {{- action.label|raw -}}
             </a>
         {%- endfor %}
@@ -47,7 +49,8 @@
             <td colspan="4"><em>{{ adjustment.created_at }}</em> {{ adjustment.reason_label }}{% if adjustment.note is not empty %} : {{ adjustment.note }}{% endif %}</td>
             <td class="actions">
             {% for action in adjustment.actions %}
-                <a href="{{ action.href }}" class="btn btn-xs btn-{{ action.theme }}"{% if action.modal %} data-stock-unit-modal data-rel="{{ stock_unit_id }}"{% endif %}>
+                <a href="{{ action.href }}" class="btn btn-xs btn-{{ action.theme }}"
+                    {%- if action.modal %} data-stock-unit-modal data-rel="{{ stock_unit_id }}"{% endif %}>
                     {{ action.label|raw }}
                 </a>
             {% endfor %}
@@ -59,7 +62,7 @@
     {% if stock_unit.assignments is not empty -%}
     <tbody id="{{ stock_unit_id ~ '_assignments' }}" style="display: none">
     {% for assignment in stock_unit.assignments -%}
-        <tr{% if assignment.summary is defined -%} data-summary="{{ assignment.summary }}"{% endif %}>
+        <tr{#{% if assignment.summary is defined -%} data-summary="{{ assignment.summary }}"{% endif %}#}>
             <td colspan="5"></td>
             <td class="text-right">{{ assignment.sold }}</td>
             <td class="text-right">
@@ -69,7 +72,9 @@
             <td colspan="2"></td>
             <td class="actions">
             {% for action in assignment.actions -%}
-                <a href="{{ action.href }}" class="btn btn-xs btn-{{ action.theme }}"{% if action.modal %} data-stock-unit-modal data-rel="{{ stock_unit_id }}"{% endif %}>
+                <a href="{{ action.href }}" class="btn btn-xs btn-{{ action.theme }}"
+                    {%- if action.summary %} data-summary="{{ action.summary }}"{% endif -%}
+                    {%- if action.modal %} data-stock-unit-modal data-rel="{{ stock_unit_id }}"{% endif %}>
                     {{- action.label|raw -}}
                 </a>
             {%- endfor %}
