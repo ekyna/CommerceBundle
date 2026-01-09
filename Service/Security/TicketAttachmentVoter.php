@@ -6,19 +6,19 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Security;
 
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\TicketMessageInterface;
+use Ekyna\Bundle\ResourceBundle\Service\Security\UserVoter;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Commerce\Support\Model\TicketAttachmentInterface;
 use Ekyna\Component\Commerce\Support\Model\TicketStates;
 use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
  * Class TicketAttachmentVoter
  * @package Ekyna\Bundle\CommerceBundle\Service\Security
  * @author  Etienne Dauvergne <contact@ekyna.com>
  */
-class TicketAttachmentVoter extends Voter
+class TicketAttachmentVoter extends UserVoter
 {
     /**
      * @inheritDoc
@@ -27,11 +27,6 @@ class TicketAttachmentVoter extends Voter
      */
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
-        $user = $token->getUser();
-        if (!$user instanceof UserInterface) {
-            return false;
-        }
-
         if ($subject->isInternal()) {
             return false;
         }
@@ -57,7 +52,7 @@ class TicketAttachmentVoter extends Voter
         /** @var CustomerInterface $customer */
         $customer = $ticket->getCustomer();
 
-        return $customer->getUser() === $user;
+        return $customer->getUser() === $token->getUser();
     }
 
     /**
@@ -66,5 +61,10 @@ class TicketAttachmentVoter extends Voter
     protected function supports(string $attribute, $subject): bool
     {
         return $subject instanceof TicketAttachmentInterface;
+    }
+
+    protected function getUserClass(): string
+    {
+        return UserInterface::class;
     }
 }
