@@ -25,6 +25,7 @@
         {{- '&nbsp;' -}}
         <strong>{{ date|format_datetime('long', 'none', locale=locale) }}</strong>.
         {{ macro.render_expires_at(subject, locale) }}
+    {% if subject.type != constant('Ekyna\\Component\\Commerce\\Document\\Model\\DocumentTypes::TYPE_PROPOSAL') %}
         {% if subject.sale.customer is not null -%}
             <span class="text-alt">{{ 'customer.label.singular'|trans({}, 'EkynaCommerce') }}</span>
             {{- '&nbsp;' -}}
@@ -39,6 +40,7 @@
         {% if not subject.sale.sample -%}
             {{ macro.render_payment_term(subject, locale) }}
         {%- endif %}
+    {%- endif %}
     </p>
     {% if subject.comment is not empty -%}
         <p>{{ subject.comment|nl2br }}</p>
@@ -49,24 +51,32 @@
 
 {% block addresses %}
 <div class="bloc addresses">
+    {% if subject.customer is not empty %}
     <div>
         <h2>{{ 'customer.label.singular'|trans({}, 'EkynaCommerce') }}</h2>
         <p>{{ subject.customer|customer }}</p>
     </div>
+    {% endif %}
+    {% set address = subject|document_invoice_address %}
+    {% if address is not empty %}
     <div>
         <h2>{{ 'sale.field.invoice_address'|trans({}, 'EkynaCommerce') }}</h2>
-        <p>{{- subject|document_invoice_address|address -}}</p>
+        <p>{{- address|address -}}</p>
     </div>
+    {% endif %}
+    {% set address = subject|document_invoice_address %}
+    {% if address is not empty %}
     <div>
         <h2>{{ 'sale.field.delivery_address'|trans({}, 'EkynaCommerce') }}</h2>
-        <p>{{- subject|document_delivery_address|address -}}</p>
+        <p>{{- address|address -}}</p>
     </div>
-    {% set destination = subject|document_destination_address %}
-    {% if destination is not empty %}
+    {% endif %}
+    {% set address = subject|document_destination_address %}
+    {% if address is not empty %}
     <div>
         <h2>{{ 'sale.field.destination_address'|trans({}, 'EkynaCommerce') }}</h2>
         <p>
-            {{ destination|address }}
+            {{ address|address }}
         </p>
     </div>
     {% endif %}

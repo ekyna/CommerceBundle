@@ -652,6 +652,7 @@ document:
         form: Bon de commande
         voucher: Bon d'achat
         quote: Devis
+        proposal: Proposition
         proforma: Facture Proforma
         confirmation: Confirmation de commande
         shipment_form: Bon de préparation
@@ -1447,8 +1448,8 @@ quote:
         notify: Notifier le devis
     field:
         editable: Modifiable par le client
-        project_date: Date projet
-        project_trust: Confiance projet
+        project_date: Date commande projet
+        project_trust: Probabilité projet
         project_alive: Vie projet
     alert:
         no_item: Aucun devis configuré

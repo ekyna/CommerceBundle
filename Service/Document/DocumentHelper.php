@@ -172,7 +172,7 @@ class DocumentHelper
         return implode('<br>', $parts);
     }
 
-    public function getDocumentInvoiceAddress(DocumentInterface $document): array
+    public function getDocumentInvoiceAddress(DocumentInterface $document): ?array
     {
         if ($document instanceof InvoiceInterface && !empty($address = $document->getCustomInvoiceAddress())) {
             return $address;
@@ -181,7 +181,7 @@ class DocumentHelper
         return $document->getInvoiceAddress();
     }
 
-    public function getDocumentDeliveryAddress(DocumentInterface $document): array
+    public function getDocumentDeliveryAddress(DocumentInterface $document): ?array
     {
         if ($document instanceof InvoiceInterface && !empty($address = $document->getCustomDeliveryAddress())) {
             return $address;
