@@ -64,7 +64,7 @@
         <p>{{- address|address -}}</p>
     </div>
     {% endif %}
-    {% set address = subject|document_invoice_address %}
+    {% set address = subject|document_delivery_address %}
     {% if address is not empty %}
     <div>
         <h2>{{ 'sale.field.delivery_address'|trans({}, 'EkynaCommerce') }}</h2>
