@@ -123,7 +123,8 @@
 
 
 {%- macro render_expires_at(subject, locale) -%}
-    {% if subject.type == constant('Ekyna\\Component\\Commerce\\Document\\Model\\DocumentTypes::TYPE_QUOTE') %}
+    {% if subject.type == constant('Ekyna\\Component\\Commerce\\Document\\Model\\DocumentTypes::TYPE_QUOTE')
+       or subject.type == constant('Ekyna\\Component\\Commerce\\Document\\Model\\DocumentTypes::TYPE_PROPOSAL') %}
         {% if subject.sale is sale_quote %}
             {% set date = subject.sale.expiresAt %}
         {% else %}
@@ -133,6 +134,11 @@
         {{- '&nbsp;' -}}
         <strong>{{ date|format_datetime('long', 'none', locale=locale) }}</strong>.
     {%- endif -%}
+{%- endmacro -%}
+
+
+{%- macro render_proposal(subject, locale) -%}
+    {% if subject.sale.title is not empty -%}{{ subject.sale.title }}.{%- endif %}
 {%- endmacro -%}
 
 

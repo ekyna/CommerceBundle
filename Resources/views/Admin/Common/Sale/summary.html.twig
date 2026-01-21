@@ -77,9 +77,11 @@
 </table>
 
 <div style="display:flex;align-items:stretch;justify-content:space-between;">
+    {% if invoice_address is not null %}
     <div class="panel panel-default panel-body">{{ invoice_address|address }}</div>
+    {% endif %}
     {% if delivery_address is not null %}
-        <div class="panel panel-default panel-body" style="margin-left:5px">{{ delivery_address|address }}</div>
+    <div class="panel panel-default panel-body" style="margin-left:5px">{{ delivery_address|address }}</div>
     {% endif %}
 </div>
 
