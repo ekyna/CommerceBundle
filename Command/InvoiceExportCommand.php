@@ -33,7 +33,7 @@ use function sprintf;
  */
 #[AsCommand(
     name: 'ekyna:commerce:invoice:export',
-    description: 'Exports invoices to CSV files.',
+    description: 'Exports invoice to an XLS or CSV file.',
 )]
 class InvoiceExportCommand extends Command
 {

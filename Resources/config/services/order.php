@@ -25,6 +25,7 @@ use Ekyna\Component\Commerce\Bridge\Symfony\EventListener\StockUnitEventSubscrib
 use Ekyna\Component\Commerce\Bridge\Symfony\Order\OrderMarginInvalidator;
 use Ekyna\Component\Commerce\Common\Generator\DateNumberGenerator;
 use Ekyna\Component\Commerce\Common\Preparer\OrderPreparer;
+use Ekyna\Component\Commerce\Order\Export\OrderInvoiceLineExporter;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Resolver\OrderStateResolver;
 use Ekyna\Component\Commerce\Order\Updater\OrderInvoiceUpdater;
@@ -213,6 +214,15 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('ekyna_commerce.repository.order_invoice'),
             service('translator'),
+        ]);
+
+    // Order invoice line exporter
+    $services
+        ->set('ekyna_commerce.exporter.order_invoice_line', OrderInvoiceLineExporter::class)
+        ->args([
+            service('doctrine.orm.default_entity_manager'),
+            service('ekyna_commerce.repository.order_invoice'),
+            service('ekyna_commerce.factory.invoice_margin_calculator'),
         ]);
 
     // Order item exporter
