@@ -64,7 +64,7 @@ class ManufactureHelper
         $produced = $this->orderCalculator->calculateProducedQuantity($order);
 
         return $expected !== $produced
-            && $order->getBom()->getState() === BOMState::VALIDATED;
+            && in_array($order->getBom()->getState(), [BOMState::VALIDATED, BOMState::ARCHIVED], true);
     }
 
     public function renderProductionOrderQuantity(ProductionOrderInterface $order): string
