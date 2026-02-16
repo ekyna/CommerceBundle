@@ -1663,7 +1663,7 @@ sale:
         outstanding_accepted: Encours accepté
         outstanding_expired: Encours expiré
         outstanding_limit: Limite d'encours
-        outstanding_date: Date limite
+        outstanding_date: Date d'échéance
         accepted_at: Acceptée le
         paid_at: Réglé le
         coupon_code: Code promotion

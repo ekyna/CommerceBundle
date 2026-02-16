@@ -5,7 +5,7 @@
 </head>
 <body>
 {% for label in labels %}
-<code id="label-{{ loop.index0 }}" type="{{ label.format }}">{{- label|shipment_label_content -}}</code>
+<code id="label-{{ loop.index0 }}" type="{{ label.format }}">{{- label|shipment_label_content|raw -}}</code>
 {% endfor %}
 </body>
 </html>

@@ -20,7 +20,7 @@ class CustomerRepository extends SearchRepository
     {
         $query = parent::createQuery($request);
 
-        if (empty($parent = $request->getParameter('parent'))) {
+        if (empty($request->getParameter('parent'))) {
             return $query;
         }
 
@@ -57,14 +57,14 @@ class CustomerRepository extends SearchRepository
         return [
             'company^3',
             'company.analyzed',
-            'last_name^2',
-            'last_name.analyzed',
-            'first_name^2',
-            'first_name.analyzed',
+            'lastName^2',
+            'lastName.analyzed',
+            'firstName^2',
+            'firstName.analyzed',
             'number',
             'number.analyzed',
-            'company_number',
-            'company_number.analyzed',
+            'companyNumber',
+            'companyNumber.analyzed',
             'email',
             'email.analyzed',
         ];

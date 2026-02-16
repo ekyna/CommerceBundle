@@ -1624,7 +1624,7 @@ sale:
         outstanding_accepted: Accepted outstanding
         outstanding_expired: Expired outstanding
         outstanding_limit: Outstanding limit
-        outstanding_date: Limit Date
+        outstanding_date: Due Date
         paid_at: Paid at
         accepted_at: Accepted at
         coupon_code: Coupon code

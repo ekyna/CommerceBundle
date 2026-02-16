@@ -33,16 +33,16 @@ abstract class AbstractSaleRepository extends SearchRepository
             $title = sprintf(
                 '[%s] %s %s',
                 $source['number'],
-                $source['first_name'],
-                $source['last_name']
+                $source['firstName'],
+                $source['lastName']
             );
         } else {
             $title = sprintf(
                 '[%s] %s %s %s',
                 $source['number'],
                 $source['company'],
-                $source['first_name'],
-                $source['last_name']
+                $source['firstName'],
+                $source['lastName']
             );
         }
 
@@ -65,14 +65,14 @@ abstract class AbstractSaleRepository extends SearchRepository
         return [
             'company^3',
             'company.analyzed',
-            'last_name^2',
-            'last_name.analyzed',
-            'first_name^2',
-            'first_name.analyzed',
+            'lastName^2',
+            'lastName.analyzed',
+            'firstName^2',
+            'firstName.analyzed',
             'number',
             'number.analyzed',
-            'voucher_number',
-            'voucher_number.analyzed',
+            'voucherNumber',
+            'voucherNumber.analyzed',
             'title',
             'title.analyzed',
             'email',

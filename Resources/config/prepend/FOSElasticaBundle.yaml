@@ -6,11 +6,11 @@ fos_elastica:
                 groups: [ Search ]
             properties:
                 number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
-                company_number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                companyNumber: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
                 email: { type: text, fields: { analyzed: { type: text, analyzer: email, search_analyzer: search } } }
                 company: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
-                first_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
-                last_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                firstName: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                lastName: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
                 parent: { type: integer }
                 currency: { type: keyword }
                 locale: { type: keyword }
@@ -26,11 +26,11 @@ fos_elastica:
                 groups: [ Search ]
             properties:
                 number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
-                voucher_number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                voucherNumber: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
                 email: { type: text, fields: { analyzed: { type: text, analyzer: email, search_analyzer: search } } }
                 company: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
-                first_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
-                last_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                firstName: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                lastName: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
                 title: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
             persistence:
                 driver: orm
@@ -80,11 +80,11 @@ fos_elastica:
                 groups: [ Search ]
             properties:
                 number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
-                voucher_number: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
+                voucherNumber: { type: text, fields: { analyzed: { type: text, analyzer: ngram, search_analyzer: search } } }
                 email: { type: text, fields: { analyzed: { type: text, analyzer: email, search_analyzer: search } } }
                 company: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
-                first_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
-                last_name: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                firstName: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
+                lastName: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
                 title: { type: text, fields: { analyzed: { type: text, analyzer: edge, search_analyzer: search } } }
             persistence:
                 driver: orm
