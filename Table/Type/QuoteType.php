@@ -202,7 +202,7 @@ class QuoteType extends AbstractResourceType
                 'position' => 42,
                 'time'     => false,
             ])
-            ->addFilter('projectTrust', CType\Filter\NumberType::class, [
+            ->addFilter('projectTrust', Type\Filter\QuoteProjectTrustType::class, [
                 'label'    => t('quote.field.project_trust', [], 'EkynaCommerce'),
                 'position' => 43,
             ])
