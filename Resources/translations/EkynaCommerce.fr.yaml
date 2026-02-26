@@ -414,6 +414,8 @@ bill_of_materials:
         validate: Valider la nomenclature <small>%name%</small>
         archive: Archive la nomenclature <small>%name%</small>
         duplicate: Dupliquer la nomenclature <small>%name%</small>
+    field:
+        cost: Coût
     button:
         list: Liste des nomenclatures
         show: Détail de la nomenclature

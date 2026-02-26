@@ -11,6 +11,8 @@ use Ekyna\Component\Commerce\Manufacture\Model\BillOfMaterialsInterface;
 use Ekyna\Component\Commerce\Manufacture\Model\BOMState;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -41,6 +43,15 @@ class BillOfMaterialsType extends AbstractResourceType
                     'lock_mode' => true,
                     'context'   => SubjectProviderInterface::CONTEXT_SUPPLIER,
                     'disabled'  => $disabled,
+                ])
+                ->add('cost', NumberType::class, [
+                    'label'    => t('bill_of_materials.field.cost', [], 'EkynaCommerce'),
+                    'decimal'  => true,
+                    'required' => false,
+                ])
+                ->add('description', TextareaType::class, [
+                    'label'    => t('field.description', [], 'EkynaCommerce'),
+                    'required' => false,
                 ])
                 ->add('components', CollectionType::class, [
                     'label'         => t('field.components', [], 'EkynaCommerce'),

@@ -12,6 +12,11 @@
     <div class="tab-pane active" id="{{ resource_name }}-general">
         {{ form_row(form.subjectIdentity) }}
         {{ form_row(form.components) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.cost, {'label_col': 4, 'widget_col': 8}) }}
+            </div>
+        </div>
+        {{ form_row(form.description) }}
     </div>
 {%- endblock main_contents %}
-

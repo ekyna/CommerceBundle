@@ -5,9 +5,9 @@
 
 
 {% block main_actions %}
+    {{ admin_resource_btn(billOfMaterials, 'Ekyna\\Bundle\\AdminBundle\\Action\\UpdateAction') }}
     {% if billOfMaterials.state == constant('Ekyna\\Component\\Commerce\\Manufacture\\Model\\BOMState::DRAFT') %}
         {{ admin_resource_btn(billOfMaterials, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\BillOfMaterials\\ValidateAction') }}
-        {{ admin_resource_btn(billOfMaterials, 'Ekyna\\Bundle\\AdminBundle\\Action\\UpdateAction') }}
         {{ admin_resource_btn(billOfMaterials, 'Ekyna\\Bundle\\AdminBundle\\Action\\DeleteAction') }}
     {% elseif billOfMaterials.state == constant('Ekyna\\Component\\Commerce\\Manufacture\\Model\\BOMState::VALIDATED') %}
         {{ admin_resource_btn(billOfMaterials, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\BillOfMaterials\\CreatePOAction') }}
@@ -68,6 +68,17 @@
             </div>
         </div>
         {{ macros.show_subject(billOfMaterials, t('subject.label.singular', [], 'EkynaCommerce')) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ show_row(billOfMaterials.cost|format_currency(commerce_default_currency), 'text', {
+                    'label': t('bill_of_materials.field.cost', [], 'EkynaCommerce'),
+                    'label_col': 4
+                }) }}
+            </div>
+        </div>
+        {{ show_row(billOfMaterials.description, 'textarea', {
+            'label': t('field.description', [], 'EkynaCommerce'),
+        }) }}
     </div>
     <div class="tab-pane" id="{{ resource_name }}-components">
         <table class="table table-condensed table-striped">
