@@ -51,7 +51,7 @@ class PrioritizeAction extends AbstractOrderAction
             $event = $this->getManager()->save($order);
 
             if (!$event->hasErrors()) {
-                $this->addFlash(t('prioritize.success', [], 'EkynaCommerce'), 'success');
+                $this->addFlash(t('prioritize.order.success', [], 'EkynaCommerce'), 'success');
 
                 return $redirect;
             }
@@ -59,7 +59,7 @@ class PrioritizeAction extends AbstractOrderAction
             $this->addFlashFromEvent($event);
         }
 
-        $this->addFlash(t('prioritize.failure', [], 'EkynaCommerce'), 'warning');
+        $this->addFlash(t('prioritize.order.failure', [], 'EkynaCommerce'), 'warning');
 
         return $redirect;
     }

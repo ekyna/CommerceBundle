@@ -61,8 +61,12 @@ notice:
         due to currency fluctuation.
 
 prioritize:
-    success: Some of the products has been reassigned for shipment.
-    failure: No product has been reassigned for shipment.
+    shipment:
+        success: Some of the products has been reassigned for shipment.
+        failure: No product has been reassigned for shipment.
+    production:
+        success: Some of the products has been reassigned for production.
+        failure: No product has been reassigned for production.
 
 button:
     print_label: Print label

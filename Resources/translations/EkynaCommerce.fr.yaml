@@ -61,8 +61,12 @@ notice:
         selon les variations des taux de change.
 
 prioritize:
-    success: Certains articles ont pu être réassignés pour expédition.
-    failure: Aucun article n'a pu être réassigné pour expédition.
+    shipment:
+        success: Certains articles ont pu être réassignés pour expédition.
+        failure: Aucun article n'a pu être réassigné pour expédition.
+    production:
+        success: Certains articles ont pu être réassignés pour production.
+        failure: Aucun article n'a pu être réassigné pour production.
 
 button:
     print_label: Étiquette
