@@ -8,7 +8,7 @@ use DateTimeInterface;
 use Ekyna\Bundle\CommerceBundle\Event\DocumentExtraEvent;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Resource\Exception\PdfException;
-use Ekyna\Component\Resource\Helper\PdfGenerator;
+use Ekyna\Component\Resource\Helper\PdfGeneratorInterface;
 use Ekyna\Component\Resource\Model\TimestampableInterface;
 use setasign\Fpdi\Fpdi;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +36,7 @@ abstract class AbstractRenderer implements RendererInterface
 {
     protected readonly EventDispatcherInterface $dispatcher;
     protected readonly Environment              $twig;
-    protected readonly PdfGenerator             $pdfGenerator;
+    protected readonly PdfGeneratorInterface    $pdfGenerator;
     protected readonly array                    $config;
     protected object                            $subject;
 
@@ -59,7 +59,7 @@ abstract class AbstractRenderer implements RendererInterface
         $this->twig = $twig;
     }
 
-    public function setPdfGenerator(PdfGenerator $generator): void
+    public function setPdfGenerator(PdfGeneratorInterface $generator): void
     {
         $this->pdfGenerator = $generator;
     }

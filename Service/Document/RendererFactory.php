@@ -9,7 +9,7 @@ use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
 use Ekyna\Component\Commerce\Shipment\Model\ShipmentInterface;
 use Ekyna\Component\Commerce\Supplier\Model\SupplierOrderInterface;
-use Ekyna\Component\Resource\Helper\PdfGenerator;
+use Ekyna\Component\Resource\Helper\PdfGeneratorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
 
@@ -25,7 +25,7 @@ class RendererFactory
     public function __construct(
         private readonly EventDispatcherInterface $dispatcher,
         private readonly Environment              $twig,
-        private readonly PdfGenerator             $pdfGenerator,
+        private readonly PdfGeneratorInterface    $pdfGenerator,
         array                                     $config = []
     ) {
         $this->config = array_replace([

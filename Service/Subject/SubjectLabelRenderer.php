@@ -8,7 +8,7 @@ use Ekyna\Bundle\CommerceBundle\Event\BuildSubjectLabels;
 use Ekyna\Bundle\CommerceBundle\Model\SubjectLabel;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Resource\Exception\PdfException;
-use Ekyna\Component\Resource\Helper\PdfGenerator;
+use Ekyna\Component\Resource\Helper\PdfGeneratorInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
@@ -30,12 +30,12 @@ class SubjectLabelRenderer
         'template' => null,
         'pdf'      => [
             'unit'         => 'mm',
-            'marginTop'    => 4,
-            'marginBottom' => 4,
-            'marginLeft'   => 4,
-            'marginRight'  => 4,
-            'paperWidth'   => 62,
-            'paperHeight'  => 100,
+            'marginTop'    => '4',
+            'marginBottom' => '4',
+            'marginLeft'   => '4',
+            'marginRight'  => '4',
+            'paperWidth'   => '62',
+            'paperHeight'  => '100',
         ],
     ];
 
@@ -45,12 +45,12 @@ class SubjectLabelRenderer
             'template' => '@EkynaCommerce/Admin/Subject/Label/large.html.twig',
             'pdf'      => [
                 'unit'         => 'mm',
-                'marginTop'    => 4,
-                'marginBottom' => 4,
-                'marginLeft'   => 4,
-                'marginRight'  => 4,
-                'paperWidth'   => 62,
-                'paperHeight'  => 100,
+                'marginTop'    => '4',
+                'marginBottom' => '4',
+                'marginLeft'   => '4',
+                'marginRight'  => '4',
+                'paperWidth'   => '62',
+                'paperHeight'  => '100',
             ],
         ],
         self::FORMAT_SMALL => [
@@ -58,21 +58,21 @@ class SubjectLabelRenderer
             'template' => '@EkynaCommerce/Admin/Subject/Label/small.html.twig',
             'pdf'      => [
                 'unit'         => 'mm',
-                'marginTop'    => 3,
-                'marginBottom' => 3,
-                'marginLeft'   => 3,
-                'marginRight'  => 3,
-                'paperWidth'   => 62,
-                'paperHeight'  => 29,
+                'marginTop'    => '3',
+                'marginBottom' => '3',
+                'marginLeft'   => '3',
+                'marginRight'  => '3',
+                'paperWidth'   => '62',
+                'paperHeight'  => '29',
             ],
         ],
     ];
 
     public function __construct(
         private readonly EventDispatcherInterface $dispatcher,
-        private readonly Environment $twig,
-        private readonly PdfGenerator $pdfGenerator,
-        private readonly TranslatorInterface $translator,
+        private readonly Environment              $twig,
+        private readonly PdfGeneratorInterface    $pdfGenerator,
+        private readonly TranslatorInterface      $translator,
     ) {
     }
 
