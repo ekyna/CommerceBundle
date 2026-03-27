@@ -103,7 +103,7 @@ return static function (ContainerConfigurator $container) {
 
     // Payment normalizer
     $services
-        ->set('ekyna_commerce.normalizer.payement', PaymentNormalizer::class)
+        ->set('ekyna_commerce.normalizer.payment', PaymentNormalizer::class)
         ->parent('ekyna_resource.normalizer.abstract')
         ->call('setClass', [PaymentInterface::class])
         ->tag('serializer.normalizer')
