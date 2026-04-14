@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Service\Document;
 
+use Ekyna\Bundle\CommerceBundle\Event\DocumentDesignEvent;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\DocumentDesign;
 use Ekyna\Bundle\CommerceBundle\Service\Common\CommonRenderer;
@@ -72,6 +73,10 @@ class DocumentHelper
 
         if ($sale = $this->localeHelper->getSale($document)) {
             $this->fillFromSale($design, $sale);
+        }
+
+        if ($document instanceof DocumentInterface) {
+            $this->eventDispatcher->dispatch(new DocumentDesignEvent($document, $design));
         }
 
         return $design;
