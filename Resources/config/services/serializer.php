@@ -14,6 +14,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketMessageNormalizer;
 use Ekyna\Bundle\CommerceBundle\Service\Serializer\TicketNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Helper\SubjectNormalizerHelper;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\AddressNormalizer;
+use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\AdjustmentNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\BOMNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceItemNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\InvoiceLineNormalizer;
@@ -27,6 +28,7 @@ use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ShipmentNormal
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\ShipmentParcelNormalizer;
 use Ekyna\Component\Commerce\Bridge\Symfony\Serializer\Normalizer\SupplierOrderItemNormalizer;
 use Ekyna\Component\Commerce\Common\Model\AddressInterface;
+use Ekyna\Component\Commerce\Common\Model\AdjustmentInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
 use Ekyna\Component\Commerce\Invoice\Model\InvoiceInterface;
@@ -59,6 +61,14 @@ return static function (ContainerConfigurator $container) {
         ->call('setClass', [AddressInterface::class])
         ->tag('serializer.normalizer')
         ->tag('serializer.denormalizer');
+
+    // Adjustment normalizer
+    $services
+        ->set('ekyna_commerce.normalizer.adjustment', AdjustmentNormalizer::class)
+        ->parent('ekyna_resource.normalizer.abstract')
+        ->call('setClass', [AdjustmentInterface::class])
+        ->tag('serializer.normalizer');
+        //->tag('serializer.denormalizer');
 
     // Balance normalizer
     $services
