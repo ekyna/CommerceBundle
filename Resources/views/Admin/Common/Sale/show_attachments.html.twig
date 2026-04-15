@@ -9,7 +9,7 @@
 
 {% block cell_action_archive -%}
     {%- if attachment.type is not null -%}
-        {% if admin_has_resource_access(attachment, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Attachment\\ArchiveAction') %}
+        {% if admin_resource_access(attachment, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Attachment\\ArchiveAction') %}
         <a href="{{ admin_resource_path(attachment, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Attachment\\ArchiveAction') }}"
            class="btn btn-default btn-xs"
            onclick="return confirm('{{ 'attachment.message.archive_confirm'|trans({}, 'EkynaCommerce')|escape('js') }}')"
@@ -17,7 +17,7 @@
             <span class="fa fa-archive"></span>
         </a>
         {% endif %}
-        {% if admin_has_resource_access(attachment, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Sale\\Attachment\\GenerateAction')
+        {% if admin_resource_access(attachment, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Sale\\Attachment\\GenerateAction')
             and sale|sale_support_document_type(attachment.type) -%}
             <a href="{{ admin_resource_path(attachment, 'Ekyna\\Bundle\\CommerceBundle\\Action\\Admin\\Sale\\Attachment\\GenerateAction') }}"
                class="btn btn-warning btn-xs"
