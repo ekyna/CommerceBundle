@@ -17,6 +17,7 @@ use Ekyna\Component\Commerce\Common\View\ViewBuilder;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Twig\Environment;
 
+use function array_intersect;
 use function Symfony\Component\Translation\t;
 
 /**
@@ -71,36 +72,49 @@ class SaleRenderer
     /**
      * Renders the sale transform button.
      */
-    public function renderSaleDuplicateButton(Common\SaleInterface $sale): string
+    public function renderSaleDuplicateButton(Common\SaleInterface $sale, array $targets = []): string
     {
-        return $this->renderSaleOperationButton($sale, 'duplicate');
+        return $this->renderSaleOperationButton($sale, 'duplicate', $targets);
     }
 
     /**
      * Renders the sale transform button.
      */
-    public function renderSaleTransformButton(Common\SaleInterface $sale): string
+    public function renderSaleTransformButton(Common\SaleInterface $sale, array $targets = []): string
     {
-        return $this->renderSaleOperationButton($sale, 'transform');
+        return $this->renderSaleOperationButton($sale, 'transform', $targets);
     }
 
     /**
      * Renders the sale export button.
      */
-    public function renderSaleExportButton(Common\SaleInterface $sale): string
+    public function renderSaleExportButton(Common\SaleInterface $sale, array $restrict = []): string
     {
         $actions = [];
 
         $entries = [
-            'CSV'             => ['_format' => 'csv'],
-            'Excel'           => ['_format' => 'xls'],
-            'Excel (interne)' => ['_format' => 'xls', 'internal' => 1],
+            'csv'          => [
+                'name'       => 'CSV',
+                'parameters' => ['_format' => 'csv'],
+            ],
+            'xls'          => [
+                'name'       => 'Excel',
+                'parameters' => ['_format' => 'xls'],
+            ],
+            'internal_xls' => [
+                'name'       => 'Excel (interne)',
+                'parameters' => ['_format' => 'xls', 'internal' => 1],
+            ],
         ];
 
-        foreach ($entries as $name => $parameters) {
-            $path = $this->resourceHelper->generateResourcePath($sale, ExportAction::class, $parameters);
+        foreach ($entries as $key => $config) {
+            if (!empty($restrict) && !in_array($key, $restrict, true)) {
+                continue;
+            }
 
-            $actions[$path] = $name;
+            $path = $this->resourceHelper->generateResourcePath($sale, ExportAction::class, $config['parameters']);
+
+            $actions[$path] = $config['name'];
         }
 
         return $this
@@ -115,11 +129,21 @@ class SaleRenderer
     /**
      * Renders the sale operation dropdown.
      */
-    private function renderSaleOperationButton(Common\SaleInterface $sale, string $operation): string
+    private function renderSaleOperationButton(
+        Common\SaleInterface $sale,
+        string               $operation,
+        array                $restrict = []
+    ): string
     {
         $actions = [];
 
-        if (empty($targets = Common\TransformationTargets::getTargetsForSale($sale, $operation === 'duplicate'))) {
+        $targets = Common\TransformationTargets::getTargetsForSale($sale, $operation === 'duplicate');
+
+        if (!empty($restrict)) {
+            $targets = array_intersect($targets, $restrict);
+        }
+
+        if (empty($targets)) {
             return '';
         }
 

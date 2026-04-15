@@ -13,6 +13,8 @@ class Permission
 {
     public const DASHBOARD_EXPORT = 'dashboard_export';
     public const STAT_CHART       = 'stat_chart';
+    public const ARCHIVE          = 'archive';
+    public const GENERATE         = 'generate';
 
     private function __construct()
     {

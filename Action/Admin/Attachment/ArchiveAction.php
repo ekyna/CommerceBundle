@@ -11,8 +11,9 @@ use Ekyna\Bundle\ResourceBundle\Action\ManagerTrait;
 use Ekyna\Bundle\UiBundle\Action\FlashTrait;
 use Ekyna\Component\Commerce\Common\Model\AttachmentInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
-use Ekyna\Component\Resource\Action\Permission;
 use Symfony\Component\HttpFoundation\Response;
+use Ekyna\Component\Resource\Action\Permission;
+use Ekyna\Bundle\CommerceBundle\Model\Permission as CommercePermission;
 
 /**
  * Class ArchiveAction
@@ -57,7 +58,7 @@ class ArchiveAction extends AbstractAction implements AdminActionInterface
     {
         return [
             'name'       => 'commerce_attachment_archive',
-            'permission' => Permission::UPDATE,
+            'permission' => [Permission::UPDATE, CommercePermission::ARCHIVE],
             'route'      => [
                 'name'     => 'admin_%s_archive',
                 'path'     => '/archive',

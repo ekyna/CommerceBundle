@@ -11,3 +11,9 @@ permissions:
     Ekyna\Bundle\CommerceBundle\Model\Permission::STAT_CHART:
         label: permission.stat_chart
         trans_domain: EkynaCommerce
+    Ekyna\Bundle\CommerceBundle\Model\Permission::ARCHIVE:
+        label: button.archive
+        trans_domain: EkynaUi
+    Ekyna\Bundle\CommerceBundle\Model\Permission::GENERATE:
+        label: button.generate
+        trans_domain: EkynaUi

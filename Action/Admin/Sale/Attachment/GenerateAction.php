@@ -16,6 +16,7 @@ use Ekyna\Component\Commerce\Document\Util\DocumentUtil;
 use Ekyna\Component\Commerce\Exception\InvalidArgumentException;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Resource\Action\Permission;
+use Ekyna\Bundle\CommerceBundle\Model\Permission as CommercePermission;
 use Ekyna\Component\Resource\Exception\PdfException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -101,7 +102,7 @@ class GenerateAction extends AbstractAction implements AdminActionInterface
     {
         return [
             'name'       => 'commerce_attachment_generate',
-            'permission' => Permission::UPDATE,
+            'permission' => [Permission::UPDATE, CommercePermission::GENERATE],
             'route'      => [
                 'name'     => 'admin_%s_generate',
                 'path'     => '/generate',
