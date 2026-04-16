@@ -1196,6 +1196,7 @@ order:
         edit: Modifier la commande
         remove: Supprimer la commande
         transform: Transformer la commande
+        duplicate: Dupliquer la commande
         notify: Notifier la commande
         release: Clôturer
         unrelease: Réouvrir
@@ -1451,6 +1452,7 @@ quote:
         edit: Modifier le devis
         remove: Supprimer le devis
         transform: Transformer le devis
+        duplicate: Dupliquer le devis
         notify: Notifier le devis
     field:
         editable: Modifiable par le client
@@ -1460,6 +1462,9 @@ quote:
     alert:
         no_item: Aucun devis configuré
     message:
+        duplicate_check_fields: >
+            <p>Veuillez vérifier les champs suivants : <em>Général</em> &gt; <strong>Groupe de clients</strong> et 
+            <em>Informations</em> &gt; <strong>Responsable</strong>.</p>
         transformation_to_order_is_ready: Ce devis est prêt à être transformé en commande.
         already_paid: Ce devis est déjà réglée en totalité
         cant_be_deleted: Ce devis a des paiement(s) ou des livraison(s) valide(s) et ne peut être supprimée.

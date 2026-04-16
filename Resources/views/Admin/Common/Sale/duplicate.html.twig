@@ -20,6 +20,10 @@
 {% endblock actions %}
 
 {% block main %}
+    <div class="alert alert-danger">
+        <p><i class="fa fa-warning fa-2x fa-pull-left"></i></p>
+        {{ 'quote.message.duplicate_check_fields'|trans({}, 'EkynaCommerce')|raw }}
+    </div>
     {{ form_start(form) }}
     {% include form_template %}
     {{ form_end(form) }}

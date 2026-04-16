@@ -1163,6 +1163,7 @@ order:
         edit: Edit the order
         remove: Remove the order
         transform: Transform the order
+        duplicate: Duplicate the order
         notify: Notify the order
         release: Close
         unrelease: Reopen
@@ -1407,16 +1408,17 @@ quote:
         new: Create a new quote
         edit: Edit quote <small>%name%</small>
         remove: Remove quote <small>%name%</small>
-        transform: Transform quote <small>%name% into %target%</small>
-        duplicate: Duplicate quote <small>%name% into %target%</small>
+        transform: Transform the quote <small>%name% into %target%</small>
+        duplicate: Duplicate the quote <small>%name% into %target%</small>
         notify: Notify quote <small>%name%</small>
     button:
         list: Quotes list
         show: Quote details
         new: New quote
         edit: Edit quote
-        remove: Remove quote
-        transform: Transform quote
+        remove: Remove the quote
+        transform: Transform the quote
+        duplicate: Duplicate the quote
         notify: Notify quote
     field:
         editable: Editable by the customer
@@ -1426,6 +1428,9 @@ quote:
     alert:
         no_item: No quote configured
     message:
+        duplicate_check_fields: >
+            <p>Please check the following fields: <em>General</em> &gt; <strong>Customer Group</strong> and 
+            <em>Information</em> &gt; <strong>In Charge</strong>.</p>
         transformation_to_order_is_ready: This quote can be transformed into an order.
         already_paid: This quote has already been paid.
         cant_be_deleted: This quote has valid payment(s) and therefore cannot be deleted.

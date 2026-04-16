@@ -107,6 +107,9 @@ return static function (ContainerConfigurator $container) {
     // In Charge Sale copy event listener
     $services
         ->set('ekyna_commerce.listener.in_charge_sale_copy', InChargeSaleCopyListener::class)
+        ->args([
+            service('ekyna_admin.provider.user'),
+        ])
         ->tag('kernel.event_listener', [
             'event'    => SaleTransformEvents::POST_COPY,
             'method'   => 'onPostCopy',
