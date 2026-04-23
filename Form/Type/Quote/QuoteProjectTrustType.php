@@ -18,6 +18,7 @@ use function Symfony\Component\Translation\t;
 class QuoteProjectTrustType extends AbstractType
 {
     public const CHOICES = [
+        '0%'   => 0,
         '10%'  => 1,
         '30%'  => 3,
         '60%'  => 6,
