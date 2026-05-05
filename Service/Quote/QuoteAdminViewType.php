@@ -35,7 +35,7 @@ class QuoteAdminViewType extends AbstractViewType
 
         // Check items button
         $checkItemsPath = $this->resourceUrl($sale, Admin\Sale\CheckItemsAction::class);
-        $view->addButton(new View\Button(
+        $view->addButton('items.check', new View\Button(
             $checkItemsPath,
             $this->trans('sale.button.check_items', [], 'EkynaCommerce'),
             'fa fa-check-circle-o', [
@@ -46,7 +46,7 @@ class QuoteAdminViewType extends AbstractViewType
 
         // Refresh button
         $refreshPath = $this->resourceUrl($sale, Admin\Sale\RefreshAction::class);
-        $view->addButton(new View\Button(
+        $view->addButton('refresh', new View\Button(
             $refreshPath,
             $this->trans('button.refresh', [], 'EkynaUi'),
             'fa fa-refresh',
@@ -61,7 +61,7 @@ class QuoteAdminViewType extends AbstractViewType
         $addItemPath = $this->resourceUrl('ekyna_commerce.quote_item', Admin\Sale\Item\AddAction::class, [
             'quoteId' => $sale->getId(),
         ]);
-        $view->addButton(new View\Button(
+        $view->addButton('items.add', new View\Button(
             $addItemPath,
             $this->trans('sale.button.item.add', [], 'EkynaCommerce'),
             'fa fa-plus',
@@ -76,7 +76,7 @@ class QuoteAdminViewType extends AbstractViewType
         $newItemPath = $this->resourceUrl('ekyna_commerce.quote_item', Admin\Sale\Item\CreateAction::class, [
             'quoteId' => $sale->getId(),
         ]);
-        $view->addButton(new View\Button(
+        $view->addButton('items.create', new View\Button(
             $newItemPath,
             $this->trans('sale.button.item.new', [], 'EkynaCommerce'),
             'fa fa-plus',
@@ -93,7 +93,7 @@ class QuoteAdminViewType extends AbstractViewType
             [
                 'quoteId' => $sale->getId(),
             ]);
-        $view->addButton(new View\Button(
+        $view->addButton('adjustments.create', new View\Button(
             $newAdjustmentPath,
             $this->trans('sale.button.adjustment.new', [], 'EkynaCommerce'),
             'fa fa-plus',
@@ -123,14 +123,14 @@ class QuoteAdminViewType extends AbstractViewType
             $adjustment = current($item->getAdjustments(Common\AdjustmentTypes::TYPE_DISCOUNT)->toArray());
             if (false !== $adjustment) {
                 $editPath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\UpdateAction::class);
-                $view->addAction(new View\Action($editPath, 'fa fa-percent', [
+                $view->addAction('adjustment.update', new View\Action($editPath, 'fa fa-percent', [
                     'title'           => $this->trans('sale.button.adjustment.edit', [], 'EkynaCommerce'),
                     'class'           => 'text-warning',
                     'data-sale-modal' => null,
                 ]));
 
                 $removePath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\DeleteAction::class);
-                $view->addAction(new View\Action($removePath, 'fa fa-percent', [
+                $view->addAction('adjustment.delete', new View\Action($removePath, 'fa fa-percent', [
                     'title'           => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
                     //'confirm'       => $this->trans('sale.confirm.adjustment.remove', [], 'EkynaCommerce'),
                     //'data-sale-xhr' => null,
@@ -147,7 +147,7 @@ class QuoteAdminViewType extends AbstractViewType
                         'quoteItemId' => $item->getId(),
                     ]
                 );
-                $view->addAction(new View\Action($newAdjustmentPath, 'fa fa-percent', [
+                $view->addAction('adjustment.create', new View\Action($newAdjustmentPath, 'fa fa-percent', [
                     'title'           => $this->trans('sale.button.adjustment.new', [], 'EkynaCommerce'),
                     'data-sale-modal' => null,
                     'class'           => 'text-success',
@@ -160,7 +160,7 @@ class QuoteAdminViewType extends AbstractViewType
             // Move up
             if (0 < $item->getPosition()) {
                 $moveUpPath = $this->resourceUrl($item, Admin\Sale\Item\MoveUpAction::class);
-                $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-up', [
+                $view->addAction('move_up', new View\Action($moveUpPath, 'fa fa-arrow-up', [
                     'title'         => $this->trans('button.move_up', [], 'EkynaUi'),
                     'data-sale-xhr' => 'get',
                     'class'         => 'text-muted',
@@ -170,7 +170,7 @@ class QuoteAdminViewType extends AbstractViewType
             // Move down
             if (!$item->isLast()) {
                 $moveDownPath = $this->resourceUrl($item, Admin\Sale\Item\MoveDownAction::class);
-                $view->addAction(new View\Action($moveDownPath, 'fa fa-arrow-down', [
+                $view->addAction('move_down', new View\Action($moveDownPath, 'fa fa-arrow-down', [
                     'title'         => $this->trans('button.move_down', [], 'EkynaUi'),
                     'data-sale-xhr' => 'get',
                     'class'         => 'text-muted',
@@ -181,7 +181,7 @@ class QuoteAdminViewType extends AbstractViewType
             if (!$item->isImmutable()) {
                 // Remove action
                 $removePath = $this->resourceUrl($item, Admin\Sale\Item\DeleteAction::class);
-                $view->addAction(new View\Action($removePath, 'fa fa-remove', [
+                $view->addAction('delete', new View\Action($removePath, 'fa fa-remove', [
                     'title'           => $this->trans('sale.button.item.remove', [], 'EkynaCommerce'),
                     //'confirm'       => $this->trans('sale.confirm.item.remove', [], 'EkynaCommerce'),
                     //'data-sale-xhr' => null,
@@ -194,7 +194,7 @@ class QuoteAdminViewType extends AbstractViewType
         // Edit action
         //if (!$item->isCompound()) {
         $editPath = $this->resourceUrl($item, Admin\Sale\Item\UpdateAction::class);
-        $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
+        $view->addAction('update', new View\Action($editPath, 'fa fa-pencil', [
             'title'           => $this->trans('sale.button.item.edit', [], 'EkynaCommerce'),
             'data-sale-modal' => null,
             'class'           => 'text-warning',
@@ -205,7 +205,7 @@ class QuoteAdminViewType extends AbstractViewType
             // Configure action
             if ($item->isConfigurable()) {
                 $configurePath = $this->resourceUrl($item, Admin\Sale\Item\ConfigureAction::class);
-                $view->addAction(new View\Action($configurePath, 'fa fa-cog', [
+                $view->addAction('configure', new View\Action($configurePath, 'fa fa-cog', [
                     'title'           => $this->trans('sale.button.item.configure', [], 'EkynaCommerce'),
                     'data-sale-modal' => null,
                     'class'           => 'text-primary',
@@ -216,7 +216,7 @@ class QuoteAdminViewType extends AbstractViewType
         // Sync with subject
         if ($item->getSubjectIdentity()->hasIdentity() && !$item->hasParent()) {
             $syncPath = $this->resourceUrl($item, Admin\Sale\Item\SyncSubjectAction::class);
-            $view->addAction(new View\Action($syncPath, 'fa fa-cube', [
+            $view->addAction('sync_subject', new View\Action($syncPath, 'fa fa-cube', [
                 'title'         => $this->trans('sale.button.item.sync_subject', [], 'EkynaCommerce'),
                 'confirm'       => $this->trans('sale.confirm.item.sync_subject', [], 'EkynaCommerce'),
                 'data-sale-xhr' => null,
@@ -235,14 +235,14 @@ class QuoteAdminViewType extends AbstractViewType
         }
 
         $editPath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\UpdateAction::class);
-        $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
+        $view->addAction('update', new View\Action($editPath, 'fa fa-pencil', [
             'title'           => $this->trans('sale.button.adjustment.edit', [], 'EkynaCommerce'),
             'data-sale-modal' => null,
             'class'           => 'text-warning',
         ]));
 
         $removePath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\DeleteAction::class);
-        $view->addAction(new View\Action($removePath, 'fa fa-remove', [
+        $view->addAction('delete', new View\Action($removePath, 'fa fa-remove', [
             'title'           => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
             //'confirm'       => $this->trans('sale.confirm.adjustment.remove', [], 'EkynaCommerce'),
             //'data-sale-xhr' => null,
@@ -264,7 +264,7 @@ class QuoteAdminViewType extends AbstractViewType
         }
 
         $editPath = $this->resourceUrl($sale, Admin\Sale\UpdateShipmentAction::class);
-        $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
+        $view->addAction('shipment.update', new View\Action($editPath, 'fa fa-pencil', [
             'title'           => $this->trans('sale.button.shipment.edit', [], 'EkynaCommerce'),
             'data-sale-modal' => null,
             'class'           => 'text-warning',

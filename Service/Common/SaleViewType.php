@@ -124,7 +124,6 @@ class SaleViewType extends AbstractViewType
 
             if ($options['editable'] && !$item->hasParent()) {
                 $view->vars['attr']['data-id'] = $item->getId();
-                $view->vars['attr']['draggable'] = 'true';
             }
         }
 

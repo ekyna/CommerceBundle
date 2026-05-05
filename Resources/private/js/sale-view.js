@@ -27,20 +27,22 @@ define(['jquery', 'underscore', 'router', 'ekyna-modal', 'ekyna-dispatcher', 'ek
 
         /** @param e DragEvent */
         function itemDragStart(e) {
+            console.log('Item drag start', this);
             if (!this.classList.contains('sale-detail-item')) {
                 e.preventDefault();
                 return false;
             }
 
             draggedItem = this;
-            this.style.opacity = '0.5';
+            this.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
         }
 
         /** @param e DragEvent */
         function itemDragEnd(e) {
             draggedItem = null;
-            this.style.opacity = '1';
+            this.classList.remove('dragging');
+            this.removeAttribute('draggable');
 
             items.forEach(function (item) {
                 clearDropClass.apply(item);
@@ -129,10 +131,20 @@ define(['jquery', 'underscore', 'router', 'ekyna-modal', 'ekyna-dispatcher', 'ek
 
             let dragover = _.throttle(itemDragOver, 400, {trailing: false});
 
-            items = saleView.querySelectorAll('.sale-detail tr[draggable=true]');
-            items.forEach(function (item) {
+            items = saleView.querySelectorAll('.sale-detail tr');
+            items.forEach((item)=> {
+                const handle = item.querySelector('.sale-detail-drag a');
+                if (null === handle) {
+                    console.log('Drag handle not found');
+                    return;
+                }
+
+                handle.addEventListener('mousedown', () => {
+                    console.log('Drag handle mouse down');
+                    item.setAttribute('draggable', 'true');
+                });
+
                 item.addEventListener('dragstart', itemDragStart);
-                item.addEventListener('dragend', itemDragEnd);
                 item.addEventListener('dragenter', itemDragEnter);
                 item.addEventListener('dragover', function (e) {
                     e.preventDefault();

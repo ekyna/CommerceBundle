@@ -68,7 +68,7 @@ class OrderViewType extends AbstractViewType
         if ($this->prioritizeChecker->check($sale)) {
             // Prioritize button
             $prioritizePath = $this->resourceUrl($sale, Admin\Order\PrioritizeAction::class);
-            $view->addButton(new View\Button(
+            $view->addButton('items.prioritize', new View\Button(
                 $prioritizePath,
                 $this->trans('button.prioritize', [], 'EkynaCommerce'),
                 'fa fa-level-up', [
@@ -82,7 +82,7 @@ class OrderViewType extends AbstractViewType
 
         // Check items button
         $checkItemsPath = $this->resourceUrl($sale, Admin\Sale\CheckItemsAction::class);
-        $view->addButton(new View\Button(
+        $view->addButton('items.check', new View\Button(
             $checkItemsPath,
             $this->trans('sale.button.check_items', [], 'EkynaCommerce'),
             'fa fa-check-circle-o', [
@@ -94,7 +94,7 @@ class OrderViewType extends AbstractViewType
 
         // Refresh button
         $refreshPath = $this->resourceUrl($sale, Admin\Sale\RefreshAction::class);
-        $view->addButton(new View\Button(
+        $view->addButton('refresh', new View\Button(
             $refreshPath,
             $this->trans('button.refresh', [], 'EkynaUi'),
             'fa fa-refresh', [
@@ -109,7 +109,7 @@ class OrderViewType extends AbstractViewType
         $addItemPath = $this->resourceUrl('ekyna_commerce.order_item', Admin\Sale\Item\AddAction::class, [
             'orderId' => $sale->getId(),
         ]);
-        $view->addButton(new View\Button(
+        $view->addButton('items.add', new View\Button(
             $addItemPath,
             $this->trans('sale.button.item.add', [], 'EkynaCommerce'),
             'fa fa-plus', [
@@ -124,7 +124,7 @@ class OrderViewType extends AbstractViewType
         $newItemPath = $this->resourceUrl('ekyna_commerce.order_item', Admin\Sale\Item\CreateAction::class, [
             'orderId' => $sale->getId(),
         ]);
-        $view->addButton(new View\Button(
+        $view->addButton('items.create', new View\Button(
             $newItemPath,
             $this->trans('sale.button.item.new', [], 'EkynaCommerce'),
             'fa fa-plus', [
@@ -141,7 +141,7 @@ class OrderViewType extends AbstractViewType
             [
                 'orderId' => $sale->getId(),
             ]);
-        $view->addButton(new View\Button(
+        $view->addButton('adjustments.create', new View\Button(
             $newAdjustmentPath,
             $this->trans('sale.button.adjustment.new', [], 'EkynaCommerce'),
             'fa fa-plus', [
@@ -232,14 +232,14 @@ class OrderViewType extends AbstractViewType
             $adjustment = current($item->getAdjustments(Common\AdjustmentTypes::TYPE_DISCOUNT)->toArray());
             if (false !== $adjustment) {
                 $editPath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\UpdateAction::class);
-                $view->addAction(new View\Action($editPath, 'fa fa-percent', [
+                $view->addAction('discount.update', new View\Action($editPath, 'fa fa-percent', [
                     'title'           => $this->trans('sale.button.adjustment.edit', [], 'EkynaCommerce'),
                     'class'           => 'text-warning',
                     'data-sale-modal' => null,
                 ]));
 
                 $removePath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\DeleteAction::class);
-                $view->addAction(new View\Action($removePath, 'fa fa-percent', [
+                $view->addAction('discount.delete', new View\Action($removePath, 'fa fa-percent', [
                     'title'           => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
                     //'confirm'       => $this->trans('sale.confirm.adjustment.remove', [], 'EkynaCommerce'),
                     //'data-sale-xhr' => null,
@@ -256,7 +256,7 @@ class OrderViewType extends AbstractViewType
                         'orderItemId' => $item->getId(),
                     ]
                 );
-                $view->addAction(new View\Action($newAdjustmentPath, 'fa fa-percent', [
+                $view->addAction('discount.create', new View\Action($newAdjustmentPath, 'fa fa-percent', [
                     'title'           => $this->trans('sale.button.adjustment.new', [], 'EkynaCommerce'),
                     'data-sale-modal' => null,
                     'class'           => 'text-success',
@@ -273,7 +273,7 @@ class OrderViewType extends AbstractViewType
             // Move up
             if (0 < $item->getPosition()) {
                 $moveUpPath = $this->resourceUrl($item, Admin\Sale\Item\MoveUpAction::class);
-                $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-up', [
+                $view->addAction('move_up', new View\Action($moveUpPath, 'fa fa-arrow-up', [
                     'title'         => $this->trans('button.move_up', [], 'EkynaUi'),
                     'data-sale-xhr' => 'get',
                     'class'         => 'text-muted',
@@ -283,7 +283,7 @@ class OrderViewType extends AbstractViewType
             // Move down
             if (!$item->isLast()) {
                 $moveDownPath = $this->resourceUrl($item, Admin\Sale\Item\MoveDownAction::class);
-                $view->addAction(new View\Action($moveDownPath, 'fa fa-arrow-down', [
+                $view->addAction('move_down', new View\Action($moveDownPath, 'fa fa-arrow-down', [
                     'title'         => $this->trans('button.move_down', [], 'EkynaUi'),
                     'data-sale-xhr' => 'get',
                     'class'         => 'text-muted',
@@ -294,7 +294,7 @@ class OrderViewType extends AbstractViewType
             if (!$locked) {
                 // Remove action
                 $removePath = $this->resourceUrl($item, Admin\Sale\Item\DeleteAction::class);
-                $view->addAction(new View\Action($removePath, 'fa fa-remove', [
+                $view->addAction('delete', new View\Action($removePath, 'fa fa-remove', [
                     'title'           => $this->trans('sale.button.item.remove', [], 'EkynaCommerce'),
                     //'confirm'       => $this->trans('sale.confirm.item.remove', [], 'EkynaCommerce'),
                     //'data-sale-xhr' => null,
@@ -307,7 +307,7 @@ class OrderViewType extends AbstractViewType
         // Edit action
         // if (!$locked) {
         $editPath = $this->resourceUrl($item, Admin\Sale\Item\UpdateAction::class);
-        $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
+        $view->addAction('update', new View\Action($editPath, 'fa fa-pencil', [
             'title'           => $this->trans('sale.button.item.edit', [], 'EkynaCommerce'),
             'data-sale-modal' => null,
             'class'           => 'text-warning',
@@ -318,7 +318,7 @@ class OrderViewType extends AbstractViewType
         if (!$locked && !$item->isImmutable() && !$item->hasParent()) {
             if ($item->isConfigurable()) {
                 $configurePath = $this->resourceUrl($item, Admin\Sale\Item\ConfigureAction::class);
-                $view->addAction(new View\Action($configurePath, 'fa fa-cog', [
+                $view->addAction('configure', new View\Action($configurePath, 'fa fa-cog', [
                     'title'           => $this->trans('sale.button.item.configure', [], 'EkynaCommerce'),
                     'data-sale-modal' => null,
                     'class'           => 'text-primary',
@@ -333,7 +333,7 @@ class OrderViewType extends AbstractViewType
         // Prioritize
         if ($this->prioritizeChecker->checkItem($item)) {
             $prioritizePath = $this->resourceUrl($item, Admin\Order\Item\PrioritizeAction::class);
-            $view->addAction(new View\Action($prioritizePath, 'fa fa-level-up', [
+            $view->addAction('prioritize', new View\Action($prioritizePath, 'fa fa-level-up', [
                 'title'           => $this->trans('button.prioritize', [], 'EkynaCommerce'),
                 'data-sale-modal' => null,
                 'class'           => 'text-primary',
@@ -355,7 +355,7 @@ class OrderViewType extends AbstractViewType
                 }
             }
 
-            $view->addAction(new View\Action('javascript: void(0)', 'fa fa-tasks', [
+            $view->addAction('toggle_assignments', new View\Action('javascript: void(0)', 'fa fa-tasks', [
                 'title'               => $this->trans('sale.button.item.information', [], 'EkynaCommerce'),
                 'data-toggle-details' => $view->id . '_information',
                 'class'               => $class,
@@ -367,7 +367,7 @@ class OrderViewType extends AbstractViewType
         // Sync with subject
         if ($item->getSubjectIdentity()->hasIdentity() && !$item->hasParent()) {
             $syncPath = $this->resourceUrl($item, Admin\Order\Item\SyncSubjectAction::class);
-            $view->addAction(new View\Action($syncPath, 'fa fa-cube', [
+            $view->addAction('sync_subject', new View\Action($syncPath, 'fa fa-cube', [
                 'title'         => $this->trans('sale.button.item.sync_subject', [], 'EkynaCommerce'),
                 'confirm'       => $this->trans('sale.confirm.item.sync_subject', [], 'EkynaCommerce'),
                 'data-sale-xhr' => null,
@@ -387,7 +387,7 @@ class OrderViewType extends AbstractViewType
 
         // Edit action
         $editPath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\UpdateAction::class);
-        $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
+        $view->addAction('update', new View\Action($editPath, 'fa fa-pencil', [
             'title'           => $this->trans('sale.button.adjustment.edit', [], 'EkynaCommerce'),
             'data-sale-modal' => null,
             'class'           => 'text-warning',
@@ -401,7 +401,7 @@ class OrderViewType extends AbstractViewType
             }
         }
         $removePath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\DeleteAction::class);
-        $view->addAction(new View\Action($removePath, 'fa fa-remove', [
+        $view->addAction('delete', new View\Action($removePath, 'fa fa-remove', [
             'title'           => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
             //'confirm'       => $this->trans('sale.confirm.adjustment.remove', [], 'EkynaCommerce'),
             //'data-sale-xhr' => null,
@@ -423,7 +423,7 @@ class OrderViewType extends AbstractViewType
         }
 
         $editPath = $this->resourceUrl($sale, Admin\Sale\UpdateShipmentAction::class);
-        $view->addAction(new View\Action($editPath, 'fa fa-pencil', [
+        $view->addAction('shipment.update', new View\Action($editPath, 'fa fa-pencil', [
             'title'           => $this->trans('sale.button.shipment.edit', [], 'EkynaCommerce'),
             'data-sale-modal' => null,
             'class'           => 'text-warning',

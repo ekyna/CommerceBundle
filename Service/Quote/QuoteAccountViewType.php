@@ -29,7 +29,7 @@ class QuoteAccountViewType extends AbstractViewType
         $refreshPath = $this->generateUrl('ekyna_commerce_account_quote_refresh', [
             'number' => $sale->getNumber(),
         ]);
-        $view->addButton(new View\Button(
+        $view->addButton('refresh', new View\Button(
             $refreshPath,
             $this->trans('button.refresh', [], 'EkynaUi'),
             'fa fa-refresh',
@@ -44,7 +44,7 @@ class QuoteAccountViewType extends AbstractViewType
         $addItemPath = $this->generateUrl('ekyna_commerce_account_quote_item_add', [
             'number' => $sale->getNumber(),
         ]);
-        $view->addButton(new View\Button(
+        $view->addButton('items.add', new View\Button(
             $addItemPath,
             $this->trans('sale.button.item.add', [], 'EkynaCommerce'),
             'fa fa-plus',
@@ -76,7 +76,7 @@ class QuoteAccountViewType extends AbstractViewType
                 'number' => $item->getRootSale()->getNumber(),
                 'id'     => $item->getId(),
             ]);
-            $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-up', [
+            $view->addAction('move_up', new View\Action($moveUpPath, 'fa fa-arrow-up', [
                 'title'         => $this->trans('button.move_up', [], 'EkynaUi'),
                 'data-sale-xhr' => 'get',
                 'class'         => 'text-muted',
@@ -89,7 +89,7 @@ class QuoteAccountViewType extends AbstractViewType
                 'number' => $item->getRootSale()->getNumber(),
                 'id'     => $item->getId(),
             ]);
-            $view->addAction(new View\Action($moveUpPath, 'fa fa-arrow-down', [
+            $view->addAction('move_down', new View\Action($moveUpPath, 'fa fa-arrow-down', [
                 'title'         => $this->trans('button.move_down', [], 'EkynaUi'),
                 'data-sale-xhr' => 'get',
                 'class'         => 'text-muted',
@@ -106,7 +106,7 @@ class QuoteAccountViewType extends AbstractViewType
             'number' => $item->getRootSale()->getNumber(),
             'id'     => $item->getId(),
         ]);
-        $view->addAction(new View\Action($removePath, 'fa fa-remove', [
+        $view->addAction('delete', new View\Action($removePath, 'fa fa-remove', [
             'title'         => $this->trans('sale.button.item.remove', [], 'EkynaCommerce'),
             'confirm'       => $this->trans('sale.confirm.item.remove', [], 'EkynaCommerce'),
             'data-sale-xhr' => null,
@@ -119,7 +119,7 @@ class QuoteAccountViewType extends AbstractViewType
                 'number' => $item->getRootSale()->getNumber(),
                 'id'     => $item->getId(),
             ]);
-            $view->addAction(new View\Action($configurePath, 'fa fa-cog', [
+            $view->addAction('configure', new View\Action($configurePath, 'fa fa-cog', [
                 'title'           => $this->trans('sale.button.item.configure', [], 'EkynaCommerce'),
                 'data-sale-modal' => null,
                 'class'           => 'text-primary',

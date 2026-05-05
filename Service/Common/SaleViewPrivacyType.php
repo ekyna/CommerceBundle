@@ -31,7 +31,7 @@ class SaleViewPrivacyType extends AbstractViewType
         }
 
         if ($item->hasPrivateChildren()) {
-            $view->addAction(new View\Action('javascript: void(0)', 'fa fa-info-circle', [
+            $view->addAction('toggle_children', new View\Action('javascript: void(0)', 'fa fa-info-circle', [
                 'title'                     => $this->trans('sale.button.item.detail', [], 'EkynaCommerce'),
                 'data-sale-toggle-children' => $item->getId(),
             ]));
