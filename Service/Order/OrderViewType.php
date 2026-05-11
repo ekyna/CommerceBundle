@@ -232,14 +232,14 @@ class OrderViewType extends AbstractViewType
             $adjustment = current($item->getAdjustments(Common\AdjustmentTypes::TYPE_DISCOUNT)->toArray());
             if (false !== $adjustment) {
                 $editPath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\UpdateAction::class);
-                $view->addAction('discount.update', new View\Action($editPath, 'fa fa-percent', [
+                $view->addAction('adjustment.update', new View\Action($editPath, 'fa fa-percent', [
                     'title'           => $this->trans('sale.button.adjustment.edit', [], 'EkynaCommerce'),
                     'class'           => 'text-warning',
                     'data-sale-modal' => null,
                 ]));
 
                 $removePath = $this->resourceUrl($adjustment, Admin\Sale\Adjustment\DeleteAction::class);
-                $view->addAction('discount.delete', new View\Action($removePath, 'fa fa-percent', [
+                $view->addAction('adjustment.delete', new View\Action($removePath, 'fa fa-percent', [
                     'title'           => $this->trans('sale.button.adjustment.remove', [], 'EkynaCommerce'),
                     //'confirm'       => $this->trans('sale.confirm.adjustment.remove', [], 'EkynaCommerce'),
                     //'data-sale-xhr' => null,
@@ -256,7 +256,7 @@ class OrderViewType extends AbstractViewType
                         'orderItemId' => $item->getId(),
                     ]
                 );
-                $view->addAction('discount.create', new View\Action($newAdjustmentPath, 'fa fa-percent', [
+                $view->addAction('adjustment.create', new View\Action($newAdjustmentPath, 'fa fa-percent', [
                     'title'           => $this->trans('sale.button.adjustment.new', [], 'EkynaCommerce'),
                     'data-sale-modal' => null,
                     'class'           => 'text-success',
