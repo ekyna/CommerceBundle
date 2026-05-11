@@ -159,68 +159,9 @@ class OrderViewType extends AbstractViewType
             return;
         }
 
+        $this->buildShipmentAndInvoiceComment($item, $view);
+
         $sale = $item->getRootSale();
-
-        // Popover
-        $popover = '';
-        if (!($item->isCompound() && !$item->hasPrivateChildren())) {
-            $lines = [];
-
-            $lines['field.available'] = $this->formatter->number(
-                $this->shipmentCalculator->calculateAvailableQuantity($item)
-            );
-
-            $shipped = $this->shipmentCalculator->calculateShippedQuantity($item);
-            $returned = $this->shipmentCalculator->calculateReturnedQuantity($item);
-
-            if (0 < $returned) {
-                $shipment = sprintf('%s (-%s)',
-                    $this->formatter->number($shipped),
-                    $this->formatter->number($returned));
-            } else {
-                $shipment = $this->formatter->number($shipped);
-            }
-
-            $lines['field.shipped'] = $shipment;
-
-            if (!$sale->isSample()) {
-                $invoiced = $this->invoiceCalculator->calculateInvoicedQuantity($item);
-                $credited = $this->invoiceCalculator->calculateCreditedQuantity($item, null, false);
-
-                if (0 < $credited) {
-                    $invoice = sprintf(
-                        '%s (-%s)',
-                        $this->formatter->number($invoiced),
-                        $this->formatter->number($credited)
-                    );
-                } else {
-                    $invoice = $this->formatter->number($invoiced);
-                }
-
-                $lines['field.invoiced'] = $invoice;
-
-                $balance = $shipped->sub($returned)->sub($invoiced)->add($credited);
-
-                if (!$balance->isZero()) {
-                    $lines['field.balance'] = sprintf(
-                        '<strong style="color:red">%s</strong>',
-                        $this->formatter->number($balance)
-                    );
-                }
-            }
-
-            $popover = '<dl class="dl-horizontal" style="font-size:13px">';
-            foreach ($lines as $label => $value) {
-                $popover .= sprintf('<dt>%s</dt><dd>%s</dd>', $this->trans($label, [], 'EkynaCommerce'), $value);
-            }
-            $popover .= '</dl>';
-        }
-        if (!empty($popover)) {
-            $view->vars['attr'] = array_replace($view->vars['attr'], [
-                'data-toggle'  => 'popover',
-                'data-content' => $popover,
-            ]);
-        }
 
         // Manual adjustments
         if (!$item->getSubjectIdentity()->hasIdentity()
@@ -374,6 +315,66 @@ class OrderViewType extends AbstractViewType
                 'class'         => 'text-warning',
             ]));
         }
+    }
+
+    private function buildShipmentAndInvoiceComment(Common\SaleItemInterface $item, View\LineView $view): void
+    {
+        if ($item->isCompound() && !$item->hasPrivateChildren()) {
+            return;
+        }
+
+        $lines = [];
+        $lines['field.available'] = $this->formatter->number(
+            $this->shipmentCalculator->calculateAvailableQuantity($item)
+        );
+
+        $shipped = $this->shipmentCalculator->calculateShippedQuantity($item);
+        $returned = $this->shipmentCalculator->calculateReturnedQuantity($item);
+
+        if (0 < $returned) {
+            $shipment = sprintf('%s (-%s)',
+                $this->formatter->number($shipped),
+                $this->formatter->number($returned));
+        } else {
+            $shipment = $this->formatter->number($shipped);
+        }
+
+        $lines['field.shipped'] = $shipment;
+
+        $sale = $item->getRootSale();
+        if (!$sale->isSample()) {
+            $invoiced = $this->invoiceCalculator->calculateInvoicedQuantity($item);
+            $credited = $this->invoiceCalculator->calculateCreditedQuantity($item, null, false);
+
+            if (0 < $credited) {
+                $invoice = sprintf(
+                    '%s (-%s)',
+                    $this->formatter->number($invoiced),
+                    $this->formatter->number($credited)
+                );
+            } else {
+                $invoice = $this->formatter->number($invoiced);
+            }
+
+            $lines['field.invoiced'] = $invoice;
+
+            $balance = $shipped->sub($returned)->sub($invoiced)->add($credited);
+
+            if (!$balance->isZero()) {
+                $lines['field.balance'] = sprintf(
+                    '<strong style="color:red">%s</strong>',
+                    $this->formatter->number($balance)
+                );
+            }
+        }
+
+        $comment = '<dl class="dl-horizontal" style="font-size:13px;">';
+        foreach ($lines as $label => $value) {
+            $comment .= sprintf('<dt>%s</dt><dd>%s</dd>', $this->trans($label, [], 'EkynaCommerce'), $value);
+        }
+        $comment .= '</dl>';
+
+        $view->addComment('shipment_invoice_summary', new View\Comment($comment));
     }
 
     public function buildAdjustmentView(
