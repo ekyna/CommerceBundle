@@ -38,6 +38,7 @@ field:
     incoterm: Incoterm
     components: Components
     lines: Lines
+    margin: Margin
 
 value:
     prospect: Prospect

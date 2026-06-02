@@ -38,6 +38,7 @@ field:
     incoterm: Incoterm
     components: Composants
     lines: Lignes
+    margin: Marge
 
 value:
     prospect: Prospect

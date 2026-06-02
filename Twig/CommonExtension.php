@@ -10,6 +10,7 @@ use Ekyna\Bundle\CommerceBundle\Service\Common\FlagRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
 use Ekyna\Component\Commerce\Common\Currency\CurrencyRenderer;
 use Ekyna\Component\Commerce\Common\Locking\LockChecker;
+use Ekyna\Component\Commerce\Common\Model\Margin;
 use Ekyna\Component\Commerce\Features;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -136,6 +137,10 @@ class CommonExtension extends AbstractExtension
             new TwigFunction(
                 'commerce_feature',
                 [Features::class, 'getConfig']
+            ),
+            new TwigFunction(
+                'commerce_margin',
+                [Margin::class, 'fromArray']
             ),
         ];
     }
