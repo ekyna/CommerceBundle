@@ -120,6 +120,18 @@ class QuoteType extends AbstractResourceType
                 'position' => 90,
                 'visible'  => false,
             ])
+            ->addColumn('initiatorCustomer', ResourceType::class, [
+                'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
+                'resource' => 'ekyna_commerce.customer',
+                'position' => 91,
+                'visible'  => false,
+            ])
+            ->addColumn('followerCustomer', ResourceType::class, [
+                'label'    => t('sale.field.follower_customer', [], 'EkynaCommerce'),
+                'resource' => 'ekyna_commerce.customer',
+                'position' => 92,
+                'visible'  => false,
+            ])
             ->addColumn('tags', TagsType::class, [
                 'property_path' => 'allTags',
                 'position'      => 100,
@@ -132,18 +144,6 @@ class QuoteType extends AbstractResourceType
             $builder
                 ->addColumn('customer', Type\Column\SaleCustomerType::class, [
                     'position' => 60,
-                ])
-                ->addColumn('initiatorCustomer', ResourceType::class, [
-                    'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
-                    'resource' => 'ekyna_commerce.customer',
-                    'position' => 61,
-                    'visible'  => false,
-                ])
-                ->addColumn('followerCustomer', ResourceType::class, [
-                    'label'    => t('sale.field.follower_customer', [], 'EkynaCommerce'),
-                    'resource' => 'ekyna_commerce.customer',
-                    'position' => 62,
-                    'visible'  => false,
                 ]);
         }
 
@@ -233,12 +233,16 @@ class QuoteType extends AbstractResourceType
             ->addFilter('inCharge', Type\Filter\InChargeType::class, [
                 'position' => 90,
             ])
-            ->addFilter('tags', Type\Filter\SaleTagsType::class, [
-                'position' => 100,
-            ])
             ->addFilter('initiatorCustomer', Type\Filter\CustomerType::class, [
                 'label'    => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
-                'position' => 150,
+                'position' => 91,
+            ])
+            ->addFilter('followerCustomer', Type\Filter\CustomerType::class, [
+                'label'    => t('sale.field.follower_customer', [], 'EkynaCommerce'),
+                'position' => 92,
+            ])
+            ->addFilter('tags', Type\Filter\SaleTagsType::class, [
+                'position' => 100,
             ])
             ->addFilter('subject', Type\Filter\SaleSubjectType::class, [
                 'position' => 160,

@@ -189,9 +189,24 @@ class OrderType extends AbstractResourceType
             ->addColumn('invoiceState', Type\Column\InvoiceStateType::class, [
                 'position' => 110,
             ])
-            /*->addColumn('inCharge', Type\Column\InChargeType::class, [
+            ->addColumn('inCharge', Type\Column\InChargeType::class, [
                 'position' => 120,
-            ])*/
+                'visible'  => false,
+            ])
+            ->addColumn('initiatorCustomer', ResourceColumn::class, [
+                'label'         => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
+                'resource'      => 'ekyna_commerce.customer',
+                'position'      => 121,
+                'visible'       => false,
+                'sort_property' => ['company', 'firstName', 'lastName'],
+            ])
+            ->addColumn('followerCustomer', ResourceColumn::class, [
+                'label'         => t('sale.field.follower_customer', [], 'EkynaCommerce'),
+                'resource'      => 'ekyna_commerce.customer',
+                'position'      => 122,
+                'visible'       => false,
+                'sort_property' => ['company', 'firstName', 'lastName'],
+            ])
             /*->addColumn('sample', CType\Column\BooleanType::class, [
                 'label'       => t('field.sample', [], 'EkynaCommerce'),
                 'true_class'  => 'label-warning',
@@ -238,20 +253,6 @@ class OrderType extends AbstractResourceType
             $builder
                 ->addColumn('customer', Type\Column\SaleCustomerType::class, [
                     'position' => 30,
-                ])
-                ->addColumn('initiatorCustomer', ResourceColumn::class, [
-                    'label'         => t('sale.field.initiator_customer', [], 'EkynaCommerce'),
-                    'resource'      => 'ekyna_commerce.customer',
-                    'position'      => 31,
-                    'visible'       => false,
-                    'sort_property' => ['company', 'firstName', 'lastName'],
-                ])
-                ->addColumn('followerCustomer', ResourceColumn::class, [
-                    'label'         => t('sale.field.follower_customer', [], 'EkynaCommerce'),
-                    'resource'      => 'ekyna_commerce.customer',
-                    'position'      => 32,
-                    'visible'       => false,
-                    'sort_property' => ['company', 'firstName', 'lastName'],
                 ]);
         }
 

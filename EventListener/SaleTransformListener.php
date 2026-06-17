@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\EventListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\TaggedSaleInterface;
 use Ekyna\Bundle\CommerceBundle\Service\Document\DocumentGenerator;
+use Ekyna\Component\Commerce\Cart\Model\CartInterface;
 use Ekyna\Component\Commerce\Common\Event\SaleTransformEvent;
 use Ekyna\Component\Commerce\Common\Generator\GeneratorInterface;
 use Ekyna\Component\Commerce\Document\Model\DocumentTypes;
@@ -56,7 +57,12 @@ class SaleTransformListener
 
     public function onPreTransform(SaleTransformEvent $event): void
     {
+        $source = $event->getSource();
         $target = $event->getTarget();
+
+        if (!$source instanceof CartInterface && !$target instanceof CartInterface) {
+            $target->setProject($source->getProject());
+        }
 
         if ($target instanceof OrderInterface) {
             // Number is needed for document filename, but may not have been generated
