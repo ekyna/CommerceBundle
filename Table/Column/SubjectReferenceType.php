@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ekyna\Bundle\CommerceBundle\Table\Column;
 
 use Ekyna\Bundle\AdminBundle\Action\ReadAction;
+use Ekyna\Bundle\AdminBundle\Action\SummaryAction;
 use Ekyna\Bundle\CommerceBundle\Service\Subject\SubjectHelperInterface;
 use Ekyna\Bundle\ResourceBundle\Helper\ResourceHelper;
 use Ekyna\Component\Table\Column\AbstractColumnType;
@@ -46,6 +47,13 @@ class SubjectReferenceType extends AbstractColumnType
         }
 
         $view->vars['value'] = $value;
+        $view->vars['attr']['data-summary'] = $value;
+
+        try {
+            $path = $this->resourceHelper->generateResourcePath($subject, SummaryAction::class);
+            $view->vars['attr']['data-summary'] = $path;
+        } catch (ResourceNotFoundException) {
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

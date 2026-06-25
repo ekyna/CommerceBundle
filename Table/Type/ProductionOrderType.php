@@ -39,11 +39,13 @@ class ProductionOrderType extends AbstractResourceType
             ->addDefaultSort('number', ColumnSort::DESC)
             ->addColumn('number', BType\Column\AnchorType::class, [
                 'label'    => t('field.number', [], 'EkynaUi'),
+                'summary'  => true,
                 'sortable' => true,
                 'position' => 10,
             ])
             ->addColumn('bom', AType\Column\ResourceType::class, [
                 'resource' => BillOfMaterialsInterface::class,
+                'summary' => true,
                 'position' => 20,
             ])
             ->addColumn('subject', Type\Column\SubjectReferenceType::class, [

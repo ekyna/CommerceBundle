@@ -55,6 +55,7 @@ class BillOfMaterialsType extends AbstractResourceType
             ->addDefaultSort('id', ColumnSort::DESC)
             ->addColumn('number', BType\Column\AnchorType::class, [
                 'label'    => t('field.number', [], 'EkynaUi'),
+                'summary'  => true,
                 'sortable' => true,
                 'position' => 10,
             ])
@@ -120,7 +121,6 @@ class BillOfMaterialsType extends AbstractResourceType
 
         $resolver
             ->setDefault('subject', null)
-            ->setDefault('resource_summary', true)
             ->setAllowedTypes('subject', ['null', SubjectInterface::class]);
     }
 }
