@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Form\Type\Manufacture;
 
 use Ekyna\Bundle\CommerceBundle\Form\Type\Subject\SubjectChoiceType;
 use Ekyna\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Ekyna\Bundle\UiBundle\Form\Type\CollectionPositionType;
 use Ekyna\Component\Commerce\Subject\Provider\SubjectProviderInterface;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -34,7 +35,8 @@ class BOMComponentType extends AbstractResourceType
                 'attr'           => [
                     'class' => 'order-item-quantity',
                 ],
-            ]);
+            ])
+            ->add('position', CollectionPositionType::class);
 
         //FormHelper::addQuantityType($builder, $unit);
     }
