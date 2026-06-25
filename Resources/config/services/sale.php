@@ -26,10 +26,12 @@ use Ekyna\Component\Commerce\Common\EventListener\AbstractSaleListener;
 use Ekyna\Component\Commerce\Common\EventListener\SaleDiscountListener;
 use Ekyna\Component\Commerce\Common\Helper\FactoryHelper;
 use Ekyna\Component\Commerce\Common\Resolver\DiscountResolver;
+use Ekyna\Component\Commerce\Common\Resolver\NetPriceResolver;
 use Ekyna\Component\Commerce\Common\Resolver\SaleStateResolverFactory;
 use Ekyna\Component\Commerce\Common\Transformer\SaleCopierFactory;
 use Ekyna\Component\Commerce\Common\Transformer\SaleDuplicator;
 use Ekyna\Component\Commerce\Common\Transformer\SaleTransformer;
+use Ekyna\Component\Commerce\Common\Updater\SaleItemUpdater;
 use Ekyna\Component\Commerce\Common\Updater\SaleUpdater;
 use Ekyna\Component\Commerce\Order\Model\OrderInterface;
 use Ekyna\Component\Commerce\Order\Resolver\OrderStateResolver;
@@ -74,6 +76,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.transformer.sale', SaleTransformer::class)
         ->args([
             service('ekyna_commerce.factory.sale_copier'),
+            service('ekyna_commerce.builder.sale_adjustment'),
             service('ekyna_resource.factory.factory'),
             service('ekyna_resource.manager.factory'),
             service('event_dispatcher'),
@@ -85,6 +88,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.duplicator.sale', SaleDuplicator::class)
         ->args([
             service('ekyna_commerce.factory.sale_copier'),
+            service('ekyna_commerce.builder.sale_adjustment'),
             service('ekyna_resource.factory.factory'),
             service('ekyna_resource.manager.factory'),
             service('event_dispatcher'),
@@ -135,12 +139,22 @@ return static function (ContainerConfigurator $container) {
             'method' => 'onPreTransform',
         ]);
 
+    // Sale Item Updater
+    $services
+        ->set('ekyna_commerce.updater.sale_item', SaleItemUpdater::class)
+        ->args([
+            service('ekyna_commerce.resolver.net_price'),
+            service('ekyna_commerce.builder.sale_adjustment'),
+            service('ekyna_resource.orm.persistence_helper'),
+        ]);
+
     // Sale Updater
     $services
         ->set('ekyna_commerce.updater.sale', SaleUpdater::class)
         ->lazy()
         ->args([
             service('ekyna_commerce.builder.address'),
+            service('ekyna_commerce.updater.sale_item'),
             service('ekyna_commerce.builder.sale_adjustment'),
             service('ekyna_commerce.factory.amount_calculator'),
             service('ekyna_commerce.converter.currency'),
@@ -154,6 +168,13 @@ return static function (ContainerConfigurator $container) {
     // Discount resolver
     $services
         ->set('ekyna_commerce.resolver.discount', DiscountResolver::class)
+        ->args([
+            service('event_dispatcher'),
+        ]);
+
+    // NetPrice resolver
+    $services
+        ->set('ekyna_commerce.resolver.net_price', NetPriceResolver::class)
         ->args([
             service('event_dispatcher'),
         ]);
@@ -260,6 +281,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.listener.abstract_sale_item', AbstractSaleItemListener::class)
         ->abstract()
         ->call('setPersistenceHelper', [service('ekyna_resource.orm.persistence_helper')])
+        ->call('setSaleItemUpdater', [service('ekyna_commerce.updater.sale_item')])
         ->call('setSaleAdjustmentBuilder', [service('ekyna_commerce.builder.sale_adjustment')]);
 
     // Sale adjustment abstract listener

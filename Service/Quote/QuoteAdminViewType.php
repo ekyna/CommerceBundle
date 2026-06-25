@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Service\Quote;
 
 use Ekyna\Bundle\CommerceBundle\Action\Admin;
 use Ekyna\Bundle\CommerceBundle\Service\AbstractViewType;
+use Ekyna\Component\Commerce\Common\Helper\SaleHelper;
 use Ekyna\Component\Commerce\Common\Model as Common;
 use Ekyna\Component\Commerce\Common\View;
 use Ekyna\Component\Commerce\Quote\Model as Quote;
@@ -155,42 +156,6 @@ class QuoteAdminViewType extends AbstractViewType
             }
         }
 
-        // Abort if item has parent
-        if (!$item->hasParent()) {
-            // Move up
-            if (0 < $item->getPosition()) {
-                $moveUpPath = $this->resourceUrl($item, Admin\Sale\Item\MoveUpAction::class);
-                $view->addAction('move_up', new View\Action($moveUpPath, 'fa fa-arrow-up', [
-                    'title'         => $this->trans('button.move_up', [], 'EkynaUi'),
-                    'data-sale-xhr' => 'get',
-                    'class'         => 'text-muted',
-                ]));
-            }
-
-            // Move down
-            if (!$item->isLast()) {
-                $moveDownPath = $this->resourceUrl($item, Admin\Sale\Item\MoveDownAction::class);
-                $view->addAction('move_down', new View\Action($moveDownPath, 'fa fa-arrow-down', [
-                    'title'         => $this->trans('button.move_down', [], 'EkynaUi'),
-                    'data-sale-xhr' => 'get',
-                    'class'         => 'text-muted',
-                ]));
-            }
-
-            // Abort if immutable
-            if (!$item->isImmutable()) {
-                // Remove action
-                $removePath = $this->resourceUrl($item, Admin\Sale\Item\DeleteAction::class);
-                $view->addAction('delete', new View\Action($removePath, 'fa fa-remove', [
-                    'title'           => $this->trans('sale.button.item.remove', [], 'EkynaCommerce'),
-                    //'confirm'       => $this->trans('sale.confirm.item.remove', [], 'EkynaCommerce'),
-                    //'data-sale-xhr' => null,
-                    'data-sale-modal' => null,
-                    'class'           => 'text-danger',
-                ]));
-            }
-        }
-
         // Edit action
         //if (!$item->isCompound()) {
         $editPath = $this->resourceUrl($item, Admin\Sale\Item\UpdateAction::class);
@@ -201,28 +166,76 @@ class QuoteAdminViewType extends AbstractViewType
         ]));
         //}
 
-        if (!$item->isImmutable() && !$item->hasParent()) {
-            // Configure action
-            if ($item->isConfigurable()) {
-                $configurePath = $this->resourceUrl($item, Admin\Sale\Item\ConfigureAction::class);
-                $view->addAction('configure', new View\Action($configurePath, 'fa fa-cog', [
-                    'title'           => $this->trans('sale.button.item.configure', [], 'EkynaCommerce'),
-                    'data-sale-modal' => null,
-                    'class'           => 'text-primary',
+        // Abort if item has parent
+        if ($item->hasParent()) {
+            return;
+        }
+
+        // Move up
+        if (0 < $item->getPosition()) {
+            $moveUpPath = $this->resourceUrl($item, Admin\Sale\Item\MoveUpAction::class);
+            $view->addAction('move_up', new View\Action($moveUpPath, 'fa fa-arrow-up', [
+                'title'         => $this->trans('button.move_up', [], 'EkynaUi'),
+                'data-sale-xhr' => 'get',
+                'class'         => 'text-muted',
+            ]));
+        }
+
+        // Move down
+        if (!$item->isLast()) {
+            $moveDownPath = $this->resourceUrl($item, Admin\Sale\Item\MoveDownAction::class);
+            $view->addAction('move_down', new View\Action($moveDownPath, 'fa fa-arrow-down', [
+                'title'         => $this->trans('button.move_down', [], 'EkynaUi'),
+                'data-sale-xhr' => 'get',
+                'class'         => 'text-muted',
+            ]));
+        }
+
+        // Abort if immutable
+        if ($item->isImmutable()) {
+            return;
+        }
+
+        // Configure action
+        if ($item->isConfigurable()) {
+            $configurePath = $this->resourceUrl($item, Admin\Sale\Item\ConfigureAction::class);
+            $view->addAction('configure', new View\Action($configurePath, 'fa fa-cog', [
+                'title'           => $this->trans('sale.button.item.configure', [], 'EkynaCommerce'),
+                'data-sale-modal' => null,
+                'class'           => 'text-primary',
+            ]));
+        }
+
+        if (!SaleHelper::isSaleWithPayment($sale)) {
+            // Resolve price action
+            $pricePath = $this->resourceUrl($item, Admin\Sale\Item\ResolvePriceAction::class);
+            $view->addAction('update_price', new View\Action($pricePath, 'fa fa-euro', [
+                'title'         => $this->trans('sale.button.item.resolve_price', [], 'EkynaCommerce'),
+                'data-sale-xhr' => null,
+                'class'         => 'text-primary',
+            ]));
+
+            // Sync with subject
+            if ($item->getSubjectIdentity()->hasIdentity()) {
+                $syncPath = $this->resourceUrl($item, Admin\Sale\Item\SyncSubjectAction::class);
+                $view->addAction('sync_subject', new View\Action($syncPath, 'fa fa-cube', [
+                    'title'         => $this->trans('sale.button.item.sync_subject', [], 'EkynaCommerce'),
+                    'confirm'       => $this->trans('sale.confirm.item.sync_subject', [], 'EkynaCommerce'),
+                    'data-sale-xhr' => null,
+                    'class'         => 'text-warning',
                 ]));
             }
         }
 
-        // Sync with subject
-        if ($item->getSubjectIdentity()->hasIdentity() && !$item->hasParent()) {
-            $syncPath = $this->resourceUrl($item, Admin\Sale\Item\SyncSubjectAction::class);
-            $view->addAction('sync_subject', new View\Action($syncPath, 'fa fa-cube', [
-                'title'         => $this->trans('sale.button.item.sync_subject', [], 'EkynaCommerce'),
-                'confirm'       => $this->trans('sale.confirm.item.sync_subject', [], 'EkynaCommerce'),
-                'data-sale-xhr' => null,
-                'class'         => 'text-warning',
-            ]));
-        }
+        // Remove action
+        $removePath = $this->resourceUrl($item, Admin\Sale\Item\DeleteAction::class);
+        $view->addAction('delete', new View\Action($removePath, 'fa fa-remove', [
+            'title'           => $this->trans('sale.button.item.remove', [], 'EkynaCommerce'),
+            //'confirm'       => $this->trans('sale.confirm.item.remove', [], 'EkynaCommerce'),
+            //'data-sale-xhr' => null,
+            'data-sale-modal' => null,
+            'class'           => 'text-danger',
+        ]));
     }
 
     public function buildAdjustmentView(

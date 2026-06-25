@@ -178,6 +178,7 @@ resources:
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveDownAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\MoveUpAction: ~
+                Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\ResolvePriceAction: ~
                 Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\UpdateAction: ~
 
         order_item_adjustment:

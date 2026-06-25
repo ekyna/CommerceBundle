@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Ekyna\Bundle\CommerceBundle\Twig;
 
-use Ekyna\Bundle\CommerceBundle\Service\Common\SaleHelper;
 use Ekyna\Bundle\CommerceBundle\Service\Common\SaleRenderer;
 use Ekyna\Bundle\CommerceBundle\Service\Common\SaleViewHelper;
 use Ekyna\Bundle\CommerceBundle\Service\ConstantsHelper;
+use Ekyna\Component\Commerce\Common\Helper\SaleHelper;
 use Ekyna\Component\Commerce\Document\Util\DocumentUtil;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;

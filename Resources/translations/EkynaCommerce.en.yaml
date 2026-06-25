@@ -1541,6 +1541,7 @@ sale:
             edit: Edit the line
             remove: Remove the line
             sync_subject: Sync with product
+            resolve_price: Resolve price
             information: Show information
             detail: Show details
             batch_remove: Removes lines

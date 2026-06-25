@@ -87,7 +87,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
             ->add('netPrice', PriceType::class, [
                 'label'          => t('sale.field.net_unit', [], 'EkynaCommerce'),
                 'currency'       => $this->currency,
-                'disabled'       => $item->isCompound(),
+                'disabled'       => $item->isCompound() || $item->getRootSale()->isAutoDiscount(),
                 'attr'           => [
                     'placeholder' => t('sale.field.net_unit', [], 'EkynaCommerce'),
                 ],

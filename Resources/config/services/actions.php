@@ -330,6 +330,12 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.helper.sale_item'),
         ])
         ->tag('ekyna_resource.action');
+    $services
+        ->set('ekyna_commerce.action.sale_item.resolve_price', Item\ResolvePriceAction::class)
+        ->args([
+            service('ekyna_commerce.updater.sale_item'),
+        ])
+        ->tag('ekyna_resource.action');
 
     // Shipment actions --------------------------------------------------------------------
     $services

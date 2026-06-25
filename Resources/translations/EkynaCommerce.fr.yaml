@@ -1576,6 +1576,7 @@ sale:
             configure: Configurer l'article
             edit: Modifier la ligne
             sync_subject: Synchroniser avec le produit
+            resolve_price: Résoudre le prix
             remove: Supprimer la ligne
             information: Afficher les information
             detail: Afficher le détail
