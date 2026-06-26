@@ -10,6 +10,7 @@ use Ekyna\Bundle\ResourceBundle\Action\RoutingActionInterface;
 use Ekyna\Bundle\ResourceBundle\Action\ValidatorTrait;
 use Ekyna\Component\Commerce\Common\Model\SaleInterface;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Common\Updater\SaleItemUpdaterInterface;
 use Ekyna\Component\Commerce\Common\Updater\SaleUpdaterInterface;
 use Ekyna\Component\Commerce\Exception\CommerceExceptionInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
@@ -30,14 +31,16 @@ class BatchAction extends AbstractSaleAction implements RoutingActionInterface
     //private const ACTION_UPDATE_QUANTITIES    = 'update-quantities';
     private const ACTION_REMOVE_ITEMS         = 'remove-items';
     private const ACTION_SYNCHRONISE_SUBJECTS = 'synchronise-subjects';
+    private const ACTION_RESOLVE_PRICES       = 'resolve-prices';
 
     use XhrTrait;
     use ValidatorTrait;
 
     public function __construct(
-        private readonly SaleHelper           $saleHelper,
-        private readonly SaleItemHelper       $saleItemHelper,
-        private readonly SaleUpdaterInterface $saleUpdater,
+        private readonly SaleHelper               $saleHelper,
+        private readonly SaleItemHelper           $saleItemHelper,
+        private readonly SaleUpdaterInterface     $saleUpdater,
+        private readonly SaleItemUpdaterInterface $saleItemUpdater,
     ) {
     }
 
@@ -54,6 +57,7 @@ class BatchAction extends AbstractSaleAction implements RoutingActionInterface
                 //self::ACTION_UPDATE_QUANTITIES    => $this->updateQuantities(),
                 self::ACTION_REMOVE_ITEMS         => $this->removeItems(),
                 self::ACTION_SYNCHRONISE_SUBJECTS => $this->synchroniseLines(),
+                self::ACTION_RESOLVE_PRICES       => $this->resolveLinePrices(),
             };
         } catch (CommerceExceptionInterface) {
             $changed = false;
@@ -112,6 +116,25 @@ class BatchAction extends AbstractSaleAction implements RoutingActionInterface
 
             $this->saleItemHelper->initialize($item, null);
             $this->saleItemHelper->build($item);
+
+            $changed = true;
+        }
+
+        return $changed;
+    }
+
+    private function resolveLinePrices(): bool
+    {
+        $sale = $this->getSale();
+
+        $changed = false;
+
+        $identifiers = $this->getIdentifiers();
+
+        foreach ($identifiers as $id) {
+            $item = $this->findItem($sale, $id);
+
+            $this->saleItemUpdater->updateNetPriceAndDiscount($item);
 
             $changed = true;
         }
@@ -184,6 +207,7 @@ class BatchAction extends AbstractSaleAction implements RoutingActionInterface
             //self::ACTION_UPDATE_QUANTITIES,
             self::ACTION_REMOVE_ITEMS,
             self::ACTION_SYNCHRONISE_SUBJECTS,
+            self::ACTION_RESOLVE_PRICES,
         ]));
     }
 }

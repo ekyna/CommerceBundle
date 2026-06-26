@@ -199,6 +199,7 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.helper.sale'),
             service('ekyna_commerce.helper.sale_item'),
             service('ekyna_commerce.updater.sale'),
+            service('ekyna_commerce.updater.sale_item'),
         ])
         ->tag('ekyna_resource.action');
     $services

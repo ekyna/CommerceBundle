@@ -1576,12 +1576,13 @@ sale:
             configure: Configurer l'article
             edit: Modifier la ligne
             sync_subject: Synchroniser avec le produit
-            resolve_price: Résoudre le prix
+            resolve_price: Mettre à jour le prix
             remove: Supprimer la ligne
             information: Afficher les information
             detail: Afficher le détail
             batch_remove: Supprimer les lignes
             batch_synchronize: Synchroniser les articles
+            batch_resolve_prices: Mettre à jour les prix
         item_adjustment:
             new: Ajouter une remise de ligne
             edit: Modifier la remise de ligne
@@ -1604,6 +1605,8 @@ sale:
             batch_synchronize: >
                 Souhaitez-vous réellement mettre à jour les lignes sélectionnées d'après 
                 les données de l'article associé ? (Opération non réversible).
+            batch_resolve_prices: >
+                Souhaitez-vous réellement mettre à jour les prix des lignes ? (Opération non réversible).
         adjustment:
             remove: Souhaitez-vous réellement supprimer cette remise ?
     prepare:

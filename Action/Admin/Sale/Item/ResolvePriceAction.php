@@ -73,7 +73,7 @@ class ResolvePriceAction extends AbstractAction implements AdminActionInterface
             'route'      => [
                 'name'     => 'admin_%s_resolve_price',
                 'path'     => '/resolve-price',
-                'methods'  => ['GET', 'POST'],
+                'methods'  => ['GET'],
                 'resource' => true,
             ],
             'button'     => [

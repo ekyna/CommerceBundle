@@ -80,33 +80,35 @@ class SaleViewType extends AbstractViewType
         }
 
         $view->setTranslations([
-            'designation'               => $this->trans('field.designation', [], 'EkynaUi'),
-            'reference'                 => $this->trans('field.reference', [], 'EkynaUi'),
-            'availability'              => $this->trans('sale.field.availability', [], 'EkynaCommerce'),
-            'unit_net_price'            => $this->trans('sale.field.net_unit', [], 'EkynaCommerce'),
-            'unit_ati_price'            => $this->trans('sale.field.ati_unit', [], 'EkynaCommerce'),
-            'quantity'                  => $this->trans('field.quantity', [], 'EkynaUi'),
+            'designation'                  => $this->trans('field.designation', [], 'EkynaUi'),
+            'reference'                    => $this->trans('field.reference', [], 'EkynaUi'),
+            'availability'                 => $this->trans('sale.field.availability', [], 'EkynaCommerce'),
+            'unit_net_price'               => $this->trans('sale.field.net_unit', [], 'EkynaCommerce'),
+            'unit_ati_price'               => $this->trans('sale.field.ati_unit', [], 'EkynaCommerce'),
+            'quantity'                     => $this->trans('field.quantity', [], 'EkynaUi'),
 
-            'net_gross'                 => $this->trans('sale.field.net_gross', [], 'EkynaCommerce'),
-            'ati_gross'                 => $this->trans('sale.field.ati_gross', [], 'EkynaCommerce'),
-            'discount'                  => $this->trans('sale.field.discount', [], 'EkynaCommerce'),
+            'net_gross'                    => $this->trans('sale.field.net_gross', [], 'EkynaCommerce'),
+            'ati_gross'                    => $this->trans('sale.field.ati_gross', [], 'EkynaCommerce'),
+            'discount'                     => $this->trans('sale.field.discount', [], 'EkynaCommerce'),
 
-            'tax_rate'                  => $this->trans('sale.field.tax_rate', [], 'EkynaCommerce'),
-            'tax_name'                  => $this->trans('sale.field.tax_name', [], 'EkynaCommerce'),
-            'tax_amount'                => $this->trans('sale.field.tax_amount', [], 'EkynaCommerce'),
+            'tax_rate'                     => $this->trans('sale.field.tax_rate', [], 'EkynaCommerce'),
+            'tax_name'                     => $this->trans('sale.field.tax_name', [], 'EkynaCommerce'),
+            'tax_amount'                   => $this->trans('sale.field.tax_amount', [], 'EkynaCommerce'),
 
-            'gross_totals'              => $this->trans('sale.field.gross_totals', [], 'EkynaCommerce'),
-            'net_total'                 => $this->trans('sale.field.net_total', [], 'EkynaCommerce'),
-            'tax_total'                 => $this->trans('sale.field.tax_total', [], 'EkynaCommerce'),
-            'ati_total'                 => $this->trans('sale.field.ati_total', [], 'EkynaCommerce'),
-            'margin'                    => $this->trans('sale.field.margin', [], 'EkynaCommerce'),
-            'margin_net'                => $this->trans('sale.field.margin_net', [], 'EkynaCommerce'),
-            'margin_gross'              => $this->trans('sale.field.margin_gross', [], 'EkynaCommerce'),
+            'gross_totals'                 => $this->trans('sale.field.gross_totals', [], 'EkynaCommerce'),
+            'net_total'                    => $this->trans('sale.field.net_total', [], 'EkynaCommerce'),
+            'tax_total'                    => $this->trans('sale.field.tax_total', [], 'EkynaCommerce'),
+            'ati_total'                    => $this->trans('sale.field.ati_total', [], 'EkynaCommerce'),
+            'margin'                       => $this->trans('sale.field.margin', [], 'EkynaCommerce'),
+            'margin_net'                   => $this->trans('sale.field.margin_net', [], 'EkynaCommerce'),
+            'margin_gross'                 => $this->trans('sale.field.margin_gross', [], 'EkynaCommerce'),
 
-            'btn_batch_remove'          => $this->trans('sale.button.item.batch_remove', [], 'EkynaCommerce'),
-            'btn_batch_synchronize'     => $this->trans('sale.button.item.batch_synchronize', [], 'EkynaCommerce'),
-            'confirm_batch_remove'      => $this->trans('sale.confirm.item.batch_remove', [], 'EkynaCommerce'),
-            'confirm_batch_synchronize' => $this->trans('sale.confirm.item.batch_synchronize', [], 'EkynaCommerce'),
+            'btn_batch_remove'             => $this->trans('sale.button.item.batch_remove', [], 'EkynaCommerce'),
+            'btn_batch_synchronize'        => $this->trans('sale.button.item.batch_synchronize', [], 'EkynaCommerce'),
+            'btn_batch_resolve_prices'     => $this->trans('sale.button.item.batch_resolve_prices', [], 'EkynaCommerce'),
+            'confirm_batch_remove'         => $this->trans('sale.confirm.item.batch_remove', [], 'EkynaCommerce'),
+            'confirm_batch_synchronize'    => $this->trans('sale.confirm.item.batch_synchronize', [], 'EkynaCommerce'),
+            'confirm_batch_resolve_prices' => $this->trans('sale.confirm.item.batch_resolve_prices', [], 'EkynaCommerce'),
         ]);
     }
 

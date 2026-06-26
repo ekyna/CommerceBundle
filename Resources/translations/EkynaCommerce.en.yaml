@@ -1541,11 +1541,12 @@ sale:
             edit: Edit the line
             remove: Remove the line
             sync_subject: Sync with product
-            resolve_price: Resolve price
+            resolve_price: Update price
             information: Show information
             detail: Show details
             batch_remove: Removes lines
             batch_synchronize: Synchronize lines
+            batch_resolve_prices: Update prices
         item_adjustment:
             new: Add a new line discount
             edit: Edit the line discount
@@ -1560,14 +1561,16 @@ sale:
         transform: Confirm transformation into <strong>%target%</strong> ?
         duplicate: Confirm duplication ?
         item:
-            remove: Are you sure you want to remove this line ? (Non-reversible operation).
+            remove: Are you sure you want to remove this line ? (This action cannot be undone.)
             sync_subject: >
                 Are you sure you want to update this line data from the associated product ?
-                (Non-reversible operation).
-            batch_remove: Are you sure you want to remove the selected lines ? (Non-reversible operation).
+                (This action cannot be undone.)
+            batch_remove: Are you sure you want to remove the selected lines ? (This action cannot be undone.)
             batch_synchronize: >
                 Are you sure you want to update the selected lines data from the associated products ?
-                (Non-reversible operation).
+                (This action cannot be undone.)
+            batch_resolve_prices: >
+                Are you sure you want to update the line prices? (This action cannot be undone.)
         adjustment:
             remove: Are you sure you want to remove this discount ?
     prepare:
