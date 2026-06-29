@@ -45,7 +45,13 @@ class ResolvePriceAction extends AbstractAction implements AdminActionInterface
         }
 
         try {
-            if ($this->saleItemUpdater->updateNetPriceAndDiscount($item)) {
+            $changed = $this->saleItemUpdater->updateNetPriceAndDiscount($item);
+
+            if ($item->hasPublicChildren()) {
+                $changed = $this->saleItemUpdater->updateChildrenNetPriceAndDiscount($item) || $changed;
+            }
+
+            if ($changed) {
                 $this->getManager()->update($item);
             }
         } catch (IllegalOperationException) {

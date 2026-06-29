@@ -134,9 +134,11 @@ class BatchAction extends AbstractSaleAction implements RoutingActionInterface
         foreach ($identifiers as $id) {
             $item = $this->findItem($sale, $id);
 
-            $this->saleItemUpdater->updateNetPriceAndDiscount($item);
+            $changed = $this->saleItemUpdater->updateNetPriceAndDiscount($item);
 
-            $changed = true;
+            if ($item->hasPublicChildren()) {
+                $changed = $this->saleItemUpdater->updateChildrenNetPriceAndDiscount($item) || $changed;
+            }
         }
 
         return $changed;
