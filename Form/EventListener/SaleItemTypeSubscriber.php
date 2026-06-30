@@ -36,6 +36,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
     {
         $form = $event->getForm();
         $item = $event->getData();
+        $sale = $item->getRootSale();
 
         $hasParent = false;
         $hasChildren = false;
@@ -87,7 +88,7 @@ class SaleItemTypeSubscriber implements EventSubscriberInterface
             ->add('netPrice', PriceType::class, [
                 'label'          => t('sale.field.net_unit', [], 'EkynaCommerce'),
                 'currency'       => $this->currency,
-                'disabled'       => $item->isCompound() || $item->getRootSale()->isAutoDiscount(),
+                'disabled'       => $item->isCompound() || ($sale && $sale->isAutoDiscount()),
                 'attr'           => [
                     'placeholder' => t('sale.field.net_unit', [], 'EkynaCommerce'),
                 ],
