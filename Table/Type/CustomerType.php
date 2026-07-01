@@ -6,6 +6,7 @@ namespace Ekyna\Bundle\CommerceBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\Filter\ConstantChoiceType;
+use Ekyna\Bundle\CmsBundle\Table\Column\TagsType;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerInterface;
 use Ekyna\Bundle\CommerceBundle\Model\CustomerStates;
 use Ekyna\Bundle\CommerceBundle\Table as Type;
@@ -117,6 +118,9 @@ class CustomerType extends AbstractResourceType
                 'position'    => 120,
                 'time_format' => 'none',
             ])
+            ->addColumn('tags', TagsType::class, [
+                'position' => 130,
+            ])
             ->addColumn('actions', BType\Column\ActionsType::class, [
                 'resource' => $this->dataClass,
             ]);
@@ -220,6 +224,10 @@ class CustomerType extends AbstractResourceType
                 ->addFilter('createdAt', CType\Filter\DateTimeType::class, [
                     'label'    => t('field.created_at', [], 'EkynaUi'),
                     'position' => 130,
+                ])
+                ->addFilter('tags', ResourceType::class, [
+                    'resource' => 'ekyna_cms.tag',
+                    'position' => 140,
                 ]);
         }
     }

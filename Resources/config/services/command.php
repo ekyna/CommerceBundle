@@ -26,6 +26,7 @@ use Ekyna\Bundle\CommerceBundle\Command\OrderExportCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrdersStateCheckCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderStateUpdateCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderUpdateMarginCommand;
+use Ekyna\Bundle\CommerceBundle\Command\OrderUpdateTaxationCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderUpdateTotalsCommand;
 use Ekyna\Bundle\CommerceBundle\Command\OrderWatchCommand;
 use Ekyna\Bundle\CommerceBundle\Command\PaymentStateChangeCommand;
@@ -256,6 +257,18 @@ return static function (ContainerConfigurator $container) {
             service('ekyna_commerce.updater.order'),
             service('ekyna_commerce.manager.order'),
             service('doctrine.orm.default_entity_manager'),
+        ])
+        ->tag('console.command');
+
+    // Order update taxaxtion command
+    $services
+        ->set('ekyna_commerce.command.order_taxation_update', OrderUpdateTaxationCommand::class)
+        ->args([
+            service('ekyna_commerce.repository.order'),
+            service('ekyna_commerce.builder.adjustment'),
+            service('ekyna_commerce.resolver.tax'),
+            service('ekyna_commerce.manager.order'),
+            service('translator'),
         ])
         ->tag('console.command');
 
