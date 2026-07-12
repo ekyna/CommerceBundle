@@ -22,7 +22,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function is_null;
 use function is_string;
-use function sprintf;
 
 /**
  * Class OrderUpdateTaxationCommand

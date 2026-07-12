@@ -20,6 +20,7 @@ use Ekyna\Component\User\Model\UserInterface;
 use Ekyna\Component\User\Service\UserProviderInterface;
 
 use function array_replace;
+use function trim;
 
 /**
  * Class RecipientHelper
@@ -245,14 +246,9 @@ class RecipientHelper
             $element instanceof SaleInterface
             || $element instanceof CustomerInterface
             || $element instanceof CustomerContactInterface
+            || $element instanceof SupplierInterface
         ) {
             return new Recipient($element->getEmail(), trim($element->getFirstName() . ' ' . $element->getLastName()), $type);
-        }
-
-        if ($element instanceof SupplierInterface) {
-            $name = !$element->isIdentityEmpty() ? trim($element->getFirstName() . ' ' . $element->getLastName()) : null;
-
-            return new Recipient($element->getEmail(), $name, $type);
         }
 
         throw new UnexpectedTypeException($element, [
