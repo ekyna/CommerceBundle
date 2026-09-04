@@ -11,6 +11,7 @@ use Ekyna\Bundle\ResourceBundle\Action\AbstractAction;
 use Ekyna\Bundle\ResourceBundle\Action\HelperTrait;
 use Ekyna\Bundle\ResourceBundle\Action\ManagerTrait;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Common\Updater\SaleItemUpdaterInterface;
 use Ekyna\Component\Commerce\Exception\IllegalOperationException;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Exception\UnexpectedValueException;
@@ -29,7 +30,8 @@ class SyncSubjectAction extends AbstractAction implements AdminActionInterface
     use XhrTrait;
 
     public function __construct(
-        private readonly SaleItemHelper $saleItemHelper
+        private readonly SaleItemHelper $saleItemHelper,
+        private readonly SaleItemUpdaterInterface $saleItemUpdater,
     ) {
     }
 
@@ -49,6 +51,12 @@ class SyncSubjectAction extends AbstractAction implements AdminActionInterface
         try {
             $this->saleItemHelper->initialize($item, null);
             $this->saleItemHelper->build($item);
+
+            // Fix price
+            $this->saleItemUpdater->updateNetPriceAndDiscount($item);
+            if ($item->hasPublicChildren()) {
+                $this->saleItemUpdater->updateChildrenNetPriceAndDiscount($item);
+            }
 
             $this->getManager()->update($item);
         } catch (IllegalOperationException) {

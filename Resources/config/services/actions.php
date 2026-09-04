@@ -329,6 +329,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.action.sale_item.sync_subject', Item\SyncSubjectAction::class)
         ->args([
             service('ekyna_commerce.helper.sale_item'),
+            service('ekyna_commerce.updater.sale_item'),
         ])
         ->tag('ekyna_resource.action');
     $services
