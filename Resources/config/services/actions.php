@@ -148,6 +148,7 @@ return static function (ContainerConfigurator $container) {
         ->set('ekyna_commerce.action.order_item.sync_subject', Order\Item\SyncSubjectAction::class)
         ->args([
             service('ekyna_commerce.helper.sale_item'),
+            service('ekyna_commerce.updater.sale_item'),
             service('ekyna_commerce.prioritizer.checker.order'),
             service('ekyna_commerce.prioritizer.order'),
         ])

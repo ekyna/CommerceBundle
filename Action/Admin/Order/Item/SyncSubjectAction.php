@@ -7,6 +7,7 @@ namespace Ekyna\Bundle\CommerceBundle\Action\Admin\Order\Item;
 use Ekyna\Bundle\CommerceBundle\Action\Admin\Sale\Item\SyncSubjectAction as BaseAction;
 use Ekyna\Bundle\CommerceBundle\Service\SaleItemHelper;
 use Ekyna\Component\Commerce\Common\Model\SaleItemInterface;
+use Ekyna\Component\Commerce\Common\Updater\SaleItemUpdaterInterface;
 use Ekyna\Component\Commerce\Exception\UnexpectedTypeException;
 use Ekyna\Component\Commerce\Order\Model\OrderItemInterface;
 use Ekyna\Component\Commerce\Stock\Prioritizer\OrderPrioritizeCheckerInterface;
@@ -21,10 +22,11 @@ class SyncSubjectAction extends BaseAction
 {
     public function __construct(
         private readonly SaleItemHelper                  $saleItemHelper,
+        private readonly SaleItemUpdaterInterface        $saleItemUpdater,
         private readonly OrderPrioritizeCheckerInterface $prioritizeChecker,
         private readonly OrderPrioritizerInterface       $stockPrioritizer,
     ) {
-        parent::__construct($this->saleItemHelper);
+        parent::__construct($this->saleItemHelper, $this->saleItemUpdater);
     }
 
     protected function postSync(SaleItemInterface $item): void
